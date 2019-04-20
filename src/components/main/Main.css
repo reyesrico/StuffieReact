@@ -1,0 +1,25 @@
+.stuffie__header {
+  border-bottom: 2px solid gray; 
+  width: 100%;
+}
+
+.stuffie__main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.stuffie__menu {
+  background-color: lightgray;
+  width: 224px;
+}
+
+.stuffie__content {
+  width: 65%;
+}
+
+.stuffie__apps {
+  background-color: lightgray;
+  width: 110px;
+}

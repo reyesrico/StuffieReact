@@ -1,0 +1,58 @@
+.stuffie-header {
+  align-items: center;
+  background-image: linear-gradient(to left, lightgray , white);
+  /* background-color: lightgray; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.stuffie-header__info {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  width: 224px;
+}
+
+.stuffie-header__user {
+  font-size: 24px;
+  font-weight: bolder;
+  margin-left: 8px;
+}
+
+.stuffie-header__logo {
+  width: 50px;
+  height: 50px;
+}
+
+.stuffie-header__sections {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.stuffie-header__section-item a{
+  color: black;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+.stuffie-header__section-item a:hover {
+  color: black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
+.stuffie-header__logout {
+  cursor: pointer;
+  display: flex;
+  font-weight: bolder;
+  justify-content: space-evenly;
+  width: 110px;
+}
+
+.stuffie-header__logout :hover{
+  color: black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
