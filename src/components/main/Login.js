@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import TextField from '../shared/TextField';
 import { loginStuffier } from '../services/stuffier';
@@ -10,25 +10,23 @@ class Login extends Component {
     password: ''
   };
 
-  componentDidUpdate() {
-    if (!!localStorage.getItem('username'))
-      return <Redirect to="/" />;
-  }
-
   handleChange = event => {
     const target = event.target;
     this.setState({ [target.name]: target.value });
   }
 
-  handleSubmitRestdbIO = event => {
+  onClick = event => {
+    const { history } = this.props;
     const { email, password } = this.state;
+
     event.preventDefault();
 
     loginStuffier(email, password)
       .then(res => {
-        localStorage.setItem('username', email);
+        const user = res.data[0].email;
+        localStorage.setItem('username', user);
         alert("Login Successful using RestDBIO");
-        this.props.history.push('/');
+        history.push('/');
       })
       .catch(error => {
         console.log(error);
@@ -52,11 +50,11 @@ class Login extends Component {
             value={this.state.password}
             hintText="Enter your Password"
             onChange={event => this.handleChange(event)} />
-          <input type="submit" value="Login" onClick={event => this.handleSubmitRestdbIO(event)} />
+          <input type="submit" value="Login" onClick={this.onClick} />
         </form>
       </div>
     );
   }
 }
 
-export default Login
+export default withRouter(Login);

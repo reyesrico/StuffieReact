@@ -73,6 +73,10 @@ class Products extends Component {
       );
     }
 
+    if (objects.length === 0) {
+      return <div>No Stuff! Add Products!</div>
+    }
+
     return (
       <div>
         <h3>{user.first_name} Stuff</h3>

@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import Media from '../shared/Media';
 import './Header.css';
 
 class Header extends Component {
   handleLogout = event => {
+    const { history } = this.props;
+
     event.preventDefault();
     localStorage.setItem('username', '');
-    this.context.history.push('/login');
+    history.push('/login');
   }
 
   render() {
@@ -35,4 +37,4 @@ class Header extends Component {
   }
 };
 
-export default Header;
+export default withRouter(Header);

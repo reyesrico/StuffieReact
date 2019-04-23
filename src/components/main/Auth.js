@@ -12,11 +12,21 @@ class Auth extends Component {
   };
 
   componentDidMount() {
-    const isUser = localStorage && 
-                   localStorage.getItem('username') &&
-                   localStorage.getItem('username') !== '';
+    this.getUser();
+  }
 
-    if (!this.state.user && isUser ) {
+  componentDidUpdate() {
+    this.getUser();
+  }
+
+  isActiveUser = () => {
+    return localStorage && 
+    localStorage.getItem('username') &&
+    localStorage.getItem('username') !== '';
+  }
+
+  getUser = () => {
+    if (!this.state.user && this.isActiveUser() ) {
       getStuffier(localStorage.getItem('username')).then(res => {
         this.setState({ user: res.data[0] });
       }).catch(err => {
@@ -28,11 +38,7 @@ class Auth extends Component {
   render() {
     const { error, user } = this.state;
 
-    const isUser = localStorage && 
-                   localStorage.getItem('username') &&
-                   localStorage.getItem('username') !== '';
-
-    if (!isUser) return <Login />;
+    if (!this.isActiveUser()) return <Login />;
 
     if (error) return <div>Error: {error} </div>
 

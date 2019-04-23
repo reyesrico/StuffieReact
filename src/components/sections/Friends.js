@@ -1,19 +1,37 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
+import { map } from 'lodash';
 
-import { getFriends } from '../services/stuffier';
+import { getStuffiers, getFriends } from '../services/stuffier';
 
 class Friends extends Component {
   state = {
     friends: null,
+    friendsId: null,
   };
 
   componentDidMount() {
     const { user } = this.props;
 
     getFriends(user.email).then(res => {
-      this.setState({ friends: res.data });
+      this.setState({ friendsId: res.data });
     });
+  }
+
+  componentDidUpdate() {
+    const { friends, friendsId } = this.state;
+
+    if (!friends) {
+      const ids = map(friendsId, friend => {
+        return {
+          id: friend.id_friend
+        };
+      });
+  
+      getStuffiers(ids).then(res => {
+        this.setState({ friends: res.data });
+      });  
+    }
   }
 
   render() {
@@ -32,7 +50,7 @@ class Friends extends Component {
       <div>
         <h3>{user.first_name} Friends</h3>
         <ul>
-          {friends.map((friend, index) => (<li key={index}>{friend.email_friend}</li>))}
+          {friends.map(friend => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
       </div>
     );
