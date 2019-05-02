@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import TextField from '../shared/TextField';
-import { loginStuffier } from '../services/stuffier';
+import { loginStuffier } from '../../services/stuffier';
 
 class Login extends Component {
   state = {

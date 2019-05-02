@@ -3,7 +3,7 @@ import ReactLoading from 'react-loading';
 
 import Login from './Login';
 import Main from './Main';
-import { getStuffier } from '../services/stuffier';
+import { getStuffier } from '../../services/stuffier';
 
 class Auth extends Component {
   state = {

@@ -5,7 +5,7 @@ import { Treemap } from 'recharts';
 import { PieChart, Pie } from 'recharts';
 import { ScatterChart, ZAxis, Scatter } from 'recharts';
 import { RadialBarChart, RadialBar, RadialBarData } from 'recharts';
-import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../services/charts';
+import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../../services/charts';
 
 class Charts extends Component {
   state = {

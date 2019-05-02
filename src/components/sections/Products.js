@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 import { forEach, map } from 'lodash';
 
-import { getListStuff } from '../services/stuff';
+import { getListStuff } from '../../services/stuff';
 import './Products.css';
 
 class Products extends Component {

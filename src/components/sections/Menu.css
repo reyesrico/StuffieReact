@@ -1,0 +1,14 @@
+.menu__title {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.menu__category {
+  font-size: 12px;
+  border-bottom: solid 1px gray;
+  margin: 4px 0;
+}
+
+.menu__category:last-of-type {
+  border-bottom: none;
+}

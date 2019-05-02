@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Video, Transformation, CloudinaryContext } from 'cloudinary-react';
 
-import config from '../services/config';
+import config from '../../services/config';
 
 class Media extends Component {
 

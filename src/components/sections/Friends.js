@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 import { map } from 'lodash';
 
-import { getStuffiers, getFriends } from '../services/stuffier';
+import { getStuffiers, getFriends } from '../../services/stuffier';
 
 class Friends extends Component {
   state = {

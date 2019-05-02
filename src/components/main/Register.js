@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { registerStuffier } from '../services/stuffier';
+import { registerStuffier } from '../../services/stuffier';
 
 import TextField from '../shared/TextField';
 

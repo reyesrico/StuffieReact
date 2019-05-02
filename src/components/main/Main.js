@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import ReactLoading from 'react-loading';
 
 import Apps from '../sections/Apps';
@@ -6,7 +7,8 @@ import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
-import { getCategories, getStuffList } from '../services/stuff';
+import { fetchCategories } from '../../redux/categories/actions';
+import { getCategories, getStuffList } from '../../services/stuff';
 
 import './Main.css';
 
@@ -29,11 +31,16 @@ class Main extends Component {
 
   componentDidUpdate() {
     const { categories } = this.state;
+    const { fetchCategories } = this.props;
 
     if (!categories) {
       getCategories().then(res => {
         this.setState({ categories: res.data });
       });
+
+      // fetchCategories().then(res => {
+      //   this.setState({ categories: res.data });
+      // });
     }
   }
 
@@ -67,4 +74,8 @@ class Main extends Component {
   }
 }
 
-export default Main;
+const mapDispatchProps = {
+  fetchCategories,
+};
+
+export default connect(null, mapDispatchProps)(Main);

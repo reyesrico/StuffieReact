@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 
-import { getCategories } from '../services/stuff';
+import { getCategories } from '../../services/stuff';
+import './Menu.css';
 
 class Menu extends Component {
   state=  {
@@ -31,9 +32,14 @@ class Menu extends Component {
 
     return (
       <div className='barBlock barMenu'>
-        <div className='menuName'>Menu</div>
+        <div className='menu__title'>Menu</div>
         <hr />
-        {categories && categories.map(category => <div key={category.id}>{category.name}</div>) }
+        {
+          categories && categories.map(category => {
+            return <div className="menu__category" key={category.id}>
+              {category.name}
+            </div>
+        })}
         <hr />
         <div className='searchBarGroup'>
           {/* <SearchBar categories={categories} /> */}

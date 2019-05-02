@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 import { forEach, map } from 'lodash';
-import { getStuffList } from '../services/stuff';
-import { getFriends } from '../services/stuffier';
+import { getStuffList } from '../../services/stuff';
+import { getFriends } from '../../services/stuffier';
 
 import './Content.css';
 
