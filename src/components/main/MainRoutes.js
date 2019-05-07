@@ -10,13 +10,11 @@ import Tickets from '../apps/Tickets';
 
 class MainRoutes extends Component {
   render() {
-    const { user } = this.props;
-
     return (
       <Switch>
-        <Route exact path="/" render={() => <Content {...this.props} />} />
-        <Route path="/products" render={() => <Products {...this.props} />} />
-        <Route path="/friends" render={() => <Friends user={user} />} />
+        <Route exact path="/" render={() => <Content {...this.props } />} />
+        <Route path="/products" render={() => <Products {...this.props } />} />
+        <Route path="/friends" render={() => <Friends {...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/chat" component={Chat} />
         <Route path="/tickets" component={Tickets} />

@@ -8,6 +8,7 @@ import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
 import { fetchCategories } from '../../redux/categories/actions';
+import { fetchFriends } from '../../redux/friends/actions';
 import { getStuffList } from '../../services/stuff';
 
 import './Main.css';
@@ -15,6 +16,7 @@ import './Main.css';
 class Main extends Component {
   state = {
     categories: null,
+    friends: null,
     stuff: null
   };
 
@@ -30,19 +32,23 @@ class Main extends Component {
   }
 
   componentDidUpdate() {
-    const { categories } = this.state;
-    const { fetchCategories } = this.props;
+    const { categories, friends } = this.state;
+    const { fetchCategories, fetchFriends, user } = this.props;
 
     if (!categories) {
       fetchCategories().then(res => {
         this.setState({ categories: res.data });
       });
     }
+
+    if (!friends) {
+      fetchFriends(user.email).then(res => this.setState({ friends: res.data }));
+    }
   }
 
   render() {
     const { user } = this.props;
-    const { categories, stuff } = this.state;
+    const { categories, friends, stuff } = this.state;
 
     if (!stuff || !categories) return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={250} width={250} />;
 
@@ -56,7 +62,7 @@ class Main extends Component {
             <Menu user={user} categories={categories} />
           </div>
           <div className="stuffie__content">
-            <MainRoutes user={user} stuff={stuff} categories={categories}/>
+            <MainRoutes user={user} stuff={stuff} categories={categories} friends={friends}/>
           </div>
           <div className="stuffie__apps">
             <Apps />
@@ -72,6 +78,7 @@ class Main extends Component {
 
 const mapDispatchProps = {
   fetchCategories,
+  fetchFriends,
 };
 
 export default connect(null, mapDispatchProps)(Main);

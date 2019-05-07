@@ -1,0 +1,1 @@
+export const FRIENDS_FETCHED = 'MENU::FRIENDS_FETCHED';
