@@ -1,26 +1,11 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 
-import { getCategories } from '../../services/stuff';
 import './Menu.css';
 
 class Menu extends Component {
-  state=  {
-    categories: null,
-  };
-
-  componentDidMount() {
-    const { categories } = this.state;
-
-    if (!categories) {
-      getCategories().then(res => {
-        this.setState({ categories: res.data });
-      });
-    }
-  }
-
   render() {
-    const { categories } = this.state;
+    const { categories } = this.props;
 
     if (!categories) {
       return (

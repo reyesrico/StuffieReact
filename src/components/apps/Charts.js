@@ -3,8 +3,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart,
 import { AreaChart, Area } from 'recharts';
 import { Treemap } from 'recharts';
 import { PieChart, Pie } from 'recharts';
-import { ScatterChart, ZAxis, Scatter } from 'recharts';
-import { RadialBarChart, RadialBar, RadialBarData } from 'recharts';
+import { ScatterChart, Scatter } from 'recharts';
+import { RadialBarChart, RadialBar } from 'recharts';
 import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../../services/charts';
 
 class Charts extends Component {

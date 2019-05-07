@@ -8,7 +8,7 @@ import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
 import { fetchCategories } from '../../redux/categories/actions';
-import { getCategories, getStuffList } from '../../services/stuff';
+import { getStuffList } from '../../services/stuff';
 
 import './Main.css';
 
@@ -34,13 +34,9 @@ class Main extends Component {
     const { fetchCategories } = this.props;
 
     if (!categories) {
-      getCategories().then(res => {
+      fetchCategories().then(res => {
         this.setState({ categories: res.data });
       });
-
-      // fetchCategories().then(res => {
-      //   this.setState({ categories: res.data });
-      // });
     }
   }
 
@@ -57,7 +53,7 @@ class Main extends Component {
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
-            <Menu user={user} />
+            <Menu user={user} categories={categories} />
           </div>
           <div className="stuffie__content">
             <MainRoutes user={user} stuff={stuff} categories={categories}/>

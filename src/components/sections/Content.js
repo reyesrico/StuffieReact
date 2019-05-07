@@ -61,7 +61,6 @@ class Content extends Component {
       return <div>No Friends! Add friends!</div>
     }
     
-    console.log(friendsProducts);
     return (
       <div>
         <h3>{user.first_name} Feed</h3>

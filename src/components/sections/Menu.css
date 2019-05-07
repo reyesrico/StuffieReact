@@ -9,6 +9,6 @@
   margin: 4px 0;
 }
 
-.menu__category:last-of-type {
+.menu__category:last-child {
   border-bottom: none;
 }

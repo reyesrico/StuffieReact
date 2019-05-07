@@ -27,11 +27,11 @@ export const makeApiActionCreator = (apiCall, successActionCreator) => {
 export const makePaginatedApiActionCreator = (apiCall, successActionCreator, requestActionCreator) => {
   return args => (dispatch) => {
     const dispatchResultsAndFetchNextIfPresent = ({ data }) => {
-      dispatch(successActionCreator(data.results, args));
-      if (data.next !== null) {
+      dispatch(successActionCreator(data, args));
+      if (data.next) {
         return axios.get(data.next).then(dispatchResultsAndFetchNextIfPresent);
       } else {
-        Promise.resolve({ data });
+        return Promise.resolve({ data });
       }
     };
 
