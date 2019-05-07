@@ -7,8 +7,8 @@
   font-size: 12px;
   border-bottom: solid 1px gray;
   margin: 4px 0;
-}
 
-.menu__category:last-child {
-  border-bottom: none;
+  &:last-child {
+    border-bottom: none;
+  }
 }

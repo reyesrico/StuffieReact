@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "cloudinary-react": "^1.1.0",
+    "node-sass": "^4.12.0",
     "query-string": "^6.4.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",

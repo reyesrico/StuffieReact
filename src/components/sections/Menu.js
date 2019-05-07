@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 
-import './Menu.css';
+import './Menu.scss';
 
 class Menu extends Component {
   render() {
@@ -19,12 +19,14 @@ class Menu extends Component {
       <div className='barBlock barMenu'>
         <div className='menu__title'>Menu</div>
         <hr />
-        {
-          categories && categories.map(category => {
-            return <div className="menu__category" key={category.id}>
-              {category.name}
-            </div>
-        })}
+        <div className="menu__list">
+          {
+            categories && categories.map(category => {
+              return <div className="menu__category" key={category.id}>
+                {category.name}
+              </div>
+          })}
+        </div>
         <hr />
         <div className='searchBarGroup'>
           {/* <SearchBar categories={categories} /> */}
