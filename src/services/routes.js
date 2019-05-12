@@ -5,7 +5,7 @@ const routes = {
     list: () => `${config.server}categories`,
   },
   stuff: {
-    detail: id => `${config.server}stuff?q=${JSON.stringify({ id })}`,
+    detail: id => `${config.server}stuff?q=${JSON.stringify({ id: parseInt(id) })}`,
     listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}`,
     listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
   },
