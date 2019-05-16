@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import categories from './categories/reducer';
 import friends from './friends/reducer';
 import products from './products/reducer';
+import subcategories from './subcategories/reducer';
 
 const REVOKE_USER = 'STUFFIE::REVOKE_USER';
 
@@ -9,6 +10,7 @@ const appReducer = combineReducers({
   categories,
   friends,
   products,
+  subcategories,
 });
 
 const rootReducer = (state, action) => {

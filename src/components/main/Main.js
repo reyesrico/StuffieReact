@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import ReactLoading from 'react-loading';
+import { connect } from 'react-redux';
 import { isEmpty, forEach, map } from 'lodash';
 
 import Apps from '../sections/Apps';
@@ -12,6 +12,7 @@ import Menu from '../sections/Menu';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
+import { fetchSubCategories } from '../../redux/subcategories/actions';
 
 import './Main.css';
 
@@ -22,6 +23,7 @@ class Main extends Component {
     stuff: null,
     objects: null,
     products: {},
+    subcategories: null,
   };
 
   componentDidMount() {
@@ -33,12 +35,18 @@ class Main extends Component {
   }
 
   componentDidUpdate() {
-    const { categories, friends, objects, products, stuff } = this.state;
-    const { fetchCategories, fetchFriends, user } = this.props;
+    const { categories, friends, objects, products, stuff, subcategories } = this.state;
+    const { fetchCategories, fetchSubCategories, fetchFriends, user } = this.props;
 
     if (!categories) {
       fetchCategories().then(res => {
         this.setState({ categories: res.data });
+      });
+    }
+
+    if (!subcategories) {
+      fetchSubCategories().then(res => {
+        this.setState({ subcategories: res.data });
       });
     }
 
@@ -95,7 +103,7 @@ class Main extends Component {
 
   render() {
     const { user } = this.props;
-    const { categories, friends, products, stuff } = this.state;
+    const { categories, friends, products, stuff, subcategories } = this.state;
 
     if (!stuff || !categories || isEmpty(products)) {
       return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={250} width={250} />;
@@ -116,7 +124,8 @@ class Main extends Component {
               stuff={stuff}
               categories={categories}
               friends={friends}
-              products={products} />
+              products={products}
+              subcategories={subcategories} />
           </div>
           <div className="stuffie__apps">
             <Apps />
@@ -135,6 +144,7 @@ const mapDispatchProps = {
   fetchFriends,
   fetchProducts,
   fetchProductsId,
+  fetchSubCategories,
 };
 
 export default connect(null, mapDispatchProps)(Main);

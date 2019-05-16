@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 
 class TextField extends Component {
   render() {
-    const { hintText, name, onChange, type, value } = this.props;
+    const { name, onChange } = this.props;
 
     return (
       <div>
         <input
-          type={type}
+          type="text"
           name={name}
-          value={value}
-          placeholder={hintText}
-          onChange={onChange}
+          onChange={event => onChange(event.target.value)}
         />
       </div>
     );

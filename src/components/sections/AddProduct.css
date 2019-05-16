@@ -7,3 +7,19 @@
 label {
   width: 110px;
 }
+
+.add-product__message-success {
+  background-color: darkseagreen;
+  color: black;
+  font-weight: bold;
+  padding: 0 8px;
+  width: 100%;
+}
+
+.add-product__message-error {
+  background-color: darkgoldenrod;
+  color: black;
+  font-weight: bold;
+  padding: 0 8px;
+  width: 100%;
+}

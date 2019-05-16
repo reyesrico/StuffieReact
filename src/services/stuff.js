@@ -17,3 +17,15 @@ export const getListStuff = ids => (
 export const getCategories = () => (
   axios.get(routes.category.list(), { headers: config.headers })
 );
+
+export const getSubCategories = () => (
+  axios.get(routes.subcategory.list(), { headers: config.headers })
+);
+
+export const addStuff = (name, category, subcategory, file_name) => (
+  axios.post(routes.stuff.addStuff(), { name, category, subcategory, file_name }, { headers: config.headers })
+);
+
+export const addStuffStuffier = (id_stuffier, id_stuff) => (
+  axios.post(routes.stuff.addStuffiersStuff(), { id_stuffier, id_stuff }, { headers: config.headers })
+);
