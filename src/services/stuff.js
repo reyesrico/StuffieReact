@@ -22,8 +22,8 @@ export const getSubCategories = () => (
   axios.get(routes.subcategory.list(), { headers: config.headers })
 );
 
-export const addStuff = (name, category, subcategory, file_name) => (
-  axios.post(routes.stuff.addStuff(), { name, category, subcategory, file_name }, { headers: config.headers })
+export const addStuff = ({ name, category, subcategory, fileName }) => (
+  axios.post(routes.stuff.addStuff(), { name, category, subcategory, file_name: fileName }, { headers: config.headers })
 );
 
 export const addStuffStuffier = (id_stuffier, id_stuff) => (

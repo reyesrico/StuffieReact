@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Dropdown from '../shared/DropDown';
 import TextField from '../shared/TextField';
 import { addStuff, addStuffStuffier } from '../../services/stuff';
+import { addProduct } from '../../redux/products/actions';
 
 import './AddProduct.css';
 
@@ -13,9 +14,9 @@ class AddProduct extends Component {
     status: 'success',
     name: null,
     file_name: null,
-    category: null,
+    category: this.props.categories[0],
     product: null,
-    subcategory: null,
+    subcategory: this.props.subcategories[0],
     stuffStuffier: null,
   };
 
@@ -32,14 +33,15 @@ class AddProduct extends Component {
   }
 
   createProduct = event => {
-    const { user } = this.props;
+    const { addProduct, user } = this.props;
     const { name, category, subcategory } = this.state;
 
     if (!name || !category || !subcategory) return;
 
     event.preventDefault();
 
-    addStuff(name, category.id, subcategory.id, 'file_name')
+    // addStuff()
+    addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'})
       .then(res => {
         const product = res.data;
         this.setState({ product });
@@ -60,8 +62,8 @@ class AddProduct extends Component {
       status: 'success',
       name: null,
       file_name: null,
-      category: null,
-      subcategory: null,
+      category: this.props.categories[0],
+      subcategory: this.props.subcategories[0],
       product: null,
       stuffStuffier: null,
     });
@@ -109,6 +111,7 @@ class AddProduct extends Component {
 };
 
 const mapDispatchProps = {
+  addProduct,
 };
 
 export default connect(null, mapDispatchProps)(AddProduct);
