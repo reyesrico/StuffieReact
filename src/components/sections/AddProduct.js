@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../shared/DropDown';
 import TextField from '../shared/TextField';
-import { fetchCategories } from '../../redux/categories/actions';
-import { fetchSubCategories } from '../../redux/subcategories/actions';
 import { addStuff, addStuffStuffier } from '../../services/stuff';
 
 import './AddProduct.css';
@@ -16,16 +14,10 @@ class AddProduct extends Component {
     name: null,
     file_name: null,
     category: null,
-    categories: null,
     product: null,
     subcategory: null,
-    subcategories: null,
     stuffStuffier: null,
   };
-
-  componentDidMount() {
-    this.fetchData();
-  }
 
   componentDidUpdate(prevProps, prevState) {
     const { product, stuffStuffier, name, category, subcategory } = this.state;
@@ -39,25 +31,8 @@ class AddProduct extends Component {
     }
   }
 
-  fetchData = () => {
-    const { fetchCategories, fetchSubCategories } = this.props;
-    const { categories, subcategories } = this.state;
-
-    if (!categories) {
-      fetchCategories().then(res => {
-        this.setState({ categories: res.data });
-      });  
-    }
-
-    if (!subcategories) {
-      fetchSubCategories().then(res => {
-        this.setState({ subcategories: res.data });
-      });  
-    }
-  }
-
   createProduct = event => {
-    const { history } = this.props;
+    const { user } = this.props;
     const { name, category, subcategory } = this.state;
 
     if (!name || !category || !subcategory) return;
@@ -68,7 +43,7 @@ class AddProduct extends Component {
       .then(res => {
         const product = res.data;
         this.setState({ product });
-        return addStuffStuffier(1, product.id);
+        return addStuffStuffier(user.id, product.id);
       })
       .then(res => {
         const stuffStuffier = res.data;
@@ -104,13 +79,11 @@ class AddProduct extends Component {
   }
 
   render() {
-    const { categories, subcategories, product, stuffStuffier } = this.state;
-    if (!categories || !subcategories) {
-      return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />;
-    }
+    const { categories, subcategories } = this.props;
+    const { product, stuffStuffier } = this.state;
 
     return (
-      <div>
+      <div className="add-product">
         <h3>Add Stuff</h3>
         { product && stuffStuffier && this.renderProductAddedMessage() }
         <hr/>
@@ -136,8 +109,6 @@ class AddProduct extends Component {
 };
 
 const mapDispatchProps = {
-  fetchCategories,
-  fetchSubCategories,
 };
 
 export default connect(null, mapDispatchProps)(AddProduct);

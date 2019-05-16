@@ -1,3 +1,7 @@
+.add-product {
+  padding: 0 8px;
+}
+
 .add-product__row {
   display: flex;
   flex-direction: row;
