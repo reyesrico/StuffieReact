@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
+// @ts-ignore
 import { Link } from 'react-router-dom';
+// @ts-ignore
 import { map } from 'lodash';
 
+import { ProductsProps } from './types';
 import './Products.css';
+import Stuff from '../types/Stuff';
 
-class Products extends Component {
-  generateReport = event => {
+class Products extends Component<ProductsProps, any> {
+  generateReport = (event: any) => {
     // event.preventDefault();
     alert("finished");
   }
@@ -34,7 +38,7 @@ class Products extends Component {
               <div key={category.id}>
                 <h4>{category.name}</h4>
                 <ul>
-                  {map(products[category.id], object => {
+                  {map(products[category.id], (object: Stuff) => {
                     return (
                       <li key={object.id}><Link to={`/product/${object.id}`}>{object.name}</Link></li>
                     )
