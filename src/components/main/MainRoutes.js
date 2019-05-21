@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import AddCategory from '../sections/AddCategory';
 import AddProduct from '../sections/AddProduct';
 import Content from '../sections/Content';
 import Charts from '../apps/Charts';
@@ -19,6 +20,8 @@ class MainRoutes extends Component {
         <Route path="/products" render={() => <Products {...this.props } />} />
         <Route path="/product/add" render={()=> <AddProduct { ...this.props } />} />
         <Route path="/product/:id" render={props => <Product { ...props } />} />
+        <Route path="/category/add" render={()=> <AddCategory type='category' { ...this.props } />} />
+        <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' { ...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/chat" component={Chat} />
         <Route path="/tickets" component={Tickets} />

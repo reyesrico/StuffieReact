@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import './Menu.scss';
 
@@ -20,6 +21,11 @@ class Menu extends Component {
           })}
         </div>
         <hr />
+        <Link to={`/category/add`}>+ Add Category</Link>
+        <hr />
+        <Link to={`/subcategory/add`}>+ Add SubCategory</Link>
+        <hr />
+
         <div className='searchBarGroup'>
           {/* <SearchBar categories={categories} /> */}
         </div>
