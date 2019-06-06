@@ -18,3 +18,31 @@ export interface ProductsProps {
   },
   user: User,
 }
+
+export interface TableDataProps {
+  data: any,
+}
+
+export interface TableTitleProps {
+  title: string,
+}
+
+export interface SearchMatchProps {
+  title: string,
+  match: string,
+}
+
+export interface TableProps {
+  titles: string[],
+  searchTerm: string,
+  data: any,
+}
+
+export interface SearchProps {
+  userInput(event: any): void,
+  searchTerm: string,
+}
+
+export interface SearchBarProps {
+  categories: Category[],
+}

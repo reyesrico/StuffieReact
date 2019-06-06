@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React, { Component } from 'react';
+import { TableDataProps, TableTitleProps, SearchMatchProps, 
+         TableProps, SearchProps, SearchBarProps} from './types';
 
-class TableData extends React.Component {
+class TableData extends Component<TableDataProps, {}> {
   render() {
     return (
       <p>{this.props.data}</p>
@@ -8,7 +10,7 @@ class TableData extends React.Component {
   }
 }
 
-class TableTitle extends React.Component {
+class TableTitle extends Component<TableTitleProps, {}> {
   render() {
     return (
       <div className="tableTitle">
@@ -18,7 +20,7 @@ class TableTitle extends React.Component {
   }
 }
 
-class SearchMatch extends React.Component {
+class SearchMatch extends Component<SearchMatchProps, {}> {
   render() {
     return (
       <div className="searchMatch">
@@ -28,17 +30,17 @@ class SearchMatch extends React.Component {
   }
 }
 
-class Table extends React.Component{
-  addData(data, title) {
+class Table extends Component<TableProps, {}>{
+  addData(data: any, title: string) {
     // We need to get each row and store it in an array
-    var rowsTitle = [];
+    var rowsTitle: any[] = [];
     var search = [];
     var searchterm = this.props.searchTerm; // need this or it doesnt work
     var key = '';
     var index = 1;
 
     // Update row 
-    data.forEach(row => {
+    data.forEach((row: any) => {
       // row.title subtited by this.props.title
       if (title.toLowerCase().indexOf(searchterm.toLowerCase()) === -1 &&
         row.tags.toLowerCase().indexOf(searchterm.toLowerCase()) === -1
@@ -97,8 +99,8 @@ class Table extends React.Component{
   }
 }
 
-class Search extends React.Component {
-  filterList(event) {
+class Search extends Component<SearchProps, {}> {
+  filterList(event: any) {
     this.props.userInput(event.target.value);
   }
 
@@ -114,12 +116,12 @@ class Search extends React.Component {
 }
 
 
-class SearchBar extends React.Component {
+class SearchBar extends Component<SearchBarProps, {}> {
   state = {
     filterText: ''
   }
 
-  handleUserInput(filter) {
+  handleUserInput(filter: string) {
     this.setState({
       filterText: filter
     });
