@@ -7,6 +7,8 @@ import thunk from 'redux-thunk';
 import App from './App';
 import reducersApp from './redux/reducers';
 import { unregister } from './serviceWorker';
+
+import './sass/main.scss';
 import './index.css';
 
 let middleware = [thunk];

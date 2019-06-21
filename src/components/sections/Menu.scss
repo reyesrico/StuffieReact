@@ -1,14 +1,16 @@
+@import '../../sass/main.scss';
+
 .menu__title {
   font-size: 16px;
   font-weight: bolder;
 }
 
 .menu__category {
+  @include border('bottom');
   font-size: 12px;
-  border-bottom: solid 1px gray;
   margin: 4px 0;
 
   &:last-child {
-    border-bottom: none;
+    @include border-none('bottom');
   }
 }

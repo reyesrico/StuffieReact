@@ -1,16 +1,12 @@
+@import '../../sass/main.scss';
+
 .stuffie-header {
-  align-items: center;
-  background-image: linear-gradient(to left, lightgray , white);
-  /* background-color: lightgray; */
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  @include flex(row, space-between, center);
+  background-image: linear-gradient(to left, #d3d3d3 , white);
 }
 
 .stuffie-header__info {
-  align-items: center;
-  display: flex;
-  justify-content: flex-start;
+  @include flex(row, flex-start, center);
   width: 224px;
 }
 
@@ -26,28 +22,25 @@
 }
 
 .stuffie-header__sections {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  @include flex(row, flex-start, left);
 }
 
 .stuffie-header__section-item a{
-  color: black;
+  color: $black;
   margin-right: 10px;
   text-decoration: none;
 }
 
 .stuffie-header__section-item a:hover {
-  color: black;
+  color: $black;
   font-weight: bold;
   border-bottom: 2px solid black;
 }
 
 .stuffie-header__logout {
+  @include flex(row, space-evenly, left);
   cursor: pointer;
-  display: flex;
   font-weight: bolder;
-  justify-content: space-evenly;
   width: 110px;
 }
 

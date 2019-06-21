@@ -1,0 +1,34 @@
+@mixin flex($direction, $justify-content: flex-start, $align-items: left) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify-content;
+  align-items: $align-items;
+}
+
+@mixin border($position: 'all') {
+  @if $position == 'bottom' {
+    border-bottom: solid 1px $gray;    
+  } @if $position == 'top' {
+    border-top: solid 1px $gray;
+  } @if $position == 'left' {
+    border-left: solid 1px $gray;
+  } @if $position == 'right' {
+    border-right: solid 1px $gray;
+  } @if $position == 'all' {
+    border: solid 1px $gray;
+  }
+}
+
+@mixin border-none($position: 'all') {
+  @if $position == 'bottom' {
+    border-bottom: none;  
+  } @if $position == 'top' {
+    border-top: none;
+  } @if $position == 'left' {
+    border-left: none;
+  } @if $position == 'right' {
+    border-right: none;
+  } @if $position == 'all' {
+    border: none;
+  }
+}
