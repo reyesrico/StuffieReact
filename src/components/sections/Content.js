@@ -5,7 +5,7 @@ import { forEach, map } from 'lodash';
 import { getStuffList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
 
-import './Content.css';
+import './Content.scss';
 
 class Content extends Component {
   state = {

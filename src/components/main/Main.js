@@ -14,7 +14,7 @@ import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
 
-import './Main.css';
+import './Main.scss';
 
 class Main extends Component {
   state = {

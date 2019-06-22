@@ -4,23 +4,24 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../shared/DropDown';
 import TextField from '../shared/TextField';
-import { addStuff, addStuffStuffier } from '../../services/stuff';
+import { AddProductProps } from './types';
+import { addStuffStuffier } from '../../services/stuff';
 import { addProduct } from '../../redux/products/actions';
 
-import './AddProduct.css';
+import './AddProduct.scss';
 
-class AddProduct extends Component {
+class AddProduct extends Component<AddProductProps, any> {
   state = {
     status: 'success',
     name: null,
     file_name: null,
     category: this.props.categories[0],
-    product: null,
+    product: { name: null },
     subcategory: this.props.subcategories[0],
-    stuffStuffier: null,
+    stuffStuffier: {},
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: AddProductProps, prevState: any) {
     const { product, stuffStuffier, name, category, subcategory } = this.state;
     const anyChange = prevState.name !== name ||
                       prevState.category !== category ||
@@ -32,7 +33,7 @@ class AddProduct extends Component {
     }
   }
 
-  createProduct = event => {
+  createProduct = (event:any) => {
     const { addProduct, user } = this.props;
     const { name, category, subcategory } = this.state;
 
@@ -40,18 +41,17 @@ class AddProduct extends Component {
 
     event.preventDefault();
 
-    // addStuff()
     addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'})
-      .then(res => {
+      .then((res:any) => {
         const product = res.data;
         this.setState({ product });
         return addStuffStuffier(user.id, product.id);
       })
-      .then(res => {
+      .then((res:any) => {
         const stuffStuffier = res.data;
         this.setState({ stuffStuffier });
       })
-      .catch(err => {
+      .catch((err:any) => {
         this.setState({ status: 'error' });
         console.log(`Error: ${err}`);
       });
@@ -64,8 +64,8 @@ class AddProduct extends Component {
       file_name: null,
       category: this.props.categories[0],
       subcategory: this.props.subcategories[0],
-      product: null,
-      stuffStuffier: null,
+      product: {},
+      stuffStuffier: {},
     });
   }
 
@@ -73,11 +73,13 @@ class AddProduct extends Component {
     const { status, product } = this.state;
     const message = status === 'error' ? 'was not added' : 'was added successfully!';
 
-    return (
-      <div className={`add-product__message-${status}`}>
-        Stuff {product.name} {message}
-      </div>
-    );
+    if (product.name) {
+      return (
+        <div className={`add-product__message-${status}`}>
+          Stuff {product.name} {message}
+        </div>
+      );  
+    }
   }
 
   render() {
@@ -92,15 +94,15 @@ class AddProduct extends Component {
         <form>
           <div className="add-product__row">
             <label>Name</label>
-            <TextField name="name" onChange={name => this.setState({ name })}/>
+            <TextField name="name" onChange={(name:string) => this.setState({ name })}/>
           </div>
           <div className="add-product__row">
             <label>Category</label>
-            <Dropdown onChange={category => this.setState({ category })} values={categories} />
+            <Dropdown onChange={(category:any) => this.setState({ category })} values={categories} />
           </div>
           <div className="add-product__row">
             <label>SubCategory</label>
-            <Dropdown onChange={subcategory => this.setState({ subcategory })} values={subcategories} />
+            <Dropdown onChange={(subcategory:any) => this.setState({ subcategory })} values={subcategories} />
           </div>
           <hr />
           <button onClick={event => this.createProduct(event)}>Send</button>

@@ -1,9 +1,0 @@
-.add-product__row {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-}
-
-label {
-  width: 110px;
-}

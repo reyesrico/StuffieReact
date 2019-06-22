@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
 import Routes from './components/main/Routes';
-import './App.css';
+import './App.scss';
 
 class App extends Component {
 	render() {

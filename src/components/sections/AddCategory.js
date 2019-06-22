@@ -6,7 +6,7 @@ import { map } from 'lodash';
 import TextField from '../shared/TextField';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
-import './AddCategory.css';
+import './AddCategory.scss';
 
 class AddCategory extends Component {
   state = {

@@ -1,6 +1,14 @@
 import Category from "../types/Category";
 import Stuff from "../types/Stuff";
+import Subcategory from '../types/Subcategory';
 import User from "../types/User";
+
+export interface AddProductProps {
+  addProduct: any,
+  categories: Category[],
+  subcategories: Subcategory[],
+  user: User,
+}
 
 export interface ProductState {
   product: Stuff | null;

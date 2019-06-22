@@ -1,0 +1,9 @@
+@import '../../sass/main.scss';
+
+.add-product__row {
+  @include flex(row, flex-start, left);
+}
+
+label {
+  width: 110px;
+}
