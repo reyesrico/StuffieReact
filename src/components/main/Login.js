@@ -10,9 +10,8 @@ class Login extends Component {
     password: ''
   };
 
-  handleChange = event => {
-    const target = event.target;
-    this.setState({ [target.name]: target.value });
+  handleChange = (event, name) => {
+    this.setState({ [name]: event });
   }
 
   onClick = event => {
@@ -43,13 +42,13 @@ class Login extends Component {
             name="email"
             value={this.state.email}
             hintText="Enter your Email"
-            onChange={this.handleChange} />
+            onChange={event => this.handleChange(event, 'email')} />
           <TextField
             type="password"
             name="password"
             value={this.state.password}
             hintText="Enter your Password"
-            onChange={event => this.handleChange(event)} />
+            onChange={event => this.handleChange(event, 'password')} />
           <input type="submit" value="Login" onClick={this.onClick} />
         </form>
       </div>

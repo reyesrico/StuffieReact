@@ -1,10 +1,24 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
+import { options } from '../../config/options';
 
+import Menu from '../shared/Menu';
 import Media from '../shared/Media';
 import './Header.scss';
 
 class Header extends Component {
+  state = {
+    lang: options[0]
+  };
+
+  changeLang = lang => {
+    const { i18n } = this.props;
+
+    this.setState({ lang });
+    i18n.changeLanguage(lang.value);
+  };
+
   handleLogout = event => {
     const { history } = this.props;
 
@@ -14,7 +28,9 @@ class Header extends Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { t, user } = this.props;
+
+    if (!t) return;
 
     return (
       <div className="stuffie-header">
@@ -27,14 +43,21 @@ class Header extends Component {
           </div>
         </div>
         <div className='stuffie-header__sections'>
-          <div className='stuffie-header__section-item'><Link to='/'>Feed</Link></div>
-          <div className='stuffie-header__section-item'><Link to='/friends'>Friends</Link></div>
-          <div className='stuffie-header__section-item'><Link to='/products'>Products</Link></div>
+          <div className='stuffie-header__section-item'><Link to='/'>{t('Feed')}</Link></div>
+          <div className='stuffie-header__section-item'><Link to='/friends'>{t('Friends')}</Link></div>
+          <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
         </div>
-        <div className="stuffie-header__logout" onClick={this.handleLogout}>Logout</div>
+        <div className="stuffie-header__menu">
+          <Menu alignment="left" label={() => (<div className='stuffie-header__language'>Language</div>)}>
+            {options.map(option => {
+              return (<div key={option.value} className="stuffie-header__option" onClick={() => this.changeLang(option)}>{option.label}</div>);
+            })}
+          </Menu>
+          <div className="stuffie-header__logout" onClick={this.handleLogout}>Logout</div>
+        </div>
       </div>
     );
   }
 };
 
-export default withRouter(Header);
+export default withTranslation()(withRouter(Header));

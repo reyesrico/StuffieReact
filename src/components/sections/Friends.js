@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
+import { withTranslation } from 'react-i18next';
 import { map } from 'lodash';
 
 import { getStuffiers } from '../../services/stuffier';
@@ -28,7 +29,7 @@ class Friends extends Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { t, user } = this.props;
     const { fullFriends } = this.state;
 
     if (!fullFriends) {
@@ -41,7 +42,7 @@ class Friends extends Component {
 
     return (
       <div>
-        <h3>{user.first_name} Friends</h3>
+        <h3>{user.first_name} {t('Friends')}</h3>
         <ul>
           {fullFriends.map(friend => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
@@ -50,4 +51,4 @@ class Friends extends Component {
   }
 };
 
-export default Friends;
+export default withTranslation()(Friends);

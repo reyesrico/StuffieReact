@@ -1,0 +1,9 @@
+{
+  "translations" : {
+    "Feed": "Feed",
+    "Friends": "Friends",
+    "Products": "Products",
+    "Welcome to React Translation": "Welcome to React Translate.",
+    "This is test view": "This is the test view."
+  }
+}

@@ -10,6 +10,7 @@ import Friends from '../sections/Friends';
 import Products from '../sections/Products';
 import Product from '../sections/Product';
 import Tickets from '../apps/Tickets';
+import Test from '../apps/Test';
 
 class MainRoutes extends Component {
   render() {
@@ -25,6 +26,7 @@ class MainRoutes extends Component {
         <Route path="/charts" component={Charts} />
         <Route path="/chat" component={Chat} />
         <Route path="/tickets" component={Tickets} />
+        <Route path="/test" component={Test} />        
       </Switch>
     );
   }

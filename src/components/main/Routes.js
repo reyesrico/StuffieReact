@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
 import Auth from './Auth';
 import Login from './Login';
 import Register from './Register';
 
-class Routes extends Component {
+class Routes extends Component {  
   render() {
     return (
       <Switch>
@@ -17,4 +18,4 @@ class Routes extends Component {
   }
 }
 
-export default Routes;
+export default withTranslation()(Routes);

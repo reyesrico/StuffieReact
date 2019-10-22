@@ -4,21 +4,23 @@ import { Link } from 'react-router-dom';
 import './Menu.scss';
 
 class Menu extends Component {
-  render() {
+  renderCategories = () => {
     const { categories, products } = this.props;
 
+    if (!categories) return;
+
+    return categories
+            .filter(category => products[category.id] && products[category.id].length)
+            .map(category => (<div className="menu__category" key={category.id}>{category.name}</div>));
+  }
+
+  render() {
     return (
       <div className='barBlock barMenu'>
         <div className='menu__title'>Menu</div>
         <hr />
         <div className="menu__list">
-          { categories && categories.map(category => {
-              if (products[category.id] && products[category.id].length) {
-                return (<div className="menu__category" key={category.id}>
-                          {category.name}
-                        </div>);
-                }
-          })}
+          { this.renderCategories() }
         </div>
         <hr />
         <Link to={`/category/add`}>+ Add Category</Link>

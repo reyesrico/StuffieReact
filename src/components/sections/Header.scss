@@ -2,7 +2,7 @@
 
 .stuffie-header {
   @include flex(row, space-between, center);
-  background-image: linear-gradient(to left, #d3d3d3 , white);
+  background-image: linear-gradient(to left, #d3d3d3, #d3d3d3, white);
 }
 
 .stuffie-header__info {
@@ -37,15 +37,46 @@
   border-bottom: 2px solid black;
 }
 
-.stuffie-header__logout {
-  @include flex(row, space-evenly, left);
-  cursor: pointer;
-  font-weight: bolder;
-  width: 110px;
+.stuffie-header__menu {
+  @include flex(row, flex-end, center);
+  margin-right: 16px;
 }
 
-.stuffie-header__logout :hover{
+.stuffie-header__language {
+  color: $black;
+  cursor: pointer;
+  margin-right: 24px;
+}
+
+.stuffie-header__language:hover,
+.stuffie-header__language:focus,
+.stuffie-header__language:focus-within {
+  color: $black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
+.stuffie-header__option {
+  cursor: pointer;
+  padding: 8px;
+  font-size: 14px;
+  border-bottom: 1px solid gray;  
+}
+
+.stuffie-header__option:hover {
+  color: $black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
+
+.stuffie-header__logout {
   color: black;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.stuffie-header__logout:hover{
   font-weight: bold;
   border-bottom: 2px solid black;
 }
