@@ -48,12 +48,18 @@ class Header extends Component {
           <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
         </div>
         <div className="stuffie-header__menu">
-          <Menu alignment="left" label={() => (<div className='stuffie-header__language'>Language</div>)}>
+          <Menu alignment="left" label={isOpen => {
+            return (
+              <div className={isOpen ? 'stuffie-header__language-open' : 'stuffie-header__language'}>
+                {t('Language')}
+              </div>)
+            }
+          }>
             {options.map(option => {
               return (<div key={option.value} className="stuffie-header__option" onClick={() => this.changeLang(option)}>{option.label}</div>);
             })}
           </Menu>
-          <div className="stuffie-header__logout" onClick={this.handleLogout}>Logout</div>
+          <div className="stuffie-header__logout" onClick={this.handleLogout}>{t('Logout')}</div>
         </div>
       </div>
     );

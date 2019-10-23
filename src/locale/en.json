@@ -1,8 +1,13 @@
 {
-  "translations" : {
+  "translations": {
+    "English": "English",
     "Feed": "Feed",
     "Friends": "Friends",
+    "Friends-Title": "{{ first_name }} Friends",
+    "Language": "Language",
+    "Logout": "Logout",
     "Products": "Products",
+    "Spanish": "Spanish",
     "Welcome to React Translation": "Welcome to React Translate.",
     "This is test view": "This is the test view."
   }

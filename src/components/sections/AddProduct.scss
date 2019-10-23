@@ -13,15 +13,15 @@ label {
 }
 
 .add-product__message-success {
-  background-color: darkseagreen;
-  color: black;
+  background-color: $lightgreen;
+  color: $black;
   font-weight: bold;
   padding: 0 8px;
   width: 100%;
 }
 
 .add-product__message-error {
-  background-color: darkgoldenrod;
+  background-color: $lightorange;
   color: $black;
   font-weight: bold;
   padding: 0 8px;

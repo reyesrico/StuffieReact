@@ -48,9 +48,16 @@
   margin-right: 24px;
 }
 
+.stuffie-header__language-open {
+  border-bottom: 2px solid black;
+  color: $black;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 24px;
+}
+
 .stuffie-header__language:hover,
-.stuffie-header__language:focus,
-.stuffie-header__language:focus-within {
+.stuffie-header__language:focus {
   color: $black;
   font-weight: bold;
   border-bottom: 2px solid black;

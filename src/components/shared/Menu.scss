@@ -1,0 +1,18 @@
+@import '../../sass/main.scss';
+
+.dropdown__content-container {
+  position: relative;
+}
+
+.dropdown__content {
+  background-color: $lightgray;
+  box-shadow: 3px 3px $darkgray;
+  display: none;
+  min-width: 110px;
+  position: absolute;
+  top: 2px;
+}
+
+.dropdown__content.dropdown--is-open {
+  display: block;
+}

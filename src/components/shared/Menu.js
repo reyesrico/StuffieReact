@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import enhanceWithClickOutside from 'react-click-outside';
-import './Menu.css';
+import './Menu.scss';
 
 class Menu extends Component {
   state = {
@@ -24,7 +24,7 @@ class Menu extends Component {
 
     return (
       <div className="dropdown">
-        <div className="dropdown__label" onClick={this.toggle} onMouseEnter={this.open}>
+        <div className="dropdown__label" onClick={this.toggle}>
           {this.props.label(this.state.isOpen)}
         </div>
         <div className="dropdown__content-container">

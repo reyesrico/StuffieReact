@@ -42,7 +42,7 @@ class Friends extends Component {
 
     return (
       <div>
-        <h3>{user.first_name} {t('Friends')}</h3>
+        <h3>{t('Friends-Title', { first_name: user.first_name })}</h3>
         <ul>
           {fullFriends.map(friend => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
