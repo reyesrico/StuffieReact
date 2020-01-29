@@ -24,8 +24,8 @@ class Register extends Component {
       user.last_name.length > 0;
   }
 
-  handleChange = event => {    
-    const target = event.target;
+  handleChange = (event: React.FormEvent<EventTarget>) => {    
+    const target = event.target as HTMLTextAreaElement;
     const name = target.name;
     const value = target.value;
     this.setState({
@@ -36,7 +36,7 @@ class Register extends Component {
     });
   }
 
-  handleSubmit = event => {
+  handleSubmit = (event: React.FormEvent<EventTarget>) => {
     const { user } = this.state;
     event.preventDefault();
     registerStuffier(user);
