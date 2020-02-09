@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 import { connect } from 'react-redux';
 
-import { ProductProps, ProductState } from './types';
+import { ProductProps, ProductState } from '../sections/types';
 import Stuff  from '../types/Stuff';
 import { fetchProduct } from '../../redux/products/actions';
 

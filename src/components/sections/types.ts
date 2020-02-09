@@ -1,4 +1,5 @@
 import Category from "../types/Category";
+import ProductsMap from "../types/ProductsMap";
 import Stuff from "../types/Stuff";
 import Subcategory from '../types/Subcategory';
 import User from "../types/User";
@@ -53,4 +54,13 @@ export interface SearchProps {
 
 export interface SearchBarProps {
   categories: Category[],
+}
+
+export interface MenuProps {
+  categories: Category[],
+  products: ProductsMap,
+}
+
+export interface MenuState {
+  
 }

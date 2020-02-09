@@ -6,11 +6,7 @@
 }
 
 .menu__category {
-  @include border('bottom');
+  @include text-link();
   font-size: 12px;
   margin: 4px 0;
-
-  &:last-child {
-    @include border-none('bottom');
-  }
 }

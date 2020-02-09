@@ -46,6 +46,7 @@ class Header extends Component {
           <div className='stuffie-header__section-item'><Link to='/'>{t('Feed')}</Link></div>
           <div className='stuffie-header__section-item'><Link to='/friends'>{t('Friends')}</Link></div>
           <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
+          {!user.isAdmin && <div className='stuffie-header__section-item'><Link to='/admin'>{t('Admin')}</Link></div>}
         </div>
         <div className="stuffie-header__menu">
           <Menu alignment="left" label={isOpen => {

@@ -8,7 +8,7 @@ import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
-import Chat from '../apps/Chat';
+import Chat from '../sections/Chat';
 
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
@@ -129,7 +129,7 @@ class Main extends Component {
               subcategories={subcategories} />
           </div>
           <div className="stuffie__apps">
-            <Apps />
+            <Apps user={user} />
           </div>
         </div>
         <div className="stuffie_footer">

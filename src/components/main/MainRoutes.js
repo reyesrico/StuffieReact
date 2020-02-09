@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import AddCategory from '../sections/AddCategory';
-import AddProduct from '../sections/AddProduct';
-import Content from '../sections/Content';
+import AddCategory from '../content/AddCategory';
+import AddProduct from '../content/AddProduct';
+import Admin from '../admin/Admin';
+import Content from '../content/Content';
 import Charts from '../apps/Charts';
 import Support from '../apps/Support';
-import Friends from '../sections/Friends';
-import Products from '../sections/Products';
-import Product from '../sections/Product';
+import Friends from '../content/Friends';
+import Products from '../content/Products';
+import Product from '../content/Product';
 import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
 
@@ -17,6 +18,7 @@ class MainRoutes extends Component {
     return (
       <Switch>
         <Route exact path="/" render={() => <Content { ...this.props } />} />
+        <Route path="/admin" component={Admin} />
         <Route path="/friends" render={() => <Friends { ...this.props } />} />
         <Route path="/products" render={() => <Products { ...this.props } />} />
         <Route path="/product/add" render={()=> <AddProduct { ...this.props } />} />

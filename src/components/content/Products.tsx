@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { map } from 'lodash';
 
-import { ProductsProps } from './types';
+import { ProductsProps } from '../sections/types';
 import './Products.scss';
 import Stuff from '../types/Stuff';
 

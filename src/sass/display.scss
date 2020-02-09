@@ -32,3 +32,12 @@
     border: none;
   }
 }
+
+@mixin text-link() {
+  &:hover {
+    color: $black;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+}

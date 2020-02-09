@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import Dropdown from '../shared/DropDown';
 import TextField from '../shared/TextField';
-import { AddProductProps } from './types';
+import { AddProductProps } from '../sections/types';
 import { addStuffStuffier } from '../../services/stuff';
 import { addProduct } from '../../redux/products/actions';
 

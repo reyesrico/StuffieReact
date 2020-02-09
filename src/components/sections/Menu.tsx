@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 
+import { MenuProps, MenuState } from './types';
 import './Menu.scss';
 
-class Menu extends Component {
+class Menu extends Component<MenuProps, MenuState> {
   renderCategories = () => {
     const { categories, products } = this.props;
 
@@ -22,12 +22,6 @@ class Menu extends Component {
         <div className="menu__list">
           { this.renderCategories() }
         </div>
-        <hr />
-        <Link to={`/category/add`}>+ Add Category</Link>
-        <hr />
-        <Link to={`/subcategory/add`}>+ Add SubCategory</Link>
-        <hr />
-
         <div className='searchBarGroup'>
           {/* <SearchBar categories={categories} /> */}
         </div>
