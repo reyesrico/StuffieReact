@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { MenuProps, MenuState } from './types';
+
 // import enhanceWithClickOutside from 'react-click-outside';
 import './Menu.scss';
 
-class Menu extends Component {
+class Menu extends Component<MenuProps, MenuState> {
   state = {
     isOpen: false,
   };

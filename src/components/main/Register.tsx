@@ -66,7 +66,7 @@ class Register extends Component {
               type="text"
               name="email"
               value={user.email}
-              hintText="Email"
+              // hintText="Email"
               onChange={this.handleChange} />
           </div>
           <div className='registerPass'>
@@ -74,7 +74,7 @@ class Register extends Component {
               type="password"
               name="password"
               value={user.password}
-              hintText="New Password"
+              // hintText="New Password"
               onChange={this.handleChange} />
           </div>
           <div className='registerFirstName'>
@@ -82,7 +82,7 @@ class Register extends Component {
               type="text"
               name="first_name"
               value={user.first_name}
-              hintText="First Name"
+              // hintText="First Name"
               onChange={this.handleChange} />
           </div>
           <div className='registerLastName'>
@@ -90,7 +90,7 @@ class Register extends Component {
               type="text"
               name="last_name"
               value={user.last_name}
-              hintText="Last Name"
+              // hintText="Last Name"
               onChange={this.handleChange} />
           </div>
           <input type="submit" value="Register" />

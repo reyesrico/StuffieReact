@@ -52,7 +52,7 @@ class Header extends Component<HeaderProps, HeaderState> {
           {user.admin && <div className='stuffie-header__section-item'><Link to='/admin'>{t('Admin')}</Link></div>}
         </div>
         <div className="stuffie-header__menu">
-          <Menu alignment="left" label={(isOpen: boolean) => {
+          <Menu label={(isOpen: boolean) => {
             return (
               <div className={isOpen ? 'stuffie-header__language-open' : 'stuffie-header__language'}>
                 {t('Language')}

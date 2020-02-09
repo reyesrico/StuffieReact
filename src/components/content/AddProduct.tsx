@@ -94,7 +94,7 @@ class AddProduct extends Component<AddProductProps, any> {
         <form>
           <div className="add-product__row">
             <label>Name</label>
-            <TextField name="name" onChange={(name:string) => this.setState({ name })}/>
+            <TextField name="name" type="text" onChange={(name:string) => this.setState({ name })}/>
           </div>
           <div className="add-product__row">
             <label>Category</label>

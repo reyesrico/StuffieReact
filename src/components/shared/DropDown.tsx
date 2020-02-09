@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { find } from 'lodash';
+import { DropDownProps, DropDownState } from './types';
 
-class DropDown extends Component {
+class DropDown extends Component<DropDownProps, DropDownState> {
   state = {
     valueSelected: null,
   };
 
-  updateChange = event => {
+  updateChange = (event: any) => {
     const { onChange, values } = this.props;
 
     const id = Number(event.target.value);
@@ -20,12 +21,13 @@ class DropDown extends Component {
     const { values } = this.props;
     const { valueSelected } = this.state;
 
-    const objectSelected = valueSelected ? valueSelected : values[0].id;
+    const value = values ? values[0] ? values[0].id : null: null;
+    const objectSelected = valueSelected ? valueSelected : value;
 
     return (
       <select onChange={this.updateChange} value={objectSelected}>
         { 
-          values.map(object => {
+          values && values.map((object: any) => {
             return <option key={object.id} value={object.id}>{object.name}</option>;
           })
         }
