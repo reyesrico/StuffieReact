@@ -4,5 +4,5 @@ export default interface User {
   password: string;
   first_name: string;
   last_name: string;
-  isAdmin: boolean;
+  admin: boolean;
 }

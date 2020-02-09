@@ -3,23 +3,24 @@ import { Link, withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { options } from '../../config/options';
 
+import { HeaderProps, HeaderState } from './types';
 import Menu from '../shared/Menu';
 import Media from '../shared/Media';
 import './Header.scss';
 
-class Header extends Component {
+class Header extends Component<HeaderProps, HeaderState> {
   state = {
     lang: options[0]
   };
 
-  changeLang = lang => {
+  changeLang = (lang:any) => {
     const { i18n } = this.props;
 
     this.setState({ lang });
     i18n.changeLanguage(lang.value);
   };
 
-  handleLogout = event => {
+  handleLogout = (event: any) => {
     const { history } = this.props;
 
     event.preventDefault();
@@ -31,6 +32,8 @@ class Header extends Component {
     const { t, user } = this.props;
 
     if (!t) return;
+
+    console.log(user);
 
     return (
       <div className="stuffie-header">
@@ -46,10 +49,10 @@ class Header extends Component {
           <div className='stuffie-header__section-item'><Link to='/'>{t('Feed')}</Link></div>
           <div className='stuffie-header__section-item'><Link to='/friends'>{t('Friends')}</Link></div>
           <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
-          {!user.isAdmin && <div className='stuffie-header__section-item'><Link to='/admin'>{t('Admin')}</Link></div>}
+          {user.admin && <div className='stuffie-header__section-item'><Link to='/admin'>{t('Admin')}</Link></div>}
         </div>
         <div className="stuffie-header__menu">
-          <Menu alignment="left" label={isOpen => {
+          <Menu alignment="left" label={(isOpen: boolean) => {
             return (
               <div className={isOpen ? 'stuffie-header__language-open' : 'stuffie-header__language'}>
                 {t('Language')}
@@ -67,4 +70,4 @@ class Header extends Component {
   }
 };
 
-export default withTranslation()(withRouter(Header));
+export default withTranslation()<any>(withRouter<any>(Header));

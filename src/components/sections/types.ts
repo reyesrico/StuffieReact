@@ -64,3 +64,14 @@ export interface MenuProps {
 export interface MenuState {
   
 }
+
+export interface HeaderProps {
+  i18n: any,
+  user: User,
+  history: any,
+  withRouter: Function,
+  t: Function,
+}
+
+export interface HeaderState {
+}
