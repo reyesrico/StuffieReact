@@ -18,4 +18,4 @@ class Routes extends Component {
   }
 }
 
-export default withTranslation()(Routes);
+export default withTranslation()<any>(Routes);

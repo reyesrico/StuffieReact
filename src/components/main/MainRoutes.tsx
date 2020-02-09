@@ -12,8 +12,9 @@ import Products from '../content/Products';
 import Product from '../content/Product';
 import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
+import { MainRoutesProps } from './types';
 
-class MainRoutes extends Component {
+class MainRoutes extends Component<MainRoutesProps, any> {
   render() {
     return (
       <Switch>
