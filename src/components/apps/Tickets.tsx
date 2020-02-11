@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import Tesseract from 'tesseract.js';
+import TicketsState from './types';
 
-class Tickets extends Component {
-    state = {
-      fileName: null,
-      progressValue: 0,
-      textFromImage: ''
-    }
-
-  handleChange(event) {
-    this.setState({ fileName: event.target.files[0] });
+class Tickets extends Component<any, TicketsState> {
+  state = {
+    fileName: '',
+    progressValue: 0,
+    textFromImage: ''
   }
 
-  handleSubmit(event) {
+  handleChange(event: any) {
+    console.log(event);
+    if (event && event.target && event.target.files) {
+      const file = event.target.files[0] as File;
+      this.setState({ fileName: file.name });
+    }
+  }
+
+  handleSubmit(event: any) {
     event.stopPropagation();
     event.preventDefault();
 
@@ -21,29 +26,32 @@ class Tickets extends Component {
       .then(this.result)
   }
 
-  result(res) {
+  result(res: any) {
     console.log('result was:', res)
     this.progressUpdate({ status: 'done', data: res });
   }
 
 
-  progressUpdate(packet) {
-    var log = document.getElementById('log');
-    var line = document.createElement('div');
+  progressUpdate(packet: any) {
+    console.log('entra');
+    console.log(packet);
+    var log = document.getElementById('log') as HTMLElement;
+    var line = document.createElement('div') as HTMLElement;
     // var statusInfo = document.getElementById('statusInfo');
-    var span = document.getElementById('info');
+    var span = document.getElementById('info') as HTMLElement;
 
     if ('progress' in packet) {
-      var progress = document.querySelector('progress');
+      console.log('progress');
+      var progress = document.querySelector('progress') as any;
       progress.value = packet.progress;
       progress.max = 1;
-      span.innerHTML = `Analyzing file: ${this.state.fileName.name}...`;
+      span.innerHTML = `Analyzing file: ${this.state.fileName}...`;
     }
 
 
     if (packet.status === 'done') {
       if (line.hasChildNodes()) {
-        line.removeChild(line.firstChild);
+        line.removeChild(line.firstChild as Node);
       }
       var pre = document.createElement('pre');
       this.setState({ textFromImage: packet.data.text });
@@ -63,12 +71,12 @@ class Tickets extends Component {
       <div className="tickets">
         <h1>Tickets</h1>
         <div className="ticketsForm">
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={event => this.handleSubmit(event)}>
             <input
               type='file'
               id='fileId'
               name='fileName'
-              onChange={this.handleChange} />
+              onChange={event => this.handleChange(event)} />
             <hr />
             <input type="submit" value="Analyze" disabled={!this.state.fileName} accept=".jpg, .jpeg, .png" />
           </form>
