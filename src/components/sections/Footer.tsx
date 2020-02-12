@@ -7,7 +7,7 @@ class Footer extends Component {
       <div className="footer">
         <hr />
         Stuffie&trade; is a platform coded and registered by &nbsp;
-      <Link to={"/author"} target="_blank">Carlos Reyes-Rico</Link>.
+        <a href="http://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html" target="_blank">Carlos Reyes-Rico</a>.
   </div>
 
     );
