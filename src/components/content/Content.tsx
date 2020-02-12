@@ -1,16 +1,16 @@
-// import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
 import { forEach, map } from 'lodash';
 import { getStuffList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
 
+import { ContentProps } from './types';
 import './Content.scss';
 
-class Content extends Component {
+class Content extends Component<ContentProps, any> {
   state = {
     friends: [],
-    friendsProducts: null,
+    friendsProducts: [],
   };
 
   componentDidMount() {
@@ -65,7 +65,7 @@ class Content extends Component {
       <div>
         <h3>{user.first_name} Feed</h3>
         {
-          map(friends, (friend, index) => {        
+          map(friends, (friend: any, index) => {        
             return (
               <div key={index}>
                 <h4>{friend} has {friendsProducts[friend.id_friend]} products as stuff</h4>

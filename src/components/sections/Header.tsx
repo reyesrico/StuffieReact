@@ -33,8 +33,6 @@ class Header extends Component<HeaderProps, HeaderState> {
 
     if (!t) return;
 
-    console.log(user);
-
     return (
       <div className="stuffie-header">
         <div className="stuffie-header__info">
@@ -70,4 +68,4 @@ class Header extends Component<HeaderProps, HeaderState> {
   }
 };
 
-export default withTranslation()<any>(withRouter<any>(Header));
+export default withTranslation()<any>(withRouter<any, React.ComponentClass<any>>(Header));

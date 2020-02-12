@@ -6,9 +6,10 @@ import { map } from 'lodash';
 import TextField from '../shared/TextField';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
+import { AddCategoryProps } from './types';
 import './AddCategory.scss';
 
-class AddCategory extends Component {
+class AddCategory extends Component<AddCategoryProps, any> {
   state = {
     isLoading: true,
     name: 'Name',
@@ -22,19 +23,19 @@ class AddCategory extends Component {
     const { categories, subcategories } = this.state;
 
     if (!categories) {
-      fetchCategories().then(res => {
+      fetchCategories().then((res: any) => {
         this.setState({ categories: res.data, isLoading: false });
       });
     }    
 
     if (!subcategories) {
-      fetchSubCategories().then(res => {
+      fetchSubCategories().then((res: any) => {
         this.setState({ subcategories: res.data, isLoading: false });
       });
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: any) {
     const { type } = this.props;
 
     console.log(prevProps.type + " - " + type);
@@ -47,7 +48,7 @@ class AddCategory extends Component {
     }
   }
 
-  createValue = event => {
+  createValue = (event: any) => {
     const { type } = this.props;
     event.preventDefault();
 
@@ -64,10 +65,9 @@ class AddCategory extends Component {
     const { type } = this.props;
     const { categories, subcategories } = this.state;
 
-    console.log(`object: ${type}`);
     const objects = type === 'category' ? categories : type === 'subcategory' ? subcategories : null;
   
-    return map(objects, object => {
+    return map(objects, (object: any) => {
       return <li key={`${type}_${object.id}`}>{object.name}</li>
     });
   }
@@ -88,10 +88,10 @@ class AddCategory extends Component {
         <hr />
         <div className="add-category__row">
           <label>{label}</label>
-          <TextField name="name" onChange={name => this.setState({ name })}/>
+          <TextField name="name" type="text" onChange={(name: string) => this.setState({ name })}/>
         </div>
         <hr />
-        <button onClick={event => this.createValue(event)}>Send</button>
+        <button onClick={(event: any) => this.createValue(event)}>Send</button>
       </form>
     );
   }

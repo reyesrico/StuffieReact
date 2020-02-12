@@ -4,10 +4,11 @@ import { withTranslation } from 'react-i18next';
 import { map } from 'lodash';
 
 import { getStuffiers } from '../../services/stuffier';
+import { FriendsProps } from './types';
 
-class Friends extends Component {
+class Friends extends Component<FriendsProps> {
   state = {
-    fullFriends: null,
+    fullFriends: [],
   };
 
 
@@ -44,11 +45,11 @@ class Friends extends Component {
       <div>
         <h3>{t('Friends-Title', { first_name: user.first_name })}</h3>
         <ul>
-          {fullFriends.map(friend => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
+          {fullFriends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
       </div>
     );
   }
 };
 
-export default withTranslation()(Friends);
+export default withTranslation()<any>(Friends);
