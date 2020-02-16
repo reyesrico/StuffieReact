@@ -91,7 +91,7 @@ class Main extends Component<MainProps, any> {
     forEach(categories, (category: Category) => {
       products = {
         ...products,
-        [category.id]: [],
+        [category.id as number]: [],
       };
     });
 

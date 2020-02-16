@@ -5,6 +5,10 @@
   font-weight: bolder;
 }
 
+.menu__list {
+  @include flex(column, flex-start, left);
+}
+
 .menu__category {
   @include text-link();
   font-size: 12px;

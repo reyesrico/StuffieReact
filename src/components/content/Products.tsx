@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { map } from 'lodash';
 
+import Category from '../types/Category';
+import Stuff from '../types/Stuff';
+
 import { ProductsProps } from '../sections/types';
 import './Products.scss';
-import Stuff from '../types/Stuff';
 
 class Products extends Component<ProductsProps, any> {
   generateReport = (event: any) => {
@@ -29,14 +31,14 @@ class Products extends Component<ProductsProps, any> {
         </div>
         <hr />
         {
-          categories.map(category => {
-            if (!products[category.id] || !products[category.id].length) return (<div key={category.id}></div>);
+          categories.map((category: Category) => {
+            if (!products[category.id as number] || !products[category.id as number].length) return (<div key={category.id}></div>);
 
             return (
               <div key={category.id}>
                 <h4>{category.name}</h4>
                 <ul>
-                  {map(products[category.id], (object: Stuff) => {
+                  {map(products[category.id as number], (object: Stuff) => {
                     return (
                       <li key={object.id}><Link to={`/product/${object.id}`}>{object.name}</Link></li>
                     )

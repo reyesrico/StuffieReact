@@ -29,3 +29,8 @@ export interface AuthState {
 export interface LoginProps {
   history: any
 }
+
+export interface LoginState {
+  email: string,
+  password: string
+}

@@ -4,16 +4,15 @@ import { withRouter } from 'react-router-dom';
 import TextField from '../shared/TextField';
 import { loginStuffier } from '../../services/stuffier';
 
-import { LoginProps } from './types';
+import { LoginProps, LoginState } from './types';
 
-class Login extends Component<LoginProps, any> {
-  state = {
-    email: '',
-    password: ''
-  };
-
+class Login extends Component<LoginProps, LoginState> {
   handleChange = (event: any, name: string) => {
-    this.setState({ [name]: event });
+    if (name === 'email') {
+      this.setState({ email: event });
+    } else if( name === 'password') {
+      this.setState({ password: event });
+    }
   }
 
   onClick = (event: any) => {
@@ -24,6 +23,7 @@ class Login extends Component<LoginProps, any> {
 
     loginStuffier(email, password)
       .then(res => {
+        console.log(res);
         const user = res.data[0].email;
         localStorage.setItem('username', user);
         alert("Login Successful using RestDBIO");
@@ -42,12 +42,10 @@ class Login extends Component<LoginProps, any> {
           <TextField
             type="email"
             name="email"
-            value={this.state.email}
             onChange={(event: any) => this.handleChange(event, 'email')} />
           <TextField
             type="password"
             name="password"
-            value={this.state.password}
             onChange={(event: any) => this.handleChange(event, 'password')} />
           <input type="submit" value="Login" onClick={this.onClick} />
         </form>

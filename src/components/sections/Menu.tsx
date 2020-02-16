@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import { MenuProps, MenuState } from './types';
+import Category from '../types/Category';
 import './Menu.scss';
 
 class Menu extends Component<MenuProps, MenuState> {
@@ -10,8 +12,11 @@ class Menu extends Component<MenuProps, MenuState> {
     if (!categories) return;
 
     return categories
-            .filter(category => products[category.id] && products[category.id].length)
-            .map(category => (<div className="menu__category" key={category.id}>{category.name}</div>));
+            .filter((category: Category) => products[category.id] && products[category.id].length)
+            .map(category => {
+              const newTo = { pathname: `/category/${category.id}`, category: category.name };
+              return (<Link className="menu__category" key={category.id} to={newTo}>{category.name}</Link>);
+            });
   }
 
   render() {
