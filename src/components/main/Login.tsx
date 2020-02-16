@@ -4,17 +4,19 @@ import { withRouter } from 'react-router-dom';
 import TextField from '../shared/TextField';
 import { loginStuffier } from '../../services/stuffier';
 
-class Login extends Component {
+import { LoginProps } from './types';
+
+class Login extends Component<LoginProps, any> {
   state = {
     email: '',
     password: ''
   };
 
-  handleChange = (event, name) => {
+  handleChange = (event: any, name: string) => {
     this.setState({ [name]: event });
   }
 
-  onClick = event => {
+  onClick = (event: any) => {
     const { history } = this.props;
     const { email, password } = this.state;
 
@@ -41,14 +43,12 @@ class Login extends Component {
             type="email"
             name="email"
             value={this.state.email}
-            hintText="Enter your Email"
-            onChange={event => this.handleChange(event, 'email')} />
+            onChange={(event: any) => this.handleChange(event, 'email')} />
           <TextField
             type="password"
             name="password"
             value={this.state.password}
-            hintText="Enter your Password"
-            onChange={event => this.handleChange(event, 'password')} />
+            onChange={(event: any) => this.handleChange(event, 'password')} />
           <input type="submit" value="Login" onClick={this.onClick} />
         </form>
       </div>
@@ -56,4 +56,4 @@ class Login extends Component {
   }
 }
 
-export default withRouter(Login);
+export default withRouter<any, React.ComponentClass<any>>(Login);

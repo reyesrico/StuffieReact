@@ -15,22 +15,24 @@ import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
 
+import Category from '../types/Category';
+import { MainProps } from './types'; 
 import './Main.scss';
 
-class Main extends Component {
+class Main extends Component<MainProps, any> {
   state = {
-    categories: null,
+    categories: [],
     friends: null,
     stuff: null,
     objects: null,
-    products: {},
-    subcategories: null,
+    products: [],
+    subcategories: [],
   };
 
   componentDidMount() {
     const { user, fetchProductsId } = this.props;
 
-    fetchProductsId(user.id).then(res => {
+    fetchProductsId(user.id).then((res: any) => {
       this.setState({ stuff: res.data });
     });
   }
@@ -39,20 +41,20 @@ class Main extends Component {
     const { categories, friends, objects, products, stuff, subcategories } = this.state;
     const { fetchCategories, fetchSubCategories, fetchFriends, user } = this.props;
 
-    if (!categories) {
-      fetchCategories().then(res => {
+    if (!categories.length) {
+      fetchCategories().then((res: any) => {
         this.setState({ categories: res.data });
       });
     }
 
-    if (!subcategories) {
-      fetchSubCategories().then(res => {
+    if (!subcategories.length) {
+      fetchSubCategories().then((res: any) => {
         this.setState({ subcategories: res.data });
       });
     }
 
     if (!friends) {
-      fetchFriends(user.email).then(res => this.setState({ friends: res.data }));
+      fetchFriends(user.email).then((res: any) => this.setState({ friends: res.data }));
     }
 
     if (stuff && !objects) {
@@ -70,13 +72,13 @@ class Main extends Component {
 
     if (!stuff) return;
 
-    const ids = map(stuff, object => {
+    const ids = map(stuff, (object: any) => {
       return {
         id: object.id_stuff
       };
     });
 
-    fetchProducts(ids).then(res => {
+    fetchProducts(ids).then((res: any) => {
       this.setState({ objects: res.data });
     });
   }
@@ -85,20 +87,22 @@ class Main extends Component {
     const { categories, objects } = this.state;
 
     // Setting products by category
-    let products = {};
-    forEach(categories, category => {
+    let products: any = {};
+    forEach(categories, (category: Category) => {
       products = {
         ...products,
         [category.id]: [],
       };
     });
 
-    // Filling products per category
-    forEach(objects, object => {
-      products[object.category].push(object);
+    if (!isEmpty(products)) {
+      // Filling products per category
+      forEach(objects, (object: any) => {
+        products[object.category].push(object);
     });
 
-    this.setState({ products });
+      this.setState({ products });
+    }
   }
 
 

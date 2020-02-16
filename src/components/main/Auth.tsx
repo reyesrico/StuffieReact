@@ -5,10 +5,10 @@ import Login from './Login';
 import Main from './Main';
 import { getStuffier } from '../../services/stuffier';
 
-class Auth extends Component {
+class Auth extends Component<any, any> {
   state = {
     error: null,
-    user: null
+    user: {}
   };
 
   componentDidMount() {

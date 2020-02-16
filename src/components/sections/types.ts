@@ -59,6 +59,7 @@ export interface SearchBarProps {
 export interface MenuProps {
   categories: Category[],
   products: ProductsMap,
+  user: User
 }
 
 export interface MenuState {

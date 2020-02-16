@@ -18,4 +18,5 @@ class App extends Component {
 	}
 }
 
-export default withTranslation()(App);
+
+export default withTranslation()<any>(App);
