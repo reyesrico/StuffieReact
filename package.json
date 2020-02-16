@@ -14,7 +14,7 @@
     "i18next": "^17.3.1",
     "jest-enzyme": "^7.1.2",
     "node-sass": "^4.13.1",
-    "query-string": "^6.10.1",
+    "query-string": "^6.11.0",
     "react": "^16.12.0",
     "react-chat-window": "^1.2.1",
     "react-dom": "^16.12.0",
