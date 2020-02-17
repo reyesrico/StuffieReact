@@ -6,23 +6,22 @@ import { map } from 'lodash';
 import { getStuffiers } from '../../services/stuffier';
 import { FriendsProps } from './types';
 
-class Friends extends Component<FriendsProps> {
+class Friends extends Component<FriendsProps, any> {
   state = {
     fullFriends: [],
   };
-
 
   componentDidUpdate() {
     const { friends } = this.props;
     const { fullFriends } = this.state;
 
-    if (friends && !fullFriends) {
+    if (friends && !fullFriends.length) {
       const ids = map(friends, friend => {
         return {
           id: friend.id_friend
         };
       });
-  
+
       getStuffiers(ids).then(res => {
         this.setState({ fullFriends: res.data });
       });  
@@ -33,7 +32,7 @@ class Friends extends Component<FriendsProps> {
     const { t, user } = this.props;
     const { fullFriends } = this.state;
 
-    if (!fullFriends) {
+    if (!fullFriends.length) {
       return (
         <div>
           <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />

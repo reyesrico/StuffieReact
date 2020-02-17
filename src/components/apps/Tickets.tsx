@@ -44,7 +44,7 @@ class Tickets extends Component<any, TicketsState> {
   render() {
     return (
       <div className="tickets">
-        <h1>Tickets</h1>
+        <h3>Tickets</h3>
         <div className="ticketsForm">
           <form onSubmit={event => this.handleSubmit(event)}>
             <input type='file' id='fileId' name='fileName'

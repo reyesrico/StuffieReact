@@ -15,7 +15,7 @@ class CategoryPage extends Component<CategoryPageProps, any> {
 
     return (
       <div className="category-page">
-        <h4>{ name }</h4>
+        <h3>{ name }</h3>
         <ul>
           {map(products[id], (object: Stuff) => {
             return (

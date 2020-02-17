@@ -1,55 +1,55 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
-import { forEach, map } from 'lodash';
-import { getStuffList } from '../../services/stuff';
+import { filter, forEach, isEmpty, map, find } from 'lodash';
+import { getStuffiersList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
 
-import { ContentProps } from './types';
+import FriendProducts from '../types/FriendProducts';
+import { ContentProps, ContentState } from './types';
 import './Content.scss';
 
-class Content extends Component<ContentProps, any> {
+class Content extends Component<ContentProps, ContentState> {
   state = {
     friends: [],
     friendsProducts: [],
   };
 
-  componentDidMount() {
-    this.loadFriends();
-  }
-
-  componentDidUpdate() {
-    const { friends } = this.state;
-    let friendsProducts = {};
-
-    if (friends && !this.state.friendsProducts) {
-      forEach(friends, friend => {
-        getStuffList(friend).then(res => {
-          const values = res.data;
-          friendsProducts = {
-            ...friendsProducts,
-            [friend]: [...values]
-          };
-        });
-      });
-      this.setState({ friendsProducts });
-    }
-  }
-
-  loadFriends = async () => {
+  componentDidMount = () => {
     const { user } = this.props;
+    let friends: any = [];
 
     // Getting email friends
     getFriends(user.email).then(res => {
-      const friends = map(res.data, friend => friend.id_friend);
-      this.setState({ friends });
+      friends = map(res.data, friend => friend.id_friend);
+
+      if (friends && isEmpty(this.state.friendsProducts)) {
+        getStuffiersList(friends).then(res => {;
+          const products = res.data;
+          const friendsProducts = this.getProductsFromUsers(friends, products);
+          this.setState({ friends, friendsProducts });
+        });
+      }  
     });
+  }
+
+  getProductsFromUsers(friends: number[], products: any) {
+    let friendsProducts: FriendProducts[] = [];
+
+    forEach(friends, friend => {
+      const values = filter(products, p => p.id_stuffier === friend)
+        .map(row => row.id_stuff);
+
+      friendsProducts.push({ id_friend: friend, products: [...values] });
+    });
+
+    return friendsProducts;
   }
 
   render() {
     const { user } = this.props;
     const { friendsProducts, friends } = this.state;
 
-    if (!friendsProducts) {
+    if (!friends.length) {
       return (
         <div>
           <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />
@@ -57,29 +57,23 @@ class Content extends Component<ContentProps, any> {
       );
     }
 
-    if (friendsProducts.length === 0) {
+    if (isEmpty(friendsProducts)) {
       return <div>No Friends! Add friends!</div>
     }
     
     return (
       <div>
         <h3>{user.first_name} Feed</h3>
-        {
-          map(friends, (friend: any, index) => {        
-            return (
-              <div key={index}>
-                <h4>{friend} has {friendsProducts[friend.id_friend]} products as stuff</h4>
-                <ul>
-                  {/* {friendsProducts[friend].map((object, index) => {
-                    return (
-                      <li key={index}>{object}</li>
-                    )
-                  })} */}
-                </ul>
-              </div>
-            )
-          })
-        }
+        {map(friendsProducts, (row: FriendProducts, index) => {
+          return (
+            <div key={index}>
+              <h4>{row.id_friend} has {row.products.length} products as stuff</h4>
+            <ul>
+              {map(row.products, (p, index) => (<li key={index}>{p}</li>))}
+            </ul>
+          </div>
+          )
+        })}
       </div>
     );
   }

@@ -1,10 +1,19 @@
 import axios from 'axios';
+import { map } from 'lodash';
 import routes from './routes';
 import config from './config';
 
 export const getStuffList = id_stuffier => (
   axios.get(routes.stuff.listForStuffier(id_stuffier), { headers: config.headers })
 );
+
+export const getStuffiersList = ids_stuffier => {
+  const ids = map(ids_stuffier, id => { 
+    return { id_stuffier: id };
+  });
+
+  return axios.get(routes.stuff.listStuffiers(ids), { headers: config.headers });
+};
 
 export const getStuff = id => (
   axios.get(routes.stuff.detail(id), { headers: config.headers })

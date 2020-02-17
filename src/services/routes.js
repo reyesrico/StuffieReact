@@ -13,6 +13,7 @@ const routes = {
     detail: id => `${config.server}stuff?q=${JSON.stringify({ id: parseInt(id) })}`,
     listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}`,
     listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
+    listStuffiers: ids_stuffier => `${config.server}stuffiers-stuff?q={"$or":${JSON.stringify(ids_stuffier)}}`,
   },
   user: {
     detail: email => `${config.server}stuffiers?q=${JSON.stringify({ email })}`,

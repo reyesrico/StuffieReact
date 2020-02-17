@@ -1,4 +1,4 @@
-import Category from '../types/Category';
+import FriendProducts from '../types/FriendProducts';
 import ProductsMap from '../types/ProductsMap';
 import User from '../types/User';
 
@@ -10,6 +10,11 @@ export interface AddCategoryProps {
 
 export interface ContentProps {
   user: User
+}
+
+export interface ContentState {
+  friends: number[],
+  friendsProducts: FriendProducts[],
 }
 
 export interface FriendsProps {
