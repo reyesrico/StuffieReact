@@ -38,3 +38,7 @@ export const addStuff = ({ name, category, subcategory, fileName }) => (
 export const addStuffStuffier = (id_stuffier, id_stuff) => (
   axios.post(routes.stuff.addStuffiersStuff(), { id_stuffier, id_stuff }, { headers: config.headers })
 );
+
+export const getStuffFromCategories = (category, subcategory) => (
+  axios.get(routes.stuff.detailFromCategories(category, subcategory), { headers: config.headers })
+);

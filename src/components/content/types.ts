@@ -28,3 +28,9 @@ export interface CategoryPageProps {
   match: any,
   location: any
 }
+
+export interface FeedRowProps {
+  product: number,
+  user: User,
+  fetchProduct: Function
+}

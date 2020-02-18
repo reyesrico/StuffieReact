@@ -11,7 +11,7 @@ class Friends extends Component<FriendsProps, any> {
     fullFriends: [],
   };
 
-  componentDidUpdate() {
+  componentDidMount() {
     const { friends } = this.props;
     const { fullFriends } = this.state;
 
@@ -22,9 +22,7 @@ class Friends extends Component<FriendsProps, any> {
         };
       });
 
-      getStuffiers(ids).then(res => {
-        this.setState({ fullFriends: res.data });
-      });  
+      getStuffiers(ids).then(res => this.setState({ fullFriends: res.data }));  
     }
   }
 

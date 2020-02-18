@@ -23,6 +23,9 @@ i18n
     react: {
       wait: true,
     },
+  }, (err, t) => {
+    console.log(err);
+    console.info('i18n.language', i18n.language)
   });
 
 export default i18n;

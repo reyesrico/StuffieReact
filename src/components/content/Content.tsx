@@ -4,6 +4,7 @@ import { filter, forEach, isEmpty, map, find } from 'lodash';
 import { getStuffiersList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
 
+import FeedRow from './FeedRow';
 import FriendProducts from '../types/FriendProducts';
 import { ContentProps, ContentState } from './types';
 import './Content.scss';
@@ -64,16 +65,18 @@ class Content extends Component<ContentProps, ContentState> {
     return (
       <div>
         <h3>{user.first_name} Feed</h3>
-        {map(friendsProducts, (row: FriendProducts, index) => {
-          return (
-            <div key={index}>
-              <h4>{row.id_friend} has {row.products.length} products as stuff</h4>
-            <ul>
-              {map(row.products, (p, index) => (<li key={index}>{p}</li>))}
-            </ul>
-          </div>
-          )
-        })}
+        <div className="content__info">
+          {map(friendsProducts, (row: FriendProducts, index) => {
+            return (
+              <div key={index}>
+                <h3 className="content__summary">{row.id_friend} has {row.products.length} products</h3>
+                <div className="content__rows">
+                  {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} />))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
     );
   }

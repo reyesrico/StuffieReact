@@ -14,6 +14,7 @@ const routes = {
     listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}`,
     listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
     listStuffiers: ids_stuffier => `${config.server}stuffiers-stuff?q={"$or":${JSON.stringify(ids_stuffier)}}`,
+    detailFromCategories: (category, subcategory) => `${config.server}stuff?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`
   },
   user: {
     detail: email => `${config.server}stuffiers?q=${JSON.stringify({ email })}`,

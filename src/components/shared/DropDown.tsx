@@ -27,8 +27,8 @@ class DropDown extends Component<DropDownProps, DropDownState> {
     return (
       <select onChange={this.updateChange} value={objectSelected}>
         { 
-          values && values.map((object: any) => {
-            return <option key={object.id} value={object.id}>{object.name}</option>;
+          values && values.map((object: any, index: number) => {
+            return <option key={index} value={object.id}>{object.name}</option>;
           })
         }
       </select>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactLoading from 'react-loading';
+import { isEmpty } from 'lodash';
 
 import Login from './Login';
 import Main from './Main';
@@ -26,7 +27,9 @@ class Auth extends Component<any, any> {
   }
 
   getUser = () => {
-    if (!this.state.user && this.isActiveUser() ) {
+    const { user } = this.state;
+
+    if (isEmpty(user) && this.isActiveUser() ) {
       getStuffier(localStorage.getItem('username')).then(res => {
         this.setState({ user: res.data[0] });
       }).catch(err => {
@@ -42,7 +45,7 @@ class Auth extends Component<any, any> {
 
     if (error) return <div>Error: {error} </div>
 
-    if (!user) return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={250} width={250} />;
+    if (isEmpty(user)) return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={250} width={250} />;
 
     return <Main user={user} />  
   }

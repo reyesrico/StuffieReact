@@ -1,0 +1,16 @@
+@import '../../sass/main.scss';
+
+.feed-row {
+  @include flex(row);
+  box-shadow: 2px 2px lightgray;
+  margin-bottom: 4px;
+  width: 99%;
+}
+
+.feed-row__product {
+  @include flex(column);
+}
+
+.feed-row__image {
+  margin-right: 8px;
+}
