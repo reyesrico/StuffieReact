@@ -42,3 +42,15 @@ export const addStuffStuffier = (id_stuffier, id_stuff) => (
 export const getStuffFromCategories = (category, subcategory) => (
   axios.get(routes.stuff.detailFromCategories(category, subcategory), { headers: config.headers })
 );
+
+export const getCategory = id => (
+  axios.get(routes.category.detail(id), { headers: config.headers })
+);
+
+export const getSubcategory = id => (
+  axios.get(routes.subcategory.detail(id), { headers: config.headers })
+);
+
+export const isImageExist = () => (
+  axios.get(routes.cloudinary.exist(), { headers: config.cloudinary_headers })
+);

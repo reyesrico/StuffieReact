@@ -3,9 +3,14 @@ import config from './config';
 const routes = {
   category: {
     list: () => `${config.server}categories`,
+    detail: id => `${config.server}categories?q=${JSON.stringify({ id: parseInt(id) })}`
+  },
+  cloudinary: {
+    exist: () => `https://${config.cloudinary.apiKey}:${config.cloudinary.apiSecret}@api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/resources/image`
   },
   subcategory: {
     list: () => `${config.server}subcategories`,
+    detail: id => `${config.server}subcategories?q=${JSON.stringify({ id: parseInt(id) })}`
   },
   stuff: {
     addStuffiersStuff: () => `${config.server}stuffiers-stuff`,

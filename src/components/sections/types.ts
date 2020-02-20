@@ -12,12 +12,16 @@ export interface AddProductProps {
 }
 
 export interface ProductState {
-  product: Stuff | null;
+  product: Stuff | null,
+  categoryName: string | null,
+  subcategoryName: string | null
 }
 
 export interface ProductProps {
-  fetchProduct: any;
-  match: any;
+  fetchProduct: any,
+  fetchCategory: any,
+  fetchSubCategory: any,
+  match: any
 }
 
 export interface ProductsProps {

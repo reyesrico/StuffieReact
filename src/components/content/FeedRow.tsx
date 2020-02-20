@@ -32,7 +32,15 @@ class FeedRow extends Component<FeedRowProps, any> {
     return (
       <div className="feed-row">
         <div className="feed-row__image">
-          <Media fileName="default_product" format="png" height="50" width="50" />
+          <Media
+            fileName={product.id}
+            category={product.category || null}
+            subcategory={product.subcategory || null}
+            format="jpg"
+            height="50"
+            width="50"
+            isProduct="true"
+          />
         </div>
         <div className="feed-row__product">
           <h3>{product.name}</h3>

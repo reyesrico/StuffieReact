@@ -1,6 +1,12 @@
 const config = {
   cloudinary: {
     cloudName: 'reyesrico',
+    apiKey: '981789986692969',
+    apiSecret: 'xxQPfLvWpN_iIlt1RfMZnB3jRw0'
+  },
+  cloudinary_headers: {
+    'cache-control': 'no-cache',
+    'x-apikey': '981789986692969'
   },
   headers: {
     'cache-control': 'no-cache',
