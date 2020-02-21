@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import { connect } from 'react-redux';
 
+import Loading from '../shared/Loading';
 import Media from '../shared/Media';
 import Stuff  from '../types/Stuff';
 import { ProductProps, ProductState } from '../sections/types';
@@ -39,7 +39,7 @@ class Product extends Component<ProductProps, ProductState> {
   render() {
     const { product } = this.state;
 
-    if (!product) return <ReactLoading type="spinningBubbles" color="FF0000" height={50} width={50} />;
+    if (!product) return <Loading size="lg" message="Loading product..." />;
 
     return (
       <div>

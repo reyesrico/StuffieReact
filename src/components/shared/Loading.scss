@@ -1,0 +1,11 @@
+@import '../../sass/main.scss';
+
+.stuffie-loading {
+  @include flex(column, center, center);
+  height: 100vh;
+}
+
+.stuffie-loading__message {
+  color: $blue;
+  margin-top: 8px;  
+}

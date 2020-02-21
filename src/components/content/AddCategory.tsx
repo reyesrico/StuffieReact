@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
 
+import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
@@ -77,7 +77,7 @@ class AddCategory extends Component<AddCategoryProps, any> {
     const { type } = this.props;
     const { isLoading } = this.state;
 
-    if (isLoading) return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />
+    if (isLoading) return <Loading size="md" />
 
     const label = type === 'category' ? 'Category' : type === 'subcategory' ? 'SubCategory' : '';
     return (

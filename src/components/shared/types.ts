@@ -24,3 +24,10 @@ export interface DropDownProps {
 export interface DropDownState {
   valueSelected: any
 }
+
+export type LoadingSize = 'sm' | 'md' | 'lg' | 'xl';
+
+export interface LoadingProps {
+  size: LoadingSize,
+  message?: string
+}

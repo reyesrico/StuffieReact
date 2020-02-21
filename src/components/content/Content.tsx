@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
-import { filter, forEach, isEmpty, map, find } from 'lodash';
+import { filter, forEach, isEmpty, map } from 'lodash';
 import { getStuffiersList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
 
 import FeedRow from './FeedRow';
 import FriendProducts from '../types/FriendProducts';
+import Loading from '../shared/Loading';
 import { ContentProps, ContentState } from './types';
 import './Content.scss';
 
@@ -53,7 +53,7 @@ class Content extends Component<ContentProps, ContentState> {
     if (!friends.length) {
       return (
         <div>
-          <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />
+          <Loading size="md" />
         </div>
       );
     }

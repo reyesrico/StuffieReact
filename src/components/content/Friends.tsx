@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import { withTranslation } from 'react-i18next';
-import { map } from 'lodash';
 
+import Loading from '../shared/Loading';
 import { getStuffiers } from '../../services/stuffier';
+import { mapFriends } from '../../helpers/UserHelper';
 import { FriendsProps } from './types';
 
 class Friends extends Component<FriendsProps, any> {
@@ -16,13 +16,8 @@ class Friends extends Component<FriendsProps, any> {
     const { fullFriends } = this.state;
 
     if (friends && !fullFriends.length) {
-      const ids = map(friends, friend => {
-        return {
-          id: friend.id_friend
-        };
-      });
-
-      getStuffiers(ids).then(res => this.setState({ fullFriends: res.data }));  
+      getStuffiers(mapFriends(friends))
+        .then(res => this.setState({ fullFriends: res.data }));  
     }
   }
 
@@ -30,13 +25,7 @@ class Friends extends Component<FriendsProps, any> {
     const { t, user } = this.props;
     const { fullFriends } = this.state;
 
-    if (!fullFriends.length) {
-      return (
-        <div>
-          <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={50} width={50} />
-        </div>
-      );
-    }
+    if (!fullFriends.length) return (<Loading size="md" />);
 
     return (
       <div>

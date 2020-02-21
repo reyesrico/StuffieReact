@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import { connect } from 'react-redux';
-import { map } from 'lodash';
 
 import Dropdown from '../shared/DropDown';
-import TextField from '../shared/TextField';
 import { AddProductProps } from '../sections/types';
 import { addStuffStuffier, getStuffFromCategories } from '../../services/stuff';
 import { addProduct } from '../../redux/products/actions';

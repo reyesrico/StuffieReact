@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ReactLoading from 'react-loading';
 import { isEmpty } from 'lodash';
 
 import Login from './Login';
-import Main from './Main';
+import FetchData from './FetchData';
+import Loading from '../shared/Loading';
 import { getStuffier } from '../../services/stuffier';
 
 class Auth extends Component<any, any> {
@@ -45,9 +45,11 @@ class Auth extends Component<any, any> {
 
     if (error) return <div>Error: {error} </div>
 
-    if (isEmpty(user)) return <ReactLoading type={"spinningBubbles"} color={"FF0000"} height={250} width={250} />;
+    if (isEmpty(user)) {
+      return (<Loading size="xl" message="Loading user info..." />);
+    }
 
-    return <Main user={user} />  
+    return <FetchData user={user} />  
   }
 };
 

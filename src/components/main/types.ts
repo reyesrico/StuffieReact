@@ -12,13 +12,22 @@ export interface MainRoutesProps {
   friends: any
 }
 
-export interface MainProps {
+export interface FetchDataProps {
   user: User,
   fetchCategories: Function,
   fetchFriends: Function,
   fetchProducts: Function,
   fetchProductsId: Function, 
-  fetchSubCategories: Function
+  fetchSubCategories: Function  
+}
+
+export interface MainProps {
+  user: User,
+  products: ProductsMap,
+  categories: Category[],
+  subcategories: Subcategory[],
+  stuff: any,
+  friends: any
 }
 
 export interface AuthState {
