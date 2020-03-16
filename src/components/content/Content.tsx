@@ -51,11 +51,7 @@ class Content extends Component<ContentProps, ContentState> {
     const { friendsProducts, friends } = this.state;
 
     if (!friends.length) {
-      return (
-        <div>
-          <Loading size="md" />
-        </div>
-      );
+      return (<Loading size="lg" />);
     }
 
     if (isEmpty(friendsProducts)) {

@@ -21,6 +21,7 @@ class FetchData extends Component<FetchDataProps, any> {
     objects: null,
     products: [],
     subcategories: [],
+    isLoading: true
   };
 
   componentDidMount() {
@@ -43,14 +44,15 @@ class FetchData extends Component<FetchDataProps, any> {
       return Promise.resolve(res.data);
     })
     .then((objects: any) => this.setState({ products: getProductsMap(this.state.categories, objects) }))
-    .catch((error: any) => console.log(error));
+    .catch((error: any) => console.log(error))
+    .finally(() => this.setState({ isLoading: false }));
   }
 
   render() {
     const { user } = this.props;
-    const { categories, friends, products, stuff, subcategories } = this.state;
+    const { categories, friends, products, stuff, subcategories, isLoading } = this.state;
 
-    if (!stuff || !categories || isEmpty(products)) {
+    if (isLoading) {
       return <Loading size="xl" message="Loading data and products..." />;
     }
 
