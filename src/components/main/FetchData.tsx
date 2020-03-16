@@ -29,7 +29,6 @@ class FetchData extends Component<FetchDataProps, any> {
     // Fetching values that don't depend on any.
     Promise.all([fetchProductsId(user.id), fetchCategories(), fetchSubCategories(), fetchFriends(user.email)])
     .then((values: any) => {
-      console.log(values);
       this.setState({
         stuff: values[0].data,
         categories: values[1].data,
