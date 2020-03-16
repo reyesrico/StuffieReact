@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import Main from './Main';
 import Loading from '../shared/Loading';
 import { FetchDataProps } from './types';
-import { mapStuff, getProductsMap } from '../../helpers/StuffHelper';
+import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
 
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';

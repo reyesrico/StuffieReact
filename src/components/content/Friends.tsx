@@ -3,7 +3,7 @@ import { withTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
 import { getStuffiers } from '../../services/stuffier';
-import { mapFriends } from '../../helpers/UserHelper';
+import { mapFriends } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
 
 class Friends extends Component<FriendsProps, any> {

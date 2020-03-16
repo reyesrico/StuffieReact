@@ -7,6 +7,7 @@ import es from '../locale/es';
 i18n
   .use(initReactI18next)
   .init({
+    lng: 'en',
     resources: {
       en,
       es,
@@ -24,8 +25,11 @@ i18n
       wait: true,
     },
   }, (err, t) => {
-    console.log(err);
-    console.info('i18n.language', i18n.language)
+    if (err) {
+      console.log(err);
+      console.log(t);
+      console.info('i18n.language', i18n.language);
+    }
   });
 
 export default i18n;

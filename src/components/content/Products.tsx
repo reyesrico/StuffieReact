@@ -6,7 +6,7 @@ import Category from '../types/Category';
 import Stuff from '../types/Stuff';
 
 import { ProductsProps } from '../sections/types';
-import { downloadExcel } from '../../helpers/DownloadHelper';
+import { downloadExcel } from '../helpers/DownloadHelper';
 import './Products.scss';
 
 class Products extends Component<ProductsProps, any> {

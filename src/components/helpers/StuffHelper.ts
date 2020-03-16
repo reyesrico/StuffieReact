@@ -1,7 +1,7 @@
 import { forEach, isEmpty, map } from 'lodash';
 
-import Category from '../components/types/Category';
-import ProductsMap from '../components/types/ProductsMap';
+import Category from '../types/Category';
+import ProductsMap from '../types/ProductsMap';
 
 export function mapStuff(stuff: any) {
   return map(stuff, (object: any) => {

@@ -1,5 +1,5 @@
 import XLSX from 'xlsx';
-import Product from '../components/types/Product';
+import Product from '../types/Product';
 
 // const excelType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const excelfileExtension = '.xlsx';
