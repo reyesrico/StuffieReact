@@ -4,7 +4,7 @@ export interface TextFieldProps {
   name: string,
   type: string,
   value?: string,
-  onChange: Function
+  onChange?: Function
 }
 
 export interface MenuProps {

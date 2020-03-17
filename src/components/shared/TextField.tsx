@@ -2,24 +2,19 @@ import React, { Component } from 'react';
 import { TextFieldProps } from './types';
 
 class TextField extends Component<TextFieldProps> {
-  state = {
-    value: ''
-  }
-
   render() {
     const { name, type, value, onChange } = this.props;
 
     return (
       <div>
-        { value &&
+        { value !== null && !onChange &&
           <input
             type={type}
             name={name}
             value={value}
-            onChange={event => onChange(event.target.value)}
           />
         }
-        { !value &&
+        { onChange &&
           <input
             type={type}
             name={name}

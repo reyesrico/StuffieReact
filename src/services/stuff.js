@@ -54,3 +54,7 @@ export const getSubcategory = id => (
 export const isImageExist = () => (
   axios.get(routes.cloudinary.exist(), { headers: config.cloudinary_headers })
 );
+
+export const addSubCategoryCall = ({ id, name }) => (
+  axios.post(routes.subcategory.add(), { id, name }, { headers: config.headers })
+);

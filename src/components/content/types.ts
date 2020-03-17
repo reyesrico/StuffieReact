@@ -3,6 +3,7 @@ import ProductsMap from '../types/ProductsMap';
 import User from '../types/User';
 
 export interface AddCategoryProps {
+  addSubCategory: Function,
   fetchCategories: Function,
   fetchSubCategories: Function,
   type: string

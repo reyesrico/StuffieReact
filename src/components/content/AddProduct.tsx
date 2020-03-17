@@ -10,6 +10,7 @@ import './AddProduct.scss';
 import Category from '../types/Category';
 import Product from '../types/Product';
 import Subcategory from '../types/Subcategory';
+import TextField from '../shared/TextField';
 
 class AddProduct extends Component<AddProductProps, any> {
   state = {
@@ -115,7 +116,7 @@ class AddProduct extends Component<AddProductProps, any> {
 
   render() {
     const { categories, subcategories } = this.props;
-    const { product, stuffStuffier, productsByCategories } = this.state;
+    const { product, stuffStuffier, productsByCategories, category, subcategory, name } = this.state;
 
     console.log(productsByCategories);
 
@@ -141,9 +142,9 @@ class AddProduct extends Component<AddProductProps, any> {
             </div>
           )}
           <hr />
-          <button onClick={event => event && this.setProduct()}>Send</button>
+          <button disabled={!(category && subcategory && name)} onClick={event => event && this.setProduct()}>Send</button>
           <hr />
-          {/* <div>Create New Product</div>
+          <div>Create New Product</div>
           <div className="add-product__row">
             <label>Name</label>
             <TextField name="name" type="text" onChange={(name:string) => this.setState({ name })}/>
@@ -156,7 +157,7 @@ class AddProduct extends Component<AddProductProps, any> {
             <label>SubCategory</label>
             <Dropdown onChange={(subcategory:any) => this.setState({ subcategory })} values={subcategories} />
           </div>
-          <hr /> */}
+          <hr />
           <button onClick={event => this.createProduct(event)}>Send</button>
         </form>
       </div>

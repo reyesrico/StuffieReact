@@ -1,9 +1,21 @@
 @import '../../sass/main.scss';
 
-.add-product__row {
+.add-category__row {
   @include flex(row, flex-start, left);
 }
 
 label {
   width: 110px;
+}
+
+.add-category__values {
+  @include flex(row, space-around);
+}
+
+.add-category__item {
+  font-size: 12px;
+}
+
+.add-category__id {
+  font-weight: bold;
 }

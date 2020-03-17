@@ -9,6 +9,7 @@ const routes = {
     exist: () => `https://${config.cloudinary.apiKey}:${config.cloudinary.apiSecret}@api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/resources/image`
   },
   subcategory: {
+    add: () => `${config.server}subcategories`,
     list: () => `${config.server}subcategories`,
     detail: id => `${config.server}subcategories?q=${JSON.stringify({ id: parseInt(id) })}`
   },
