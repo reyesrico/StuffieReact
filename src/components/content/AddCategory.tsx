@@ -4,6 +4,7 @@ import { map } from 'lodash';
 
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
+import { addCategory } from '../../redux/categories/actions';
 import { addSubCategory } from '../../redux/subcategories/actions';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
@@ -56,17 +57,29 @@ class AddCategory extends Component<AddCategoryProps, any> {
   }
 
   createValue = (event: any) => {
-    const { addSubCategory, type } = this.props;
-    const { subcategories } = this.state;
+    const { addCategory, addSubCategory, type } = this.props;
+    const { categories, subcategories } = this.state;
 
     event.preventDefault();
 
     if (type === TYPE.CATEGORY) {
-      // Add Category
+      this.setState({ isLoading: true});
+
+      addCategory({ name: this.state.name, id: Number(this.state.id) })
+      .then((res: any) => {
+        const newCategory =  { _id: res.data._id, id: res.data.id, name: res.data.name };
+        this.setState({
+          categories: [ ...categories, newCategory ],
+          name: '',
+          id: ''
+        }); 
+      })
+      .finally(() => {
+        this.setState({ isLoading: false });
+      });
     }
 
     if (type === TYPE.SUBCATEGORY) {
-      // Add Subcategory
       this.setState({ isLoading: true });
 
       addSubCategory({ name: this.state.name, id: Number(this.state.id) })
@@ -141,6 +154,7 @@ class AddCategory extends Component<AddCategoryProps, any> {
 }
 
 const mapDispatchProps = {
+  addCategory,
   addSubCategory,
   fetchCategories,
   fetchSubCategories,

@@ -58,3 +58,7 @@ export const isImageExist = () => (
 export const addSubCategoryCall = ({ id, name }) => (
   axios.post(routes.subcategory.add(), { id, name }, { headers: config.headers })
 );
+
+export const addCategoryCall = ({ id, name }) => (
+  axios.post(routes.category.add(), { id, name }, { headers: config.headers })
+);

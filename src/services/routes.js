@@ -2,6 +2,7 @@ import config from './config';
 
 const routes = {
   category: {
+    add: () => `${config.server}categories`,
     list: () => `${config.server}categories`,
     detail: id => `${config.server}categories?q=${JSON.stringify({ id: parseInt(id) })}`
   },
