@@ -2,7 +2,6 @@
 
 .stuffie-header {
   @include flex(row, space-between, center);
-  background-image: linear-gradient(to left, #d3d3d3, #d3d3d3, white);
 }
 
 .stuffie-header__info {
@@ -78,12 +77,12 @@
 
 
 .stuffie-header__logout {
-  color: black;
+  color: $black;
   cursor: pointer;
   font-weight: bold;
 }
 
 .stuffie-header__logout:hover{
   font-weight: bold;
-  border-bottom: 2px solid black;
+  border-bottom: 2px solid $black;
 }

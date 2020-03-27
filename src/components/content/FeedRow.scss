@@ -2,9 +2,10 @@
 
 .feed-row {
   @include flex(row);
-  box-shadow: 2px 2px lightgray;
+  box-shadow: 2px 2px $darkblue;
   margin-bottom: 4px;
   width: 99%;
+  border-radius: 0 0 16px 0;
 }
 
 .feed-row__product {

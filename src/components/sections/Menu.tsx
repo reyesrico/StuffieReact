@@ -23,7 +23,6 @@ class Menu extends Component<MenuProps, MenuState> {
     return (
       <div className='barBlock barMenu'>
         <div className='menu__title'>Menu</div>
-        <hr />
         <div className="menu__list">
           { this.renderCategories() }
         </div>
