@@ -54,10 +54,10 @@ class FeedRow extends Component<FeedRowProps, any> {
           />
         </div>
         <div className="feed-row__actions">
-          <div className="feed-row__action">Ask for:</div>
-          <div className="feed-row__action">Loan</div>
-          <div className="feed-row__action">Exchange</div>
-          <div className="feed-row__action">Buy</div>
+          <div className="feed-row__action feed-row__text">Ask for:</div>
+          <div className="feed-row__action feed-row__link">Loan</div>
+          <div className="feed-row__action feed-row__link">Exchange</div>
+          <div className="feed-row__action feed-row__link">Buy</div>
         </div>
       </div>
     );

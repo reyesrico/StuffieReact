@@ -7,3 +7,37 @@
 .apps__item {
   @include section-button;
 }
+
+.apps__language {
+  color: $black;
+  cursor: pointer;
+  margin-right: 24px;
+}
+
+.apps__language-open {
+  border-bottom: 2px solid black;
+  color: $black;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 24px;
+}
+
+.apps__language:hover,
+.apps__language:focus {
+  color: $black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
+.apps__option {
+  cursor: pointer;
+  padding: 8px;
+  font-size: 14px;
+  border-bottom: 1px solid gray;  
+}
+
+.apps__option:hover {
+  color: $black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}

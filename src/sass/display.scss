@@ -82,7 +82,7 @@ $padding_background: 12px;
 
 @mixin text-link() {
   &:hover {
-    color: $black;
+    color: $blue;
     cursor: pointer;
     font-weight: bold;
     text-decoration: underline;

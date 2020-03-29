@@ -5,6 +5,7 @@ import { I18nextProvider, withTranslation } from 'react-i18next';
 import i18n from './config/i18n';
 import Routes from './components/main/Routes';
 import './App.scss';
+import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
 class App extends Component {
 	render() {

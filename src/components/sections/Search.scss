@@ -1,0 +1,24 @@
+@import '../../sass/main.scss';
+
+.search {
+  @include flex(row, flex-end, center);
+  height: 24px;
+
+  .textfield input {
+    @include padding(12px, left);
+    @include padding(34px, right);
+    border: 0;
+    font-size: 16px;
+    height: 28px;
+  }
+}
+
+.search__button {
+  @include padding(2px, all);
+  background-color: white;
+  border-left: solid 1px gray;
+  margin-left: -32px;
+  padding-right: 10px;
+  padding-left: 4px;
+}
+

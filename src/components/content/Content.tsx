@@ -60,15 +60,11 @@ class Content extends Component<ContentProps, ContentState> {
     
     return (
       <div className="stuffie-content">
-        <h3>{user.first_name} Feed</h3>
         <div className="content__info">
           {map(friendsProducts, (row: FriendProducts, index) => {
             return (
-              <div key={index}>
-                <h3 className="content__summary">{row.id_friend} has {row.products.length} products</h3>
-                <div className="content__rows">
-                  {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} subcategories={subcategories} />))}
-                </div>
+              <div key={index} className="content__rows">
+                {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} subcategories={subcategories} />))}
               </div>
             )
           })}

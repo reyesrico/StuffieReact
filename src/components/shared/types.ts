@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 export interface TextFieldProps {
   name: string,
   type: string,
+  placeholder?: string,
   value?: string,
   onChange?: Function
 }

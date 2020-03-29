@@ -4,15 +4,20 @@
   @include flex(row, space-between, center);
 }
 
+.stuffie-header__left {
+  @include flex(row, flex-start, center);
+}
+
 .stuffie-header__info {
   @include flex(row, flex-start, center);
-  width: 224px;
+  width: 210px
 }
 
 .stuffie-header__user {
-  font-size: 24px;
-  font-weight: bolder;
+  font-size: 20px;
+  font-weight: bold;
   margin-left: 8px;
+  width: 150px;
 }
 
 .stuffie-header__logo {
@@ -25,65 +30,57 @@
   @include flex(row, flex-start, left);
 }
 
+.stuffie-header__section-item {
+  @include flex(row, center);
+  @include padding(8px, all);
+  @include margin(8px, horizontal);
+  @include margin(18px, top);
+
+  background-color: $blue;
+  border-radius: 4px 4px 0px 0px;
+  color: $white;
+  width: 70px;
+
+  &:first-of-type {
+    @include margin(0px, left);
+  }
+}
+
 .stuffie-header__section-item a{
-  color: $black;
-  margin-right: 10px;
+  color: $white;
   text-decoration: none;
 }
 
 .stuffie-header__section-item a:hover {
-  color: $black;
+  color: $white;
   font-weight: bold;
-  border-bottom: 2px solid black;
 }
-
-.stuffie-header__menu {
-  @include flex(row, flex-end, center);
-  margin-right: 16px;
-}
-
-.stuffie-header__language {
-  color: $black;
-  cursor: pointer;
-  margin-right: 24px;
-}
-
-.stuffie-header__language-open {
-  border-bottom: 2px solid black;
-  color: $black;
-  cursor: pointer;
-  font-weight: bold;
-  margin-right: 24px;
-}
-
-.stuffie-header__language:hover,
-.stuffie-header__language:focus {
-  color: $black;
-  font-weight: bold;
-  border-bottom: 2px solid black;
-}
-
-.stuffie-header__option {
-  cursor: pointer;
-  padding: 8px;
-  font-size: 14px;
-  border-bottom: 1px solid gray;  
-}
-
-.stuffie-header__option:hover {
-  color: $black;
-  font-weight: bold;
-  border-bottom: 2px solid black;
-}
-
 
 .stuffie-header__logout {
-  color: $black;
+  @include flex(row, center);
+  @include padding(8px, all);
+  @include margin(8px, left);
+  @include margin(18px, top);
+  @include margin(0px, right);
+
+  border-radius: 4px 4px 0px 0px;
   cursor: pointer;
+  width: 70px;
+
+  background-color: $white;
+  color: $blue;
+}
+
+.stuffie-header__logout a{
+  text-decoration: none;
+}
+
+.stuffie-header__logout a:hover {
+  color: $blue;
   font-weight: bold;
 }
 
-.stuffie-header__logout:hover{
-  font-weight: bold;
-  border-bottom: 2px solid $black;
+.stuffie-header__search {
+  @include margin(16px, top);
+  width: 250px;
 }

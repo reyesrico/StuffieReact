@@ -3,10 +3,15 @@
 .feed-row {
   @include flex(column);
   @include border-radius;
+  @include padding(8px, 'all');
   background-color: $white;
-  box-shadow: 2px 2px $blue;
+  box-shadow: 0px 2px $blue;
   margin-bottom: 16px;
   width: 99%;
+}
+
+.feed-row__description {
+  @include margin(8px, bottom);
 }
 
 .feed-row__product {
@@ -15,14 +20,31 @@
 
 .feed-row__image {
   @include flex(row, center);
-  margin-right: 8px;
+  @include margin(8px, 'bottom');
 }
 
 .feed-row__actions {
-  @include flex(row);
+  @include flex(row, center);
 }
 
 .feed-row__action {
-  @include button;
-  @include margin(8px, 'right');
+  @include padding(12px, horizontal);
+  @include border('right');
+
+  &:first-of-type {
+    @include border-none;
+  }
+
+  &:last-of-type {
+    @include border-none;
+  }
+}
+
+.feed-row__link {
+  @include text-link;
+  color: $blue;
+}
+
+.feed-row__text {
+  color: $darkgray;
 }

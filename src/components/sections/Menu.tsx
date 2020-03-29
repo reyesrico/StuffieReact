@@ -16,7 +16,7 @@ class Menu extends Component<MenuProps, MenuState> {
             .map(category => {
               const newTo = { pathname: `/category/${category.id}`, category: category.name };
               return (
-              <div className="menu__category">
+              <div key={category.id} className="menu__category">
                 <Link className="" key={category.id} to={newTo}>{category.name}</Link>
               </div>);
             });

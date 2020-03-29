@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { TextFieldProps } from './types';
+import './TextField.scss';
 
 class TextField extends Component<TextFieldProps> {
   render() {
-    const { name, type, value, onChange } = this.props;
+    const { name, placeholder, type, value, onChange } = this.props;
 
     return (
-      <div>
+      <div className="textfield">
         { value !== null && !onChange &&
           <input
             type={type}
             name={name}
+            placeholder={placeholder || ''}
             value={value}
           />
         }
@@ -18,6 +20,7 @@ class TextField extends Component<TextFieldProps> {
           <input
             type={type}
             name={name}
+            placeholder={placeholder || ''}
             onChange={event => onChange(event.target.value)}
           />
         }
