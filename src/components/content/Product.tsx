@@ -42,7 +42,7 @@ class Product extends Component<ProductProps, ProductState> {
     if (!product) return <Loading size="lg" message="Loading product..." />;
 
     return (
-      <div>
+      <div className="product">
         <h3>{ product.name }</h3>
         <hr />
           <Media

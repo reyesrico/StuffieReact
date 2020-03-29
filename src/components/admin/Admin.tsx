@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import './Admin.scss';
 
 class Admin extends Component<any, any> {
   render() {
     return (
       <div className="admin">
-        <Link to={`/category/add`}>+ Add Category</Link>
+        <div className="admin__link"><Link to={`/category/add`}>Add Category</Link></div>
         <hr />
-        <Link to={`/subcategory/add`}>+ Add SubCategory</Link>
+        <div className="admin__link"><Link to={`/subcategory/add`}>Add SubCategory</Link></div>
         <hr />
       </div>
     );

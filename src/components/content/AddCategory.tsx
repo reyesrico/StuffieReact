@@ -122,33 +122,35 @@ class AddCategory extends Component<AddCategoryProps, any> {
     const otherType = type === TYPE.CATEGORY ? TYPE.SUBCATEGORY : TYPE.CATEGORY;
 
     return (
-      <form>
-        <div className="add-category__values">
-          <div>
-            <h2>{label}</h2>
-            <ul className="add-category__list">
-              {this.renderValues(type)}
-            </ul>
+      <div className="add-category">
+        <form>
+          <div className="add-category__values">
+            <div>
+              <h2>{label}</h2>
+              <ul className="add-category__list">
+                {this.renderValues(type)}
+              </ul>
+            </div>
+            <div>
+              <h2>{otherLabel}</h2>
+              <ul className="add-category__list">
+                {this.renderValues(otherType)}
+              </ul>
+            </div>
           </div>
-          <div>
-            <h2>{otherLabel}</h2>
-            <ul className="add-category__list">
-              {this.renderValues(otherType)}
-            </ul>
+          <hr />
+          <div className="add-category__row">
+            <label>Id</label>
+            <TextField name="id" type="text" onChange={(id: string) => this.setState({ id })} />
           </div>
-        </div>
-        <hr />
-        <div className="add-category__row">
-          <label>Id</label>
-          <TextField name="id" type="text" onChange={(id: string) => this.setState({ id })} />
-        </div>
-        <div className="add-category__row">
-          <label>{label}</label>
-          <TextField name="name" type="text" onChange={(name: string) => this.setState({ name })} />
-        </div>
-        <hr />
-        <button onClick={(event: any) => this.createValue(event)}>Send</button>
-      </form>
+          <div className="add-category__row">
+            <label>{label}</label>
+            <TextField name="name" type="text" onChange={(name: string) => this.setState({ name })} />
+          </div>
+          <hr />
+          <button onClick={(event: any) => this.createValue(event)}>Send</button>
+        </form>
+      </div>
     );
   }
 }

@@ -25,27 +25,39 @@ class FeedRow extends Component<FeedRowProps, any> {
     }
   }
 
+  getProductType = () => {
+    const { subcategories } = this.props;
+    const { product } = this.state;
+
+    let subcategory = subcategories.find(s => s.id === product.subcategory);
+    return subcategory ? subcategory.name : null;
+  }
+
   render() {
     const { user } = this.props;
     const { product } = this.state;
 
     return (
       <div className="feed-row">
+        <div className="feed-row__description">
+          {user.first_name} {user.last_name} added {product.name} in {this.getProductType()}  
+        </div>
         <div className="feed-row__image">
           <Media
             fileName={product.id}
             category={product.category || null}
             subcategory={product.subcategory || null}
             format="jpg"
-            height="50"
-            width="50"
+            height="100"
+            width="100"
             isProduct="true"
           />
         </div>
-        <div className="feed-row__product">
-          <h3>{product.name}</h3>
-          <div className="feed-row__category">Category: {product.category}</div>
-          <div className="feed-row__subcategory">Subcategory: {product.subcategory}</div>
+        <div className="feed-row__actions">
+          <div className="feed-row__action">Ask for:</div>
+          <div className="feed-row__action">Loan</div>
+          <div className="feed-row__action">Exchange</div>
+          <div className="feed-row__action">Buy</div>
         </div>
       </div>
     );

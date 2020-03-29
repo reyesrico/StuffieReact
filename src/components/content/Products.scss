@@ -1,5 +1,9 @@
 @import '../../sass/main.scss';
 
+.products {
+  @include content-detail-background;
+}
+
 .products__title {
   @include flex(row, space-between, left);
   padding: 8px;

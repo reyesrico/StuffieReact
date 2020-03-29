@@ -24,7 +24,7 @@ class Products extends Component<ProductsProps, any> {
     }
 
     return (
-      <div>
+      <div className="products">
         <div className="products__title">
           <h3>{user.first_name} Stuff</h3>
           <div className="products__add-product">

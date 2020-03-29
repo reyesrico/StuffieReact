@@ -1,5 +1,9 @@
 @import '../../sass/main.scss';
 
+.add-category {
+  @include content-detail-background;
+}
+
 .add-category__row {
   @include flex(row, flex-start, left);
 }

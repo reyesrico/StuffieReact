@@ -19,6 +19,7 @@
 .stuffie__menu {
   @include section-background;
   min-height: 250px;
+  max-height: 250px;
   width: 200px;
 }
 

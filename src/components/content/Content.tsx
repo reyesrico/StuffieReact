@@ -47,7 +47,7 @@ class Content extends Component<ContentProps, ContentState> {
   }
 
   render() {
-    const { user } = this.props;
+    const { subcategories, user } = this.props;
     const { friendsProducts, friends } = this.state;
 
     if (!friends.length) {
@@ -67,7 +67,7 @@ class Content extends Component<ContentProps, ContentState> {
               <div key={index}>
                 <h3 className="content__summary">{row.id_friend} has {row.products.length} products</h3>
                 <div className="content__rows">
-                  {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} />))}
+                  {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} subcategories={subcategories} />))}
                 </div>
               </div>
             )

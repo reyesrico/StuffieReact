@@ -1,6 +1,7 @@
 import FriendProducts from '../types/FriendProducts';
 import ProductsMap from '../types/ProductsMap';
 import User from '../types/User';
+import Subcategory from '../types/Subcategory';
 
 export interface AddCategoryProps {
   addCategory: Function;
@@ -11,7 +12,8 @@ export interface AddCategoryProps {
 }
 
 export interface ContentProps {
-  user: User
+  user: User,
+  subcategories: Subcategory[]
 }
 
 export interface ContentState {
@@ -34,5 +36,6 @@ export interface CategoryPageProps {
 export interface FeedRowProps {
   product: number,
   user: User,
-  fetchProduct: Function
+  fetchProduct: Function,
+  subcategories: Subcategory[]
 }

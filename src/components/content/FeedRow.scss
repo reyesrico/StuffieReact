@@ -1,11 +1,11 @@
 @import '../../sass/main.scss';
 
 .feed-row {
-  @include flex(row);
+  @include flex(column);
   @include border-radius;
   background-color: $white;
   box-shadow: 2px 2px $blue;
-  margin-bottom: 4px;
+  margin-bottom: 16px;
   width: 99%;
 }
 
@@ -14,5 +14,15 @@
 }
 
 .feed-row__image {
+  @include flex(row, center);
   margin-right: 8px;
+}
+
+.feed-row__actions {
+  @include flex(row);
+}
+
+.feed-row__action {
+  @include button;
+  @include margin(8px, 'right');
 }

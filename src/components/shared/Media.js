@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { Image, Video, Transformation, CloudinaryContext } from 'cloudinary-react';
 import config from '../../services/config';
+import './Media.scss';
 
 class Media extends Component {
+
   renderImage = () => {
-    const { fileName, format, height, width, category, subcategory, isProduct } = this.props;
+    const { fileName, format, category, width, subcategory, isProduct } = this.props;
     const file = isProduct? category && subcategory ? `products/${category}/${subcategory}/${fileName}` : 'default_product' : fileName;
     const f = file === 'default_product' ? 'png' : format;
 
     return (
-      <Image publicId={file} format={f}>
-      { width && height &&
-        (<Transformation crop="fill" gravity="faces" width={width} height={height}/>)
-      }
-      </Image>
+      <div className="media__image">
+        <Image publicId={file} format={f}>
+          <Transformation width={width} fetchFormat="auto" crop="scale" />
+        </Image>
+      </div>
     );
   }
 

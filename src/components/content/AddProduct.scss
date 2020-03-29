@@ -1,6 +1,7 @@
 @import '../../sass/main.scss';
 
 .add-product {
+  @include content-detail-background;
   padding: 0 8px;
 }
 

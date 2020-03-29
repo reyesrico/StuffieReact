@@ -1,0 +1,9 @@
+@import '../../sass/main.scss';
+
+.admin {
+  @include content-detail-background;
+}
+
+.admin__link {
+  @include section-button;
+}

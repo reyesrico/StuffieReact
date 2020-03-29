@@ -1,3 +1,6 @@
+$border-radius: 10px;
+$padding_background: 12px;
+
 @mixin flex($direction, $justify-content: flex-start, $align-items: left) {
   display: flex;
   flex-direction: $direction;
@@ -6,7 +9,7 @@
 }
 
 @mixin border-radius() {
-  border-radius: 10px;
+  border-radius: $border-radius;
 }
 
 @mixin border($position: 'all') {
@@ -88,7 +91,7 @@
 
 @mixin background() {
   @include border-radius;
-  padding: 12px;
+  padding: $padding_background;
 }
 
 @mixin section-background() {
@@ -103,6 +106,12 @@
 @mixin content-background() {
   @include background;
   background-color: $lightergray;
+}
+
+@mixin content-detail-background() {
+  @include background;
+  background-color: $white;
+  height: calc(100% - #{$padding_background * 2});
 }
 
 @mixin section-title() {

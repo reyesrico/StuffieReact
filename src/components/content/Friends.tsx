@@ -5,6 +5,7 @@ import Loading from '../shared/Loading';
 import { getStuffiers } from '../../services/stuffier';
 import { mapFriends } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
+import './Friends.scss';
 
 class Friends extends Component<FriendsProps, any> {
   state = {
@@ -28,7 +29,7 @@ class Friends extends Component<FriendsProps, any> {
     if (!fullFriends.length) return (<Loading size="md" />);
 
     return (
-      <div>
+      <div className="friends">
         <h3>{t('Friends-Title', { first_name: user.first_name })}</h3>
         <ul>
           {fullFriends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
