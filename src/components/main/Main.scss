@@ -1,5 +1,10 @@
 @import '../../sass/main.scss';
 
+.stuffie {
+  @include padding(4px, 'top');
+  width: 1024px;
+}
+
 .stuffie__header {
   border-bottom: 2px solid $blue; 
   width: 100%;
@@ -7,20 +12,23 @@
 
 .stuffie__main {
   @include flex(row, space-between, left);
+  margin-top: 8px;
   width: 100%;
 }
 
 .stuffie__menu {
-  @include section-background();
-  width: 224px;
+  @include section-background;
+  min-height: 250px;
+  width: 200px;
 }
 
 .stuffie__content {
-  padding: 8px;
+  @include content-background;
+  @include margin(8px, 'horizontal');
   width: 65%;
 }
 
 .stuffie__apps {
-  @include section-background();
-  width: 110px;
+  @include section-background;
+  width: 200px;
 }

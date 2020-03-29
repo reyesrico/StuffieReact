@@ -59,7 +59,7 @@ class Content extends Component<ContentProps, ContentState> {
     }
     
     return (
-      <div>
+      <div className="stuffie-content">
         <h3>{user.first_name} Feed</h3>
         <div className="content__info">
           {map(friendsProducts, (row: FriendProducts, index) => {

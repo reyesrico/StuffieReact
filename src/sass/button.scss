@@ -1,0 +1,23 @@
+@mixin button() {
+  @include border-radius;
+  @include padding(4px, 'all');
+  font-size: 14px;
+  text-decoration-line: none;
+
+  a {
+    color: $darkgray;
+    text-decoration-line: none;
+  }
+  
+  a:hover {
+    color: $darkgray;
+    font-weight: bold;
+  }
+}
+
+@mixin section-button() {
+  @include button;
+  @include margin(4px, 'bottom');
+  background-color: $lightgray;
+  color: $darkgray;
+}

@@ -37,7 +37,7 @@ class Header extends Component<HeaderProps, HeaderState> {
       <div className="stuffie-header">
         <div className="stuffie-header__info">
           <div className="stuffie-header__logo">
-            <Media fileName="logo" format="jpg" height="50" width="50" />
+            <Media fileName="logo_2020" format="jpg" height="50" width="50" />
           </div>
           <div className='stuffie-header__user'>
             {(user && user.first_name) || ''} Stuff

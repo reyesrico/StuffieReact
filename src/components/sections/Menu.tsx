@@ -15,14 +15,17 @@ class Menu extends Component<MenuProps, MenuState> {
             .filter((category: Category) => products[category.id] && products[category.id].length)
             .map(category => {
               const newTo = { pathname: `/category/${category.id}`, category: category.name };
-              return (<Link className="menu__category" key={category.id} to={newTo}>{category.name}</Link>);
+              return (
+              <div className="menu__category">
+                <Link className="" key={category.id} to={newTo}>{category.name}</Link>
+              </div>);
             });
   }
 
   render() {
     return (
-      <div className='barBlock barMenu'>
-        <div className='menu__title'>Menu</div>
+      <div>
+        <div className='menu__title'>Summary</div>
         <div className="menu__list">
           { this.renderCategories() }
         </div>

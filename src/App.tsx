@@ -9,11 +9,13 @@ import './App.scss';
 class App extends Component {
 	render() {
 		return (
-			<I18nextProvider i18n={ i18n }>
-				<BrowserRouter>
-					<Routes />
-				</BrowserRouter>
-			</I18nextProvider>
+			<div className="stuffie__app">
+				<I18nextProvider i18n={ i18n }>
+					<BrowserRouter>
+						<Routes />
+					</BrowserRouter>
+				</I18nextProvider>
+			</div>
 		);
 	}
 }

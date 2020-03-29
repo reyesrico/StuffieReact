@@ -1,13 +1,9 @@
 @import '../../sass/main.scss';
 
-.menu__title {
+.apps__title {
   @include section-title();
 }
 
-.menu__list {
-  @include flex(column, flex-start, left);
-}
-
-.menu__category {
+.apps__item {
   @include section-button;
 }

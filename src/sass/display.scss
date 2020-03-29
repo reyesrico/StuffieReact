@@ -5,6 +5,10 @@
   align-items: $align-items;
 }
 
+@mixin border-radius() {
+  border-radius: 10px;
+}
+
 @mixin border($position: 'all') {
   @if $position == 'bottom' {
     border-bottom: solid 1px $gray;    
@@ -33,6 +37,46 @@
   }
 }
 
+@mixin padding($size, $position: 'all') {
+  @if $position == 'bottom' {
+    padding-bottom: $size;
+  } @if $position == 'top' {
+    padding-top: $size;
+  } @if $position == 'left' {
+    padding-left: $size;
+  } @if $position == 'right' {
+    padding-right: $size;
+  } @if $position == 'horizontal' {
+    padding-left: $size;
+    padding-right: $size;
+  } @if $position == 'vertical' {
+    padding-top: $size;
+    padding-bottom: $size;
+  } @if $position == 'all' {
+    padding: $size;
+  }
+}
+
+@mixin margin($size, $position: 'all') {
+  @if $position == 'bottom' {
+    margin-bottom: $size;
+  } @if $position == 'top' {
+    margin-top: $size;
+  } @if $position == 'left' {
+    margin-left: $size;
+  } @if $position == 'right' {
+    margin-right: $size;
+  } @if $position == 'horizontal' {
+    margin-left: $size;
+    margin-right: $size;
+  } @if $position == 'vertical' {
+    margin-top: $size;
+    margin-bottom: $size;
+  } @if $position == 'all' {
+    margin: $size;
+  }
+}
+
 @mixin text-link() {
   &:hover {
     color: $black;
@@ -42,10 +86,31 @@
   }
 }
 
+@mixin background() {
+  @include border-radius;
+  padding: 12px;
+}
+
 @mixin section-background() {
+  @include background;
   background-color: $white;
 }
 
 @mixin header-background() {
   background-image: linear-gradient(to right, $white, $lightblue, $darkblue);
+}
+
+@mixin content-background() {
+  @include background;
+  background-color: $lightergray;
+}
+
+@mixin section-title() {
+  @include border(bottom);
+  color: $blue;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 2px;
+  margin-bottom: 8px;
+  // text-decoration: underline solid $blue;
 }
