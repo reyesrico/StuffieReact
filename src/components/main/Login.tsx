@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
+import FacebookLogin from 'react-facebook-login';
 import { withRouter } from 'react-router-dom';
 
+import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
+import config from '../../services/config';
 import { loginStuffier } from '../../services/stuffier';
+import { LoginProps } from './types';
+import './Login.scss';
 
-import { LoginProps, LoginState } from './types';
+class Login extends Component<LoginProps, any> {
+  state = {
+    email: null,
+    password: null,
+    loginFB: false
+  }
 
-class Login extends Component<LoginProps, LoginState> {
   handleChange = (event: any, name: string) => {
     if (name === 'email') {
       this.setState({ email: event });
@@ -31,14 +40,25 @@ class Login extends Component<LoginProps, LoginState> {
       })
       .catch(error => {
         console.log(error);
-      });
+      });      
+  }
+
+  responseFacebook = (response: FacebookUser) => {
+    const { history } = this.props;
+
+    console.log(response);
+    localStorage.setItem('username', response.email);
+    localStorage.setItem('picture', response.picture.data.url);
+    history.push('/');
   }
 
   render() {
+    const { loginFB } = this.state;
+
     return (
-      <div className='stuffieLogin'>
+      <div className="login">
         <h1>Login</h1>
-        <form>
+        <form className="login__form">
           <TextField
             type="email"
             name="email"
@@ -47,7 +67,15 @@ class Login extends Component<LoginProps, LoginState> {
             type="password"
             name="password"
             onChange={(event: any) => this.handleChange(event, 'password')} />
-          <input type="submit" value="Login" onClick={this.onClick} />
+          <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
+          <hr />
+          <FacebookLogin
+            appId={config.fb.appId}
+            autoLoad={loginFB}
+            fields="name,email,picture"
+            scope="public_profile,user_friends"
+            onClick={(event) => event && this.setState({ loginFB: true })}
+            callback={this.responseFacebook} />          
         </form>
       </div>
     );

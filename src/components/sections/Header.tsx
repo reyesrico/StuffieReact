@@ -12,7 +12,8 @@ class Header extends Component<HeaderProps, HeaderState> {
     const { history } = this.props;
 
     event.preventDefault();
-    localStorage.setItem('username', '');
+    localStorage.removeItem('username');
+    localStorage.removeItem('picture');
     history.push('/login');
   }
 

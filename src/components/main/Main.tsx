@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 
 import Apps from '../sections/Apps';
 import MainRoutes from './MainRoutes';
@@ -12,7 +13,7 @@ import './Main.scss';
 
 class Main extends Component<MainProps, any> {
   render() {
-    const { user, categories, friends, products, stuff, subcategories } = this.props;
+    const { user, categories, friends, products, stuff, subcategories, t } = this.props;
 
     return (
       <div className="stuffie">
@@ -32,8 +33,14 @@ class Main extends Component<MainProps, any> {
               products={products}
               subcategories={subcategories} />
           </div>
-          <div className="stuffie__apps">
-            <Apps user={user} />
+          <div className="stuffie__right">
+            <div className="stuffie__user">
+              {user.picture && (<img src={user.picture}></img>)}
+              <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+            </div>
+            <div className="stuffie__apps">
+              <Apps user={user} />
+            </div>
           </div>
         </div>
         <div className="stuffie_footer">
@@ -45,4 +52,4 @@ class Main extends Component<MainProps, any> {
   }
 }
 
-export default Main;
+export default withTranslation()<any>(Main);

@@ -1,0 +1,11 @@
+@import '../../sass/main.scss';
+
+
+.login__form {
+  @include flex(column, center, center);
+}
+
+.login__submit {
+  @include margin(4px, top);
+  @include button;
+}

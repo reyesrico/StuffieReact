@@ -29,6 +29,23 @@
   width: 65%;
 }
 
+.stuffie__right {
+  @include flex(column);
+}
+
+.stuffie__user {
+  @include flex(row, flex-start, center);
+  @include section-background;
+  @include margin(8px, bottom);
+  width: 200px;
+}
+
+.stuffie__welcome {
+  @include margin(4px, left);
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .stuffie__apps {
   @include section-background;
   width: 200px;

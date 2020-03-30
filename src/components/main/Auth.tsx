@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import Login from './Login';
 import FetchData from './FetchData';
 import Loading from '../shared/Loading';
+import { AuthState } from './types';
 import { getStuffier } from '../../services/stuffier';
 
 class Auth extends Component<any, any> {
@@ -31,7 +32,8 @@ class Auth extends Component<any, any> {
 
     if (isEmpty(user) && this.isActiveUser() ) {
       getStuffier(localStorage.getItem('username')).then(res => {
-        this.setState({ user: res.data[0] });
+        const picture = localStorage.getItem('picture');
+        this.setState({ user: { picture, ...res.data[0] } });
       }).catch(err => {
         this.setState({ error: String(err) });
       });      

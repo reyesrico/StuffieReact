@@ -4,5 +4,6 @@ export default interface User {
   password?: string,
   first_name?: string,
   last_name?: string,
-  admin?: boolean
+  admin?: boolean,
+  picture?: string
 }

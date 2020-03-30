@@ -27,7 +27,8 @@ export interface MainProps {
   categories: Category[],
   subcategories: Subcategory[],
   stuff: any,
-  friends: any
+  friends: any,
+  t: Function
 }
 
 export interface AuthState {
@@ -41,5 +42,6 @@ export interface LoginProps {
 
 export interface LoginState {
   email: string,
-  password: string
+  password: string,
+  loginFB: boolean
 }

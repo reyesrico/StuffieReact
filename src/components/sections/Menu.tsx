@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { withTranslation } from 'react-i18next';
 
 import { MenuProps, MenuState } from './types';
 import Category from '../types/Category';
@@ -23,9 +24,11 @@ class Menu extends Component<MenuProps, MenuState> {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <div>
-        <div className='menu__title'>Summary</div>
+        <div className='menu__title'>{t('Summary')}</div>
         <div className="menu__list">
           { this.renderCategories() }
         </div>
@@ -37,4 +40,4 @@ class Menu extends Component<MenuProps, MenuState> {
   }
 };
 
-export default Menu;
+export default withTranslation()<any>(Menu);

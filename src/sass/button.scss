@@ -1,6 +1,7 @@
 @mixin button() {
   @include border-radius;
   @include padding(4px, 'all');
+  cursor: pointer;
   font-size: 14px;
   text-decoration-line: none;
 
@@ -13,6 +14,17 @@
     color: $darkgray;
     font-weight: bold;
   }
+
+  input {
+    background-color: $white;
+    color: $blue;  
+  }
+
+  input:hover {
+    font-weight: bold;
+    text-decoration-line: underline;
+  }
+
 }
 
 @mixin section-button() {

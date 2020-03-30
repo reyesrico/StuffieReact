@@ -63,6 +63,7 @@ export interface SearchBarProps {
 export interface MenuProps {
   categories: Category[],
   products: ProductsMap,
+  t: Function,
   user: User
 }
 
