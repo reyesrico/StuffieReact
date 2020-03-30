@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 
 import { HeaderProps, HeaderState } from './types';
-import Search from './Search';
+import SearchBar from '../shared/SearchBar';
 import Media from '../shared/Media';
 import './Header.scss';
 
@@ -17,7 +17,7 @@ class Header extends Component<HeaderProps, HeaderState> {
   }
 
   render() {
-    const { t, user } = this.props;
+    const { products, t, user } = this.props;
 
     if (!t) return;
 
@@ -39,7 +39,7 @@ class Header extends Component<HeaderProps, HeaderState> {
           </div>
         </div>
         <div className="stuffie-header__search">
-          <Search></Search>
+          <SearchBar products={products}></SearchBar>
         </div>
       </div>
     );

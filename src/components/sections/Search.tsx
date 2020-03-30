@@ -4,22 +4,38 @@ import './Search.scss';
 
 class Search extends Component<any, any> {
   state = {
-    searchText: ''
+    searchText: '',
+    results: []
   };
+
+  renderResults() {
+    const { results } = this.state;
+
+    return results.length && (
+      <div className="search__results">
+        {results.map(result => {
+          (<div className="search__result">{result}</div>)
+        })}
+      </div>
+    );
+  }
 
   render() {
     return (
       <div className="search">
-        <TextField 
-          name="search"
-          type="input"
-          placeholder="Search"
-          onChange={(value: string) => this.setState({ searchText: value })}
-        >
-        </TextField>
-        <div className="search__button">
-          <i className="fas fa-search"></i>
+        <div className="search__form">
+          <TextField 
+            name="search"
+            type="input"
+            placeholder="Search"
+            onChange={(value: string) => this.setState({ searchText: value })}
+          >
+          </TextField>
+          <div className="search__button">
+            <i className="fas fa-search"></i>
+          </div>
         </div>
+        {this.renderResults()}
       </div>
     );
   }

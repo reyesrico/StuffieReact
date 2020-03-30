@@ -23,12 +23,12 @@ export const getListStuff = ids => (
   axios.get(routes.stuff.listDetail(ids), { headers: config.headers })
 );
 
-export const getCategories = () => (
-  axios.get(routes.category.list(), { headers: config.headers })
+export const getCategories = (token = null) => (
+  axios.get(routes.category.list(), { headers: config.headers, cancelToken: token })
 );
 
-export const getSubCategories = () => (
-  axios.get(routes.subcategory.list(), { headers: config.headers })
+export const getSubCategories = (token = null) => (
+  axios.get(routes.subcategory.list(), { headers: config.headers, cancelToken: token })
 );
 
 export const addStuff = ({ name, category, subcategory, fileName }) => (
@@ -62,3 +62,35 @@ export const addSubCategoryCall = ({ id, name }) => (
 export const addCategoryCall = ({ id, name }) => (
   axios.post(routes.category.add(), { id, name }, { headers: config.headers })
 );
+
+/*
+* This is to emulate ElasticSearch
+*/
+export const getSearchResults = (searchText, products, token) => {
+  let results = [];
+
+  return Promise.all([getCategories(token), getSubCategories(token)]).then(values => {
+    console.log(values);
+    values[0].data.forEach(c => {
+      if (c.name.toLowerCase().includes(searchText)){
+        results.push({ type: 'Category', name: c.name, id: c.id });
+      }
+    });
+
+    values[1].data.forEach(s => {
+      if (s.name.toLowerCase().includes(searchText)) {
+        results.push({ type: 'Subcategory', name: s.name, id: s.id });
+      }
+    });
+
+    Object.keys(products).forEach(key => {
+      products[key].forEach(p => {
+        if (p.name.toLowerCase().includes(searchText)) {
+          results.push({ type: 'Product', name: p.name, id: p.id });
+        }  
+      });
+    });
+  
+    return Promise.resolve(results);
+  });
+};

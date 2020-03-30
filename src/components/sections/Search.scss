@@ -1,6 +1,10 @@
 @import '../../sass/main.scss';
 
 .search {
+  @include flex(column);
+}
+
+.search-form {
   @include flex(row, flex-end, center);
   height: 24px;
 

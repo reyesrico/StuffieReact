@@ -71,6 +71,7 @@ export interface MenuState {
 }
 
 export interface HeaderProps {
+  products: ProductsMap,
   i18n: any,
   user: User,
   history: any,

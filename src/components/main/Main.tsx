@@ -17,7 +17,7 @@ class Main extends Component<MainProps, any> {
     return (
       <div className="stuffie">
         <div className="stuffie__header">
-          <Header user={user} />
+          <Header user={user} products={products}/>
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
