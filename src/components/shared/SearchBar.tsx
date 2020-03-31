@@ -72,7 +72,6 @@ class SearchBar extends Component<any, any> {
 
   getLinkTo = (result: any) => {
     return { pathname: `/${result.type.toLowerCase()}/${result.id}`, [result.type.toLowerCase()]: result.name };
-
   }
 
   render() {

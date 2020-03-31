@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
+import Category from '../types/Category';
 import Media from '../shared/Media';
 import Product from '../types/Product';
 import { FeedRowProps } from './types';
@@ -33,15 +35,28 @@ class FeedRow extends Component<FeedRowProps, any> {
     return subcategory ? subcategory.name : null;
   }
 
-  render() {
+  getLinkTo = (category: Category) => {
+    return ;
+  }
+
+  renderMessage() {
     const { user } = this.props;
+    const { product } = this.state;
+    const to = { pathname: `/category/${product.category}`, category: 'Category' }
+  
+    return (
+    <div className="feed-row__description">
+      <span className="feed-row__name">{user.first_name} {user.last_name} </span> added <Link to={to}>{product.name}</Link> in {this.getProductType()}
+    </div>
+    );
+  }
+
+  render() {
     const { product } = this.state;
 
     return (
       <div className="feed-row">
-        <div className="feed-row__description">
-          {user.first_name} {user.last_name} added {product.name} in {this.getProductType()}  
-        </div>
+        {this.renderMessage()}
         <div className="feed-row__image">
           <Media
             fileName={product.id}
