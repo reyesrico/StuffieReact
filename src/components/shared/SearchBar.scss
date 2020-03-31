@@ -11,7 +11,13 @@
   .textfield input {
     @include padding(12px, left);
     @include padding(34px, right);
+    @include border-none;
     height: 28px;
+  }
+
+  .textfield input:focus {
+    border: solid 2px $blue;
+    outline: none;
   }
 }
 
@@ -30,10 +36,11 @@
 }
 
 .search-bar__content {
+  @include border;
   background-color: $white;
-  box-shadow: 3px 3px $blue;
+  box-shadow: 0px 6px 12px 0px #888888;
   display: none;
-  min-width: 110px;
+  width: 250px;
   position: absolute;
   top: 12px;
 }
@@ -43,13 +50,50 @@
 }
 
 .search__result {
-  @include padding(2px, all);
-  color: $blue;
+  @include padding(2px, horizontal);
+  @include margin(2px, bottom);
+  @include border(bottom);
+  font-size: 14px;
+
+  &:last-of-type {
+    @include border-none;
+  }
+}
+
+.search__result-link {
+  color: $black;
   cursor: pointer;
-  width: 250px;
+  text-decoration-line: none;
 
   :hover {
+    background-color: $lightergray;
     font-weight: bold;
-    text-decoration-line: underline;
   }
+}
+
+.search__result-info {
+  @include flex(row, space-between);
+}
+
+.search__result-name {
+  max-width: 228px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.search__result-type {
+  font-size: 12px;
+}
+
+.search__result-C {
+  color: $gray;
+}
+
+.search__result-P {
+  color: $blue;
+}
+
+.search__result-S {
+  color: $lightorange;
 }

@@ -12,17 +12,17 @@ $padding_background: 12px;
   border-radius: $border-radius;
 }
 
-@mixin border($position: 'all') {
+@mixin border($position: 'all', $color: $gray) {
   @if $position == 'bottom' {
-    border-bottom: solid 1px $gray;    
+    border-bottom: solid 1px $color;
   } @if $position == 'top' {
-    border-top: solid 1px $gray;
+    border-top: solid 1px $color;
   } @if $position == 'left' {
-    border-left: solid 1px $gray;
+    border-left: solid 1px $color;
   } @if $position == 'right' {
-    border-right: solid 1px $gray;
+    border-right: solid 1px $color;
   } @if $position == 'all' {
-    border: solid 1px $gray;
+    border: solid 1px $color;
   }
 }
 

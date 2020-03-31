@@ -54,9 +54,14 @@ class SearchBar extends Component<any, any> {
         <div className="search__results">
           {results.map((result: any, index: number) => {
             return (
-              <Link key={index} className="search__result" to={this.getLinkTo(result)}>
-                {result.name} | {result.type}
-              </Link> );
+              <div className="search__result">
+              <Link key={index} className="search__result-link" to={this.getLinkTo(result)}>
+                <div className="search__result-info">
+                  <div className="search__result-name">{result.name}</div>
+                  <div className={`search__result-type search__result-${result.type[0]}`}>| {result.type[0]}</div>
+                </div>                 
+              </Link>
+              </div>);
           })}
         </div>
       );  
