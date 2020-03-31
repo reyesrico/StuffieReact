@@ -2,7 +2,7 @@
 
 .stuffie-loading {
   @include flex(column, center, center);
-  height: 100vh;
+  // height: 100vh;
 }
 
 .stuffie-loading__message {

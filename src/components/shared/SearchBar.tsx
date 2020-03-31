@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
 import { getSearchResults } from '../../services/stuff';
 import './SearchBar.scss';
@@ -10,6 +11,7 @@ class SearchBar extends Component<any, any> {
   source: any = null;
 
   state = {
+    isLoading: false,
     isOpen: false,
     results: []
   };
@@ -28,21 +30,21 @@ class SearchBar extends Component<any, any> {
 
   fetchResults = (searchText: string) => {
     const { products } = this.props;
-    console.log(this.source);
 
     this.source && this.source.cancel('Cancel pending requests.');
     this.source = axios.CancelToken.source();
+    this.setState({ isOpen: true, isLoading: true });
 
     if (searchText) {
       getSearchResults(searchText, products, this.source.token).then((results: any) => {
         if (results.length) {
-          this.setState({ results, isOpen: true });
+          this.setState({ results, isOpen: true, isLoading: false });
         } else {
-          this.setState({ isOpen: false });
+          this.setState({ isOpen: false, isLoading: false });
         }
       });
     } else {
-      this.setState({ isOpen: false });
+      this.setState({ isOpen: false, isLoading: false });
     }
   }
 
@@ -74,6 +76,7 @@ class SearchBar extends Component<any, any> {
   }
 
   render() {
+    const { isLoading } = this.state;
     const isOpen = this.state.isOpen ? 'dropdown--is-open' : '';
 
     return (
@@ -92,7 +95,8 @@ class SearchBar extends Component<any, any> {
         </div>
         <div className="search-bar__content-container">
           <div className={`search-bar__content ${isOpen}`}>
-            {this.renderResults()}
+            {isLoading && <Loading size="md"></Loading>}
+            {!isLoading && this.renderResults()}
           </div>
         </div>
       </div>
