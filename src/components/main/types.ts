@@ -45,3 +45,7 @@ export interface LoginState {
   password: string,
   loginFB: boolean
 }
+
+export interface RegisterProps {
+  history: any;
+}

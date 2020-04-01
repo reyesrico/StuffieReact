@@ -33,3 +33,19 @@
   background-color: $lightgray;
   color: $darkgray;
 }
+
+@mixin button-input() {
+  @include border-radius;
+  @include padding(4px, 'all');
+  background-color: $blue;
+  color: $white;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration-line: none;
+
+  &:hover {
+    background-color: $white;
+    color: $blue;
+    font-weight: bold;
+  }
+}

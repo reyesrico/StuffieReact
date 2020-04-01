@@ -4,8 +4,9 @@ import { isEmpty } from 'lodash';
 import Login from './Login';
 import FetchData from './FetchData';
 import Loading from '../shared/Loading';
-import { AuthState } from './types';
+import Register from './Register';
 import { getStuffier } from '../../services/stuffier';
+import './Auth.scss';
 
 class Auth extends Component<any, any> {
   state = {
@@ -43,9 +44,17 @@ class Auth extends Component<any, any> {
   render() {
     const { error, user } = this.state;
 
-    if (!this.isActiveUser()) return <Login />;
-
     if (error) return <div>Error: {error} </div>
+
+    if (!this.isActiveUser()) {
+      return (
+        <div className="auth">
+          <Register />
+          <div className="auth__line"></div>
+          <Login />
+        </div>
+      );
+    }
 
     if (isEmpty(user)) {
       return (<Loading size="xl" message="Loading user info..." />);

@@ -1,0 +1,29 @@
+@import '../../sass/main.scss';
+
+.register {
+  width: 330px;
+}
+
+.register__form {
+  @include flex(column, center);
+}
+
+.register__text {
+  font-weight: bold;
+}
+
+.register__row {
+  @include flex(row, space-between);
+
+  .textfield {
+    width: 230px;
+  }
+}
+
+.register__button {
+  @include flex(row, space-between, center);
+}
+
+.register__loading {
+  @include margin(12px, left);
+}

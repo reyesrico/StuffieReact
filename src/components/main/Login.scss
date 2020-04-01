@@ -1,6 +1,5 @@
 @import '../../sass/main.scss';
 
-
 .login__form {
   @include flex(column, center, center);
 }
@@ -8,4 +7,9 @@
 .login__submit {
   @include margin(4px, top);
   @include button;
+}
+
+.login__hr {
+  @include border(top, $darkgray);
+  width: 100%;
 }

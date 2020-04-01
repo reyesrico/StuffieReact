@@ -11,6 +11,7 @@ import './Content.scss';
 
 class Content extends Component<ContentProps, ContentState> {
   state = {
+    isLoading: false,
     friends: [],
     friendsProducts: [],
   };
@@ -19,6 +20,7 @@ class Content extends Component<ContentProps, ContentState> {
     const { user } = this.props;
     let friends: any = [];
 
+    this.setState({ isLoading: true });
     // Getting email friends
     getFriends(user.email).then(res => {
       friends = map(res.data, friend => friend.id_friend);
@@ -29,8 +31,8 @@ class Content extends Component<ContentProps, ContentState> {
           const friendsProducts = this.getProductsFromUsers(friends, products);
           this.setState({ friends, friendsProducts });
         });
-      }  
-    });
+      }
+    }).finally(() => this.setState({ isLoading: false }));
   }
 
   getProductsFromUsers(friends: number[], products: any) {
@@ -48,16 +50,16 @@ class Content extends Component<ContentProps, ContentState> {
 
   render() {
     const { subcategories, user } = this.props;
-    const { friendsProducts, friends } = this.state;
+    const { isLoading, friendsProducts, friends } = this.state;
 
-    if (!friends.length) {
+    if (isLoading) {
       return (<Loading size="lg" />);
     }
 
-    if (isEmpty(friendsProducts)) {
+    if (!friends.length || isEmpty(friendsProducts)) {
       return <div>No Friends! Add friends!</div>
     }
-    
+
     return (
       <div className="stuffie-content">
         <div className="content__info">

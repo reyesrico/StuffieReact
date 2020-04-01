@@ -40,7 +40,7 @@ class Login extends Component<LoginProps, any> {
       })
       .catch(error => {
         console.log(error);
-      });      
+      });
   }
 
   responseFacebook = (response: FacebookUser) => {
@@ -68,7 +68,7 @@ class Login extends Component<LoginProps, any> {
             name="password"
             onChange={(event: any) => this.handleChange(event, 'password')} />
           <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
-          <hr />
+          <hr className="login__hr" />
           <FacebookLogin
             appId={config.fb.appId}
             autoLoad={loginFB}

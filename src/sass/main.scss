@@ -5,6 +5,10 @@
 @import './display.scss';
 @import './button.scss';
 
+h1 {
+  @include margin(20px, vertical);
+}
+
 ul {
   list-style-type: none;
   padding: 0;

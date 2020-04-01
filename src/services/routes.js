@@ -30,6 +30,7 @@ const routes = {
     list: () => `${config.server}stuffiers`,
     loginUser: (email, password) => `${config.server}stuffiers?q=${JSON.stringify({ email, password })}`,
     registerUser: () => `${config.server}stuffiers`,
+    lastId: () => `${config.server}stuffiers?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`
   }
 };
 

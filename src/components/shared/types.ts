@@ -5,7 +5,8 @@ export interface TextFieldProps {
   type: string,
   placeholder?: string,
   value?: string,
-  onChange?: Function
+  onChange?: Function,
+  disabled?: boolean
 }
 
 export interface MenuProps {
@@ -31,4 +32,11 @@ export type LoadingSize = 'sm' | 'md' | 'lg' | 'xl';
 export interface LoadingProps {
   size: LoadingSize,
   message?: string
+}
+
+export interface ButtonProps {
+  type?: 'submit' | 'reset' | 'submit',
+  onClick?: Function,
+  text: string,
+  disabled?: boolean
 }

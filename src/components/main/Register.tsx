@@ -1,103 +1,109 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+
+import Button from '../shared/Button';
+import Loading from '../shared/Loading';
+import TextField from '../shared/TextField';
+import User from '../types/User';
+import { RegisterProps } from './types';
+import { loginStuffier } from '../../services/stuffier';
 import { registerStuffier } from '../../services/stuffier';
 
-import TextField from '../shared/TextField';
+import './Register.scss';
 
-class Register extends Component {
+class Register extends Component<RegisterProps, any> {
   state = {
-    user: {
-      email: '',
-      password: '',
-      first_name: '',
-      last_name: '',
-    },
-    redirectToNewPage: false
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    isLoading: false
   }
 
-  validateForm() {
-    const { user } = this.state;
+  enableButton() {
+    const { email, password, firstName, lastName } = this.state;
 
-    return user.email.length > 0 &&
-      user.password.length > 0 &&
-      user.first_name.length > 0 &&
-      user.last_name.length > 0;
-  }
-
-  handleChange = (event: React.FormEvent<EventTarget>) => {    
-    const target = event.target as HTMLTextAreaElement;
-    const name = target.name;
-    const value = target.value;
-    this.setState({
-      user: {
-        ...this.state.user,
-        [name]: value
-      }
-    });
+    return email.length > 0 &&
+      password.length > 0 &&
+      firstName.length > 0 &&
+      lastName.length > 0;
   }
 
   handleSubmit = (event: React.FormEvent<EventTarget>) => {
-    const { user } = this.state;
+    const { history } = this.props;
+    const { email, password, firstName, lastName } = this.state;
+    const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
+
     event.preventDefault();
-    registerStuffier(user);
-    alert("User Registered!");
-    
-    // registerStuffier(user)
-    //   .then(res => {
-    //     alert("User Registered!");
-    //     res.data[0] && this.setState({ redirectToNewPage: true });
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //   });
+    this.setState({ isLoading: true });
+    registerStuffier(user)
+    .then(() => loginStuffier(email, password))
+    .then(res => {
+      const user = res.data[0].email;
+      localStorage.setItem('username', user);
+      this.setState({ isLoading: false });
+      alert("Login Successful using RestDBIO");
+      history.push('/');
+    })
+    .catch(error => {
+      console.log(error);
+      this.setState({ isLoading: false });
+    });
   }
 
   render() {
-    const { redirectToNewPage, user } = this.state;
-    if (redirectToNewPage) {
-      return (<Redirect to='/' />);
-    }
+    const { isLoading } = this.state;
+
     return (
-      <div className='stuffieRegister'>
+      <div className="register">
         <h1>Register</h1>
-        <form onSubmit={this.handleSubmit}>
-          <div className='registerMail'>
-            <TextField
-              type="text"
-              name="email"
-              value={user.email}
-              // hintText="Email"
-              onChange={this.handleChange} />
+        <form className="register__form" onSubmit={event => this.handleSubmit(event)} >
+          <div className="register__content">
+            <div className="register__row">
+              <div className="register__text">Email</div>
+              <TextField
+                type="text"
+                name="email"
+                placeholder="Email"
+                disabled={isLoading}
+                onChange={(email: string) => this.setState({ email })} />
+            </div>
+            <div className="register__row">
+              <div className="register__text">Password</div>
+              <TextField
+                type="password"
+                name="password"
+                placeholder="Password"
+                disabled={isLoading}
+                onChange={(password: string) => this.setState({ password })} />
+            </div>
+            <div className="register__row">
+              <div className="register__text">First Name</div>
+              <TextField
+                type="text"
+                name="firstName"
+                placeholder="First Name"
+                disabled={isLoading}
+                onChange={(firstName: string) => this.setState({ firstName })} />
+            </div>
+            <div className="register__row">
+              <div className="register__text">Last Name</div>
+              <TextField
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                disabled={isLoading}
+                onChange={(lastName: string) => this.setState({ lastName })} />
+            </div>
           </div>
-          <div className='registerPass'>
-            <TextField
-              type="password"
-              name="password"
-              value={user.password}
-              // hintText="New Password"
-              onChange={this.handleChange} />
+          <div className="register__button">
+            <Button type="submit" text="Register" disabled={!this.enableButton() || isLoading}></Button>
+            {isLoading && (<div className="register__loading"><Loading size="md" /></div>)}
           </div>
-          <div className='registerFirstName'>
-            <TextField
-              type="text"
-              name="first_name"
-              value={user.first_name}
-              // hintText="First Name"
-              onChange={this.handleChange} />
-          </div>
-          <div className='registerLastName'>
-            <TextField
-              type="text"
-              name="last_name"
-              value={user.last_name}
-              // hintText="Last Name"
-              onChange={this.handleChange} />
-          </div>
-          <input type="submit" value="Register" />
         </form>
       </div>
     );
   }
 }
 
-export default Register;
+export default withRouter<any, React.ComponentClass<any>>(Register);

@@ -17,6 +17,7 @@ export interface ContentProps {
 }
 
 export interface ContentState {
+  isLoading: boolean,
   friends: number[],
   friendsProducts: FriendProducts[],
 }
