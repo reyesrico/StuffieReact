@@ -2,6 +2,6 @@
 
 .button {
   @include button-input;
-  @include margin(12px, top);
+  // @include margin(12px, top);
   width: 100%;
 }

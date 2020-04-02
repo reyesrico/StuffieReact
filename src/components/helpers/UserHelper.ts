@@ -5,3 +5,9 @@ export function mapFriends(friends: any) {
     return { id: friend.id_friend };
   });
 }
+
+export function mapIds(collection: any) {
+  return map(collection, collection => {
+    return { id: collection.id_friend };
+  });
+}

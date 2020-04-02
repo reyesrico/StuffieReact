@@ -3,3 +3,28 @@
 .friends {
   @include content-detail-background;
 }
+
+.friends__title {
+  @include margin(8px, vertical);
+}
+
+.friends__request {
+  @include flex(row, space-around, center);
+  @include margin(8px, vertical);
+  @include border(all, $blue);
+  @include padding(4px, all);
+}
+
+.friends__request-button {
+  @include margin(8px, left);
+  width: 80px;
+}
+
+.friends__form {
+  @include flex(row, space-between, center);
+}
+
+.friends__button {
+  @include margin(24px, left);
+  width: 100px;
+}

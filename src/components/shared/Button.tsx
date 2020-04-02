@@ -7,7 +7,7 @@ class Button extends Component<ButtonProps, any> {
     const { disabled, type, text, onClick } = this.props;
 
     if(onClick) {
-      return (<button className="button" type={type || "button"} onClick={onClick()} disabled={disabled}>{text}</button>); 
+      return (<button className="button" type={type || "button"} onClick={event => event && onClick()} disabled={disabled}>{text}</button>); 
     }
 
     return <button className="button" type={type || "button"} disabled={disabled}>{text}</button>

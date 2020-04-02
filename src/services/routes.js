@@ -30,7 +30,12 @@ const routes = {
     list: () => `${config.server}stuffiers`,
     loginUser: (email, password) => `${config.server}stuffiers?q=${JSON.stringify({ email, password })}`,
     registerUser: () => `${config.server}stuffiers`,
-    lastId: () => `${config.server}stuffiers?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`
+    lastId: () => `${config.server}stuffiers?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
+    requestToBeFriend: () => `${config.server}friend-requests`,
+    friendsRequest: email_stuffier => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier })}`,
+    friendRequestDetail: (email_stuffier, id_friend) => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier, id_friend })}`,
+    deleteFriendRequest: id => `${config.server}friend-requests/${id}`,
+    friend: () => `${config.server}friends`
   }
 };
 

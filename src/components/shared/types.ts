@@ -6,7 +6,8 @@ export interface TextFieldProps {
   placeholder?: string,
   value?: string,
   onChange?: Function,
-  disabled?: boolean
+  disabled?: boolean,
+  ref?: any
 }
 
 export interface MenuProps {

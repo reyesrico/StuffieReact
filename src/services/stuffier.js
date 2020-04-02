@@ -28,3 +28,20 @@ export const registerStuffier = (user) => {
     return axios.post(routes.user.registerUser(), { ...user, id }, { headers: config.headers });
   });
 };
+
+export const getFriendsRequests = (email) => (
+  axios.get(routes.user.friendsRequest(email), { headers: config.headers })
+);
+
+export const requestToBeFriend = (email_friend, id_user) => (
+  axios.post(routes.user.requestToBeFriend(), { email_stuffier: email_friend, id_friend: id_user }, { headers: config.headers })
+);
+
+export const deleteRequest = (email_stuffier, id_friend) => {
+  return axios.get(routes.user.friendRequestDetail(email_stuffier, id_friend), { headers: config.headers })
+    .then(res => axios.delete(routes.user.deleteFriendRequest(res.data[0]._id), { headers: config.headers }));
+}
+
+export const addFriend = (email_stuffier, id_friend) => (
+  axios.post(routes.user.friend(), { email_stuffier, id_friend }, { headers: config.headers })
+);
