@@ -108,7 +108,7 @@ class Friends extends Component<FriendsProps, any> {
         {friendsRequests.length > 0 && this.renderRequests()}
         <hr />
         <div>
-          <h3 className="friends__title">Add Friend</h3>
+          <h3 className="friends__title">{t('Add-Friend')}</h3>
           <div className="friends__form">
             <TextField
               placeholder="Friend Email"

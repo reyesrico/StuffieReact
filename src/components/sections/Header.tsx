@@ -18,7 +18,7 @@ class Header extends Component<HeaderProps, HeaderState> {
   }
 
   render() {
-    const { products, t, user } = this.props;
+    const { friendsRequests, products, t, user } = this.props;
 
     if (!t) return;
 
@@ -33,7 +33,10 @@ class Header extends Component<HeaderProps, HeaderState> {
           </div>
           <div className='stuffie-header__sections'>
             <div className='stuffie-header__section-item'><Link to='/'>{t('Feed')}</Link></div>
-            <div className='stuffie-header__section-item'><Link to='/friends'>{t('Friends')}</Link></div>
+            <div className='stuffie-header__section-item'>
+              <Link to='/friends'>{t('Friends')}</Link>
+              {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
+            </div>
             <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
             {user.admin && <div className='stuffie-header__section-item'><Link to='/admin'>{t('Admin')}</Link></div>}
             <div className="stuffie-header__logout"><a onClick={this.handleLogout}>{t('Logout')}</a></div>

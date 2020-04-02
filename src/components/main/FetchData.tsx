@@ -6,7 +6,9 @@ import Main from './Main';
 import Loading from '../shared/Loading';
 import { FetchDataProps } from './types';
 import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
-
+import { mapIds } from '../helpers/UserHelper';
+// TBR
+import { getFriendsRequests } from '../../services/stuffier';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
@@ -21,20 +23,29 @@ class FetchData extends Component<FetchDataProps, any> {
     objects: null,
     products: [],
     subcategories: [],
-    isLoading: true
+    isLoading: true,
+    friendsRequests: []
   };
 
   componentDidMount() {
     const { user, fetchProductsId, fetchCategories, fetchSubCategories, fetchFriends, fetchProducts } = this.props;
+    let promises = [
+      fetchProductsId(user.id),         // values[0]
+      fetchCategories(),                // values[1]
+      fetchSubCategories(),             // values[2]
+      fetchFriends(user.email),         // values[3]
+      getFriendsRequests(user.email)    // values[4]
+    ];
 
     // Fetching values that don't depend on any.
-    Promise.all([fetchProductsId(user.id), fetchCategories(), fetchSubCategories(), fetchFriends(user.email)])
+    Promise.all(promises)
     .then((values: any) => {
       this.setState({
         stuff: values[0].data,
         categories: values[1].data,
         subcategories: values[2].data,
-        friends: values[3].data
+        friends: values[3].data,
+        friendsRequests: values[4].data
       });
       return Promise.resolve(values[0].data);
     })
@@ -50,7 +61,7 @@ class FetchData extends Component<FetchDataProps, any> {
 
   render() {
     const { user } = this.props;
-    const { categories, friends, products, stuff, subcategories, isLoading } = this.state;
+    const { categories, friends, friendsRequests, products, stuff, subcategories, isLoading } = this.state;
 
     if (isLoading) {
       return <Loading size="xl" message="Loading data and products..." />;
@@ -64,6 +75,7 @@ class FetchData extends Component<FetchDataProps, any> {
         products={products}
         stuff={stuff}
         subcategories={subcategories}
+        friendsRequests={friendsRequests}
       />);
   }
 }

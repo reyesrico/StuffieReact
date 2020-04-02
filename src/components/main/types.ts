@@ -1,6 +1,7 @@
 import Category from "../types/Category";
+import FriendRequest from "../types/FriendRequest";
 import ProductsMap from "../types/ProductsMap";
-import Subcategory from '../types/Subcategory';
+import Subcategory from "../types/Subcategory";
 import User from "../types/User";
 
 export interface MainRoutesProps {
@@ -28,6 +29,7 @@ export interface MainProps {
   subcategories: Subcategory[],
   stuff: any,
   friends: any,
+  friendsRequests: FriendRequest[],
   t: Function
 }
 

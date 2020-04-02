@@ -31,7 +31,7 @@
 }
 
 .stuffie-header__section-item {
-  @include flex(row, center);
+  @include flex(row, space-around, center);
   @include padding(8px, all);
   @include margin(8px, horizontal);
   @include margin(18px, top);
@@ -39,7 +39,7 @@
   background-color: $blue;
   border-radius: 4px 4px 0px 0px;
   color: $white;
-  width: 70px;
+  width: 80px;
 
   &:first-of-type {
     @include margin(0px, left);
@@ -83,4 +83,15 @@
 .stuffie-header__search {
   @include margin(19px, top);
   width: 250px;
+}
+
+.stuffie-header__warning {
+  @include flex(row, center, center);
+  @include margin(4px, left);
+  background-color: $warning;
+  border-radius: 50%;
+  color: $white;
+  font-size: 8px;
+  height: 20px;
+  width: 20px;
 }

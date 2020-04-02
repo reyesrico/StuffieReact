@@ -1,4 +1,5 @@
 import Category from "../types/Category";
+import FriendRequest from "../types/FriendRequest";
 import ProductsMap from "../types/ProductsMap";
 import Stuff from "../types/Stuff";
 import Subcategory from '../types/Subcategory';
@@ -72,6 +73,7 @@ export interface MenuState {
 }
 
 export interface HeaderProps {
+  friendsRequests: FriendRequest[],
   products: ProductsMap,
   i18n: any,
   user: User,
