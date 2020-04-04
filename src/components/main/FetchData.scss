@@ -1,0 +1,5 @@
+@import '../../sass/main.scss';
+
+.fetch-data__loading {
+  @include loading-full;
+}

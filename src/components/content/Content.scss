@@ -1,13 +1,17 @@
 @import '../../sass/main.scss';
 
 h3 {
-  margin-top: 0;
+  @include margin(0, top);
 }
 
 .content__info {
-  padding: 2px;
+  @include padding(2px, all);
 }
 
 .content__summary {
-  margin-bottom: 8px;
+  @include margin(8px, bottom);
+}
+
+.content__loading {
+  @include loading-fit;
 }

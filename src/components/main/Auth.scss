@@ -12,3 +12,7 @@
   height: 100%;
   width: 2px;
 }
+
+.auth__loading {
+  @include loading-full;
+}

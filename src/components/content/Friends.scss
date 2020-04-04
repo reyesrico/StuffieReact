@@ -4,8 +4,17 @@
   @include content-detail-background;
 }
 
+.friends__loading {
+  @include loading-fit();
+}
+
 .friends__title {
+  @include flex(row, flex-start, center);
   @include margin(8px, vertical);
+}
+
+.friends__warning {
+  @include warning;
 }
 
 .friends__request {

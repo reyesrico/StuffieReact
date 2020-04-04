@@ -62,7 +62,10 @@ class Friends extends Component<FriendsProps, any> {
     return (
       <div className="friends__requests">
         <hr />
-        <h3 className="friends__title">Requests</h3>
+        <h3 className="friends__title">
+          <div>Requests</div>
+          <div className="friends__warning">{friendsRequests.length}</div>
+        </h3>
         <ul>
           {friendsRequests.map((friend: User, index: number) => {
             return (
@@ -97,7 +100,7 @@ class Friends extends Component<FriendsProps, any> {
     const { t, user } = this.props;
     const { friendsRequests, fullFriends, message, emailToRequest } = this.state;
 
-    if (!fullFriends.length) return (<Loading size="md" />);
+    if (!fullFriends.length) return (<div className="friends__loading"><Loading size="xl" message="Loading Friends" /></div>);
 
     return (
       <div className="friends">

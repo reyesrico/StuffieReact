@@ -53,7 +53,11 @@ class Content extends Component<ContentProps, ContentState> {
     const { isLoading, friendsProducts, friends } = this.state;
 
     if (isLoading) {
-      return (<Loading size="lg" />);
+      return (
+        <div className="content__loading">
+          <Loading size="xl" message="Loading Feed" />
+        </div>
+      );
     }
 
     if (!friends.length || isEmpty(friendsProducts)) {
@@ -61,7 +65,7 @@ class Content extends Component<ContentProps, ContentState> {
     }
 
     return (
-      <div className="stuffie-content">
+      <div className="content">
         <div className="content__info">
           {map(friendsProducts, (row: FriendProducts, index) => {
             return (

@@ -13,7 +13,7 @@ import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
-
+import './FetchData.scss';
 
 class FetchData extends Component<FetchDataProps, any> {
   state = {
@@ -64,7 +64,11 @@ class FetchData extends Component<FetchDataProps, any> {
     const { categories, friends, friendsRequests, products, stuff, subcategories, isLoading } = this.state;
 
     if (isLoading) {
-      return <Loading size="xl" message="Loading data and products..." />;
+      return (
+        <div className="fetch-data__loading">
+          <Loading size="xl" message="Loading data and products..." />
+        </div>
+      );
     }
 
     return (

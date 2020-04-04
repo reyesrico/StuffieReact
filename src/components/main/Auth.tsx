@@ -57,7 +57,10 @@ class Auth extends Component<any, any> {
     }
 
     if (isEmpty(user)) {
-      return (<Loading size="xl" message="Loading user info..." />);
+      return (
+      <div className="auth__loading">
+        <Loading size="xl" message="Loading user info..." />
+      </div>);
     }
 
     return <FetchData user={user} />  
