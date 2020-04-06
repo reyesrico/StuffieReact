@@ -35,7 +35,9 @@ const routes = {
     friendsRequest: email_stuffier => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier })}`,
     friendRequestDetail: (email_stuffier, id_friend) => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier, id_friend })}`,
     deleteFriendRequest: id => `${config.server}friend-requests/${id}`,
-    friend: () => `${config.server}friends`
+    friend: () => `${config.server}friends`,
+    userRequests: () => `${config.server}stuffiers?q={"request": true}`,
+    deleteUserRequest: id => `${config.server}stuffiers/${id}`
   }
 };
 

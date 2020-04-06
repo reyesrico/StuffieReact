@@ -6,7 +6,7 @@ import Auth from './Auth';
 import Login from './Login';
 import Register from './Register';
 
-class Routes extends Component {  
+class Routes extends Component<any, any> {  
   render() {
     return (
       <Switch>

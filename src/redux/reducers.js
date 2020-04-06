@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
+import { REVOKE_USER } from './constants';
+import user from './user/reducer';
 import categories from './categories/reducer';
 import friends from './friends/reducer';
 import products from './products/reducer';
 import subcategories from './subcategories/reducer';
 
-const REVOKE_USER = 'STUFFIE::REVOKE_USER';
 
 const appReducer = combineReducers({
+  user,
   categories,
   friends,
   products,

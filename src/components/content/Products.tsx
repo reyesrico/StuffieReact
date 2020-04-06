@@ -19,10 +19,6 @@ class Products extends Component<ProductsProps, any> {
   render() {
     const { categories, products, user } = this.props;
 
-    if (!products) {
-      return <div>No Stuff! Add Products!</div>
-    }
-
     return (
       <div className="products">
         <div className="products__title">
@@ -32,26 +28,29 @@ class Products extends Component<ProductsProps, any> {
           </div>
         </div>
         <hr />
-        {
-          categories.map((category: Category) => {
-            if (!products[category.id as number] || !products[category.id as number].length) return (<div key={category.id}></div>);
+        {!products && (<div>No Stuff! Add Products!</div>)}
+        {products &&
+          (<div>
+            {categories.map((category: Category) => {
+              if (!products[category.id as number] || !products[category.id as number].length) return (<div key={category.id}></div>);
 
-            return (
-              <div key={category.id}>
-                <h4>{category.name}</h4>
-                <ul>
-                  {map(products[category.id as number], (object: Stuff) => {
-                    return (
-                      <li key={object.id}><Link to={`/product/${object.id}`}>{object.name}</Link></li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )
-          })
+              return (
+                <div key={category.id}>
+                  <h4>{category.name}</h4>
+                  <ul>
+                    {map(products[category.id as number], (object: Stuff) => {
+                      return (
+                        <li key={object.id}><Link to={`/product/${object.id}`}>{object.name}</Link></li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              )
+            })}
+            <hr />
+            <button onClick={event => this.generateReport(event)}>Generate Report</button>
+          </div>)
         }
-        <hr />
-        <button onClick={event => this.generateReport(event)}>Generate Report</button>
       </div>
     );
   }

@@ -12,6 +12,8 @@ class Menu extends Component<MenuProps, MenuState> {
 
     if (!categories) return;
 
+    if (!products) return;
+
     return categories
             .filter((category: Category) => products[category.id] && products[category.id].length)
             .map(category => {
@@ -24,16 +26,14 @@ class Menu extends Component<MenuProps, MenuState> {
   }
 
   render() {
-    const { t } = this.props;
+    const { products, t } = this.props;
 
     return (
       <div>
         <div className='menu__title'>{t('Summary')}</div>
+        {!products && <div>No products</div>}
         <div className="menu__list">
           { this.renderCategories() }
-        </div>
-        <div className='searchBarGroup'>
-          {/* <SearchBar categories={categories} /> */}
         </div>
       </div>
     );

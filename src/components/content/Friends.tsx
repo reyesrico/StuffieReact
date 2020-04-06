@@ -1,11 +1,10 @@
-import React, { Component, RefObject } from 'react';
+import React, { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
-import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
 import User from '../types/User';
-import { addFriend, deleteRequest, getStuffiers, getFriendsRequests, requestToBeFriend } from '../../services/stuffier';
+import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
 import { mapFriends, mapIds } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
 import './Friends.scss';
@@ -15,27 +14,28 @@ class Friends extends Component<FriendsProps, any> {
 
   state = {
     fullFriends: [],
-    friendsRequests: [],
+    requests: [],
     emailToRequest: '',
     message: null,
     textfield: null
   };
 
   componentDidMount() {
-    const { friends, user } = this.props;
+    const { friends, friendsRequests } = this.props;
     const { fullFriends } = this.state;
 
-    if (friends && !fullFriends.length) {
-      console.log(friends);
-      Promise.all([getStuffiers(mapFriends(friends)), getFriendsRequests(user.email)])
-      .then((values: any) => {
-        this.setState({ fullFriends: values[0].data });
-
-        if (values[1].data.length > 0) {
-          getStuffiers(mapIds(values[1].data))
-          .then((res: any) => this.setState({ friendsRequests: res.data }))
-        }
+    if (friends.length > 0 && fullFriends.length === 0) {
+      getStuffiers(mapFriends(friends)).then((res: any) => {
+        this.setState({ fullFriends: res.data });
       });
+    }
+
+    if (friendsRequests.length > 0) {
+      getStuffiers(mapIds(friendsRequests))
+      .then(res => {
+        console.log(res);
+        this.setState({ requests: res.data });
+      })
     }
   }
 
@@ -57,17 +57,17 @@ class Friends extends Component<FriendsProps, any> {
   }
 
   renderRequests = () => {
-    const { friendsRequests } = this.state;
+    const { requests } = this.state;
 
     return (
       <div className="friends__requests">
         <hr />
         <h3 className="friends__title">
           <div>Requests</div>
-          <div className="friends__warning">{friendsRequests.length}</div>
+          <div className="friends__warning">{requests.length}</div>
         </h3>
         <ul>
-          {friendsRequests.map((friend: User, index: number) => {
+          {requests.map((friend: User, index: number) => {
             return (
               <li className="friends__request" key={index}>
                 <div className="friends__request-text">
@@ -98,9 +98,9 @@ class Friends extends Component<FriendsProps, any> {
 
   render() {
     const { t, user } = this.props;
-    const { friendsRequests, fullFriends, message, emailToRequest } = this.state;
+    const { requests, fullFriends, message, emailToRequest } = this.state;
 
-    if (!fullFriends.length) return (<div className="friends__loading"><Loading size="xl" message="Loading Friends" /></div>);
+    console.log(requests);
 
     return (
       <div className="friends">
@@ -108,7 +108,7 @@ class Friends extends Component<FriendsProps, any> {
         <ul>
           {fullFriends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
-        {friendsRequests.length > 0 && this.renderRequests()}
+        {requests.length > 0 && this.renderRequests()}
         <hr />
         <div>
           <h3 className="friends__title">{t('Add-Friend')}</h3>

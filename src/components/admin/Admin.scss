@@ -7,3 +7,25 @@
 .admin__link {
   @include section-button;
 }
+
+.admin__warning {
+  @include warning;
+}
+
+.admin__title {
+  @include flex(row, flex-start, center);
+  @include margin(8px, vertical);
+}
+
+.admin__request {
+  @include flex(row, space-between, center);
+  @include margin(8px, vertical);
+  @include border(all, $blue);
+  @include padding(4px, vertical);
+  @include padding(8px, horizontal);
+}
+
+.admin__request-button {
+  @include margin(8px, left);
+  width: 80px;
+}

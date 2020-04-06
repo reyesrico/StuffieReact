@@ -14,7 +14,7 @@ export default (state = [], action) => {
         action.payload,
       ];
     case PRODUCT_FETCHED:
-      return action.payload;
+      return action.payload || null;
     case PRODUCTS_IDS_FETCHED:
       return map(action.payload, row => row.id);
     case PRODUCTS_FETCHED:

@@ -1,4 +1,5 @@
 import FriendProducts from '../types/FriendProducts';
+import FriendRequest from '../types/FriendRequest';
 import ProductsMap from '../types/ProductsMap';
 import User from '../types/User';
 import Subcategory from '../types/Subcategory';
@@ -25,6 +26,7 @@ export interface ContentState {
 export interface FriendsProps {
   t: Function,
   friends: any,
+  friendsRequests: FriendRequest[],
   user: User
 }
 

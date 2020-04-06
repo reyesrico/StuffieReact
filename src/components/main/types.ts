@@ -10,7 +10,8 @@ export interface MainRoutesProps {
   categories: Category[],
   subcategories: Subcategory[],
   stuff: any,
-  friends: any
+  friends: any,
+  friendsRequests: FriendRequest[],
 }
 
 export interface FetchDataProps {
@@ -19,7 +20,8 @@ export interface FetchDataProps {
   fetchFriends: Function,
   fetchProducts: Function,
   fetchProductsId: Function, 
-  fetchSubCategories: Function  
+  fetchSubCategories: Function,
+  setUser: Function
 }
 
 export interface MainProps {
@@ -30,6 +32,7 @@ export interface MainProps {
   stuff: any,
   friends: any,
   friendsRequests: FriendRequest[],
+  setUser: Function,
   t: Function
 }
 
@@ -39,7 +42,10 @@ export interface AuthState {
 }
 
 export interface LoginProps {
-  history: any
+  fetchUser: Function,
+  history: any,
+  loginUser: Function,
+  setUser: Function
 }
 
 export interface LoginState {
@@ -49,5 +55,5 @@ export interface LoginState {
 }
 
 export interface RegisterProps {
-  history: any;
+  setUser: Function
 }

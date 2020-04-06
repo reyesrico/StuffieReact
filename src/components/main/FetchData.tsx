@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
 import Main from './Main';
 import Loading from '../shared/Loading';
 import { FetchDataProps } from './types';
 import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
-import { mapIds } from '../helpers/UserHelper';
 // TBR
-import { getFriendsRequests } from '../../services/stuffier';
+import { getFriendsRequests, getUserRequests } from '../../services/stuffier';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
@@ -21,20 +19,25 @@ class FetchData extends Component<FetchDataProps, any> {
     friends: null,
     stuff: null,
     objects: null,
-    products: [],
+    products: null,
     subcategories: [],
     isLoading: true,
     friendsRequests: []
   };
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     const { user, fetchProductsId, fetchCategories, fetchSubCategories, fetchFriends, fetchProducts } = this.props;
+
     let promises = [
       fetchProductsId(user.id),         // values[0]
       fetchCategories(),                // values[1]
       fetchSubCategories(),             // values[2]
       fetchFriends(user.email),         // values[3]
-      getFriendsRequests(user.email)    // values[4]
+      getFriendsRequests(user.email),   // values[4]
     ];
 
     // Fetching values that don't depend on any.
@@ -59,8 +62,9 @@ class FetchData extends Component<FetchDataProps, any> {
     .finally(() => this.setState({ isLoading: false }));
   }
 
+
   render() {
-    const { user } = this.props;
+    const { user, setUser } = this.props;
     const { categories, friends, friendsRequests, products, stuff, subcategories, isLoading } = this.state;
 
     if (isLoading) {
@@ -80,6 +84,7 @@ class FetchData extends Component<FetchDataProps, any> {
         stuff={stuff}
         subcategories={subcategories}
         friendsRequests={friendsRequests}
+        setUser={setUser}
       />);
   }
 }

@@ -30,7 +30,7 @@ class Register extends Component<RegisterProps, any> {
   }
 
   handleSubmit = (event: React.FormEvent<EventTarget>) => {
-    const { history } = this.props;
+    const { setUser } = this.props;
     const { email, password, firstName, lastName } = this.state;
     const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
 
@@ -39,16 +39,12 @@ class Register extends Component<RegisterProps, any> {
     registerStuffier(user)
     .then(() => loginStuffier(email, password))
     .then(res => {
-      const user = res.data[0].email;
-      localStorage.setItem('username', user);
-      this.setState({ isLoading: false });
-      alert("Login Successful using RestDBIO");
-      history.push('/');
+      localStorage.setItem('username', res.data[0].email);
+      alert("Register Successful");
+      setUser({ ...res.data[0] });
     })
-    .catch(error => {
-      console.log(error);
-      this.setState({ isLoading: false });
-    });
+    .catch(error => console.log(error))
+    .finally(() => this.setState({ isLoading: false }));
   }
 
   render() {

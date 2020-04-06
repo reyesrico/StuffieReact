@@ -37,7 +37,7 @@ class Product extends Component<ProductProps, ProductState> {
   }
 
   render() {
-    const { product } = this.state;
+    const { categoryName, subcategoryName, product } = this.state;
 
     if (!product) return <Loading size="lg" message="Loading product..." />;
 
@@ -53,12 +53,8 @@ class Product extends Component<ProductProps, ProductState> {
             height="200"
             width="100" />
         <hr />
-        <div>
-          Category: { this.state.categoryName }
-        </div>
-        <div>
-          Subcategory: { this.state.subcategoryName }
-        </div>
+        {categoryName && (<div>Category: { categoryName } </div>)}
+        {subcategoryName && (<div>Subcategory: { subcategoryName } </div>)}
       </div>
     );
   }

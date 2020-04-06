@@ -22,6 +22,7 @@
 
 .register__button {
   @include flex(row, space-between, center);
+  @include margin(20px, top);
 }
 
 .register__loading {

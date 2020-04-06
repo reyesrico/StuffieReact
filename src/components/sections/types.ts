@@ -27,9 +27,7 @@ export interface ProductProps {
 
 export interface ProductsProps {
   categories: Category[],
-  products: {
-    [id: number]: Stuff[],
-  },
+  products: ProductsMap,
   user: User,
 }
 
@@ -73,11 +71,13 @@ export interface MenuState {
 }
 
 export interface HeaderProps {
+  logout: Function,
   friendsRequests: FriendRequest[],
   products: ProductsMap,
   i18n: any,
   user: User,
   history: any,
+  setUser: Function,
   withRouter: Function,
   t: Function,
 }

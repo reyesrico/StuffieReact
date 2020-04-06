@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
 import config from '../../services/config';
-import { loginStuffier } from '../../services/stuffier';
 import { LoginProps } from './types';
 import './Login.scss';
 
@@ -25,29 +24,28 @@ class Login extends Component<LoginProps, any> {
   }
 
   onClick = (event: any) => {
-    const { history } = this.props;
+    const { fetchUser, loginUser, setUser } = this.props;
     const { email, password } = this.state;
 
     event.preventDefault();
 
-    loginStuffier(email, password)
-      .then(res => {
-        console.log(res);
-        const user = res.data[0].email;
-        localStorage.setItem('username', user);
+    loginUser(email, password)
+      .then((response: any) => fetchUser(response.data[0].email))
+      .then((res: any) => {
+        const picture = localStorage.getItem('picture');
+        localStorage.setItem('username', res.data[0].email);
         alert("Login Successful using RestDBIO");
-        history.push('/');
-      })
-      .catch(error => {
-        console.log(error);
+        setUser({ picture, ...res.data[0] });
+      }).catch((err: any) => {
+        this.setState({ error: String(err) });
       });
   }
 
   responseFacebook = (response: FacebookUser) => {
     const { history } = this.props;
 
+    // TBR
     console.log(response);
-    localStorage.setItem('username', response.email);
     localStorage.setItem('picture', response.picture.data.url);
     history.push('/');
   }

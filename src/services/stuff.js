@@ -19,9 +19,13 @@ export const getStuff = id => (
   axios.get(routes.stuff.detail(id), { headers: config.headers })
 );
 
-export const getListStuff = ids => (
-  axios.get(routes.stuff.listDetail(ids), { headers: config.headers })
-);
+export const getListStuff = ids => {
+  if (ids.length) {
+    return axios.get(routes.stuff.listDetail(ids), { headers: config.headers });
+  }
+
+  return Promise.resolve([]);
+};
 
 export const getCategories = (token = null) => (
   axios.get(routes.category.list(), { headers: config.headers, cancelToken: token })

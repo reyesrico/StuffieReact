@@ -13,12 +13,12 @@ import './Main.scss';
 
 class Main extends Component<MainProps, any> {
   render() {
-    const { user, categories, friends, friendsRequests, products, stuff, subcategories, t } = this.props;
+    const { user, categories, friends, friendsRequests, products, setUser, stuff, subcategories, t } = this.props;
 
     return (
       <div className="stuffie">
         <div className="stuffie__header">
-          <Header user={user} products={products} friendsRequests={friendsRequests}/>
+          <Header user={user} products={products} friendsRequests={friendsRequests} setUser={setUser} />
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
@@ -30,6 +30,7 @@ class Main extends Component<MainProps, any> {
               stuff={stuff}
               categories={categories}
               friends={friends}
+              friendsRequests={friendsRequests}
               products={products}
               subcategories={subcategories} />
           </div>

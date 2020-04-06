@@ -1,4 +1,5 @@
 export default interface User {
+  _id?: number,
   id?: number,
   email?: string,
   password?: string,

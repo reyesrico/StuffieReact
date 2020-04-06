@@ -25,7 +25,7 @@ export const getLastStuffierId = () => (
 export const registerStuffier = (user) => {
   return getLastStuffierId().then(res => {
     let id = Object.values(res.data)[0] + 1;
-    return axios.post(routes.user.registerUser(), { ...user, id }, { headers: config.headers });
+    return axios.post(routes.user.registerUser(), { ...user, id, request: true }, { headers: config.headers });
   });
 };
 
@@ -44,4 +44,12 @@ export const deleteRequest = (email_stuffier, id_friend) => {
 
 export const addFriend = (email_stuffier, id_friend) => (
   axios.post(routes.user.friend(), { email_stuffier, id_friend }, { headers: config.headers })
+);
+
+export const getUserRequests = () => (
+  axios.get(routes.user.userRequests(), { headers: config.headers })
+);
+
+export const deleteUserRequest = user => (
+  axios.put(routes.user.deleteUserRequest(user._id), { ...user, request: false }, { headers: config.headers })
 );
