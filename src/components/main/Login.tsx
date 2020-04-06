@@ -36,18 +36,24 @@ class Login extends Component<LoginProps, any> {
         localStorage.setItem('username', res.data[0].email);
         alert("Login Successful using RestDBIO");
         setUser({ picture, ...res.data[0] });
-      }).catch((err: any) => {
-        this.setState({ error: String(err) });
-      });
+      })
+      .catch((err: any) => this.setState({ error: String(err) }));
   }
 
   responseFacebook = (response: FacebookUser) => {
-    const { history } = this.props;
+    const { fetchUser, setUser } = this.props;
 
-    // TBR
-    console.log(response);
-    localStorage.setItem('picture', response.picture.data.url);
-    history.push('/');
+    if (response) {
+      fetchUser(response.email)
+      .then((res: any) => {
+        const picture = response.picture.data.url;
+        localStorage.setItem('picture', picture);
+        localStorage.setItem('username', res.data[0].email);
+        alert("Login Successful using RestDBIO");
+        setUser({ picture, ...res.data[0] });
+      })
+      .catch((err: any) => this.setState({ error: String(err) }));
+    }
   }
 
   render() {
@@ -66,15 +72,15 @@ class Login extends Component<LoginProps, any> {
             name="password"
             onChange={(event: any) => this.handleChange(event, 'password')} />
           <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
-          <hr className="login__hr" />
+        </form>
+        <hr className="login__hr" />
           <FacebookLogin
             appId={config.fb.appId}
             autoLoad={loginFB}
             fields="name,email,picture"
             scope="public_profile,user_friends"
             onClick={(event) => event && this.setState({ loginFB: true })}
-            callback={this.responseFacebook} />          
-        </form>
+            callback={this.responseFacebook} />
       </div>
     );
   }

@@ -18,12 +18,7 @@ class Header extends Component<HeaderProps, any> {
   componentDidMount() {
     const { user } = this.props;
     
-    if (user.admin) {
-      getUserRequests().then(res => {
-        console.log(res);
-        this.setState({ userRequests: res.data });
-      });
-    }
+    user.admin && getUserRequests().then(res => this.setState({ userRequests: res.data }));
   }
 
   handleLogout = (event: any) => {
