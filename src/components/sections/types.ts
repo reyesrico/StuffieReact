@@ -72,6 +72,7 @@ export interface MenuState {
 
 export interface HeaderProps {
   logout: Function,
+  fetchUserRequests: Function,
   friendsRequests: FriendRequest[],
   products: ProductsMap,
   i18n: any,

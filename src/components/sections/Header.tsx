@@ -7,7 +7,7 @@ import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 import { HeaderProps, HeaderState } from './types';
 import { logout } from '../../redux/user/actions';
-import { getUserRequests } from '../../services/stuffier';
+import { fetchUserRequests } from '../../redux/user/actions';
 import './Header.scss';
 
 class Header extends Component<HeaderProps, any> {
@@ -16,9 +16,9 @@ class Header extends Component<HeaderProps, any> {
   };
 
   componentDidMount() {
-    const { user } = this.props;
+    const { fetchUserRequests, user } = this.props;
     
-    user.admin && getUserRequests().then(res => this.setState({ userRequests: res.data }));
+    user.admin && fetchUserRequests().then((res: any) => this.setState({ userRequests: res.data }));
   }
 
   handleLogout = (event: any) => {
@@ -71,6 +71,7 @@ class Header extends Component<HeaderProps, any> {
 };
 
 const mapDispatchProps = {
+  fetchUserRequests,
   logout
 };
 

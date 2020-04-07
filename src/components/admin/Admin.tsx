@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import Button from '../shared/Button';
 import User from '../types/User';
 import { Link } from 'react-router-dom';
-import { getUserRequests, deleteUserRequest } from '../../services/stuffier';
+import { fetchUserRequests, deleteRequest } from '../../redux/user/actions';
 import './Admin.scss';
 
 class Admin extends Component<any, any> {
@@ -12,12 +13,15 @@ class Admin extends Component<any, any> {
   };
 
   componentDidMount() {
-    getUserRequests().then(res => this.setState({ userRequests: res.data }));
+    const { fetchUserRequests } = this.props;
+    fetchUserRequests().then((res: any) => this.setState({ userRequests: res.data }));
   }
 
   executeRequest = (user: User, isAccepted = false) => {
+    const { deleteRequest } = this.props;
+  
     if (isAccepted) {
-      deleteUserRequest(user).then((res: any) => {
+      deleteRequest(user).then((res: any) => {
         console.log(res);
         alert('Request Accepted and Deleted');
       });
@@ -67,4 +71,9 @@ class Admin extends Component<any, any> {
   }
 }
 
-export default Admin;
+const mapDispatchProps = {
+  fetchUserRequests,
+  deleteRequest
+};
+
+export default connect(null, mapDispatchProps)(Admin);
