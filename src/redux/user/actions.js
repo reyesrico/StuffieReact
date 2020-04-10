@@ -5,7 +5,12 @@ import { LOGIN_USER_FETCHED, USER_FETCHED, USER_REQUESTS_FETCHED, USER_REQUEST_D
 import { loginStuffier, getStuffier, getUserRequests, deleteUserRequest } from '../../services/stuffier';
 
 const loginUserFetched = makeStandardActionCreator(LOGIN_USER_FETCHED);
-export const loginUser = makePaginatedApiActionCreator(loginStuffier, loginUserFetched);
+export const loginUser = (email, password) => dispatch => {
+  return loginStuffier(email, password).then(data  => {
+    dispatch(loginUserFetched(data, { email, password }));
+    return Promise.resolve(data);
+  });
+};
 
 const userFetched = makeStandardActionCreator(USER_FETCHED);
 export const fetchUser = makePaginatedApiActionCreator(getStuffier, userFetched);

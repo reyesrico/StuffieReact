@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
+import crypto from '../../config/crypto';
 
-class Test extends Component {
+class Test extends Component<any, any> {
 
+  authenticate = () => {
+    // TEST - ENCRYPT
+    console.log(`secreto: ${crypto.encrypt("secreto")}`);
+    console.log(`mario: ${crypto.encrypt("mario")}`);
+    console.log(`doc: ${crypto.encrypt("secrdoceto")}`);
+    console.log(`merol: ${crypto.encrypt("merol")}`);
+  }
 
   getStuff = () => {
     let stuff = [
@@ -11,8 +19,6 @@ class Test extends Component {
       { id: 3, name: 'Carlos Reyes 3' },
     ];
 
-    console.log(stuff);
-
     let r = [1, 1, 2, 3, 4, 5];
 
     return r.filter((item, index) => {
@@ -20,11 +26,12 @@ class Test extends Component {
     });
   }
 
-  reverseStuff(name) {
+  reverseStuff(name: string) {
     return name.split('').reverse().join('');
   }
 
   render() {
+    this.authenticate();
     const x = this.getStuff();
     const a = this.reverseStuff('unodostres');
     return (

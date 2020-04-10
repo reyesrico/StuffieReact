@@ -14,6 +14,8 @@ export const makeStandardActionCreator = (ACTION_TYPE) => {
   });
 };
 
+// TODO: Make all to use this for args!!
+// CREATE FUNCTION TO RECEIVE ARRAY OF ARGS AND NOT ONLY ONE
 // To make action creators that make an API call and dispatch an action creator on success with the response.
 // Doesn't handle dispatching for errors.
 export const makeApiActionCreator = (apiCall, successActionCreator) => {

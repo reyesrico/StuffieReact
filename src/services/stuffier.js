@@ -1,6 +1,7 @@
 import axios from 'axios';
 import routes from './routes';
 import config from './config';
+import crypto from '../config/crypto';
 
 export const getStuffier = email => (
   axios.get(routes.user.detail(email), { headers: config.headers })
@@ -15,7 +16,7 @@ export const getFriends = email => (
 );
 
 export const loginStuffier = (email, password) => (
-  axios.get(routes.user.loginUser(email, password), { headers: config.headers })
+  axios.get(routes.user.loginUser(email, crypto.encrypt(password)), { headers: config.headers })
 );
 
 export const getLastStuffierId = () => (
@@ -23,9 +24,10 @@ export const getLastStuffierId = () => (
 );
 
 export const registerStuffier = (user) => {
+  const password = crypto.encrypt(user.password);
   return getLastStuffierId().then(res => {
-    let id = Object.values(res.data)[0] + 1;
-    return axios.post(routes.user.registerUser(), { ...user, id, request: true }, { headers: config.headers });
+    const id = Object.values(res.data)[0] + 1;
+    return axios.post(routes.user.registerUser(), { ...user, password, id, request: true }, { headers: config.headers });
   });
 };
 

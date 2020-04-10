@@ -15,21 +15,14 @@ class Login extends Component<LoginProps, any> {
     loginFB: false
   }
 
-  handleChange = (event: any, name: string) => {
-    if (name === 'email') {
-      this.setState({ email: event });
-    } else if( name === 'password') {
-      this.setState({ password: event });
-    }
-  }
-
   onClick = (event: any) => {
     const { fetchUser, loginUser, setUser } = this.props;
     const { email, password } = this.state;
 
     event.preventDefault();
 
-    loginUser(email, password)
+    if (email && password) {
+      loginUser(email, password)
       .then((response: any) => fetchUser(response.data[0].email))
       .then((res: any) => {
         const picture = localStorage.getItem('picture');
@@ -38,6 +31,7 @@ class Login extends Component<LoginProps, any> {
         setUser({ picture, ...res.data[0] });
       })
       .catch((err: any) => this.setState({ error: String(err) }));
+    }
   }
 
   responseFacebook = (response: FacebookUser) => {
@@ -66,11 +60,11 @@ class Login extends Component<LoginProps, any> {
           <TextField
             type="email"
             name="email"
-            onChange={(event: any) => this.handleChange(event, 'email')} />
+            onChange={(email: string) => this.setState({ email })} />
           <TextField
             type="password"
             name="password"
-            onChange={(event: any) => this.handleChange(event, 'password')} />
+            onChange={(password: string) => this.setState({ password })} />
           <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
         </form>
         <hr className="login__hr" />

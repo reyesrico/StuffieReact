@@ -43,7 +43,7 @@ class Register extends Component<RegisterProps, any> {
       alert("Register Successful");
       setUser({ ...res.data[0] });
     })
-    .catch(error => console.log(error))
+    .catch(error => alert(error))
     .finally(() => this.setState({ isLoading: false }));
   }
 
