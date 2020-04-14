@@ -19,9 +19,10 @@ export const makeStandardActionCreator = (ACTION_TYPE) => {
 // To make action creators that make an API call and dispatch an action creator on success with the response.
 // Doesn't handle dispatching for errors.
 export const makeApiActionCreator = (apiCall, successActionCreator) => {
-  return args => dispatch => {
-    return apiCall(args).then(({ data }) => {
-      dispatch(successActionCreator(data, args));
+  return (...args) => dispatch => {
+    return apiCall(...args).then(({ data }) => {
+      dispatch(successActionCreator(data, {...args}));
+      return Promise.resolve(data);
     });
   };
 };

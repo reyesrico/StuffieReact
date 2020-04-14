@@ -7,7 +7,7 @@ import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 import { HeaderProps, HeaderState } from './types';
 import { logout } from '../../redux/user/actions';
-import { fetchUserRequests } from '../../redux/user/actions';
+import { fetchUserRequests } from '../../redux/user-requests/actions';
 import './Header.scss';
 
 class Header extends Component<HeaderProps, any> {

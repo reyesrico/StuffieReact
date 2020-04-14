@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux';
 import { REVOKE_USER } from './constants';
-import user from './user/reducer';
 import categories from './categories/reducer';
 import friends from './friends/reducer';
 import products from './products/reducer';
 import subcategories from './subcategories/reducer';
+import user from './user/reducer';
+import userRequests from './user-requests/reducer';
 
 
 const appReducer = combineReducers({
   user,
+  userRequests,
   categories,
   friends,
   products,

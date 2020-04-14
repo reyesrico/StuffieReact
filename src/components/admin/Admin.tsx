@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Button from '../shared/Button';
 import User from '../types/User';
 import { Link } from 'react-router-dom';
-import { fetchUserRequests, deleteRequest } from '../../redux/user/actions';
+import { fetchUserRequests, deleteRequest } from '../../redux/user-requests/actions';
 import './Admin.scss';
 
 class Admin extends Component<any, any> {
@@ -14,16 +14,20 @@ class Admin extends Component<any, any> {
 
   componentDidMount() {
     const { fetchUserRequests } = this.props;
-    fetchUserRequests().then((res: any) => this.setState({ userRequests: res.data }));
+    fetchUserRequests().then((res: any) => this.setState({ userRequests: res }));
   }
 
   executeRequest = (user: User, isAccepted = false) => {
     const { deleteRequest } = this.props;
   
     if (isAccepted) {
-      deleteRequest(user).then((res: any) => {
-        console.log(res);
+      deleteRequest(user).then((res: User) => {
         alert('Request Accepted and Deleted');
+        const userRequests = this.state.userRequests.filter((request: User) => {
+          return request._id !== res._id;
+        });
+
+        this.setState({ userRequests });
       });
     }
   }
