@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
+import State from '../../redux/State';
 import { HeaderProps, HeaderState } from './types';
 import { logout } from '../../redux/user/actions';
 import { fetchUserRequests } from '../../redux/user-requests/actions';
@@ -16,9 +17,17 @@ class Header extends Component<HeaderProps, any> {
   };
 
   componentDidMount() {
-    const { fetchUserRequests, user } = this.props;
+    const { fetchUserRequests, user, userRequests } = this.props;
     
-    user.admin && fetchUserRequests().then((res: any) => this.setState({ userRequests: res.data }));
+    if (userRequests && userRequests.length === 0) {
+      user.admin && fetchUserRequests().then((res: any) => this.setState({ userRequests: res }));
+    } else {
+      this.setState({ userRequests });
+    }
+  }
+
+  componentWillReceiveProps(nextProps: HeaderProps) {
+    this.setState({ userRequests: nextProps.userRequests });
   }
 
   handleLogout = (event: any) => {
@@ -70,9 +79,13 @@ class Header extends Component<HeaderProps, any> {
   }
 };
 
+const mapStateToProps = (state: State) => ({
+  userRequests: state.userRequests,
+});
+
 const mapDispatchProps = {
   fetchUserRequests,
   logout
 };
 
-export default connect(null, mapDispatchProps)(withTranslation()<any>(withRouter<any, React.ComponentClass<any>>(Header)));
+export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(withRouter<any, React.ComponentClass<any>>(Header)));

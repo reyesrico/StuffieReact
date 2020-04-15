@@ -81,6 +81,7 @@ export interface HeaderProps {
   setUser: Function,
   withRouter: Function,
   t: Function,
+  userRequests: User[]
 }
 
 export interface HeaderState {
