@@ -62,7 +62,7 @@ class Auth extends Component<any, any> {
     }
 
     if (!isEmpty(user)) {
-      return <FetchData user={user} setUser={this.setUser}/>
+      return <FetchData setUser={this.setUser}/>
     }
   }
 };

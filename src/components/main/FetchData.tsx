@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Main from './Main';
 import Loading from '../shared/Loading';
+import Main from './Main';
+import State from '../../redux/State';
 import { FetchDataProps } from './types';
 import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
-// TBR
-import { getFriendsRequests, getUserRequests } from '../../services/stuffier';
+
+import { getFriendsRequests } from '../../services/stuffier';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
@@ -15,12 +16,9 @@ import './FetchData.scss';
 
 class FetchData extends Component<FetchDataProps, any> {
   state = {
-    categories: [],
-    friends: null,
     stuff: null,
     objects: null,
     products: null,
-    subcategories: [],
     isLoading: true,
     friendsRequests: []
   };
@@ -45,9 +43,9 @@ class FetchData extends Component<FetchDataProps, any> {
     .then((values: any) => {
       this.setState({
         stuff: values[0].data,
-        categories: values[1].data,
-        subcategories: values[2].data,
-        friends: values[3].data,
+        // categories: values[1].data,
+        // subcategories: values[2].data,
+        // friends: values[3].data,
         friendsRequests: values[4].data
       });
       return Promise.resolve(values[0].data);
@@ -57,15 +55,15 @@ class FetchData extends Component<FetchDataProps, any> {
       this.setState({ objects: res.data });
       return Promise.resolve(res.data);
     })
-    .then((objects: any) => this.setState({ products: getProductsMap(this.state.categories, objects) }))
+    .then((objects: any) => this.setState({ products: getProductsMap(this.props.categories, objects) }))
     .catch((error: any) => console.log(error))
     .finally(() => this.setState({ isLoading: false }));
   }
 
 
   render() {
-    const { user, setUser } = this.props;
-    const { categories, friends, friendsRequests, products, stuff, subcategories, isLoading } = this.state;
+    const { user, setUser, categories, friends, subcategories } = this.props;
+    const { friendsRequests, products, stuff,  isLoading } = this.state;
 
     if (isLoading) {
       return (
@@ -89,6 +87,15 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 }
 
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  userRequests: state.userRequests,
+  categories: state.categories,
+  subcategories: state.subcategories,
+  friends: state.friends,
+  // products: any
+});
+
 const mapDispatchProps = {
   fetchCategories,
   fetchFriends,
@@ -98,4 +105,4 @@ const mapDispatchProps = {
 };
 
 
-export default connect(null, mapDispatchProps)(FetchData);
+export default connect(mapStateToProps, mapDispatchProps)(FetchData);

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
-import { MenuProps, MenuState } from './types';
 import Category from '../types/Category';
+import State from '../../redux/State';
+import { MenuProps, MenuState } from './types';
 import './Menu.scss';
 
 class Menu extends Component<MenuProps, MenuState> {
@@ -40,4 +42,10 @@ class Menu extends Component<MenuProps, MenuState> {
   }
 };
 
-export default withTranslation()<any>(Menu);
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  categories: state.categories,
+  // products: any
+});
+
+export default connect(mapStateToProps, {})(withTranslation()<any>(Menu));

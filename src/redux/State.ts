@@ -1,6 +1,7 @@
 // Components for State
 import User from '../components/types/User';
 import Category from '../components/types/Category';
+import ProductsMap from '../components/types/ProductsMap';
 import SubCategory from '../components/types/Subcategory';
 
 export default interface State {
@@ -9,5 +10,5 @@ export default interface State {
   categories: Category[],
   subcategories: SubCategory[],
   friends: User[],
-  products: any
+  products: ProductsMap
 }

@@ -44,7 +44,9 @@ class Login extends Component<LoginProps, any> {
         localStorage.setItem('picture', picture);
         localStorage.setItem('username', res.data[0].email);
         alert("Login Successful using RestDBIO");
-        setUser({ picture, ...res.data[0] });
+        const x = res.data[0];
+        console.log(x)
+        setUser({ picture, ...x });
       })
       .catch((err: any) => this.setState({ error: String(err) }));
     }

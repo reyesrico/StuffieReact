@@ -22,7 +22,7 @@ class Main extends Component<MainProps, any> {
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
-            <Menu user={user} categories={categories} products={products} />
+            <Menu products={products} />
           </div>
           <div className="stuffie__content">
             <MainRoutes
@@ -40,7 +40,7 @@ class Main extends Component<MainProps, any> {
               <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
             </div>
             <div className="stuffie__apps">
-              <Apps user={user} />
+              <Apps />
             </div>
           </div>
         </div>

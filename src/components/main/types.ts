@@ -21,7 +21,11 @@ export interface FetchDataProps {
   fetchProducts: Function,
   fetchProductsId: Function, 
   fetchSubCategories: Function,
-  setUser: Function
+  setUser: Function,
+  userRequests: User[],
+  categories: Category[],
+  subcategories: Subcategory[],
+  friends: User[],
 }
 
 export interface MainProps {

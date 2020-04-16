@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { options } from '../../config/options';
 
 import Menu from '../shared/Menu';
+import State from '../../redux/State';
+import { AppsProps } from './types';
 import './Apps.scss';
 
-class Apps extends Component<any, any> {
+class Apps extends Component<AppsProps, any> {
   state = {
     lang: options[0]
   };
@@ -29,7 +32,6 @@ class Apps extends Component<any, any> {
   }
 
   render() {
-
     return (
       <div className="apps">
         <div className="apps__title">Apps &amp; extras</div>
@@ -50,4 +52,8 @@ class Apps extends Component<any, any> {
   }
 };
 
-export default withTranslation()<any>(withRouter<any, React.ComponentClass<any>>(Apps));
+const mapStateToProps = (state: State) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, {})(withTranslation()<any>(withRouter<any, React.ComponentClass<any>>(Apps)));
