@@ -78,7 +78,6 @@ export interface HeaderProps {
   i18n: any,
   user: User,
   history: any,
-  setUser: Function,
   withRouter: Function,
   t: Function,
   userRequests: User[]

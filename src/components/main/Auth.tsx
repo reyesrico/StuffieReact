@@ -6,15 +6,14 @@ import Loading from '../shared/Loading';
 import Login from './Login';
 import FetchData from './FetchData';
 import Register from './Register';
-import User from '../types/User';
-import { loginUser, fetchUser, logout } from '../../redux/user/actions';
+import State from '../../redux/State';
+import { fetchUser, logout } from '../../redux/user/actions';
 import './Auth.scss';
 
 class Auth extends Component<any, any> {
   state = {
     error: null,
-    isLoading: true,
-    user: {}
+    isLoading: true
   };
 
   componentDidMount() {
@@ -22,20 +21,15 @@ class Auth extends Component<any, any> {
 
     if(localStorage.getItem('username')) {
       fetchUser(localStorage.getItem('username'))
-      .then((res: any) => this.setState({ user: res.data[0] }))
       .finally(() => this.setState({ isLoading: false }));
     } else {
       this.setState({ isLoading: false });
     }
   }
 
-  setUser = (user: User) => {
-    this.setState({ user });
-  }
-
   render() {
-    const { loginUser, fetchUser } = this.props;
-    const { isLoading, user } = this.state;
+    const { user } = this.props;
+    const { isLoading } = this.state;
     const request = get(user, 'request');
 
     if (isLoading) {
@@ -54,22 +48,25 @@ class Auth extends Component<any, any> {
   
       return (
         <div className="auth">
-          <Register setUser={this.setUser} />
+          <Register />
           <div className="auth__line"></div>
-          <Login loginUser={loginUser} fetchUser={fetchUser} setUser={this.setUser}/>
+          <Login />
         </div>
       );
     }
 
     if (!isEmpty(user)) {
-      return <FetchData setUser={this.setUser}/>
+      return <FetchData />
     }
   }
 };
 
+const mapStateToProps = (state: State) => ({
+  user: state.user
+});
+
 const mapDispatchProps = {
-  loginUser,
-  fetchUser,
+  fetchUser
 };
 
-export default connect(null, mapDispatchProps)(Auth);
+export default connect(mapStateToProps, mapDispatchProps)(Auth);

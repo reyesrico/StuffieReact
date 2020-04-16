@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import Apps from '../sections/Apps';
+import Chat from '../sections/Chat';
 import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
-import Chat from '../sections/Chat';
+import State from '../../redux/State';
 
 import { MainProps } from './types'; 
 import './Main.scss';
 
 class Main extends Component<MainProps, any> {
   render() {
-    const { user, categories, friends, friendsRequests, products, setUser, stuff, subcategories, t } = this.props;
+    const { user, categories, friends, friendsRequests, products, stuff, subcategories, t } = this.props;
 
     return (
       <div className="stuffie">
         <div className="stuffie__header">
-          <Header user={user} products={products} friendsRequests={friendsRequests} setUser={setUser} />
+          <Header products={products} friendsRequests={friendsRequests} />
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
@@ -53,4 +55,8 @@ class Main extends Component<MainProps, any> {
   }
 }
 
-export default withTranslation()<any>(Main);
+const mapStateToProps = (state: State) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, {})(withTranslation()<any>(Main));

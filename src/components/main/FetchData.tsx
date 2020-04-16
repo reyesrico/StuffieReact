@@ -62,7 +62,7 @@ class FetchData extends Component<FetchDataProps, any> {
 
 
   render() {
-    const { user, setUser, categories, friends, subcategories } = this.props;
+    const { user, categories, friends, subcategories } = this.props;
     const { friendsRequests, products, stuff,  isLoading } = this.state;
 
     if (isLoading) {
@@ -75,14 +75,12 @@ class FetchData extends Component<FetchDataProps, any> {
 
     return (
       <Main
-        user={user}
         categories={categories}
         friends={friends}
         products={products}
         stuff={stuff}
         subcategories={subcategories}
         friendsRequests={friendsRequests}
-        setUser={setUser}
       />);
   }
 }

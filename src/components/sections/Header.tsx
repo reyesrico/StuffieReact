@@ -12,10 +12,6 @@ import { fetchUserRequests } from '../../redux/user-requests/actions';
 import './Header.scss';
 
 class Header extends Component<HeaderProps, any> {
-  state = {
-    userRequests: []
-  };
-
   componentDidMount() {
     const { fetchUserRequests, user, userRequests } = this.props;
     
@@ -26,23 +22,17 @@ class Header extends Component<HeaderProps, any> {
     }
   }
 
-  componentWillReceiveProps(nextProps: HeaderProps) {
-    this.setState({ userRequests: nextProps.userRequests });
-  }
-
   handleLogout = (event: any) => {
-    const { logout, history, setUser } = this.props;
+    const { logout, history } = this.props;
 
     event.preventDefault();
 
     logout();
-    setUser({});
     history.push('/');
   }
 
   render() {
-    const { userRequests } = this.state;
-    const { friendsRequests, products, t, user } = this.props;
+    const { friendsRequests, products, t, user, userRequests } = this.props;
 
     if (!t) return;
 
@@ -80,6 +70,7 @@ class Header extends Component<HeaderProps, any> {
 };
 
 const mapStateToProps = (state: State) => ({
+  user: state.user,
   userRequests: state.userRequests,
 });
 

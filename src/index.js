@@ -11,10 +11,8 @@ import './sass/main.scss';
 import './index.css';
 
 let middleware = [thunk];
-let composeEnhancers = compose;
+const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 middleware.push(require('redux-freeze'));
-composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || composeEnhancers;
-
 const store = createStore(reducersApp, composeEnhancers(applyMiddleware(...middleware)));
 
 ReactDOM.render(

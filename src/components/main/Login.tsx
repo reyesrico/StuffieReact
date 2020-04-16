@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import FacebookLogin from 'react-facebook-login';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
 import config from '../../services/config';
 import { LoginProps } from './types';
+import { addUserPicture, loginUser, fetchUser } from '../../redux/user/actions';
+
 import './Login.scss';
 
 class Login extends Component<LoginProps, any> {
@@ -16,7 +19,7 @@ class Login extends Component<LoginProps, any> {
   }
 
   onClick = (event: any) => {
-    const { fetchUser, loginUser, setUser } = this.props;
+    const { fetchUser, loginUser } = this.props;
     const { email, password } = this.state;
 
     event.preventDefault();
@@ -25,28 +28,23 @@ class Login extends Component<LoginProps, any> {
       loginUser(email, password)
       .then((response: any) => fetchUser(response.data[0].email))
       .then((res: any) => {
-        const picture = localStorage.getItem('picture');
         localStorage.setItem('username', res.data[0].email);
-        alert("Login Successful using RestDBIO");
-        setUser({ picture, ...res.data[0] });
+        alert("Login Successful using RestDBIO");``
       })
       .catch((err: any) => this.setState({ error: String(err) }));
     }
   }
 
   responseFacebook = (response: FacebookUser) => {
-    const { fetchUser, setUser } = this.props;
+    const { addUserPicture, fetchUser } = this.props;
 
     if (response) {
       fetchUser(response.email)
       .then((res: any) => {
         const picture = response.picture.data.url;
-        localStorage.setItem('picture', picture);
         localStorage.setItem('username', res.data[0].email);
+        addUserPicture(res.data[0], picture);
         alert("Login Successful using RestDBIO");
-        const x = res.data[0];
-        console.log(x)
-        setUser({ picture, ...x });
       })
       .catch((err: any) => this.setState({ error: String(err) }));
     }
@@ -82,4 +80,10 @@ class Login extends Component<LoginProps, any> {
   }
 }
 
-export default withRouter<any, React.ComponentClass<any>>(Login);
+const mapDispatchProps = {
+  addUserPicture,
+  loginUser,
+  fetchUser
+};
+
+export default connect(null, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(Login));

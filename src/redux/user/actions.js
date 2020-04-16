@@ -1,8 +1,8 @@
 import { makeStandardActionCreator } from '../action-helpers';
 
 import { REVOKE_USER } from '../constants';
-import { LOGIN_USER_FETCHED, USER_FETCHED } from './constants';
-import { loginStuffier, getStuffier } from '../../services/stuffier';
+import { LOGIN_USER_FETCHED, USER_FETCHED, USER_REGISTERED, USER_PICTURE_ADDED } from './constants';
+import { loginStuffier, getStuffier, registerStuffier } from '../../services/stuffier';
 
 export const loginUserFetched = makeStandardActionCreator(LOGIN_USER_FETCHED);
 export const loginUser = (email, password) => dispatch => {
@@ -19,6 +19,20 @@ export const fetchUser = (email) => dispatch => {   //makePaginatedApiActionCrea
     dispatch(userFetched(res.data[0], email));
     return Promise.resolve(res);
   });
+}
+
+const userRegistered = makeStandardActionCreator(USER_REGISTERED);
+export const registerUser = (user) => dispatch => {
+  return registerStuffier(user).then(() => {
+    dispatch(userRegistered(user, user.email));
+    return Promise.resolve(user);
+  });
+}
+
+const userPictureAdded = makeStandardActionCreator(USER_PICTURE_ADDED);
+export const addUserPicture = (user, picture) => dispatch => {
+  const facebookUser = { ...user, picture };
+  dispatch(userPictureAdded(facebookUser, facebookUser.email));
 }
 
 export const logout = () => {

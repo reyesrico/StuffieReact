@@ -74,7 +74,6 @@ export const getSearchResults = (searchText, products, token) => {
   let results = [];
 
   return Promise.all([getCategories(token), getSubCategories(token)]).then(values => {
-    console.log(values);
     values[0].data.forEach(c => {
       if (c.name.toLowerCase().includes(searchText)){
         results.push({ type: 'Category', name: c.name, id: c.id });

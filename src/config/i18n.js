@@ -26,8 +26,6 @@ i18n
     },
   }, (err, t) => {
     if (err) {
-      console.log(err);
-      console.log(t);
       console.info('i18n.language', i18n.language);
     }
   });

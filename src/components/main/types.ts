@@ -21,7 +21,6 @@ export interface FetchDataProps {
   fetchProducts: Function,
   fetchProductsId: Function, 
   fetchSubCategories: Function,
-  setUser: Function,
   userRequests: User[],
   categories: Category[],
   subcategories: Subcategory[],
@@ -36,7 +35,6 @@ export interface MainProps {
   stuff: any,
   friends: any,
   friendsRequests: FriendRequest[],
-  setUser: Function,
   t: Function
 }
 
@@ -46,10 +44,10 @@ export interface AuthState {
 }
 
 export interface LoginProps {
+  addUserPicture: Function,
   fetchUser: Function,
   history: any,
-  loginUser: Function,
-  setUser: Function
+  loginUser: Function
 }
 
 export interface LoginState {
@@ -59,5 +57,6 @@ export interface LoginState {
 }
 
 export interface RegisterProps {
-  setUser: Function
+  user: User
+  registerUser: Function
 }

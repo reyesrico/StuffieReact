@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
+import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import User from '../types/User';
 import { RegisterProps } from './types';
-import { loginStuffier } from '../../services/stuffier';
-import { registerStuffier } from '../../services/stuffier';
+import { registerUser } from '../../redux/user/actions';
 
 import './Register.scss';
 
@@ -30,20 +31,19 @@ class Register extends Component<RegisterProps, any> {
   }
 
   handleSubmit = (event: React.FormEvent<EventTarget>) => {
-    const { setUser } = this.props;
+    const { registerUser } = this.props;
     const { email, password, firstName, lastName } = this.state;
     const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
 
     event.preventDefault();
     this.setState({ isLoading: true });
-    registerStuffier(user)
-    .then(() => loginStuffier(email, password))
-    .then(res => {
-      localStorage.setItem('username', res.data[0].email);
+
+    registerUser(user)
+    .then((res: any) => {
+      localStorage.setItem('username', res.email);
       alert("Register Successful");
-      setUser({ ...res.data[0] });
     })
-    .catch(error => alert(error))
+    .catch((error: any) => alert(error))
     .finally(() => this.setState({ isLoading: false }));
   }
 
@@ -102,4 +102,12 @@ class Register extends Component<RegisterProps, any> {
   }
 }
 
-export default withRouter<any, React.ComponentClass<any>>(Register);
+const mapStateToProps = (state: State) => ({
+  user: state.user
+});
+
+const mapDispatchProps = {
+  registerUser
+};
+
+export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(Register));
