@@ -9,6 +9,7 @@ import { addProduct } from '../../redux/products/actions';
 import './AddProduct.scss';
 import Category from '../types/Category';
 import Product from '../types/Product';
+import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 
@@ -169,4 +170,10 @@ const mapDispatchProps = {
   addProduct,
 };
 
-export default connect(null, mapDispatchProps)(AddProduct);
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  categories: state.categories,
+  subcategories: state.subcategories
+});
+
+export default connect(mapStateToProps, mapDispatchProps)(AddProduct);

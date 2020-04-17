@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { filter, forEach, isEmpty, map } from 'lodash';
 import { getStuffiersList } from '../../services/stuff';
 import { getFriends } from '../../services/stuffier';
@@ -6,6 +7,7 @@ import { getFriends } from '../../services/stuffier';
 import FeedRow from './FeedRow';
 import FriendProducts from '../types/FriendProducts';
 import Loading from '../shared/Loading';
+import State from '../../redux/State';
 import { ContentProps, ContentState } from './types';
 import './Content.scss';
 
@@ -80,4 +82,9 @@ class Content extends Component<ContentProps, ContentState> {
   }
 };
 
-export default Content;
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  subcategories: state.subcategories
+});
+
+export default connect(mapStateToProps, {})(Content);

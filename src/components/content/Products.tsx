@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { map } from 'lodash';
+import { Link } from 'react-router-dom';
 
 import Category from '../types/Category';
+import State from '../../redux/State';
 import Stuff from '../types/Stuff';
-
 import { ProductsProps } from '../sections/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
 import './Products.scss';
@@ -56,4 +57,9 @@ class Products extends Component<ProductsProps, any> {
   }
 };
 
-export default Products;
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  categories: state.categories
+});
+
+export default connect(mapStateToProps, {})(Products);

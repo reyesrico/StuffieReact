@@ -7,9 +7,9 @@ import State from '../../redux/State';
 import { FetchDataProps } from './types';
 import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
 
-import { getFriendsRequests } from '../../services/stuffier';
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
+import { fetchFriendsRequests } from '../../redux/friends-requests/actions';
 import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
 import './FetchData.scss';
@@ -28,25 +28,27 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 
   fetchData = () => {
-    const { user, fetchProductsId, fetchCategories, fetchSubCategories, fetchFriends, fetchProducts } = this.props;
+    const { user, fetchProductsId, fetchCategories, fetchSubCategories,
+      fetchFriends, fetchProducts, fetchFriendsRequests } = this.props;
 
     let promises = [
       fetchProductsId(user.id),         // values[0]
       fetchCategories(),                // values[1]
       fetchSubCategories(),             // values[2]
       fetchFriends(user.email),         // values[3]
-      getFriendsRequests(user.email),   // values[4]
+      fetchFriendsRequests(user.email),   // values[4]
     ];
 
     // Fetching values that don't depend on any.
     Promise.all(promises)
     .then((values: any) => {
+      console.log(values);
       this.setState({
         stuff: values[0].data,
         // categories: values[1].data,
         // subcategories: values[2].data,
         // friends: values[3].data,
-        friendsRequests: values[4].data
+        // friendsRequests: values[4].data
       });
       return Promise.resolve(values[0].data);
     })
@@ -62,8 +64,7 @@ class FetchData extends Component<FetchDataProps, any> {
 
 
   render() {
-    const { user, categories, friends, subcategories } = this.props;
-    const { friendsRequests, products, stuff,  isLoading } = this.state;
+    const { products, stuff,  isLoading } = this.state;
 
     if (isLoading) {
       return (
@@ -75,12 +76,8 @@ class FetchData extends Component<FetchDataProps, any> {
 
     return (
       <Main
-        categories={categories}
-        friends={friends}
         products={products}
         stuff={stuff}
-        subcategories={subcategories}
-        friendsRequests={friendsRequests}
       />);
   }
 }
@@ -97,10 +94,10 @@ const mapStateToProps = (state: State) => ({
 const mapDispatchProps = {
   fetchCategories,
   fetchFriends,
+  fetchFriendsRequests,
   fetchProducts,
   fetchProductsId,
   fetchSubCategories,
 };
-
 
 export default connect(mapStateToProps, mapDispatchProps)(FetchData);

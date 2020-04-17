@@ -72,6 +72,7 @@ class Header extends Component<HeaderProps, any> {
 const mapStateToProps = (state: State) => ({
   user: state.user,
   userRequests: state.userRequests,
+  friendsRequests: state.friendsRequests
 });
 
 const mapDispatchProps = {

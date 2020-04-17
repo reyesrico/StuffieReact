@@ -19,15 +19,15 @@ class MainRoutes extends Component<MainRoutesProps, any> {
   render() {
     return (
       <Switch>
-        <Route exact path="/" render={() => <Content { ...this.props } />} />
+        <Route exact path="/" component={Content} />
         <Route path="/admin" component={Admin} />
         <Route path="/friends" render={() => <Friends { ...this.props } />} />
         <Route path="/products" render={() => <Products { ...this.props } />} />
-        <Route path="/product/add" render={()=> <AddProduct { ...this.props } />} />
+        <Route path="/product/add" component={AddProduct} />
         <Route path="/product/:id" render={props => <Product { ...props } />} />
-        <Route path="/category/add" render={()=> <AddCategory type='category' { ...this.props } />} />
+        <Route path="/category/add" render={()=> <AddCategory type='category' />} />
         <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
-        <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' { ...this.props } />} />
+        <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />
         <Route path="/tickets" component={Tickets} />

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
+import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import User from '../types/User';
 import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
@@ -132,4 +134,9 @@ class Friends extends Component<FriendsProps, any> {
   }
 };
 
-export default withTranslation()<any>(Friends);
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  friends: state.friends
+});
+
+export default connect(mapStateToProps, {})(withTranslation()<any>(Friends));

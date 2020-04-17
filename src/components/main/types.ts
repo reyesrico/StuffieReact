@@ -5,19 +5,15 @@ import Subcategory from "../types/Subcategory";
 import User from "../types/User";
 
 export interface MainRoutesProps {
-  user: User,
   products: ProductsMap,
-  categories: Category[],
-  subcategories: Subcategory[],
   stuff: any,
-  friends: any,
-  friendsRequests: FriendRequest[],
 }
 
 export interface FetchDataProps {
   user: User,
   fetchCategories: Function,
   fetchFriends: Function,
+  fetchFriendsRequests: Function,
   fetchProducts: Function,
   fetchProductsId: Function, 
   fetchSubCategories: Function,
