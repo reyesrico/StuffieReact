@@ -5,22 +5,17 @@ import Loading from '../shared/Loading';
 import Main from './Main';
 import State from '../../redux/State';
 import { FetchDataProps } from './types';
-import { mapStuff, getProductsMap } from '../helpers/StuffHelper';
 
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
 import { fetchFriendsRequests } from '../../redux/friends-requests/actions';
-import { fetchProducts, fetchProductsId } from '../../redux/products/actions';
+import { fetchProducts } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
 import './FetchData.scss';
 
 class FetchData extends Component<FetchDataProps, any> {
   state = {
-    stuff: null,
-    objects: null,
-    products: null,
-    isLoading: true,
-    friendsRequests: []
+    isLoading: true
   };
 
   componentDidMount() {
@@ -28,43 +23,24 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 
   fetchData = () => {
-    const { user, fetchProductsId, fetchCategories, fetchSubCategories,
-      fetchFriends, fetchProducts, fetchFriendsRequests } = this.props;
+    const { user, categories, fetchCategories, fetchFriends,
+      fetchSubCategories, fetchProducts, fetchFriendsRequests } = this.props;
 
     let promises = [
-      fetchProductsId(user.id),         // values[0]
-      fetchCategories(),                // values[1]
-      fetchSubCategories(),             // values[2]
-      fetchFriends(user.email),         // values[3]
-      fetchFriendsRequests(user.email),   // values[4]
+      fetchCategories(),                  // values[0]
+      fetchSubCategories(),               // values[1]
+      fetchFriends(user.email),           // values[2]
+      fetchFriendsRequests(user.email),   // values[3]
     ];
 
-    // Fetching values that don't depend on any.
     Promise.all(promises)
-    .then((values: any) => {
-      console.log(values);
-      this.setState({
-        stuff: values[0].data,
-        // categories: values[1].data,
-        // subcategories: values[2].data,
-        // friends: values[3].data,
-        // friendsRequests: values[4].data
-      });
-      return Promise.resolve(values[0].data);
-    })
-    .then((stuff: any) => fetchProducts(mapStuff(stuff)))
-    .then((res: any) => {
-      this.setState({ objects: res.data });
-      return Promise.resolve(res.data);
-    })
-    .then((objects: any) => this.setState({ products: getProductsMap(this.props.categories, objects) }))
+    .then((values: any) => fetchProducts(user, values[0].data))
     .catch((error: any) => console.log(error))
     .finally(() => this.setState({ isLoading: false }));
   }
 
-
   render() {
-    const { products, stuff,  isLoading } = this.state;
+    const { isLoading } = this.state;
 
     if (isLoading) {
       return (
@@ -75,10 +51,7 @@ class FetchData extends Component<FetchDataProps, any> {
     }
 
     return (
-      <Main
-        products={products}
-        stuff={stuff}
-      />);
+      <Main />);
   }
 }
 
@@ -88,7 +61,7 @@ const mapStateToProps = (state: State) => ({
   categories: state.categories,
   subcategories: state.subcategories,
   friends: state.friends,
-  // products: any
+  products: state.products
 });
 
 const mapDispatchProps = {
@@ -96,7 +69,6 @@ const mapDispatchProps = {
   fetchFriends,
   fetchFriendsRequests,
   fetchProducts,
-  fetchProductsId,
   fetchSubCategories,
 };
 

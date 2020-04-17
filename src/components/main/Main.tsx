@@ -15,22 +15,19 @@ import './Main.scss';
 
 class Main extends Component<MainProps, any> {
   render() {
-    const { user, products, stuff, t } = this.props;
+    const { user, t } = this.props;
 
     return (
       <div className="stuffie">
         <div className="stuffie__header">
-          <Header products={products} />
+          <Header />
         </div>
         <div className="stuffie__main">
           <div className="stuffie__menu">
-            <Menu products={products} />
+            <Menu />
           </div>
           <div className="stuffie__content">
-            <MainRoutes
-              stuff={stuff}
-              products={products}
-            />
+            <MainRoutes />
           </div>
           <div className="stuffie__right">
             <div className="stuffie__user">

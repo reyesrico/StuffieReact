@@ -15,7 +15,6 @@ class Friends extends Component<FriendsProps, any> {
   textField = React.createRef<TextField>();
 
   state = {
-    fullFriends: [],
     requests: [],
     emailToRequest: '',
     message: null,
@@ -23,21 +22,11 @@ class Friends extends Component<FriendsProps, any> {
   };
 
   componentDidMount() {
-    const { friends, friendsRequests } = this.props;
-    const { fullFriends } = this.state;
-
-    if (friends.length > 0 && fullFriends.length === 0) {
-      getStuffiers(mapFriends(friends)).then((res: any) => {
-        this.setState({ fullFriends: res.data });
-      });
-    }
+    const { friendsRequests } = this.props;
 
     if (friendsRequests.length > 0) {
       getStuffiers(mapIds(friendsRequests))
-      .then(res => {
-        console.log(res);
-        this.setState({ requests: res.data });
-      })
+      .then(res => this.setState({ requests: res.data }));
     }
   }
 
@@ -99,8 +88,8 @@ class Friends extends Component<FriendsProps, any> {
   }
 
   render() {
-    const { t, user } = this.props;
-    const { requests, fullFriends, message, emailToRequest } = this.state;
+    const { friends, t, user } = this.props;
+    const { requests, message, emailToRequest } = this.state;
 
     console.log(requests);
 
@@ -108,7 +97,7 @@ class Friends extends Component<FriendsProps, any> {
       <div className="friends">
         <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
         <ul>
-          {fullFriends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
+          {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>
         {requests.length > 0 && this.renderRequests()}
         <hr />
@@ -136,7 +125,8 @@ class Friends extends Component<FriendsProps, any> {
 
 const mapStateToProps = (state: State) => ({
   user: state.user,
-  friends: state.friends
+  friends: state.friends,
+  friendsRequests: state.friendsRequests
 });
 
 export default connect(mapStateToProps, {})(withTranslation()<any>(Friends));

@@ -14,12 +14,12 @@ export interface AddCategoryProps {
 
 export interface ContentProps {
   user: User,
+  friends: User[],
   subcategories: Subcategory[]
 }
 
 export interface ContentState {
   isLoading: boolean,
-  friends: number[],
   friendsProducts: FriendProducts[],
 }
 

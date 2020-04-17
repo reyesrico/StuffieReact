@@ -1,10 +1,6 @@
-import { map } from 'lodash';
+import { PRODUCT_ADDED, PRODUCTS_FETCHED } from './constants';
 
-import {
-  PRODUCT_ADDED,
-  PRODUCT_FETCHED, 
-  PRODUCTS_FETCHED, 
-  PRODUCTS_IDS_FETCHED } from './constants';
+//PRODUCT_FETCHED,
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -13,10 +9,8 @@ export default (state = [], action) => {
         ...state,
         action.payload,
       ];
-    case PRODUCT_FETCHED:
-      return action.payload || null;
-    case PRODUCTS_IDS_FETCHED:
-      return map(action.payload, row => row.id);
+    // case PRODUCT_FETCHED:
+    //   return action.payload || null;
     case PRODUCTS_FETCHED:
       return action.payload;
     default:

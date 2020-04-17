@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { map } from 'lodash';
 
+import State from '../../redux/State';
 import { CategoryPageProps } from './types';
 
 import Stuff from '../types/Stuff'; 
@@ -28,4 +30,8 @@ class CategoryPage extends Component<CategoryPageProps, any> {
   }
 }
 
-export default CategoryPage;
+const mapStateToProps = (state: State) => ({
+  products: state.products
+});
+
+export default connect(mapStateToProps, {})(CategoryPage);

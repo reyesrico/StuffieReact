@@ -45,7 +45,7 @@ class Menu extends Component<MenuProps, MenuState> {
 const mapStateToProps = (state: State) => ({
   user: state.user,
   categories: state.categories,
-  // products: any
+  products: state.products
 });
 
 export default connect(mapStateToProps, {})(withTranslation()<any>(Menu));

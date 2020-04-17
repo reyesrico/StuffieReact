@@ -59,7 +59,8 @@ class Products extends Component<ProductsProps, any> {
 
 const mapStateToProps = (state: State) => ({
   user: state.user,
-  categories: state.categories
+  categories: state.categories,
+  products: state.products
 });
 
 export default connect(mapStateToProps, {})(Products);

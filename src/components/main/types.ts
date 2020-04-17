@@ -5,8 +5,6 @@ import Subcategory from "../types/Subcategory";
 import User from "../types/User";
 
 export interface MainRoutesProps {
-  products: ProductsMap,
-  stuff: any,
 }
 
 export interface FetchDataProps {
@@ -15,12 +13,12 @@ export interface FetchDataProps {
   fetchFriends: Function,
   fetchFriendsRequests: Function,
   fetchProducts: Function,
-  fetchProductsId: Function, 
   fetchSubCategories: Function,
   userRequests: User[],
   categories: Category[],
   subcategories: Subcategory[],
   friends: User[],
+  products: ProductsMap;
 }
 
 export interface MainProps {

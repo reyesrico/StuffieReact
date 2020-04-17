@@ -7,9 +7,9 @@ export const getStuffList = id_stuffier => (
   axios.get(routes.stuff.listForStuffier(id_stuffier), { headers: config.headers })
 );
 
-export const getStuffiersList = ids_stuffier => {
-  const ids = map(ids_stuffier, id => { 
-    return { id_stuffier: id };
+export const getStuffiersList = friends => {
+  const ids = map(friends, friend => { 
+    return { id_stuffier: friend.id };
   });
 
   return axios.get(routes.stuff.listStuffiers(ids), { headers: config.headers });
