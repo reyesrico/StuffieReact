@@ -63,4 +63,5 @@ const mapStateToProps = (state: State) => ({
   products: state.products
 });
 
+export { Products as ProductsComponent };
 export default connect(mapStateToProps, {})(Products);

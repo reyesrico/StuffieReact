@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { shallow } from 'enzyme';
 
-import Products from './Products';
+import { ProductsComponent as Products } from './Products';
 import { UserMock } from '../mocks/UserMock';
 import { ProductMock } from '../mocks/ProductMock';
 import { CategoryMock } from '../mocks/CategoryMock';
