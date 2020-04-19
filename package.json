@@ -2,16 +2,18 @@
   "name": "stuffiejs",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://reyesrico.github.io/stuffie",
+  "homepage": "http://reyesrico.github.io/StuffieReact",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@types/crypto-js": "^3.1.44",
-    "@types/react": "^16.9.31",
+    "@types/react": "^16.9.34",
     "@types/react-facebook-login": "^4.1.1",
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^4.3.5",
     "@types/recharts": "^1.8.9",
     "@types/tesseract.js": "0.0.2",
+    "browserslist": "^4.11.1",
+    "caniuse-lite": "^1.0.30001043",
     "cloudinary-react": "^1.4.0",
     "crypto-js": "^4.0.0",
     "enzyme": "^3.11.0",
@@ -20,7 +22,7 @@
     "jest-enzyme": "^7.1.2",
     "node-sass": "^4.13.1",
     "npm": "^6.14.4",
-    "query-string": "^6.11.1",
+    "query-string": "^6.12.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
@@ -55,7 +57,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.14.150",
     "axios": "^0.18.1",
     "gh-pages": "^2.2.0",
     "react-router-dom": "^5.1.2"
