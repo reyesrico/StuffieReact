@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "c20b5b7362d8d7bb7eddf94344ace33e",
-    "url": "/stuffie/static/media/fa-regular-400.c20b5b73.woff2"
+    "revision": "0cb5a5c0d251c109458c85c6afeffbaa",
+    "url": "/stuffie/static/media/fa-brands-400.0cb5a5c0.svg"
   },
   {
     "revision": "67034351b8073d508401",
@@ -44,20 +44,20 @@ self.__precacheManifest = [
     "url": "/stuffie/static/js/main.f2a19d58.chunk.js"
   },
   {
-    "revision": "f89ea91ecd1ca2db7e09baa2c4b156d1",
-    "url": "/stuffie/static/media/fa-regular-400.f89ea91e.woff"
+    "revision": "c20b5b7362d8d7bb7eddf94344ace33e",
+    "url": "/stuffie/static/media/fa-regular-400.c20b5b73.woff2"
   },
   {
-    "revision": "89ffa3aba80d30ee0a9371b25c968bbb",
-    "url": "/stuffie/static/media/fa-regular-400.89ffa3ab.svg"
+    "revision": "f89ea91ecd1ca2db7e09baa2c4b156d1",
+    "url": "/stuffie/static/media/fa-regular-400.f89ea91e.woff"
   },
   {
     "revision": "db78b9359171f24936b16d84f63af378",
     "url": "/stuffie/static/media/fa-regular-400.db78b935.ttf"
   },
   {
-    "revision": "0cb5a5c0d251c109458c85c6afeffbaa",
-    "url": "/stuffie/static/media/fa-brands-400.0cb5a5c0.svg"
+    "revision": "89ffa3aba80d30ee0a9371b25c968bbb",
+    "url": "/stuffie/static/media/fa-regular-400.89ffa3ab.svg"
   },
   {
     "revision": "a0369ea57eb6d3843d6474c035111f29",
