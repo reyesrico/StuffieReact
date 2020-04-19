@@ -2,6 +2,7 @@
   "name": "stuffiejs",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://reyesrico.github.io/stuffie",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@types/crypto-js": "^3.1.44",
@@ -39,6 +40,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -54,6 +57,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.149",
     "axios": "^0.18.1",
+    "gh-pages": "^2.2.0",
     "react-router-dom": "^5.1.2"
   }
 }

@@ -1,12 +1,24 @@
 import { makePaginatedApiActionCreator, makeStandardActionCreator } from '../action-helpers';
 import { PRODUCT_ADDED, PRODUCT_FETCHED, PRODUCTS_FETCHED } from './constants';
-import { addStuff, getListStuff, getStuffList, getStuff } from '../../services/stuff';
+import { addStuff, addStuffStuffier, getListStuff, getStuffList, getStuff } from '../../services/stuff';
 import { mapStuff, getProductsMap } from '../../components/helpers/StuffHelper';
 
 const productFetched = makeStandardActionCreator(PRODUCT_FETCHED);
 const productsFetched = makeStandardActionCreator(PRODUCTS_FETCHED);
 
 const productAdded = makeStandardActionCreator(PRODUCT_ADDED);
+export const addProduct = (product, user) => dispatch => {
+  return addStuff(product)
+  .then(res => {
+    const product = res.data;
+    return addStuffStuffier(user.id, product.id);
+  })
+  .then(() => {
+    dispatch(productAdded(product, user.email));
+    return Promise.resolve(product);
+  })
+  .catch(error => Promise.reject(error));
+}
 
 export const fetchProduct = makePaginatedApiActionCreator(getStuff, productFetched);
 export const fetchProducts = (user, categories) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);
@@ -19,5 +31,3 @@ export const fetchProducts = (user, categories) => dispatch => {  // makePaginat
            return Promise.resolve(products);
          });
 }
-
-export const addProduct = makePaginatedApiActionCreator(addStuff, productAdded);

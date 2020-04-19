@@ -50,14 +50,9 @@ class AddProduct extends Component<AddProductProps, any> {
     event.preventDefault();
 
     addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'})
-      .then((res:any) => {
-        const product = res.data;
+      .then((product:Product) => {
+        console.log(product);
         this.setState({ product });
-        return addStuffStuffier(user.id, product.id);
-      })
-      .then((res:any) => {
-        const stuffStuffier = res.data;
-        this.setState({ stuffStuffier });
       })
       .catch((err:any) => {
         this.setState({ status: 'error' });
@@ -119,8 +114,6 @@ class AddProduct extends Component<AddProductProps, any> {
     const { categories, subcategories } = this.props;
     const { product, stuffStuffier, productsByCategories, category, subcategory, name } = this.state;
 
-    console.log(productsByCategories);
-
     return (
       <div className="add-product">
         <h3>Add Stuff</h3>
@@ -136,6 +129,7 @@ class AddProduct extends Component<AddProductProps, any> {
             <label>SubCategory</label>
             <Dropdown onChange={(subcategory: any) => this.updateSubcategory(subcategory)} values={subcategories} />
           </div>
+          { !productsByCategories.length && <div>There are no products</div>}
           { productsByCategories.length > 0 && (
             <div className="add-product__row">
               <label>Product</label>

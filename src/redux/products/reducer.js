@@ -6,7 +6,7 @@ export default (state = [], action) => {
   switch (action.type) {
     case PRODUCT_ADDED:
       return [
-        ...state,
+        ...state.products,
         action.payload,
       ];
     // case PRODUCT_FETCHED:
