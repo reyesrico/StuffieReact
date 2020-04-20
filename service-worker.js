@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/StuffieReact/precache-manifest.18b99d456e431b1c205152d8fd2c72e9.js"
+  "/StuffieReact/precache-manifest.a178c4a4012db76c59de7f31d1dd7940.js"
 );
 
 workbox.clientsClaim();
