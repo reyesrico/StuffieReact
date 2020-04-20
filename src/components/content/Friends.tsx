@@ -11,6 +11,8 @@ import { mapIds } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
 import './Friends.scss';
 
+const STATUS = { ACCEPTED: 'accepted', REJECTED: 'rejected', ERROR: 'error' };
+
 class Friends extends Component<FriendsProps, any> {
   textField = React.createRef<TextField>();
 
@@ -18,7 +20,8 @@ class Friends extends Component<FriendsProps, any> {
     requests: [],
     emailToRequest: '',
     message: null,
-    textfield: null
+    textfield: null,
+    executeStatus: null
   };
 
   componentDidMount() {
@@ -37,14 +40,12 @@ class Friends extends Component<FriendsProps, any> {
 
     Promise.all(promises)
     .then((values: any) => {
+      !isAccepted && this.setState({ executeStatus: STATUS.REJECTED });
       console.log(values[0].data);
-      console.log('Request deleted');
-      if (isAccepted) {
-        console.log(values[1].data);
-        console.log('Friend added');
-      }
+      isAccepted && this.setState({ executeStatus: STATUS.ACCEPTED });
+      isAccepted && console.log(values[1].data);
     })
-    .catch(err => console.log(err));
+    .catch(() => this.setState({ executeStatus: STATUS.ERROR }));
   }
 
   renderRequests = () => {
@@ -87,13 +88,30 @@ class Friends extends Component<FriendsProps, any> {
     .catch(() => this.setState({ message: 'Request couldnt be sent', emailToRequest: '' }))
   }
 
+  renderFriendMessage = () => {
+    const { emailToRequest, executeStatus } = this.state;
+    const message =
+      executeStatus === STATUS.ERROR ? 'was not added' :
+      executeStatus === STATUS.REJECTED ? 'was rejected!' :
+      executeStatus === STATUS.ACCEPTED ? 'was accepted!' : null;
+
+    if (executeStatus) {
+      return (
+        <div className={`friends__message-${executeStatus}`}>
+          Friend {emailToRequest} {message}
+        </div>
+      );  
+    }
+  }
+
   render() {
     const { friends, t, user } = this.props;
-    const { requests, message, emailToRequest } = this.state;
+    const { requests, message, emailToRequest, executeStatus } = this.state;
 
     return (
       <div className="friends">
         <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
+        { executeStatus && this.renderFriendMessage() }
         <ul>
           {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>

@@ -57,3 +57,8 @@ export function getFriendProducts(friends: User[], products: Product[], stuffier
 
   return friendsProducts;
 }
+
+export function isProductsEmpty(productsMap: ProductsMap) {
+  const products = Object.values(productsMap).filter(row => row.length > 0);
+  return !products.length;
+}

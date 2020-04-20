@@ -8,6 +8,7 @@ import State from '../../redux/State';
 import Product from '../types/Product';
 import { ProductsProps } from '../sections/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
+import { isProductsEmpty } from '../helpers/StuffHelper';
 import './Products.scss';
 
 class Products extends Component<ProductsProps, any> {
@@ -29,11 +30,11 @@ class Products extends Component<ProductsProps, any> {
           </div>
         </div>
         <hr />
-        {!products && (<div>No Stuff! Add Products!</div>)}
-        {products &&
+        {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
+        {!isProductsEmpty(products) &&
           (<div>
             {categories.map((category: Category) => {
-              if (!products[category.id as number] || !products[category.id as number].length) return (<div key={category.id}></div>);
+              if (!products[category.id] || !products[category.id].length) return;
 
               return (
                 <div key={category.id}>

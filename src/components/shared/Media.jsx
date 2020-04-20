@@ -28,7 +28,9 @@ class Media extends Component {
       existImage(imageUrl)
       .then(() => this.setState({ imageUrl }))
       .catch(() => this.setState({ imageUrl: 'default_product' }))
-    } 
+    } else {
+      this.setState({ imageUrl: fileName });
+    }
   }
 
   renderImage = () => {

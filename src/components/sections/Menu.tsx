@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import Category from '../types/Category';
 import State from '../../redux/State';
 import { MenuProps, MenuState } from './types';
+import { isProductsEmpty } from '../../components/helpers/StuffHelper';
 import './Menu.scss';
 
 class Menu extends Component<MenuProps, MenuState> {
@@ -33,7 +34,7 @@ class Menu extends Component<MenuProps, MenuState> {
     return (
       <div>
         <div className='menu__title'>{t('Summary')}</div>
-        {!products && <div>No products</div>}
+        {isProductsEmpty(products) && <div>No products</div>}
         <div className="menu__list">
           { this.renderCategories() }
         </div>

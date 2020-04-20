@@ -37,3 +37,27 @@
   @include margin(24px, left);
   width: 100px;
 }
+
+.friends__message-error {
+  background-color: $lightorange;
+  color: $black;
+  font-weight: bold;
+  padding: 0 8px;
+  width: 100%;
+}
+
+.friends__message-accepted {
+  background-color: $lightgreen;
+  color: $black;
+  font-weight: bold;
+  padding: 0 8px;
+  width: 100%;
+}
+
+.friends__message-rejected {
+  background-color: $lightgreen;
+  color: $black;
+  font-weight: bold;
+  padding: 0 8px;
+  width: 100%;
+}
