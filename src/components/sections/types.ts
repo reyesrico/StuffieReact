@@ -13,16 +13,13 @@ export interface AddProductProps {
 }
 
 export interface ProductState {
-  product: Stuff | null,
-  categoryName: string | null,
-  subcategoryName: string | null
 }
 
 export interface ProductProps {
-  fetchProduct: any,
-  fetchCategory: any,
-  fetchSubCategory: any,
-  match: any
+  categories: Category[],
+  subcategories: Subcategory[],
+  match: any,
+  products: ProductsMap
 }
 
 export interface ProductsProps {

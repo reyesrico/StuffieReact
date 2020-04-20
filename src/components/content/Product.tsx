@@ -1,45 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { find } from 'lodash';
 
 import Loading from '../shared/Loading';
 import Media from '../shared/Media';
-import Stuff  from '../types/Stuff';
+import State from '../../redux/State';
 import { ProductProps, ProductState } from '../sections/types';
-import { fetchProduct } from '../../redux/products/actions';
-import { fetchCategory } from '../../redux/categories/actions';
-import { fetchSubCategory } from '../../redux/subcategories/actions';
+import { getProductFromProducts } from '../helpers/StuffHelper';
 
 class Product extends Component<ProductProps, ProductState> {
-  state: Readonly<ProductState> = {
-    product: null,
-    categoryName: null,
-    subcategoryName: null
-  };
+  state = {
+    id: null,
+    product: { name: null, id: null, category: null, subcategory: null }
+  }
 
   componentDidMount() {
-    const { fetchCategory, fetchSubCategory, fetchProduct } = this.props;
-    const { product } = this.state;
+    const { match, products } = this.props;
+    const id = parseInt(match.params.id);
+    this.setState({ id, product: getProductFromProducts(id, products) });
+  }
 
-    if (!product) {
-      const id = this.props.match.params.id;
+  componentDidUpdate(prevProps: ProductProps, prevState: any) {
+    const { match, products } = this.props;
+    const id = parseInt(match.params.id);
 
-      fetchProduct(id)
-        .then((res: any) => res.data[0])
-        .then((product: Stuff) => {
-          this.setState({ product });
-          return Promise.all([fetchCategory(product.category), fetchSubCategory(product.subcategory)])
-        })
-        .then((values: any) => {
-          console.log(values);
-          this.setState({ categoryName: values[0].data[0].name, subcategoryName: values[1].data[0].name });
-        });
+    if (id !== prevState.id) {
+      this.setState({ id: match.params.id, product: getProductFromProducts(id, products) });
     }
   }
 
   render() {
-    const { categoryName, subcategoryName, product } = this.state;
+    const { categories, subcategories } = this.props;
+    const { product } = this.state;
 
     if (!product) return <Loading size="lg" message="Loading product..." />;
+
+    const category = find(categories, c => c.id === product.category);
+    const subcategory = find(subcategories, s => s.id === product.subcategory);
 
     return (
       <div className="product">
@@ -53,17 +50,17 @@ class Product extends Component<ProductProps, ProductState> {
             height="200"
             width="100" />
         <hr />
-        {categoryName && (<div>Category: { categoryName } </div>)}
-        {subcategoryName && (<div>Subcategory: { subcategoryName } </div>)}
+        <div>Category: { category && category.name } </div>
+        <div>Subcategory: { subcategory && subcategory.name } </div>
       </div>
     );
   }
 };
 
-const mapDispatchProps = {
-  fetchCategory,
-  fetchSubCategory,
-  fetchProduct,
-};
+const mapStateToProps = (state: State) => ({
+  categories: state.categories,
+  products: state.products,
+  subcategories: state.subcategories
+});
 
-export default connect(null, mapDispatchProps)(Product);
+export default connect(mapStateToProps, {})(Product);

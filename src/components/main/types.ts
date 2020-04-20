@@ -14,11 +14,6 @@ export interface FetchDataProps {
   fetchFriendsRequests: Function,
   fetchProducts: Function,
   fetchSubCategories: Function,
-  userRequests: User[],
-  categories: Category[],
-  subcategories: Subcategory[],
-  friends: User[],
-  products: ProductsMap;
 }
 
 export interface MainProps {

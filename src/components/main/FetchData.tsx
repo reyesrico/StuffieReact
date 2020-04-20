@@ -23,7 +23,7 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 
   fetchData = () => {
-    const { user, categories, fetchCategories, fetchFriends,
+    const { user, fetchCategories, fetchFriends,
       fetchSubCategories, fetchProducts, fetchFriendsRequests } = this.props;
 
     let promises = [
@@ -57,11 +57,6 @@ class FetchData extends Component<FetchDataProps, any> {
 
 const mapStateToProps = (state: State) => ({
   user: state.user,
-  userRequests: state.userRequests,
-  categories: state.categories,
-  subcategories: state.subcategories,
-  friends: state.friends,
-  products: state.products
 });
 
 const mapDispatchProps = {

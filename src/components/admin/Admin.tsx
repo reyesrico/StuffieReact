@@ -8,13 +8,21 @@ import { fetchUserRequests, deleteRequest } from '../../redux/user-requests/acti
 import './Admin.scss';
 
 class Admin extends Component<any, any> {
+  _isMounted = false;
+
   state = {
     userRequests: []
   };
 
   componentDidMount() {
+    this._isMounted = true;
     const { fetchUserRequests } = this.props;
     fetchUserRequests().then((res: any) => this.setState({ userRequests: res }));
+  }
+
+  // https://stackoverflow.com/questions/53949393/cant-perform-a-react-state-update-on-an-unmounted-component
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   executeRequest = (user: User, isAccepted = false) => {

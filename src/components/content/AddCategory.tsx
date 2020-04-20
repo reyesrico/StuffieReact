@@ -3,11 +3,10 @@ import { connect } from 'react-redux';
 import { map } from 'lodash';
 
 import Loading from '../shared/Loading';
+import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import { addCategory } from '../../redux/categories/actions';
 import { addSubCategory } from '../../redux/subcategories/actions';
-import { fetchCategories } from '../../redux/categories/actions';
-import { fetchSubCategories } from '../../redux/subcategories/actions';
 
 import { AddCategoryProps } from './types';
 import './AddCategory.scss';
@@ -19,30 +18,13 @@ const TYPE = {
 
 class AddCategory extends Component<AddCategoryProps, any> {
   state = {
-    isLoading: true,
+    isLoading: false,
     id: '',
     name: '',
     categories: [],
     subcategories: [],
     tempObjects: null,
   };
-
-  componentDidMount() {
-    const { fetchCategories, fetchSubCategories } = this.props;
-    const { categories, subcategories } = this.state;
-
-    if (!categories.length) {
-      fetchCategories().then((res: any) => {
-        this.setState({ categories: res.data, isLoading: false });
-      });
-    }    
-
-    if (!subcategories.length) {
-      fetchSubCategories().then((res: any) => {
-        this.setState({ subcategories: res.data, isLoading: false });
-      });
-    }
-  }
 
   componentDidUpdate(prevProps: any) {
     const { type } = this.props;
@@ -99,7 +81,7 @@ class AddCategory extends Component<AddCategoryProps, any> {
   }
 
   renderValues = (typeToRender: string) => {
-    const { categories, subcategories } = this.state;
+    const { categories, subcategories } = this.props;
     const objects = typeToRender === TYPE.CATEGORY ? categories : subcategories;
   
     return map(objects, (object: any) => {
@@ -158,8 +140,13 @@ class AddCategory extends Component<AddCategoryProps, any> {
 const mapDispatchProps = {
   addCategory,
   addSubCategory,
-  fetchCategories,
-  fetchSubCategories,
 };
 
-export default connect(null, mapDispatchProps)(AddCategory);
+const mapStateToProps = (state: State) => ({
+  user: state.user,
+  categories: state.categories,
+  subcategories: state.subcategories
+});
+
+
+export default connect(mapStateToProps, mapDispatchProps)(AddCategory);

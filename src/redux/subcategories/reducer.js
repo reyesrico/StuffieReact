@@ -4,7 +4,7 @@ export default (state = [], action) => {
   switch (action.type) {
     case SUBCATEGORY_ADDED:
       const subcategory = action.payload;
-      return [...state, { _id: subcategory._id, id: subcategory.id, name: subcategory.name }];
+      return [...state, subcategory];
     case SUBCATEGORIES_FETCHED:
       return action.payload;
     case SUBCATEGORY_FETCHED:

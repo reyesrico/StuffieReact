@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 import Category from '../types/Category';
 import State from '../../redux/State';
-import Stuff from '../types/Stuff';
+import Product from '../types/Product';
 import { ProductsProps } from '../sections/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
 import './Products.scss';
@@ -39,9 +39,9 @@ class Products extends Component<ProductsProps, any> {
                 <div key={category.id}>
                   <h4>{category.name}</h4>
                   <ul>
-                    {map(products[category.id as number], (object: Stuff) => {
+                    {map(products[category.id as number], (product: Product) => {
                       return (
-                        <li key={object.id}><Link to={`/product/${object.id}`}>{object.name}</Link></li>
+                        <li key={`${category.id}_${product.id}`}><Link to={`/product/${product.id}`}>{product.name}</Link></li>
                       )
                     })}
                   </ul>

@@ -1,14 +1,15 @@
+import Category from '../types/Category';
 import FriendProducts from '../types/FriendProducts';
 import FriendRequest from '../types/FriendRequest';
 import ProductsMap from '../types/ProductsMap';
-import User from '../types/User';
 import Subcategory from '../types/Subcategory';
+import User from '../types/User';
 
 export interface AddCategoryProps {
   addCategory: Function;
   addSubCategory: Function;
-  fetchCategories: Function;
-  fetchSubCategories: Function;
+  categories: Category[],
+  subcategories: Subcategory[],
   type: string;
 }
 

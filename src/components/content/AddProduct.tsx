@@ -49,7 +49,7 @@ class AddProduct extends Component<AddProductProps, any> {
 
     event.preventDefault();
 
-    addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'})
+    addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'}, user)
       .then((product:Product) => {
         console.log(product);
         this.setState({ product });
