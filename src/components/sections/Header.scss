@@ -28,7 +28,6 @@
 
 .stuffie-header__sections {
   @include flex(row, flex-start, left);
-  @include margin(1px, bottom);
 }
 
 .stuffie-header__section-item {

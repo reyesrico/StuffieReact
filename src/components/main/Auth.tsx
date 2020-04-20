@@ -12,8 +12,8 @@ import './Auth.scss';
 
 class Auth extends Component<any, any> {
   state = {
-    error: null,
-    isLoading: true
+    isLoading: true,
+    message: ''
   };
 
   componentDidMount() {
@@ -27,10 +27,27 @@ class Auth extends Component<any, any> {
     }
   }
 
+  componentDidUpdate(prevProps: any, prevState: any) {
+    if (prevProps.user !== this.props.user) {
+      this.setState({ message: '' });
+    }
+  }
+
+  getMessageType = (message: string) => {
+    if (message.toLowerCase().includes('Error')) {
+      return 'error';
+    } else if(message.toLowerCase().includes('successful')) {
+      return 'successful';
+    }
+
+    return '';
+  }
+
   render() {
     const { user } = this.props;
-    const { isLoading } = this.state;
+    const { isLoading, message } = this.state;
     const request = get(user, 'request');
+    let msg = request ? "User successfully registered, wait for authorization. Don't register again." : message;
 
     if (isLoading) {
       return (
@@ -40,17 +57,15 @@ class Auth extends Component<any, any> {
       );
     }
 
-    if (isEmpty(user) || request) {
-      if (request) {
-        alert("User registered, wait for authorization. Don't register again");
-        logout();
-      }
-  
+    if (isEmpty(user) || request) {  
       return (
         <div className="auth">
-          <Register />
-          <div className="auth__line"></div>
-          <Login />
+          {message && <div className={`auth__message-${this.getMessageType(msg)}`}>{msg}</div>}
+          <div className="auth__content">
+            <Register setMessage={(message: string) => this.setState({ message })} />
+            <div className="auth__line"></div>
+            <Login setMessage={(message: string) => this.setState({ message })} />
+          </div>
         </div>
       );
     }

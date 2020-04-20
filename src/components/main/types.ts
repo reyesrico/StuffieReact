@@ -36,7 +36,8 @@ export interface LoginProps {
   addUserPicture: Function,
   fetchUser: Function,
   history: any,
-  loginUser: Function
+  loginUser: Function,
+  setMessage: Function
 }
 
 export interface LoginState {
@@ -47,5 +48,6 @@ export interface LoginState {
 
 export interface RegisterProps {
   user: User
-  registerUser: Function
+  registerUser: Function,
+  setMessage: Function
 }

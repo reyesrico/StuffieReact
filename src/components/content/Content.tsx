@@ -45,8 +45,7 @@ class Content extends Component<ContentProps, ContentState> {
       }
     });
 
-    const x = sortBy(feed, 'date');
-    this.setState({ feed: x });
+    this.setState({ feed: sortBy(feed, 'date') });
   }
 
   render() {

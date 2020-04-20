@@ -31,7 +31,7 @@ class Register extends Component<RegisterProps, any> {
   }
 
   handleSubmit = (event: React.FormEvent<EventTarget>) => {
-    const { registerUser } = this.props;
+    const { registerUser, setMessage } = this.props;
     const { email, password, firstName, lastName } = this.state;
     const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
 
@@ -41,9 +41,9 @@ class Register extends Component<RegisterProps, any> {
     registerUser(user)
     .then((res: any) => {
       localStorage.setItem('username', res.email);
-      alert("Register Successful");
+      setMessage("Register Successful. Request to be accepted by Admin. Do not login yet!");
     })
-    .catch((error: any) => alert(error))
+    .catch((error: any) => setMessage("Error: Couldn't register. Try again."))
     .finally(() => this.setState({ isLoading: false }));
   }
 

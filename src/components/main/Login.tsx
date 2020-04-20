@@ -19,7 +19,7 @@ class Login extends Component<LoginProps, any> {
   }
 
   onClick = (event: any) => {
-    const { fetchUser, loginUser } = this.props;
+    const { fetchUser, loginUser, setMessage } = this.props;
     const { email, password } = this.state;
 
     event.preventDefault();
@@ -29,14 +29,14 @@ class Login extends Component<LoginProps, any> {
       .then((response: any) => fetchUser(response.data[0].email))
       .then((res: any) => {
         localStorage.setItem('username', res.data[0].email);
-        alert("Login Successful using RestDBIO");``
+        setMessage("Login successful");
       })
-      .catch((err: any) => this.setState({ error: String(err) }));
+      .catch((err: any) => setMessage("Error: Couldn't login. Try again."));
     }
   }
 
   responseFacebook = (response: FacebookUser) => {
-    const { addUserPicture, fetchUser } = this.props;
+    const { addUserPicture, fetchUser, setMessage } = this.props;
 
     if (response) {
       fetchUser(response.email)
@@ -44,9 +44,9 @@ class Login extends Component<LoginProps, any> {
         const picture = response.picture.data.url;
         localStorage.setItem('username', res.data[0].email);
         addUserPicture(res.data[0], picture);
-        alert("Login Successful using RestDBIO");
+        setMessage("Login successful");
       })
-      .catch((err: any) => this.setState({ error: String(err) }));
+      .catch((err: any) => setMessage("Error: Couldn't login. Try again."));
     }
   }
 
