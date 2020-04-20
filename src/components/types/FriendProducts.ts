@@ -1,4 +1,7 @@
+import Product from '../types/Product';
+import User from '../types/User';
+
 export default interface FriendProducts {
-  id_friend: any,
-  products: number[];
+  friend: User,
+  products: Product[];
 }

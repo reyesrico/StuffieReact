@@ -23,9 +23,9 @@ export const addProduct = (product, user) => dispatch => {
 export const fetchProduct = makePaginatedApiActionCreator(getStuff, productFetched);
 export const fetchProducts = (user, categories) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);
   return getStuffList(user.id)
-         .then(res => getListStuff(mapStuff(res)))
-         .then(res => Promise.resolve(res.data))
-         .then(objects => {
+         .then(res => getListStuff(mapStuff(res.data)))
+         .then(res => {
+           const objects = res.data;
            const products = getProductsMap(categories, objects);
            dispatch(productsFetched(products, user.email));
            return Promise.resolve(products);

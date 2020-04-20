@@ -7,9 +7,13 @@ export const getStuffier = email => (
   axios.get(routes.user.detail(email), { headers: config.headers })
 );
 
-export const getStuffiers = ids => (
-  axios.get(routes.user.listDetail(ids), { headers: config.headers })
-);
+export const getStuffiers = ids => {
+  if (ids.length > 0) {
+    return axios.get(routes.user.listDetail(ids), { headers: config.headers })
+  }
+
+  return Promise.resolve({});
+}
 
 export const getFriends = email => (
   axios.get(routes.user.friends(email), { headers: config.headers })

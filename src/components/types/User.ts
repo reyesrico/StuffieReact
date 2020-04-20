@@ -1,3 +1,5 @@
+import Product from '../types/Product';
+
 export default interface User {
   _id?: number,
   id?: number,
@@ -7,4 +9,5 @@ export default interface User {
   last_name?: string,
   admin?: boolean,
   picture?: string
+  products?: Product[]
 }

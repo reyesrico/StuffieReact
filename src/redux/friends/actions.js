@@ -1,7 +1,10 @@
-import {  makeStandardActionCreator } from '../action-helpers';
-import { FRIENDS_FETCHED } from './constants';
+import { makeStandardActionCreator } from '../action-helpers';
+import { FRIENDS_FETCHED, FRIEND_PRODUCTS_FETCHED } from './constants';
+
 import { getFriends, getStuffiers } from '../../services/stuffier';
+import { getListStuff, getStuffiersList } from '../../services/stuff';
 import { mapFriends } from '../../components/helpers/UserHelper';
+import { getFriendProducts, mapStuff } from '../../components/helpers/StuffHelper';
 
 const friendsFetched = makeStandardActionCreator(FRIENDS_FETCHED);
 export const fetchFriends = (email) => dispatch => {    // makePaginatedApiActionCreator(getFriends, friendsFetched);
@@ -12,4 +15,21 @@ export const fetchFriends = (email) => dispatch => {    // makePaginatedApiActio
     dispatch(friendsFetched(friends, email));
     return Promise.resolve(friends);
   });
+}
+
+const friendProductsFetched = makeStandardActionCreator(FRIEND_PRODUCTS_FETCHED);
+export const fetchFriendsProducts = (friends) => dispatch => {
+  let stuffiers_stuff = [];
+
+  return getStuffiersList(friends)
+  .then(res => {
+    stuffiers_stuff = res.data;
+    return getListStuff(mapStuff(res.data));
+  })
+  .then(res => {
+    const products = res.data;
+    const friendsFilled = getFriendProducts(friends, products, stuffiers_stuff);
+    dispatch(friendProductsFetched(friendsFilled))
+    return Promise.resolve(friendsFilled);
+  });  
 }

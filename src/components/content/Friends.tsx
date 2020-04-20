@@ -7,7 +7,7 @@ import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import User from '../types/User';
 import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
-import { mapFriends, mapIds } from '../helpers/UserHelper';
+import { mapIds } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
 import './Friends.scss';
 
@@ -26,7 +26,7 @@ class Friends extends Component<FriendsProps, any> {
 
     if (friendsRequests.length > 0) {
       getStuffiers(mapIds(friendsRequests))
-      .then(res => this.setState({ requests: res.data }));
+      .then((res: any) => this.setState({ requests: res.data }));
     }
   }
 
@@ -90,8 +90,6 @@ class Friends extends Component<FriendsProps, any> {
   render() {
     const { friends, t, user } = this.props;
     const { requests, message, emailToRequest } = this.state;
-
-    console.log(requests);
 
     return (
       <div className="friends">

@@ -4,64 +4,41 @@ import { Link } from 'react-router-dom';
 
 import Category from '../types/Category';
 import Media from '../shared/Media';
-import Product from '../types/Product';
+import State from '../../redux/State';
 import { FeedRowProps } from './types';
 import { fetchProduct } from '../../redux/products/actions';
 
 import './FeedRow.scss';
 
 class FeedRow extends Component<FeedRowProps, any> {
-  state = {
-    product: { id: null, name: null, category: null, subcategory: null }
-  };
-
-  componentDidMount() {
-    const { fetchProduct } = this.props;
-    const { product } = this.state;
-
-    if (!product.id) {
-      fetchProduct(this.props.product).then((res: any) => {
-        const product: Product = res.data[0];
-        this.setState({ product });
-      });
-    }
-  }
-
   getProductType = () => {
-    const { subcategories } = this.props;
-    const { product } = this.state;
+    const { feedPost, subcategories } = this.props;
 
-    let subcategory = subcategories.find(s => s.id === product.subcategory);
+    let subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
     return subcategory ? subcategory.name : null;
   }
 
-  getLinkTo = (category: Category) => {
-    return ;
-  }
-
   renderMessage() {
-    const { user } = this.props;
-    const { product } = this.state;
-    const to = { pathname: `/category/${product.category}`, category: 'Category' }
+    const { feedPost } = this.props;
   
     return (
     <div className="feed-row__description">
-      <span className="feed-row__name">{user.first_name} {user.last_name} </span> added <Link to={to}>{product.name}</Link> in {this.getProductType()}
+      <span className="feed-row__name">{feedPost.friend_firstName} {feedPost.friend_lastName} </span> added <b>{feedPost.product.name}</b> in {this.getProductType()}
     </div>
     );
   }
 
   render() {
-    const { product } = this.state;
+    const { feedPost } = this.props;
 
     return (
       <div className="feed-row">
         {this.renderMessage()}
         <div className="feed-row__image">
           <Media
-            fileName={product.id}
-            category={product.category || null}
-            subcategory={product.subcategory || null}
+            fileName={feedPost.product.id}
+            category={feedPost.product.category}
+            subcategory={feedPost.product.subcategory}
             format="jpg"
             height="100"
             width="100"
@@ -83,4 +60,8 @@ const mapDispatchProps = {
   fetchProduct,
 };
 
-export default connect(null, mapDispatchProps)(FeedRow);
+const mapStateToProps = (state: State) => ({
+  subcategories: state.subcategories
+});
+
+export default connect(mapStateToProps, mapDispatchProps)(FeedRow);

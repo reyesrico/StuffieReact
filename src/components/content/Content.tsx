@@ -1,53 +1,57 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { filter, forEach, isEmpty, map } from 'lodash';
-import { getStuffiersList } from '../../services/stuff';
+import { isEmpty, map, sortBy } from 'lodash';
 
+import FeedPost from '../types/FeedPost';
 import FeedRow from './FeedRow';
-import FriendProducts from '../types/FriendProducts';
 import Loading from '../shared/Loading';
 import State from '../../redux/State';
+import User from '../types/User';
 import { ContentProps, ContentState } from './types';
+import { fetchFriendsProducts } from '../../redux/friends/actions';
 import './Content.scss';
 
 class Content extends Component<ContentProps, ContentState> {
   state = {
     isLoading: false,
-    friendsProducts: [],
+    feed: [],
   };
 
   componentDidMount = () => {
-    const { friends } = this.props;
+    const { fetchFriendsProducts, friends } = this.props;
 
-    if (isEmpty(this.state.friendsProducts)) {
+    if (isEmpty(this.state.feed)) {
       this.setState({ isLoading: true });
 
-      getStuffiersList(friends)
-      .then(res => {
-        const products = res.data;
-        const friendsProducts = this.getProductsFromUsers(products);
-        this.setState({ friendsProducts });
-      })
+      fetchFriendsProducts(friends)
+      .then((friendsFilled: User[]) => this.generateFeed(friendsFilled))
       .finally(() => this.setState({ isLoading: false }));
     }
   }
 
-  getProductsFromUsers(products: any) {
-    let friendsProducts: FriendProducts[] = [];
+  generateFeed(friends: User[]) {
+    let feed: FeedPost[] = [];
 
-    forEach(this.props.friends, friend => {
-      const values = filter(products, p => p.id_stuffier === friend.id)
-        .map(row => row.id_stuff);
-
-      friendsProducts.push({ id_friend: friend, products: [...values] });
+    friends.forEach((friend: User) => {
+      if (friend.products) {
+        friend.products.forEach(product => {
+          feed.push({
+            friend_firstName: friend.first_name || '',
+            friend_lastName: friend.last_name || '',
+            product,
+            date: new Date().toString()
+            });  
+        })
+      }
     });
 
-    return friendsProducts;
+    const x = sortBy(feed, 'date');
+    this.setState({ feed: x });
   }
 
   render() {
-    const { friends, subcategories, user } = this.props;
-    const { isLoading, friendsProducts } = this.state;
+    const { friends } = this.props;
+    const { isLoading, feed } = this.state;
 
     if (isLoading) {
       return (
@@ -57,24 +61,24 @@ class Content extends Component<ContentProps, ContentState> {
       );
     }
 
-    if (!friends.length || isEmpty(friendsProducts)) {
+    if (!friends.length || !feed.length) {
       return <div>No Friends! Add friends!</div>
     }
 
     return (
       <div className="content">
         <div className="content__info">
-          {map(friendsProducts, (row: FriendProducts, index) => {
-            return (
-              <div key={index} className="content__rows">
-                {map(row.products, (p: number, index) => (<FeedRow key={index} user={user} product={p} subcategories={subcategories} />))}
-              </div>
-            )
-          })}
+          <div className="content__rows">
+            {map(feed, (feedPost: FeedPost, index) => (<FeedRow key={index} feedPost={feedPost} />))}
+          </div>
         </div>
       </div>
     );
   }
+};
+
+const mapDispatchProps = {
+  fetchFriendsProducts,
 };
 
 const mapStateToProps = (state: State) => ({
@@ -83,4 +87,4 @@ const mapStateToProps = (state: State) => ({
   subcategories: state.subcategories
 });
 
-export default connect(mapStateToProps, {})(Content);
+export default connect(mapStateToProps, mapDispatchProps)(Content);
