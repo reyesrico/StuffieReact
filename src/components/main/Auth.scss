@@ -12,12 +12,13 @@
 }
 
 .auth__title {
-  @include flex(row, space-around, center);
+  @include flex(row, space-around, baseline);
   width: 35%;
 }
 
 .auth__slogan {
   color: $gray;
+  font-size: large;
 }
 
 .auth__horizontal-line {

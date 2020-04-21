@@ -62,7 +62,7 @@ class Auth extends Component<any, any> {
       return (
         <div className="auth">
           <div className="auth__header">
-            <Media fileName="logo_2020" format="jpg" height="50" width="50" />
+            <Media fileName="logo_2020_2" format="jpg" height="50" width="50" />
             <h1 className="auth__title">
               <span className="auth__stuffie">Stuffie</span>
               <span className="auth__slogan">Connecting Life</span>
