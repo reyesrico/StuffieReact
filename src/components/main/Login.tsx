@@ -60,10 +60,12 @@ class Login extends Component<LoginProps, any> {
           <TextField
             type="email"
             name="email"
+            placeholder="Email"
             onChange={(email: string) => this.setState({ email })} />
           <TextField
             type="password"
             name="password"
+            placeholder="Password"
             onChange={(password: string) => this.setState({ password })} />
           <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
         </form>
