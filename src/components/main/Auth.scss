@@ -1,7 +1,27 @@
 @import '../../sass/main.scss';
 
 .auth {
-  @include flex(column, flex-start, center);
+  @include flex(column, center, center);
+  width: 100%;
+}
+
+.auth__header {
+  @include flex(row, center, center);
+  width: 100%;
+}
+
+.auth__title {
+  @include flex(row, space-around, center);
+  width: 35%;
+}
+
+.auth__slogan {
+  color: $gray;
+}
+
+.auth__horizontal-line {
+  @include border(bottom, $gray, 2px);
+  background-color: $gray;
   width: 100%;
 }
 

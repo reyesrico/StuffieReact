@@ -5,6 +5,7 @@ import { get, isEmpty } from 'lodash';
 import Loading from '../shared/Loading';
 import Login from './Login';
 import FetchData from './FetchData';
+import Media from '../shared/Media';
 import Register from './Register';
 import State from '../../redux/State';
 import { fetchUser, logout } from '../../redux/user/actions';
@@ -60,6 +61,14 @@ class Auth extends Component<any, any> {
     if (isEmpty(user) || request) {  
       return (
         <div className="auth">
+          <div className="auth__header">
+            <Media fileName="logo_2020" format="jpg" height="50" width="50" />
+            <h1 className="auth__title">
+              <span className="auth__stuffie">Stuffie</span>
+              <span className="auth__slogan">Connecting Life</span>
+            </h1>
+          </div>
+          <div className="auth__horizontal-line"></div>
           {message && <div className={`auth__message-${this.getMessageType(msg)}`}>{msg}</div>}
           <div className="auth__content">
             <Register setMessage={(message: string) => this.setState({ message })} />
