@@ -4,8 +4,8 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/media/fa-regular-400.c20b5b73.woff2"
   },
   {
-    "revision": "bcda1f4c0b47e500de46",
-    "url": "/StuffieReact/static/css/main.c7dc16fc.chunk.css"
+    "revision": "9dff8b06ecdfd9bb675e",
+    "url": "/StuffieReact/static/css/main.1c524d3a.chunk.css"
   },
   {
     "revision": "50b82b44cf8f11496490",
@@ -40,8 +40,8 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/media/fa-regular-400.261d666b.eot"
   },
   {
-    "revision": "bcda1f4c0b47e500de46",
-    "url": "/StuffieReact/static/js/main.7f3777f5.chunk.js"
+    "revision": "9dff8b06ecdfd9bb675e",
+    "url": "/StuffieReact/static/js/main.2937d732.chunk.js"
   },
   {
     "revision": "f89ea91ecd1ca2db7e09baa2c4b156d1",
@@ -56,12 +56,12 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/media/fa-brands-400.0cb5a5c0.svg"
   },
   {
-    "revision": "a0369ea57eb6d3843d6474c035111f29",
-    "url": "/StuffieReact/static/media/fa-solid-900.a0369ea5.eot"
-  },
-  {
     "revision": "89ffa3aba80d30ee0a9371b25c968bbb",
     "url": "/StuffieReact/static/media/fa-regular-400.89ffa3ab.svg"
+  },
+  {
+    "revision": "a0369ea57eb6d3843d6474c035111f29",
+    "url": "/StuffieReact/static/media/fa-solid-900.a0369ea5.eot"
   },
   {
     "revision": "b15db15f746f29ffa02638cb455b8ec0",
@@ -80,7 +80,7 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css"
   },
   {
-    "revision": "b18095f67667bd731f08e77b1974111c",
+    "revision": "3a334a6b9749a3212a9cbc51b527111d",
     "url": "/StuffieReact/index.html"
   }
 ];
