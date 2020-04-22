@@ -1,0 +1,19 @@
+@import '../../sass/main.scss';
+
+.exchange__header {
+  @include padding(8px, bottom);
+  @include border(bottom, $darkgray, 2px);
+  @include margin(20px, bottom);
+}
+
+.exchange__compare {
+  @include flex(row, space-between, stretch);
+  @include margin(8px, bottom);
+  width: 100%;
+}
+
+.exchange__line {
+  @include border(bottom);
+  background-color: $gray;
+  width: 2px;
+}

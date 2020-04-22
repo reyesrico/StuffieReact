@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-import Category from '../types/Category';
 import Media from '../shared/Media';
 import State from '../../redux/State';
 import { FeedRowProps } from './types';
@@ -30,6 +29,7 @@ class FeedRow extends Component<FeedRowProps, any> {
 
   render() {
     const { feedPost } = this.props;
+    const exchangeTo = { pathname: `/exchange`, product: feedPost.product };
 
     return (
       <div className="feed-row">
@@ -48,7 +48,7 @@ class FeedRow extends Component<FeedRowProps, any> {
         <div className="feed-row__actions">
           <div className="feed-row__action feed-row__text">Ask for:</div>
           <div className="feed-row__action feed-row__link">Loan</div>
-          <div className="feed-row__action feed-row__link">Exchange</div>
+          <div className="feed-row__action feed-row__link"><Link to={exchangeTo}>Exchange</Link></div>
           <div className="feed-row__action feed-row__link">Buy</div>
         </div>
       </div>

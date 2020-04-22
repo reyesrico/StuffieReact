@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import Tesseract from 'tesseract.js';
-import TicketsState from './types';
 
-class Tickets extends Component<any, TicketsState> {
+class Tickets extends Component<any, any> {
   state = {
     file: '',
     progressValue: 0

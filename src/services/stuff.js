@@ -101,3 +101,8 @@ export const getSearchResults = (searchText, products, token) => {
     return Promise.resolve(results);
   });
 };
+
+// For Exchange ElasticSearch
+export const getProductResults = (searchText, products) => (
+  products.filter(product => product.name.toLowerCase().includes(searchText))
+);

@@ -7,6 +7,7 @@ import Admin from '../admin/Admin';
 import CategoryPage from '../content/CategoryPage';
 import Content from '../content/Content';
 import Charts from '../apps/Charts';
+import Exchange from '../apps/Exchange';
 import Friends from '../content/Friends';
 import Products from '../content/Products';
 import Product from '../content/Product';
@@ -28,6 +29,7 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/category/add" render={()=> <AddCategory type='category' />} />
         <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
         <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
+        <Route path="/exchange" render={props => <Exchange { ...props } {...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />
         <Route path="/tickets" component={Tickets} />

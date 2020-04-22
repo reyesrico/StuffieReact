@@ -62,3 +62,7 @@ export function isProductsEmpty(productsMap: ProductsMap) {
   const products = Object.values(productsMap).filter(row => row.length > 0);
   return !products.length;
 }
+
+export function getProductsList(productsMap: ProductsMap): Product[] {
+  return Object.values(productsMap).filter(row => row.length > 0).flat();
+}
