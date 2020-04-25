@@ -36,6 +36,7 @@ class Content extends Component<ContentProps, ContentState> {
       if (friend.products) {
         friend.products.forEach(product => {
           feed.push({
+            friend_id: friend.id,
             friend_firstName: friend.first_name || '',
             friend_lastName: friend.last_name || '',
             product,

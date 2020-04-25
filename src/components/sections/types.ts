@@ -1,7 +1,7 @@
 import Category from "../types/Category";
+import ExchangeRequest from "../types/ExchangeRequest";
 import FriendRequest from "../types/FriendRequest";
 import ProductsMap from "../types/ProductsMap";
-import Stuff from "../types/Stuff";
 import Subcategory from '../types/Subcategory';
 import User from "../types/User";
 
@@ -24,6 +24,8 @@ export interface ProductProps {
 
 export interface ProductsProps {
   categories: Category[],
+  exchangeRequests: ExchangeRequest[],
+  friends: User[],
   products: ProductsMap,
   user: User,
 }
@@ -69,6 +71,7 @@ export interface MenuState {
 
 export interface HeaderProps {
   logout: Function,
+  exchangeRequests: ExchangeRequest[],
   fetchUserRequests: Function,
   friendsRequests: FriendRequest[],
   products: ProductsMap,

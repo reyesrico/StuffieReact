@@ -1,0 +1,24 @@
+@import '../../sass/main.scss';
+
+.warning-message {
+  @include margin(12px, bottom);
+  font-weight: bold;
+  padding: 0 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.warning-message__error {
+  background-color: $lightorange;
+  color: $black;
+}
+
+.warning-message__successful {
+  background-color: $lightgreen;
+  color: $white;
+}
+
+.warning-message__warning {
+  background-color: $lightyellow;
+  color: $black;
+}

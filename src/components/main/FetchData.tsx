@@ -11,6 +11,7 @@ import { fetchFriends } from '../../redux/friends/actions';
 import { fetchFriendsRequests } from '../../redux/friends-requests/actions';
 import { fetchProducts } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
+import { fetchExchangeRequests } from '../../redux/exchange-requests/actions';
 import './FetchData.scss';
 
 class FetchData extends Component<FetchDataProps, any> {
@@ -23,14 +24,15 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 
   fetchData = () => {
-    const { user, fetchCategories, fetchFriends,
-      fetchSubCategories, fetchProducts, fetchFriendsRequests } = this.props;
+    const { user, fetchCategories, fetchFriends, fetchSubCategories,
+      fetchProducts, fetchFriendsRequests, fetchExchangeRequests } = this.props;
 
     let promises = [
       fetchCategories(),                  // values[0]
       fetchSubCategories(),               // values[1]
       fetchFriends(user.email),           // values[2]
       fetchFriendsRequests(user.email),   // values[3]
+      fetchExchangeRequests(user.id)      // values[4]
     ];
 
     Promise.all(promises)
@@ -65,6 +67,7 @@ const mapDispatchProps = {
   fetchFriendsRequests,
   fetchProducts,
   fetchSubCategories,
+  fetchExchangeRequests
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(FetchData);

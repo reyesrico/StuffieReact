@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import { map } from 'lodash';
 import { Link } from 'react-router-dom';
 
+import Button from '../shared/Button';
 import Category from '../types/Category';
+import ExchangeRequest from '../types/ExchangeRequest';
 import State from '../../redux/State';
 import Product from '../types/Product';
+import User from '../types/User';
 import { ProductsProps } from '../sections/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
 import { isProductsEmpty } from '../helpers/StuffHelper';
@@ -18,8 +21,45 @@ class Products extends Component<ProductsProps, any> {
     downloadExcel(products, `${user.first_name}_products`);
   }
 
+  renderRequests = () => {
+    const { exchangeRequests, friends, user } = this.props;
+    
+    return (
+      <div className="products__requests">
+        <hr />
+        <h3 className="products__title">
+          <div>Requests</div>
+          <div className="products__warning">{exchangeRequests.length}</div>
+        </h3>
+        <ul>
+          {exchangeRequests.map((request: ExchangeRequest, index: number) => {
+            const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
+            const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
+
+            return (
+              <li className="products__request" key={index}>
+                <div className="products__request-text">
+                  Owner: {owner.first_name} {owner.last_name} ({owner.email})
+                </div>
+                <div className="products__request-text">
+                  Requestor: {requestor.first_name} {requestor.last_name} ({requestor.email})
+                </div>
+                <div className="products__request-button">
+                  <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
+                </div>
+                <div className="products__request-button">
+                  <Button onClick={() => console.log("Reject Exchange")} text="Reject"></Button>
+                </div>
+              </li>
+            )}
+          )}
+        </ul>
+      </div>
+    )
+  }
+
   render() {
-    const { categories, products, user } = this.props;
+    const { categories, exchangeRequests, products, user } = this.props;
 
     return (
       <div className="products">
@@ -29,6 +69,7 @@ class Products extends Component<ProductsProps, any> {
             <Link to={`/product/add`}>Add Product</Link>
           </div>
         </div>
+        {exchangeRequests.length > 0 && this.renderRequests()}
         <hr />
         {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
         {!isProductsEmpty(products) &&
@@ -61,6 +102,8 @@ class Products extends Component<ProductsProps, any> {
 const mapStateToProps = (state: State) => ({
   user: state.user,
   categories: state.categories,
+  friends: state.friends,
+  exchangeRequests: state.exchangeRequests,
   products: state.products
 });
 

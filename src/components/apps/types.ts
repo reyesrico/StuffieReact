@@ -1,7 +1,7 @@
 import Category from '../types/Category';
-import Product from '../types/Product';
 import ProductsMap from '../types/ProductsMap';
 import Subcategory from '../types/Subcategory';
+import User from '../types/User';
 
 export interface TicketsState {
   file: string,
@@ -10,7 +10,9 @@ export interface TicketsState {
 
 export interface ExchangeProps {
   categories: Category[],
+  exchangeRequest: Function,
   location: any,
   products: ProductsMap,
-  subcategories: Subcategory[]
+  subcategories: Subcategory[],
+  user: User
 }

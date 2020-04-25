@@ -32,7 +32,8 @@ class Header extends Component<HeaderProps, any> {
   }
 
   render() {
-    const { friendsRequests, products, t, user, userRequests } = this.props;
+    const { friendsRequests, exchangeRequests, products, t, user, userRequests } = this.props;
+    const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
 
     if (!t) return;
 
@@ -51,7 +52,10 @@ class Header extends Component<HeaderProps, any> {
               <Link to='/friends'>{t('Friends')}</Link>
               {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
             </div>
-            <div className='stuffie-header__section-item'><Link to='/products'>{t('Products')}</Link></div>
+            <div className={`stuffie-header__section-item ${exchangeClass}`}>
+              <Link to='/products'>{t('Products')}</Link>
+              {exchangeRequests.length > 0 && (<div className="stuffie-header__warning">{exchangeRequests.length}</div>)}
+            </div>
             {user.admin && (
               <div className='stuffie-header__section-item'>
                 <Link to='/admin'>{t('Admin')}</Link>
@@ -73,7 +77,8 @@ const mapStateToProps = (state: State) => ({
   user: state.user,
   userRequests: state.userRequests,
   friendsRequests: state.friendsRequests,
-  products: state.products
+  products: state.products,
+  exchangeRequests: state.exchangeRequests
 });
 
 const mapDispatchProps = {

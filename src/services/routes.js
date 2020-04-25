@@ -38,6 +38,10 @@ const routes = {
     friend: () => `${config.server}friends`,
     userRequests: () => `${config.server}stuffiers?q={"request": true}`,
     deleteUserRequest: id => `${config.server}stuffiers/${id}`
+  },
+  exchange: {
+    request: () => `${config.server}exchange-requests`,
+    list: id => `${config.server}exchange-requests??q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`
   }
 };
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -10,7 +10,10 @@ import Product from '../types/Product';
 import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import SearchBar from '../shared/SearchBar';
+import WarningMessage from '../shared/WarningMessage';
+import { WarningMessageType } from '../shared/types';
 import { ExchangeProps } from './types';
+import { exchangeRequest } from '../../redux/exchange-requests/actions';
 import { getProductsList } from '../helpers/StuffHelper';
 
 import './Exchange.scss';
@@ -18,17 +21,32 @@ import './Exchange.scss';
 class Exchange extends Component<ExchangeProps, any> {
   state = {
     userProducts: [],
-    selectedProduct: {}
+    selectedProduct: {},
+    message: '',
+    show: false,
+    type: undefined
   }
 
   componentDidMount() {
-    const { products } = this.props;
+    const { location, products } = this.props;
+    const product: Product = location.product;
+    const userProducts = getProductsList(products)
+      .filter(p => p.category === product.category || p.subcategory === product.subcategory);
 
-    this.setState({ userProducts: getProductsList(products) });
+    this.setState({ userProducts });
   }
 
   requestExchange = () => {
+    const { exchangeRequest, location, user } = this.props;
+    const { selectedProduct } = this.state;
+
+    const idOwner = location.friend;
+
     console.log('This is to execute request exchange');
+
+    exchangeRequest(idOwner, location.product.id, user.id, get(selectedProduct, 'id'))
+    .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL, show: true }))
+    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL, show: true }));
   }
 
   selectProduct = (product: Product) => {
@@ -63,7 +81,7 @@ class Exchange extends Component<ExchangeProps, any> {
 
   render() {
     const { location } = this.props;
-    const { selectedProduct, userProducts } = this.state;
+    const { selectedProduct, userProducts, message, type, show } = this.state;
     const product = location.product;
 
     if (!userProducts) return;
@@ -72,6 +90,7 @@ class Exchange extends Component<ExchangeProps, any> {
 
     return (
       <div className="exchange">
+        <WarningMessage show={show} message={message} type={type} />
         <div className="exchange__header">
           <SearchBar products={userProducts} selectProduct={(p: Product) => this.selectProduct(p)} />
         </div>
@@ -97,7 +116,12 @@ class Exchange extends Component<ExchangeProps, any> {
 const mapStateToProps = (state: State) => ({
   categories: state.categories,
   products: state.products,
-  subcategories: state.subcategories
+  subcategories: state.subcategories,
+  user: state.user
 });
 
-export default connect(mapStateToProps, {})(Exchange);
+const mapDispatchProps = {
+  exchangeRequest
+};
+
+export default connect(mapStateToProps, mapDispatchProps)(Exchange);

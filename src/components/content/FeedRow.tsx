@@ -29,7 +29,7 @@ class FeedRow extends Component<FeedRowProps, any> {
 
   render() {
     const { feedPost } = this.props;
-    const exchangeTo = { pathname: `/exchange`, product: feedPost.product };
+    const exchangeTo = { pathname: `/exchange`, product: feedPost.product, friend: feedPost.friend_id };
 
     return (
       <div className="feed-row">

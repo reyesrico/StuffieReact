@@ -9,6 +9,7 @@ import subcategories from './subcategories/reducer';
 import user from './user/reducer';
 import userRequests from './user-requests/reducer';
 import friendsRequests from './friends-requests/reducer';
+import exchangeRequests from './exchange-requests/reducer';
 
 // To add object in state:
 // 1. Add reducer here
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   friendsRequests,
   products,
   subcategories,
+  exchangeRequests
 });
 
 const rootReducer = (state, action) => {

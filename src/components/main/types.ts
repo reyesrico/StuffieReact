@@ -14,6 +14,7 @@ export interface FetchDataProps {
   fetchFriendsRequests: Function,
   fetchProducts: Function,
   fetchSubCategories: Function,
+  fetchExchangeRequests: Function
 }
 
 export interface MainProps {
