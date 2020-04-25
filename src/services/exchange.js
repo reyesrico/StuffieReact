@@ -9,3 +9,7 @@ export const addExchangeRequest = (id_stuffier, id_stuff, id_friend, id_friend_s
 export const getExchangeRequests = id_stuffier => (
   axios.get(routes.exchange.list(id_stuffier), { headers: config.headers })
 );
+
+export const deleteExchangeRequest = _id => (
+  axios.delete(routes.exchange.deleteRequest(_id), { headers: config.headers })
+);

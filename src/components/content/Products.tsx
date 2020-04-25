@@ -11,6 +11,7 @@ import Product from '../types/Product';
 import User from '../types/User';
 import { ProductsProps } from '../sections/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
+import { deleteRequest } from '../../redux/exchange-requests/actions';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import './Products.scss';
 
@@ -21,34 +22,49 @@ class Products extends Component<ProductsProps, any> {
     downloadExcel(products, `${user.first_name}_products`);
   }
 
+  executeDeleteExchange = (_id: number) => {
+    const { deleteRequest } = this.props;
+
+    deleteRequest(_id)
+    .then((res: any) => console.log(res))
+    .catch((error: any) => console.log(error));
+  }
+
   renderRequests = () => {
     const { exchangeRequests, friends, user } = this.props;
     
     return (
       <div className="products__requests">
         <hr />
-        <h3 className="products__title">
-          <div>Requests</div>
+        <h3 className="products__requests-title">
+          <div>Exchange Requests</div>
           <div className="products__warning">{exchangeRequests.length}</div>
         </h3>
         <ul>
           {exchangeRequests.map((request: ExchangeRequest, index: number) => {
             const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
+            const isUserRequestor = user === requestor;
+            const isUserOwner = user === owner;
+            const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
 
             return (
               <li className="products__request" key={index}>
-                <div className="products__request-text">
-                  Owner: {owner.first_name} {owner.last_name} ({owner.email})
+                <div className="products__request-group">
+                  <div className="products__request-text">
+                    Owner: {isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
+                  </div>
+                  <div className="products__request-text">
+                    Requestor: {isUserRequestor ? 'Me' : `${requestor.first_name} ${requestor.last_name} (${requestor.email})`}
+                  </div>
                 </div>
-                <div className="products__request-text">
-                  Requestor: {requestor.first_name} {requestor.last_name} ({requestor.email})
-                </div>
-                <div className="products__request-button">
-                  <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
-                </div>
-                <div className="products__request-button">
-                  <Button onClick={() => console.log("Reject Exchange")} text="Reject"></Button>
+                <div className="products__request-buttons">
+                  {!isUserRequestor && <div className="products__request-button">
+                    <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
+                  </div>}
+                  <div className="products__request-button">
+                    <Button onClick={() => this.executeDeleteExchange(request._id)} text={rejectText}></Button>
+                  </div>
                 </div>
               </li>
             )}
@@ -107,5 +123,9 @@ const mapStateToProps = (state: State) => ({
   products: state.products
 });
 
+const mapDispatchProps = {
+  deleteRequest
+};
+
 export { Products as ProductsComponent };
-export default connect(mapStateToProps, {})(Products);
+export default connect(mapStateToProps, mapDispatchProps)(Products);

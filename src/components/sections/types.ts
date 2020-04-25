@@ -24,6 +24,7 @@ export interface ProductProps {
 
 export interface ProductsProps {
   categories: Category[],
+  deleteRequest: Function,
   exchangeRequests: ExchangeRequest[],
   friends: User[],
   products: ProductsMap,

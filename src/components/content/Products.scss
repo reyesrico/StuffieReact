@@ -12,3 +12,43 @@
 h3 {
   margin: 0;
 }
+
+.products__request {
+  @include flex(row, space-around, center);
+  @include margin(8px, vertical);
+  @include border(all, $blue);
+  @include padding(4px, all);
+}
+
+.products__warning {
+  @include warning;
+}
+
+.products__request {
+  @include flex(row, space-between, center);
+  @include margin(8px, vertical);
+  @include border(all, $blue);
+  @include padding(4px, all);
+}
+
+.products__requests-title {
+  @include flex(row, flex-start, center);
+  @include margin(8px, vertical);
+}
+
+.products__request-group {
+  @include flex(column, flex-start, left);
+  @include margin(4px, right);
+}
+
+.products__request-buttons {
+  @include flex(row, flex-end, center);
+}
+
+.products__request-text {
+  font-size: smaller;
+}
+
+.products__request-button {
+  @include margin(4px, left);
+}

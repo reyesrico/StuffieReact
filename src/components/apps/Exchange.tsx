@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
@@ -37,7 +37,7 @@ class Exchange extends Component<ExchangeProps, any> {
   }
 
   requestExchange = () => {
-    const { exchangeRequest, location, user } = this.props;
+    const { exchangeRequest, history, location, user } = this.props;
     const { selectedProduct } = this.state;
 
     const idOwner = location.friend;
@@ -46,7 +46,8 @@ class Exchange extends Component<ExchangeProps, any> {
 
     exchangeRequest(idOwner, location.product.id, user.id, get(selectedProduct, 'id'))
     .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL, show: true }))
-    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL, show: true }));
+    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL, show: true }))
+    .finally(() => history.push('/'));
   }
 
   selectProduct = (product: Product) => {
@@ -124,4 +125,4 @@ const mapDispatchProps = {
   exchangeRequest
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(Exchange);
+export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(Exchange));

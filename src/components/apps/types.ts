@@ -11,6 +11,7 @@ export interface TicketsState {
 export interface ExchangeProps {
   categories: Category[],
   exchangeRequest: Function,
+  history: any,
   location: any,
   products: ProductsMap,
   subcategories: Subcategory[],
