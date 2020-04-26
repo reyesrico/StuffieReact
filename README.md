@@ -1,6 +1,4 @@
-# ![Stuffie](https://res.cloudinary.com/reyesrico/image/upload/c_scale,f_auto,w_50/logo_2020_2.jpg)
-
-<hr />
+# ![Stuffie](https://res.cloudinary.com/reyesrico/image/upload/c_scale,f_auto,w_50/logo_2020_2.jpg) Stuffie
 
 ## Vision
 We will provide the products and services to connect every person/consumer in the world. Connecting every person essences with their own world.
@@ -31,6 +29,7 @@ Living happily depends on how we are in our inner lives - our thoughts, emotions
 | user@stuffie.net              |  Stuffie   | John Doe |
 
 <hr />
+
 ## About
 Author: [Carlos Reyes-Rico (Carlos Reyes)](https://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html)
 
