@@ -24,9 +24,11 @@ Living happily depends on how we are in our inner lives - our thoughts, emotions
 <hr />
 
 ## Try It!
+Stuffie App: [https://reyesrico.github.io/StuffieReact/](https://reyesrico.github.io/StuffieReact)
+
 | User                          | Password   | Name     |
 | ----------------------------- | :--------: | :------: |
-| user@stuffie.net              |  Stuffie   | John Doe |
+| user@stuffie.net              |            | John Doe |
 
 <hr />
 
