@@ -71,6 +71,10 @@ export const addCategoryCall = ({ id, name }) => (
   axios.post(routes.category.add(), { id, name }, { headers: config.headers })
 );
 
+export const getPendingProducts = () => (
+  axios.get(routes.stuff.listPendingPics(), { headers: config.headers })
+);
+
 /*
 * This is to emulate ElasticSearch
 */

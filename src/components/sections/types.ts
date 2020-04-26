@@ -1,6 +1,7 @@
 import Category from "../types/Category";
 import ExchangeRequest from "../types/ExchangeRequest";
 import FriendRequest from "../types/FriendRequest";
+import Product from "../types/Product";
 import ProductsMap from "../types/ProductsMap";
 import Subcategory from '../types/Subcategory';
 import User from "../types/User";
@@ -73,8 +74,8 @@ export interface MenuState {
 export interface HeaderProps {
   logout: Function,
   exchangeRequests: ExchangeRequest[],
-  fetchUserRequests: Function,
   friendsRequests: FriendRequest[],
+  pendingProducts: Product[],
   products: ProductsMap,
   i18n: any,
   user: User,

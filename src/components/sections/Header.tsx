@@ -8,20 +8,9 @@ import SearchBar from '../shared/SearchBar';
 import State from '../../redux/State';
 import { HeaderProps, HeaderState } from './types';
 import { logout } from '../../redux/user/actions';
-import { fetchUserRequests } from '../../redux/user-requests/actions';
 import './Header.scss';
 
 class Header extends Component<HeaderProps, any> {
-  componentDidMount() {
-    const { fetchUserRequests, user, userRequests } = this.props;
-    
-    if (userRequests && userRequests.length === 0) {
-      user.admin && fetchUserRequests().then((res: any) => this.setState({ userRequests: res }));
-    } else {
-      this.setState({ userRequests });
-    }
-  }
-
   handleLogout = (event: any) => {
     const { logout, history } = this.props;
 
@@ -32,7 +21,7 @@ class Header extends Component<HeaderProps, any> {
   }
 
   render() {
-    const { friendsRequests, exchangeRequests, products, t, user, userRequests } = this.props;
+    const { friendsRequests, exchangeRequests, pendingProducts, products, t, user, userRequests } = this.props;
     const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
 
     if (!t) return;
@@ -59,7 +48,9 @@ class Header extends Component<HeaderProps, any> {
             {user.admin && (
               <div className='stuffie-header__section-item'>
                 <Link to='/admin'>{t('Admin')}</Link>
-                {userRequests.length > 0 && (<div className="stuffie-header__warning">{userRequests.length}</div>)}
+                { (userRequests.length > 0 || pendingProducts.length > 0) &&
+                  (<div className="stuffie-header__warning">{userRequests.length + pendingProducts.length}</div>)
+                }
               </div>
             )}
             <div className="stuffie-header__logout"><a onClick={this.handleLogout}>{t('Logout')}</a></div>
@@ -78,11 +69,11 @@ const mapStateToProps = (state: State) => ({
   userRequests: state.userRequests,
   friendsRequests: state.friendsRequests,
   products: state.products,
-  exchangeRequests: state.exchangeRequests
+  exchangeRequests: state.exchangeRequests,
+  pendingProducts: state.pendingProducts,
 });
 
 const mapDispatchProps = {
-  fetchUserRequests,
   logout
 };
 

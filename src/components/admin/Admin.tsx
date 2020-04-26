@@ -2,29 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import Button from '../shared/Button';
+import Product from '../types/Product';
+import State from '../../redux/State';
 import User from '../types/User';
 import { Link } from 'react-router-dom';
-import { fetchUserRequests, deleteRequest } from '../../redux/user-requests/actions';
+import { deleteRequest } from '../../redux/user-requests/actions';
 import './Admin.scss';
 
 class Admin extends Component<any, any> {
-  _isMounted = false;
-
-  state = {
-    userRequests: []
-  };
-
-  componentDidMount() {
-    this._isMounted = true;
-    const { fetchUserRequests } = this.props;
-    fetchUserRequests().then((res: any) => this.setState({ userRequests: res }));
-  }
-
-  // https://stackoverflow.com/questions/53949393/cant-perform-a-react-state-update-on-an-unmounted-component
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
   executeRequest = (user: User, isAccepted = false) => {
     const { deleteRequest } = this.props;
   
@@ -41,13 +26,13 @@ class Admin extends Component<any, any> {
   }
 
   renderRequests = () => {
-    const { userRequests } = this.state;
+    const { userRequests } = this.props;
 
     return (
       <div className="admin__requests">
         <hr />
         <h3 className="admin__title">
-          <div>Requests</div>
+          <div>User Requests</div>
           <div className="admin__warning">{userRequests.length}</div>
         </h3>
         <ul>
@@ -68,11 +53,36 @@ class Admin extends Component<any, any> {
     )
   }
 
+  renderPendingProducts = () => {
+    const { pendingProducts } = this.props;
+
+    console.log(pendingProducts);
+
+    return (
+      <div className="admin__requests">
+        <hr />
+        <h3 className="admin__title">
+          <div>Products Pending of Pics</div>
+          <div className="admin__warning">{pendingProducts.length}</div>
+        </h3>
+        <ul>
+          {pendingProducts.map((product: Product) => {
+            return (<li key={product.id} className="admin__request">
+              <div>Product: {product.name}</div>
+              <div>Id: {product.id} / Category: {product.category} / Subcategory: {product.subcategory}</div>
+            </li>)
+          })}
+        </ul>
+      </div>
+    );
+  }
+
   render() {
-    const { userRequests } = this.state;
+    const { pendingProducts, userRequests } = this.props;
 
     return (
       <div className="admin">
+        {pendingProducts.length > 0 && this.renderPendingProducts()}
         {userRequests.length > 0 && this.renderRequests()}
         <div className="admin__link"><Link to={`/category/add`}>Add Category</Link></div>
         <hr />
@@ -83,9 +93,13 @@ class Admin extends Component<any, any> {
   }
 }
 
+const mapStateToProps = (state: State) => ({
+  userRequests: state.userRequests,
+  pendingProducts: state.pendingProducts,
+});
+
 const mapDispatchProps = {
-  fetchUserRequests,
   deleteRequest
 };
 
-export default connect(null, mapDispatchProps)(Admin);
+export default connect(mapStateToProps, mapDispatchProps)(Admin);
