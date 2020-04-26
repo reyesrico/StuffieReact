@@ -14,14 +14,7 @@ class Admin extends Component<any, any> {
     const { deleteRequest } = this.props;
   
     if (isAccepted) {
-      deleteRequest(user).then((res: User) => {
-        alert('Request Accepted and Deleted');
-        const userRequests = this.state.userRequests.filter((request: User) => {
-          return request._id !== res._id;
-        });
-
-        this.setState({ userRequests });
-      });
+      deleteRequest(user).then(() => alert('Request Accepted and Deleted'));
     }
   }
 

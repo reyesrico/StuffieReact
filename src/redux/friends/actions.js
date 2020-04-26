@@ -7,11 +7,11 @@ import { mapFriends } from '../../components/helpers/UserHelper';
 import { getFriendProducts, mapStuff } from '../../components/helpers/StuffHelper';
 
 const friendsFetched = makeStandardActionCreator(FRIENDS_FETCHED);
-export const fetchFriends = (email) => dispatch => {    // makePaginatedApiActionCreator(getFriends, friendsFetched);
+export const fetchFriends = (email) => dispatch => {
   return getFriends(email)
   .then(res => getStuffiers(mapFriends(res.data)))
   .then(res => {
-    const friends = res.data;
+    const friends = res.data || [];   // TODO: Make this call better
     dispatch(friendsFetched(friends, email));
     return Promise.resolve(friends);
   });

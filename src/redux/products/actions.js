@@ -20,6 +20,15 @@ export const addProduct = (product, user) => dispatch => {
   .catch(error => Promise.reject(error));
 }
 
+export const addRegisteredProduct = (user, product) => dispatch => {
+  return addStuffStuffier(user.id, product.id)
+  .then(() => {
+    dispatch(productAdded(product, user.email));
+    return Promise.resolve(product);
+  })
+  .catch(error => Promise.reject(error));
+}
+
 export const fetchProduct = makePaginatedApiActionCreator(getStuff, productFetched);
 export const fetchProducts = (user, categories) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);
   return getStuffList(user.id)

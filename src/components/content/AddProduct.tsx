@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
+import { withRouter } from 'react-router-dom';
 
-import Dropdown from '../shared/DropDown';
-import { AddProductProps } from '../sections/types';
-import { addStuffStuffier, getStuffFromCategories } from '../../services/stuff';
-import { addProduct } from '../../redux/products/actions';
-
-import './AddProduct.scss';
+import Button from '../shared/Button';
 import Category from '../types/Category';
+import Dropdown from '../shared/DropDown';
 import Product from '../types/Product';
 import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
+import { AddProductProps } from '../sections/types';
+import { getStuffFromCategories } from '../../services/stuff';
+import { addRegisteredProduct, addProduct } from '../../redux/products/actions';
+
+import './AddProduct.scss';
 
 class AddProduct extends Component<AddProductProps, any> {
   state = {
@@ -31,7 +34,7 @@ class AddProduct extends Component<AddProductProps, any> {
 
   componentDidUpdate(prevProps: AddProductProps, prevState: any) {
     const { product, stuffStuffier, name, category, subcategory } = this.state;
-    const anyChange = prevState.name !== name ||
+    const anyChange = prevState.product !== product ||
                       prevState.category !== category ||
                       prevState.subcategory !== subcategory;
     const isMessage = product && stuffStuffier;
@@ -61,11 +64,12 @@ class AddProduct extends Component<AddProductProps, any> {
   }
 
   setProduct() {
-    const { user } = this.props;
+    const { addRegisteredProduct, history, user } = this.props;
     const { product } = this.state;
 
-    addStuffStuffier(user.id, product.id).then(res => {
-      this.setState({ stuffStuffier: res.data });
+    addRegisteredProduct(user, product).then((p: Product) => {
+      this.setState({ stuffStuffier: p });
+      history.push('/products');
     });
   }
 
@@ -96,7 +100,8 @@ class AddProduct extends Component<AddProductProps, any> {
 
   renderProducts(category: Category, subcategory: Subcategory) {
     getStuffFromCategories(category.id, subcategory.id).then(res => {
-      this.setState({ productsByCategories: res.data });
+      const product = res.data[0];
+      this.setState({ productsByCategories: res.data, product });
     })
   }
 
@@ -112,12 +117,12 @@ class AddProduct extends Component<AddProductProps, any> {
 
   render() {
     const { categories, subcategories } = this.props;
-    const { product, stuffStuffier, productsByCategories, category, subcategory, name } = this.state;
+    const { product, stuffStuffier, productsByCategories, category, subcategory } = this.state;
 
     return (
       <div className="add-product">
         <h3>Add Stuff</h3>
-        { product && stuffStuffier && this.renderProductAddedMessage() }
+        { product && !isEmpty(stuffStuffier) && this.renderProductAddedMessage() }
         <hr/>
         <form>
           <div>Select Product</div>
@@ -137,7 +142,9 @@ class AddProduct extends Component<AddProductProps, any> {
             </div>
           )}
           <hr />
-          <button disabled={!(category && subcategory && name)} onClick={event => event && this.setProduct()}>Send</button>
+          <Button text="Add Product" disabled={!(category && subcategory && product && product.name)}
+            onClick={() => this.setProduct()}>
+          </Button>
           <hr />
           <div>Create New Product</div>
           <div className="add-product__row">
@@ -162,6 +169,7 @@ class AddProduct extends Component<AddProductProps, any> {
 
 const mapDispatchProps = {
   addProduct,
+  addRegisteredProduct,
 };
 
 const mapStateToProps = (state: State) => ({
@@ -170,4 +178,4 @@ const mapStateToProps = (state: State) => ({
   subcategories: state.subcategories
 });
 
-export default connect(mapStateToProps, mapDispatchProps)(AddProduct);
+export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(AddProduct));

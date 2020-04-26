@@ -7,8 +7,10 @@ import Subcategory from '../types/Subcategory';
 import User from "../types/User";
 
 export interface AddProductProps {
-  addProduct: any,
+  addProduct: Function,
+  addRegisteredProduct: Function,
   categories: Category[],
+  history: any,
   subcategories: Subcategory[],
   user: User,
 }

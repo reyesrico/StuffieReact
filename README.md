@@ -1,68 +1,37 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ![Stuffie](https://res.cloudinary.com/reyesrico/image/upload/c_scale,f_auto,w_50/logo_2020_2.jpg)
 
-## Available Scripts
+<hr />
 
-In the project directory, you can run:
+## Vision
+We will provide the products and services to connect every person/consumer in the world. Connecting every person essences with their own world.
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Our Inspiration
+Living happily depends on how we are in our inner lives - our thoughts, emotions, beliefs and desires. Having a spiritual dimension means finding a sense of inner peace - both peace of mind and peace in the heart. It also means allowing our inner values to guide how we interact with the world around us - our concern for others, our connection with the natural world and our interest in making a positive contribution to society.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+<hr />
 
-### `npm test`
+## What You Can Do
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+|                               | Section    |  Ready?   |
+| ----------------------------- | :--------: | :-------: |
+| Add Products                  |  Header    | Yes       |
+| Add Friends                   |  Header    | Yes       |
+| Create Products Inventory     |  Products  | Yes       |
+| Exchange Products             |  Feed      | Yes       |
+| Loan Products                 |  Feed      | Under Dev |
+| Buy Products                  |  Feed      | Under Dev |
+| So much more ...              |  Extras    | Under Dev |
 
-### `npm run build`
+<hr />
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Try It!
+| User                          | Password   | Name     |
+| ----------------------------- | :--------: | :------: |
+| user@stuffie.net              |  Stuffie   | John Doe |
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+<hr />
+## About
+Author: [Carlos Reyes-Rico (Carlos Reyes)](https://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+More Info: [Here](https://stuffie.azurewebsites.net/About_Init.aspx)
