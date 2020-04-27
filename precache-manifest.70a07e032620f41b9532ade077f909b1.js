@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "f89ea91ecd1ca2db7e09baa2c4b156d1",
-    "url": "/StuffieReact/static/media/fa-regular-400.f89ea91e.woff"
+    "revision": "c20b5b7362d8d7bb7eddf94344ace33e",
+    "url": "/StuffieReact/static/media/fa-regular-400.c20b5b73.woff2"
   },
   {
-    "revision": "f3be8959be14aeb493eb",
-    "url": "/StuffieReact/static/css/main.e10ccb54.chunk.css"
+    "revision": "9577d38d44923bcffaeb",
+    "url": "/StuffieReact/static/css/main.9d4e5ad5.chunk.css"
   },
   {
     "revision": "50b82b44cf8f11496490",
@@ -20,12 +20,12 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/js/2.06047a26.chunk.js"
   },
   {
-    "revision": "c1868c9545d2de1cf8488f1dadd8c9d0",
-    "url": "/StuffieReact/static/media/fa-brands-400.c1868c95.eot"
-  },
-  {
     "revision": "a06da7f0950f9dd366fc9db9d56d618a",
     "url": "/StuffieReact/static/media/fa-brands-400.a06da7f0.woff2"
+  },
+  {
+    "revision": "c1868c9545d2de1cf8488f1dadd8c9d0",
+    "url": "/StuffieReact/static/media/fa-brands-400.c1868c95.eot"
   },
   {
     "revision": "ec3cfddedb8bebd2d7a3fdf511f7c1cc",
@@ -40,12 +40,12 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/media/fa-regular-400.261d666b.eot"
   },
   {
-    "revision": "f3be8959be14aeb493eb",
-    "url": "/StuffieReact/static/js/main.49bf8090.chunk.js"
+    "revision": "9577d38d44923bcffaeb",
+    "url": "/StuffieReact/static/js/main.bb4c6eb6.chunk.js"
   },
   {
-    "revision": "c20b5b7362d8d7bb7eddf94344ace33e",
-    "url": "/StuffieReact/static/media/fa-regular-400.c20b5b73.woff2"
+    "revision": "f89ea91ecd1ca2db7e09baa2c4b156d1",
+    "url": "/StuffieReact/static/media/fa-regular-400.f89ea91e.woff"
   },
   {
     "revision": "db78b9359171f24936b16d84f63af378",
@@ -68,19 +68,19 @@ self.__precacheManifest = [
     "url": "/StuffieReact/static/media/fa-solid-900.bea989e8.woff"
   },
   {
-    "revision": "1ab236ed440ee51810c56bd16628aef0",
-    "url": "/StuffieReact/static/media/fa-solid-900.1ab236ed.ttf"
-  },
-  {
     "revision": "0cb5a5c0d251c109458c85c6afeffbaa",
     "url": "/StuffieReact/static/media/fa-brands-400.0cb5a5c0.svg"
+  },
+  {
+    "revision": "1ab236ed440ee51810c56bd16628aef0",
+    "url": "/StuffieReact/static/media/fa-solid-900.1ab236ed.ttf"
   },
   {
     "revision": "0be91dee3fa1280f93f5",
     "url": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css"
   },
   {
-    "revision": "18a116bc3475aa36a9b808ce74599acb",
+    "revision": "cc147a3ee77a5e59cceb391d05f35ab6",
     "url": "/StuffieReact/index.html"
   }
 ];
