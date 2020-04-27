@@ -5,7 +5,7 @@
 }
 
 .products__title {
-  @include flex(row, space-between, left);
+  @include flex(row, space-between);
   padding: 8px;
 }
 
@@ -37,7 +37,7 @@ h3 {
 }
 
 .products__request-group {
-  @include flex(column, flex-start, left);
+  @include flex(column, flex-start);
   @include margin(4px, right);
 }
 

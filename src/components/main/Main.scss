@@ -11,7 +11,7 @@
 }
 
 .stuffie__main {
-  @include flex(row, space-between, left);
+  @include flex(row, space-between);
   margin-top: 8px;
   width: 100%;
 }

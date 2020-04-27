@@ -6,7 +6,7 @@
 }
 
 .add-product__row {
-  @include flex(row, flex-start, left);
+  @include flex(row, flex-start);
 }
 
 label {

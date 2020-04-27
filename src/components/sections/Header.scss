@@ -27,7 +27,7 @@
 }
 
 .stuffie-header__sections {
-  @include flex(row, flex-start, left);
+  @include flex(row, flex-start);
 }
 
 .stuffie-header__section-item {
@@ -107,11 +107,16 @@
   }
 
   .stuffie-header__left {
-    @include flex(row, center, center);
+    @include flex(row, space-evenly, center);
+    width: 100%;
   }
 
+  .stuffie-header__sections {
+    @include margin(-6px, bottom);
+  }  
+
   .stuffie-header__search {
-    @include margin(4px, top);
+    @include margin(0px, top);
     width: 48%;
   }
 
@@ -137,6 +142,7 @@
     @include margin-none();
     @include padding-none();
     font-size: 12px;
+    height: 36px;
     width: 50px;
   }
 
@@ -155,7 +161,7 @@
 
   .stuffie-header__menu {
     @include flex(row, center, center);
-    @include margin(8px, right);
+    @include margin(12px, right);
     position: relative;
 
     /* Hide the links inside the navigation menu (except for logo/home) */
@@ -164,7 +170,7 @@
     }
 
     .fa-bars {
-      font-size: 24px;
+      font-size: 22px;
     }
 
     /* Style the hamburger menu */
