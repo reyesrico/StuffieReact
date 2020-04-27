@@ -58,6 +58,7 @@ class Header extends Component<HeaderProps, any> {
         </div>
         <div className="stuffie-header__search">
           <SearchBar products={products}></SearchBar>
+          <div className="stuffie-header__menu"><Media fileName="lines" format="png" height="50" width="50"/></div>
         </div>
       </div>
     );

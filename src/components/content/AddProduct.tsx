@@ -11,6 +11,7 @@ import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 import { AddProductProps } from '../sections/types';
+import { getProductFromProducts } from '../helpers/StuffHelper';
 import { getStuffFromCategories } from '../../services/stuff';
 import { addRegisteredProduct, addProduct } from '../../redux/products/actions';
 
@@ -99,9 +100,12 @@ class AddProduct extends Component<AddProductProps, any> {
   }
 
   renderProducts(category: Category, subcategory: Subcategory) {
+    const { products } = this.props;
+
     getStuffFromCategories(category.id, subcategory.id).then(res => {
       const product = res.data[0];
-      this.setState({ productsByCategories: res.data, product });
+      const productsByCategories = res.data.filter((p: Product) => p.id && !getProductFromProducts(p.id, products));
+      this.setState({ productsByCategories, product });
     })
   }
 
@@ -175,7 +179,8 @@ const mapDispatchProps = {
 const mapStateToProps = (state: State) => ({
   user: state.user,
   categories: state.categories,
-  subcategories: state.subcategories
+  subcategories: state.subcategories,
+  products: state.products
 });
 
 export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(AddProduct));

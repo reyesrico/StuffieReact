@@ -1,7 +1,7 @@
 $border-radius: 10px;
 $padding_background: 12px;
 
-@mixin flex($direction, $justify-content: flex-start, $align-items: left) {
+@mixin flex($direction, $justify-content: flex-start, $align-items: self-start) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justify-content;
@@ -60,6 +60,10 @@ $padding_background: 12px;
   }
 }
 
+@mixin padding-none() {
+  padding: 0;
+}
+
 @mixin margin($size, $position: 'all') {
   @if $position == 'bottom' {
     margin-bottom: $size;
@@ -78,6 +82,10 @@ $padding_background: 12px;
   } @if $position == 'all' {
     margin: $size;
   }
+}
+
+@mixin margin-none() {
+  margin: 0;
 }
 
 @mixin text-link() {

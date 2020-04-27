@@ -97,3 +97,12 @@
 .search__result-S {
   color: $lightorange;
 }
+
+// ---------
+// MEDIA
+// ---------
+@media screen and (max-width: $large) {
+  .search-bar__form {
+    width: 260px;
+  }
+}

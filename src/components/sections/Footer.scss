@@ -1,0 +1,11 @@
+@import '../../sass/main.scss';
+
+
+// ---------
+// MEDIA
+// ---------
+@media screen and (max-width: $large) {
+  .footer {
+    font-size: 12px;
+  }
+}

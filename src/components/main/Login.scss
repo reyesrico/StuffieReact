@@ -13,3 +13,17 @@
   @include border(top, $darkgray);
   width: 100%;
 }
+
+// ---------
+// MEDIA
+// ---------
+@media screen and (max-width: $large) {
+  .login {
+    @include flex(column, center, center);
+    width: 80%;
+  }
+
+  .login__hr {
+    display: none;
+  }
+}

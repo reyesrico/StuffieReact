@@ -11,6 +11,7 @@ export interface AddProductProps {
   addRegisteredProduct: Function,
   categories: Category[],
   history: any,
+  products: ProductsMap,
   subcategories: Subcategory[],
   user: User,
 }

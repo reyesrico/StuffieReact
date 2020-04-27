@@ -28,3 +28,18 @@
 .register__loading {
   @include margin(12px, left);
 }
+
+// ---------
+// MEDIA
+// ---------
+@media screen and (max-width: $large) {
+  .register__form {
+    @include flex(column, center, center);
+  }
+}
+
+@media screen and (max-width: $small) {
+  .register__text {
+    display: none;
+  }
+}

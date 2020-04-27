@@ -1,6 +1,17 @@
+@import '../../sass/main.scss';
+
 .media__image {
   img {
     // width: var(--width);
     // height: var(--height);
+  }
+}
+
+// ---------
+// MEDIA
+// ---------
+@media screen and (max-width: $large) {
+  .media__image {
+    @include flex(row, center, center);
   }
 }
