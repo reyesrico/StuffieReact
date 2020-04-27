@@ -133,9 +133,11 @@
   }
 
   .stuffie-header__logout {
+    @include flex(row, center, center);
     @include margin-none();
+    @include padding-none();
     font-size: 12px;
-    width: 34px;
+    width: 50px;
   }
 
   .stuffie-header__warning {
@@ -144,10 +146,31 @@
 
   .stuffie-header__search {
     @include flex(row, space-between, center);
-    width: 320px;
+    width: 100%;
+
+    .search-bar {
+      @include margin(8px, left);
+    }
   }
 
   .stuffie-header__menu {
-    display: block;
+    @include flex(row, center, center);
+    @include margin(8px, right);
+    position: relative;
+
+    /* Hide the links inside the navigation menu (except for logo/home) */
+    #apps {
+      display: none;
+    }
+
+    .fa-bars {
+      font-size: 24px;
+    }
+
+    /* Style the hamburger menu */
+    a.icon {
+      position: absolute;
+      right: 0;
+    }
   }
 }

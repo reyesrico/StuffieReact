@@ -103,6 +103,12 @@
 // ---------
 @media screen and (max-width: $large) {
   .search-bar__form {
-    width: 260px;
+    width: 320px;
+  }
+}
+
+@media screen and (max-width: $small) {
+  .search-bar__form {
+    width: 270px;;
   }
 }

@@ -3,6 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 
+import Apps from '../sections/Apps';
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 import State from '../../redux/State';
@@ -18,6 +19,25 @@ class Header extends Component<HeaderProps, any> {
 
     logout();
     history.push('/');
+  }
+
+  /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
+  toggleMenu = () => {
+    let x: any = document.getElementById("apps");
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.cssText = `
+        display: block;
+        float: right;
+        top: 28px; right: 0px;
+        position: absolute; background-color: white;
+        width: 146px;
+        padding: 8px;
+        box-shadow: 5px 5px #888888;
+        border-radius: 6px;      
+      `; 
+    }    
   }
 
   render() {
@@ -42,7 +62,7 @@ class Header extends Component<HeaderProps, any> {
               {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
             </div>
             <div className={`stuffie-header__section-item ${exchangeClass}`}>
-              <Link to='/products'>{t('Products')}</Link>
+              <Link to='/products'>{window.innerWidth >= 1024 ? "Products" : "Prods"}</Link>
               {exchangeRequests.length > 0 && (<div className="stuffie-header__warning">{exchangeRequests.length}</div>)}
             </div>
             {user.admin && (
@@ -58,7 +78,14 @@ class Header extends Component<HeaderProps, any> {
         </div>
         <div className="stuffie-header__search">
           <SearchBar products={products}></SearchBar>
-          <div className="stuffie-header__menu"><Media fileName="lines" format="png" height="50" width="50"/></div>
+
+          {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
+          <div className="stuffie-header__menu">
+            <div id="apps"><Apps /></div>
+            <a className="icon" onClick={event => event && this.toggleMenu()}>
+              <i className="fa fa-bars"></i>
+            </a>
+          </div>
         </div>
       </div>
     );
