@@ -1,16 +1,16 @@
 {
-  "main.css": "/StuffieReact/static/css/main.9d4e5ad5.chunk.css",
-  "main.js": "/StuffieReact/static/js/main.bb4c6eb6.chunk.js",
-  "main.js.map": "/StuffieReact/static/js/main.bb4c6eb6.chunk.js.map",
+  "main.css": "/StuffieReact/static/css/main.ea15e6e0.chunk.css",
+  "main.js": "/StuffieReact/static/js/main.bbb351ba.chunk.js",
+  "main.js.map": "/StuffieReact/static/js/main.bbb351ba.chunk.js.map",
   "runtime~main.js": "/StuffieReact/static/js/runtime~main.fa689619.js",
   "runtime~main.js.map": "/StuffieReact/static/js/runtime~main.fa689619.js.map",
   "static/css/2.e7e8c0c5.chunk.css": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css",
-  "static/js/2.06047a26.chunk.js": "/StuffieReact/static/js/2.06047a26.chunk.js",
-  "static/js/2.06047a26.chunk.js.map": "/StuffieReact/static/js/2.06047a26.chunk.js.map",
+  "static/js/2.baaf38b2.chunk.js": "/StuffieReact/static/js/2.baaf38b2.chunk.js",
+  "static/js/2.baaf38b2.chunk.js.map": "/StuffieReact/static/js/2.baaf38b2.chunk.js.map",
   "index.html": "/StuffieReact/index.html",
-  "precache-manifest.70a07e032620f41b9532ade077f909b1.js": "/StuffieReact/precache-manifest.70a07e032620f41b9532ade077f909b1.js",
+  "precache-manifest.d6b3f76f1aa45da57ba691c9a1d61f04.js": "/StuffieReact/precache-manifest.d6b3f76f1aa45da57ba691c9a1d61f04.js",
   "service-worker.js": "/StuffieReact/service-worker.js",
   "static/css/2.e7e8c0c5.chunk.css.map": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css.map",
-  "static/css/main.9d4e5ad5.chunk.css.map": "/StuffieReact/static/css/main.9d4e5ad5.chunk.css.map",
+  "static/css/main.ea15e6e0.chunk.css.map": "/StuffieReact/static/css/main.ea15e6e0.chunk.css.map",
   "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.ec763292.svg"
 }
