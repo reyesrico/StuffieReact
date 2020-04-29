@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
 
+import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import State from '../../redux/State';
 import TextField from '../shared/TextField';
@@ -38,11 +39,9 @@ class AddCategory extends Component<AddCategoryProps, any> {
     }
   }
 
-  createValue = (event: any) => {
+  createValue = () => {
     const { addCategory, addSubCategory, type } = this.props;
     const { categories, subcategories } = this.state;
-
-    event.preventDefault();
 
     if (type === TYPE.CATEGORY) {
       this.setState({ isLoading: true});
@@ -130,7 +129,7 @@ class AddCategory extends Component<AddCategoryProps, any> {
             <TextField name="name" type="text" onChange={(name: string) => this.setState({ name })} />
           </div>
           <hr />
-          <button onClick={(event: any) => this.createValue(event)}>Send</button>
+          <Button onClick={() => this.createValue()} text={"Send"} />
         </form>
       </div>
     );

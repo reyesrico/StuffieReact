@@ -6,12 +6,13 @@ import Button from '../shared/Button';
 import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import User from '../types/User';
+import WarningMessage from '../shared/WarningMessage';
 import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
 import { mapIds } from '../helpers/UserHelper';
 import { FriendsProps } from './types';
-import './Friends.scss';
+import { WarningMessageType } from '../shared/types';
 
-const STATUS = { ACCEPTED: 'accepted', REJECTED: 'rejected', ERROR: 'error' };
+import './Friends.scss';
 
 class Friends extends Component<FriendsProps, any> {
   textField = React.createRef<TextField>();
@@ -21,7 +22,7 @@ class Friends extends Component<FriendsProps, any> {
     emailToRequest: '',
     message: null,
     textfield: null,
-    executeStatus: null
+    executeStatus: WarningMessageType.EMPTY
   };
 
   componentDidMount() {
@@ -40,12 +41,12 @@ class Friends extends Component<FriendsProps, any> {
 
     Promise.all(promises)
     .then((values: any) => {
-      !isAccepted && this.setState({ executeStatus: STATUS.REJECTED });
+      !isAccepted && this.setState({ executeStatus: WarningMessageType.WARNING });
       console.log(values[0].data);
-      isAccepted && this.setState({ executeStatus: STATUS.ACCEPTED });
+      isAccepted && this.setState({ executeStatus: WarningMessageType.SUCCESSFUL });
       isAccepted && console.log(values[1].data);
     })
-    .catch(() => this.setState({ executeStatus: STATUS.ERROR }));
+    .catch(() => this.setState({ executeStatus: WarningMessageType.ERROR }));
   }
 
   renderRequests = () => {
@@ -88,20 +89,16 @@ class Friends extends Component<FriendsProps, any> {
     .catch(() => this.setState({ message: 'Request couldnt be sent', emailToRequest: '' }))
   }
 
-  renderFriendMessage = () => {
+  getMessage = () => {
     const { emailToRequest, executeStatus } = this.state;
     const message =
-      executeStatus === STATUS.ERROR ? 'was not added' :
-      executeStatus === STATUS.REJECTED ? 'was rejected!' :
-      executeStatus === STATUS.ACCEPTED ? 'was accepted!' : null;
+      executeStatus === WarningMessageType.ERROR ? 'was not added' :
+      executeStatus === WarningMessageType.WARNING ? 'was rejected!' :
+      executeStatus === WarningMessageType.SUCCESSFUL ? 'was accepted!' : null;
 
-    if (executeStatus) {
-      return (
-        <div className={`friends__message-${executeStatus}`}>
-          Friend {emailToRequest} {message}
-        </div>
-      );  
-    }
+    if (!message) return '';
+
+    return `Friend ${emailToRequest} ${message}`;
   }
 
   render() {
@@ -111,7 +108,7 @@ class Friends extends Component<FriendsProps, any> {
     return (
       <div className="friends">
         <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
-        { executeStatus && this.renderFriendMessage() }
+        <WarningMessage message={this.getMessage()} type={executeStatus}/>
         <ul>
           {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
         </ul>

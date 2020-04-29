@@ -23,8 +23,7 @@ class Exchange extends Component<ExchangeProps, any> {
     userProducts: [],
     selectedProduct: {},
     message: '',
-    show: false,
-    type: undefined
+    type: WarningMessageType.EMPTY
   }
 
   componentDidMount() {
@@ -45,8 +44,8 @@ class Exchange extends Component<ExchangeProps, any> {
     console.log('This is to execute request exchange');
 
     exchangeRequest(idOwner, location.product.id, user.id, get(selectedProduct, 'id'))
-    .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL, show: true }))
-    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL, show: true }))
+    .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL }))
+    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL }))
     .finally(() => history.push('/'));
   }
 
@@ -82,7 +81,7 @@ class Exchange extends Component<ExchangeProps, any> {
 
   render() {
     const { location } = this.props;
-    const { selectedProduct, userProducts, message, type, show } = this.state;
+    const { selectedProduct, userProducts, message, type } = this.state;
     const product = location.product;
 
     if (!userProducts) return;
@@ -91,7 +90,7 @@ class Exchange extends Component<ExchangeProps, any> {
 
     return (
       <div className="exchange">
-        <WarningMessage show={show} message={message} type={type} />
+        <WarningMessage message={message} type={type} />
         <div className="exchange__header">
           <SearchBar products={userProducts} selectProduct={(p: Product) => this.selectProduct(p)} />
         </div>

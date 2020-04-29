@@ -4,9 +4,9 @@ import './WarningMessage.scss';
 
 class WarningMessage extends Component<WarningMessageProps, any> {
   render() {
-    const { message, type, show } = this.props;
+    const { message, type } = this.props;
 
-    if (!show || !type) return <div></div>;
+    if (!message) return <div></div>
 
     return (
       <div className={`warning-message warning-message__${type}`}>

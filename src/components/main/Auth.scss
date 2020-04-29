@@ -28,13 +28,13 @@
 }
 
 .auth__content {
-  @include flex(row, space-around);
+  @include flex(row, space-around, stretch);
   width: 100%;
 }
 
 .auth__line {
   @include border(bottom);
-  @include margin(20px, top);
+  @include margin(14px, vertical);
   background-color: $gray;
   height: auto;
   width: 2px;
@@ -42,24 +42,6 @@
 
 .auth__loading {
   @include loading-full;
-}
-
-.auth__message-error {
-  background-color: $lightorange;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
-  text-align: center;
-  width: 100%;
-}
-
-.auth__message-successful {
-  background-color: $lightgreen;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
-  text-align: center;
-  width: 100%;
 }
 
 // ---------

@@ -3,6 +3,7 @@ import FacebookLogin from 'react-facebook-login';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import Button from '../shared/Button';
 import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
 import config from '../../services/config';
@@ -18,11 +19,9 @@ class Login extends Component<LoginProps, any> {
     loginFB: false
   }
 
-  onClick = (event: any) => {
+  onClick = () => {
     const { fetchUser, loginUser, setMessage } = this.props;
     const { email, password } = this.state;
-
-    event.preventDefault();
 
     if (email && password) {
       loginUser(email, password)
@@ -46,7 +45,7 @@ class Login extends Component<LoginProps, any> {
         addUserPicture(res.data[0], picture);
         setMessage("Login successful");
       })
-      .catch((err: any) => setMessage("Error: Couldn't login. Try again."));
+      .catch(() => setMessage("Error: Couldn't login. Try again."));
     }
   }
 
@@ -67,7 +66,7 @@ class Login extends Component<LoginProps, any> {
             name="password"
             placeholder="Password"
             onChange={(password: string) => this.setState({ password })} />
-          <div className="login__submit"><input type="submit" value="Login" onClick={this.onClick} /></div>
+          <Button onClick={() => this.onClick()} text="Login" />
         </form>
         <hr className="login__hr" />
           <FacebookLogin

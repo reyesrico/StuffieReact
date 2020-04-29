@@ -10,7 +10,9 @@ import Product from '../types/Product';
 import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
+import WarningMessage from '../shared/WarningMessage';
 import { AddProductProps } from '../sections/types';
+import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import { getStuffFromCategories } from '../../services/stuff';
 import { addRegisteredProduct, addProduct } from '../../redux/products/actions';
@@ -19,7 +21,7 @@ import './AddProduct.scss';
 
 class AddProduct extends Component<AddProductProps, any> {
   state = {
-    status: 'success',
+    status: WarningMessageType.EMPTY,
     name: null,
     file_name: null,
     category: this.props.categories[0],
@@ -33,34 +35,19 @@ class AddProduct extends Component<AddProductProps, any> {
     this.renderProducts(this.state.category, this.state.subcategory);
   }
 
-  componentDidUpdate(prevProps: AddProductProps, prevState: any) {
-    const { product, stuffStuffier, name, category, subcategory } = this.state;
-    const anyChange = prevState.product !== product ||
-                      prevState.category !== category ||
-                      prevState.subcategory !== subcategory;
-    const isMessage = product && stuffStuffier;
-
-    // if (isMessage && anyChange) {
-    //   this.clearState();
-    // }
-  }
-
-  createProduct = (event:any) => {
+  createProduct = () => {
     const { addProduct, user } = this.props;
     const { name, category, subcategory } = this.state;
 
     if (!name || !category || !subcategory) return;
 
-    event.preventDefault();
-
-    addProduct({ name, category: category.id, subcategory: subcategory.id, fileName: 'file_name'}, user)
-      .then((product:Product) => {
-        console.log(product);
-        this.setState({ product });
+    addProduct({ name, category: category.id, subcategory: subcategory.id }, user)
+      .then((product: Product) => {
+        this.setState({ product, stuffStuffier: product, status: WarningMessageType.SUCCESSFUL });
       })
-      .catch((err:any) => {
-        this.setState({ status: 'error' });
-        console.log(`Error: ${err}`);
+      .catch(() => {
+        const product = { name, category: category.id, subcategory: subcategory.id };
+        this.setState({ product, stuffStuffier: product, status: WarningMessageType.ERROR });
       });
   }
 
@@ -69,14 +56,14 @@ class AddProduct extends Component<AddProductProps, any> {
     const { product } = this.state;
 
     addRegisteredProduct(user, product).then((p: Product) => {
-      this.setState({ stuffStuffier: p });
+      this.setState({ stuffStuffier: p, status: WarningMessageType.SUCCESSFUL });
       history.push('/products');
     });
   }
 
   clearState = () => {
     this.setState({
-      status: 'success',
+      status: WarningMessageType.EMPTY,
       name: null,
       file_name: null,
       category: this.props.categories[0],
@@ -86,17 +73,15 @@ class AddProduct extends Component<AddProductProps, any> {
     });
   }
 
-  renderProductAddedMessage = () => {
-    const { status, product } = this.state;
-    const message = status === 'error' ? 'was not added' : 'was added successfully!';
+  getMessage = () => {
+    const { stuffStuffier, status, product } = this.state;
+    const message = status === WarningMessageType.ERROR ? 'was not added' : 'was added successfully!';
 
-    if (product.name) {
-      return (
-        <div className={`add-product__message-${status}`}>
-          Stuff {product.name} {message}
-        </div>
-      );  
+    if (product && !isEmpty(stuffStuffier)) {
+      return `Stuff ${product.name} ${message}`;
     }
+
+    return "";
   }
 
   renderProducts(category: Category, subcategory: Subcategory) {
@@ -121,12 +106,12 @@ class AddProduct extends Component<AddProductProps, any> {
 
   render() {
     const { categories, subcategories } = this.props;
-    const { product, stuffStuffier, productsByCategories, category, subcategory } = this.state;
+    const { product, productsByCategories, category, status, subcategory } = this.state;
 
     return (
       <div className="add-product">
         <h3>Add Stuff</h3>
-        { product && !isEmpty(stuffStuffier) && this.renderProductAddedMessage() }
+        <WarningMessage message={this.getMessage()} type={status} />
         <hr/>
         <form>
           <div>Select Product</div>
@@ -164,7 +149,7 @@ class AddProduct extends Component<AddProductProps, any> {
             <Dropdown onChange={(subcategory:any) => this.setState({ subcategory })} values={subcategories} />
           </div>
           <hr />
-          <button onClick={event => this.createProduct(event)}>Send</button>
+          <Button onClick={() => this.createProduct()} text="Send"></Button>
         </form>
       </div>
     );

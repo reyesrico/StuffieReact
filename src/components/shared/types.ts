@@ -45,11 +45,12 @@ export interface ButtonProps {
 export enum WarningMessageType {
   ERROR = 'error',
   SUCCESSFUL = 'successful',
-  WARNING ='warning'
+  WARNING ='warning',
+  EMPTY = ''
 }
 
 export interface WarningMessageProps {
   message: string,
-  type?: WarningMessageType,
-  show: boolean
+  type: WarningMessageType,
+  show?: boolean
 }

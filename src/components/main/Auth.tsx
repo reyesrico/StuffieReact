@@ -8,7 +8,9 @@ import FetchData from './FetchData';
 import Media from '../shared/Media';
 import Register from './Register';
 import State from '../../redux/State';
-import { fetchUser, logout } from '../../redux/user/actions';
+import WarningMessage from '../shared/WarningMessage';
+import { WarningMessageType } from '../shared/types';
+import { fetchUser } from '../../redux/user/actions';
 import './Auth.scss';
 
 class Auth extends Component<any, any> {
@@ -36,19 +38,19 @@ class Auth extends Component<any, any> {
 
   getMessageType = (message: string) => {
     if (message.toLowerCase().includes('Error')) {
-      return 'error';
+      return WarningMessageType.ERROR;
     } else if(message.toLowerCase().includes('successful')) {
-      return 'successful';
+      return WarningMessageType.SUCCESSFUL;
     }
 
-    return '';
+    return WarningMessageType.EMPTY;
   }
 
   render() {
     const { user } = this.props;
     const { isLoading, message } = this.state;
     const request = get(user, 'request');
-    let msg = request ? "User successfully registered, wait for authorization. Don't register again." : message;
+    let msg = request ? "User already registered, wait for authorization. Don't register again." : message;
 
     if (isLoading) {
       return (
@@ -69,7 +71,7 @@ class Auth extends Component<any, any> {
             </h1>
           </div>
           <div className="auth__horizontal-line"></div>
-          {message && <div className={`auth__message-${this.getMessageType(msg)}`}>{msg}</div>}
+          <WarningMessage message={msg} type={this.getMessageType(msg)} />
           <div className="auth__content">
             <Register setMessage={(message: string) => this.setState({ message })} />
             <div className="auth__line"></div>

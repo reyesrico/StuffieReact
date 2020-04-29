@@ -31,6 +31,7 @@ export interface ProductsProps {
   deleteRequest: Function,
   exchangeRequests: ExchangeRequest[],
   friends: User[],
+  history: any,
   products: ProductsMap,
   user: User,
 }

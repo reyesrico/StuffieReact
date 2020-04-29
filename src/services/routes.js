@@ -22,7 +22,7 @@ const routes = {
     listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
     listStuffiers: ids_stuffier => `${config.server}stuffiers-stuff?q={"$or":${JSON.stringify(ids_stuffier)}}`,
     detailFromCategories: (category, subcategory) => `${config.server}stuff?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`,
-    listPendingPics: () =>  `${config.server}stuff?q={"file_name": ""}`
+    listPendingPics: () =>  `${config.server}stuff?q={"$or": [ {"file_name": {"$exists": false}}, {"file_name": ""} ]}`
   },
   user: {
     detail: email => `${config.server}stuffiers?q=${JSON.stringify({ email })}`,

@@ -16,7 +16,7 @@ import { isProductsEmpty } from '../helpers/StuffHelper';
 import './Products.scss';
 
 class Products extends Component<ProductsProps, any> {
-  generateReport = (event: any) => {
+  generateReport = () => {
     const { products, user } = this.props;
 
     downloadExcel(products, `${user.first_name}_products`);
@@ -75,14 +75,14 @@ class Products extends Component<ProductsProps, any> {
   }
 
   render() {
-    const { categories, exchangeRequests, products, user } = this.props;
+    const { categories, exchangeRequests, history, products, user } = this.props;
 
     return (
       <div className="products">
         <div className="products__title">
-          <h3>{user.first_name} Stuff</h3>
+          <h2>{user.first_name} Stuff</h2>
           <div className="products__add-product">
-            <Link to={`/product/add`}>Add Product</Link>
+            <Button text="Add Product" onClick={() => history.push('/product/add')}></Button>
           </div>
         </div>
         {exchangeRequests.length > 0 && this.renderRequests()}
@@ -107,7 +107,7 @@ class Products extends Component<ProductsProps, any> {
               )
             })}
             <hr />
-            <button onClick={event => this.generateReport(event)}>Generate Report</button>
+            <Button onClick={() => this.generateReport()} text="Generate Report"></Button>
           </div>)
         }
       </div>
