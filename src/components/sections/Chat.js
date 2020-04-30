@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Chat.scss';
 
 class Chat extends Component {
 
@@ -26,7 +27,7 @@ class Chat extends Component {
 
   render() {
     return (
-      <div>Get new Chat-Window</div>
+      <div className="chat">Get new Chat-Window</div>
     )
   }
 };

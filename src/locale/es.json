@@ -13,6 +13,8 @@
     "Summary": "Inventario",
     "Welcome": "Hola ",
     "Welcome to React Translation": "Bienvenido.",
-    "This is test view": "Esta es una prueba."
+    "This is test view": "Esta es una prueba.",
+    "Loading-data": "Cargando datos and productos...",
+    "Loading-Feed": "Cargando Feed"
   }
 }

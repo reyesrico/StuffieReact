@@ -107,12 +107,14 @@
   }
 
   .stuffie-header__left {
-    @include flex(row, space-evenly, center);
+    @include flex(row, space-between, center);
     width: 100%;
   }
 
   .stuffie-header__sections {
+    @include flex(row, flex-end, center);
     @include margin(-6px, bottom);
+    width: 100%;
   }  
 
   .stuffie-header__search {
@@ -125,7 +127,8 @@
   }
 
   .stuffie-header__user {
-    display: none;
+    font-size: 14px;
+    width: 100%;
   }
 
   .stuffie-header__section-item {
@@ -178,5 +181,11 @@
       position: absolute;
       right: 0;
     }
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .stuffie-header__user {
+    display: none;
   }
 }

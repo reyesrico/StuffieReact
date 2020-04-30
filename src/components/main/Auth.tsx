@@ -43,7 +43,7 @@ class Auth extends Component<any, any> {
       return WarningMessageType.SUCCESSFUL;
     }
 
-    return WarningMessageType.EMPTY;
+    return WarningMessageType.WARNING;
   }
 
   render() {

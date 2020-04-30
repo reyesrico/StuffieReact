@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
 import Main from './Main';
@@ -54,12 +55,13 @@ class FetchData extends Component<FetchDataProps, any> {
   }
 
   render() {
+    const { t } = this.props;
     const { isLoading } = this.state;
 
     if (isLoading) {
       return (
         <div className="fetch-data__loading">
-          <Loading size="xl" message="Loading data and products..." />
+          <Loading size="xl" message={t('Loading-data')} />
         </div>
       );
     }
@@ -84,4 +86,4 @@ const mapDispatchProps = {
   fetchUserRequests
 };
 
-export default connect(mapStateToProps, mapDispatchProps)(FetchData);
+export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(FetchData));

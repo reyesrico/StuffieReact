@@ -13,6 +13,8 @@
     "Summary": "Summary",
     "Welcome": "Welcome ",
     "Welcome to React Translation": "Welcome to React Translate.",
-    "This is test view": "This is the test view."
+    "This is test view": "This is the test view.",
+    "Loading-data": "Loading data and products...",
+    "Loading-Feed": "Loading Feed"
   }
 }

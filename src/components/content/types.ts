@@ -17,7 +17,8 @@ export interface ContentProps {
   user: User,
   friends: User[],
   subcategories: Subcategory[],
-  fetchFriendsProducts: Function
+  fetchFriendsProducts: Function,
+  t: Function
 }
 
 export interface ContentState {

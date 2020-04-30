@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty, map, sortBy } from 'lodash';
+import { withTranslation } from 'react-i18next';
 
 import FeedPost from '../types/FeedPost';
 import FeedRow from './FeedRow';
@@ -50,13 +51,13 @@ class Content extends Component<ContentProps, ContentState> {
   }
 
   render() {
-    const { friends } = this.props;
+    const { friends, t } = this.props;
     const { isLoading, feed } = this.state;
 
     if (isLoading) {
       return (
         <div className="content__loading">
-          <Loading size="xl" message="Loading Feed" />
+          <Loading size="xl" message={t("Loading-Feed")} />
         </div>
       );
     }
@@ -87,4 +88,4 @@ const mapStateToProps = (state: State) => ({
   subcategories: state.subcategories
 });
 
-export default connect(mapStateToProps, mapDispatchProps)(Content);
+export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(Content));

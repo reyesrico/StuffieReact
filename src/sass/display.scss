@@ -89,11 +89,20 @@ $padding_background: 12px;
 }
 
 @mixin text-link() {
-  &:hover {
-    color: $blue;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: underline;
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: $blue;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $blue;
+      text-decoration: none;
+    }
   }
 }
 

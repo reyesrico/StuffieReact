@@ -8,8 +8,7 @@ class Footer extends Component {
         <hr />
         Stuffie&trade; is a platform coded and registered by &nbsp;
         <a href="http://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html" target="_blank">Carlos Reyes-Rico</a>.
-  </div>
-
+      </div>
     );
   }
 };
