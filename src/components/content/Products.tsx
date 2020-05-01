@@ -91,7 +91,7 @@ class Products extends Component<ProductsProps, any> {
         {!isProductsEmpty(products) &&
           (<div>
             {categories.map((category: Category) => {
-              if (!products[category.id] || !products[category.id].length) return;
+              if (!products[category.id] || !products[category.id].length) return <div></div>;
 
               return (
                 <div key={category.id}>

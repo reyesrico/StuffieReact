@@ -39,10 +39,15 @@
   background-color: $blue;
   border-radius: 4px 4px 0px 0px;
   color: $white;
+  font-size: 16px;
   width: 80px;
 
   &:first-of-type {
     @include margin(0px, left);
+  }
+
+  &:last-of-type {
+    background-color: $white;
   }
 }
 
@@ -60,30 +65,6 @@
   font-weight: bold;
 }
 
-.stuffie-header__logout {
-  @include flex(row, center);
-  @include padding(8px, all);
-  @include margin(8px, left);
-  @include margin(18px, top);
-  @include margin(0px, right);
-
-  border-radius: 4px 4px 0px 0px;
-  cursor: pointer;
-  width: 70px;
-
-  background-color: $white;
-  color: $blue;
-}
-
-.stuffie-header__logout a{
-  text-decoration: none;
-}
-
-.stuffie-header__logout a:hover {
-  color: $blue;
-  font-weight: bold;
-}
-
 .stuffie-header__search {
   @include margin(19px, top);
   width: 250px;
@@ -97,6 +78,21 @@
   @include warning;
 }
 
+.stuffie-header__button {
+  @include border-none();
+  display: contents;              // TEXT FIT TO BUTTON WITHOUT STUFF!
+  background-color: $white;
+  color: $blue;
+  font-family: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.stuffie-header__button:hover {
+  font-weight: bold;
+}
+
+
 // ---------
 // MEDIA
 // ---------
@@ -108,17 +104,31 @@
 
   .stuffie-header__left {
     @include flex(row, space-between, center);
+    @include border('bottom', $blue, 2px);
     width: 100%;
   }
 
   .stuffie-header__sections {
     @include flex(row, flex-end, center);
-    @include margin(-6px, bottom);
+    @include margin(-4px, bottom);
     width: 100%;
-  }  
+  }
+
+  .stuffie-header__section-item {
+    margin-right: 0;
+    margin-left: 0;
+    font-size: 12px;
+    width: auto;
+  }
+
+  .stuffie-header__button {
+    font-size: 12px;
+    padding: 0;
+    width: auto;
+  }
 
   .stuffie-header__search {
-    @include margin(0px, top);
+    @include margin(14px, top);
     width: 48%;
   }
 
@@ -131,24 +141,6 @@
     width: 100%;
   }
 
-  .stuffie-header__section-item {
-    @include padding-none();
-    @include margin-none();
-    @include margin(2px, horizontal);
-    font-size: 12px;
-    height: 36px;
-    width: 50px;
-  }
-
-  .stuffie-header__logout {
-    @include flex(row, center, center);
-    @include margin-none();
-    @include padding-none();
-    font-size: 12px;
-    height: 36px;
-    width: 50px;
-  }
-
   .stuffie-header__warning {
     display: none;
   }
@@ -159,6 +151,7 @@
 
     .search-bar {
       @include margin(8px, left);
+      width: calc(100% - 38px);
     }
   }
 
@@ -177,9 +170,11 @@
     }
 
     /* Style the hamburger menu */
-    a.icon {
+    button.icon {
+      background-color: transparent;
       position: absolute;
       right: 0;
+      border: 0;
     }
   }
 }

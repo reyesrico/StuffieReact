@@ -7,7 +7,7 @@ import Apps from '../sections/Apps';
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 import State from '../../redux/State';
-import { HeaderProps, HeaderState } from './types';
+import { HeaderProps } from './types';
 import { logout } from '../../redux/user/actions';
 import './Header.scss';
 
@@ -73,7 +73,9 @@ class Header extends Component<HeaderProps, any> {
                 }
               </div>
             )}
-            <div className="stuffie-header__logout"><a onClick={this.handleLogout}>{t('Logout')}</a></div>
+            <div className="stuffie-header__section-item">
+              <button className="stuffie-header__button" onClick={this.handleLogout}>{t('Logout')}</button>
+            </div>
           </div>
         </div>
         <div className="stuffie-header__search">
@@ -82,9 +84,9 @@ class Header extends Component<HeaderProps, any> {
           {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
           <div className="stuffie-header__menu">
             <div id="apps"><Apps /></div>
-            <a className="icon" onClick={event => event && this.toggleMenu()}>
+            <button className="icon" onClick={event => event && this.toggleMenu()}>
               <i className="fa fa-bars"></i>
-            </a>
+            </button>
           </div>
         </div>
       </div>

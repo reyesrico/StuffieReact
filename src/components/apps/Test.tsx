@@ -19,6 +19,8 @@ class Test extends Component<any, any> {
       { id: 3, name: 'Carlos Reyes 3' },
     ];
 
+    console.log(stuff);
+
     let r = [1, 1, 2, 3, 4, 5];
 
     return r.filter((item, index) => {

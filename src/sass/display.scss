@@ -28,15 +28,15 @@ $padding_background: 12px;
 
 @mixin border-none($position: 'all') {
   @if $position == 'bottom' {
-    border-bottom: none;  
+    border-bottom: 0;  
   } @if $position == 'top' {
-    border-top: none;
+    border-top: 0;
   } @if $position == 'left' {
-    border-left: none;
+    border-left: 0;
   } @if $position == 'right' {
-    border-right: none;
+    border-right: 0;
   } @if $position == 'all' {
-    border: none;
+    border: 0;
   }
 }
 

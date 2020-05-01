@@ -5,7 +5,7 @@
 }
 
 .menu__list {
-  @include flex(column, flex-start);
+  @include flex(column, flex-start, stretch);
 }
 
 .menu__category {

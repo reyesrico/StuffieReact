@@ -31,7 +31,7 @@ class Main extends Component<MainProps, any> {
           </div>
           <div className="stuffie__right">
             <div className="stuffie__user">
-              {user.picture && (<img src={user.picture}></img>)}
+              {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
               <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
             </div>
             <div className="stuffie__apps">

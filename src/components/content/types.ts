@@ -34,6 +34,8 @@ export interface FriendsProps {
 }
 
 export interface CategoryPageProps {
+  categories: Category[],
+  subcategories: Subcategory[],
   products: ProductsMap,
   match: any,
   location: any

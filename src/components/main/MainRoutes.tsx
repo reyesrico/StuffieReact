@@ -29,6 +29,7 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/category/add" render={()=> <AddCategory type='category' />} />
         <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
         <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
+        <Route path="/subcategory/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
         <Route path="/exchange" render={props => <Exchange { ...props } {...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />

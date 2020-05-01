@@ -29,7 +29,7 @@
     "react-i18next": "^10.13.2",
     "react-loading": "^2.0.3",
     "react-redux": "^7.2.0",
-    "react-scripts": "2.1.8",
+    "react-scripts": "^3.4.1",
     "react-test-renderer": "^16.13.1",
     "recharts": "^1.8.5",
     "redux": "^4.0.5",

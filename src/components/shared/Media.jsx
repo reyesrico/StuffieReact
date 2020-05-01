@@ -27,7 +27,7 @@ class Media extends Component {
       const imageUrl = `products/${category}/${subcategory}/${fileName}`;
       existImage(imageUrl)
       .then(() => this.setState({ imageUrl }))
-      .catch(() => this.setState({ imageUrl: 'default_product' }))
+      .catch(() => this.setState({ imageUrl: 'default_product' }));
     } else {
       this.setState({ imageUrl: fileName });
     }
@@ -37,6 +37,8 @@ class Media extends Component {
     const { format, width } = this.props;
     const { imageUrl } = this.state;
     const f = imageUrl === 'default_product' ? 'png' : format;
+
+    console.log(imageUrl);
 
     return (
       <div className="media__image">
