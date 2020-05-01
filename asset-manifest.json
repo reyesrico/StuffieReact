@@ -1,16 +1,26 @@
 {
-  "main.css": "/StuffieReact/static/css/main.6c9626ce.chunk.css",
-  "main.js": "/StuffieReact/static/js/main.6793b03f.chunk.js",
-  "main.js.map": "/StuffieReact/static/js/main.6793b03f.chunk.js.map",
-  "runtime~main.js": "/StuffieReact/static/js/runtime~main.fa689619.js",
-  "runtime~main.js.map": "/StuffieReact/static/js/runtime~main.fa689619.js.map",
-  "static/css/2.e7e8c0c5.chunk.css": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css",
-  "static/js/2.10381b92.chunk.js": "/StuffieReact/static/js/2.10381b92.chunk.js",
-  "static/js/2.10381b92.chunk.js.map": "/StuffieReact/static/js/2.10381b92.chunk.js.map",
-  "index.html": "/StuffieReact/index.html",
-  "precache-manifest.b38eb7274be559326082e4102863e381.js": "/StuffieReact/precache-manifest.b38eb7274be559326082e4102863e381.js",
-  "service-worker.js": "/StuffieReact/service-worker.js",
-  "static/css/2.e7e8c0c5.chunk.css.map": "/StuffieReact/static/css/2.e7e8c0c5.chunk.css.map",
-  "static/css/main.6c9626ce.chunk.css.map": "/StuffieReact/static/css/main.6c9626ce.chunk.css.map",
-  "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.ec763292.svg"
+  "files": {
+    "main.css": "/StuffieReact/static/css/main.4c11a866.chunk.css",
+    "main.js": "/StuffieReact/static/js/main.4831580e.chunk.js",
+    "main.js.map": "/StuffieReact/static/js/main.4831580e.chunk.js.map",
+    "runtime-main.js": "/StuffieReact/static/js/runtime-main.d195e5c3.js",
+    "runtime-main.js.map": "/StuffieReact/static/js/runtime-main.d195e5c3.js.map",
+    "static/css/2.92485e37.chunk.css": "/StuffieReact/static/css/2.92485e37.chunk.css",
+    "static/js/2.14a3254f.chunk.js": "/StuffieReact/static/js/2.14a3254f.chunk.js",
+    "static/js/2.14a3254f.chunk.js.map": "/StuffieReact/static/js/2.14a3254f.chunk.js.map",
+    "index.html": "/StuffieReact/index.html",
+    "precache-manifest.ea98b042f4f432e07811ff70343c0fdd.js": "/StuffieReact/precache-manifest.ea98b042f4f432e07811ff70343c0fdd.js",
+    "service-worker.js": "/StuffieReact/service-worker.js",
+    "static/css/2.92485e37.chunk.css.map": "/StuffieReact/static/css/2.92485e37.chunk.css.map",
+    "static/css/main.4c11a866.chunk.css.map": "/StuffieReact/static/css/main.4c11a866.chunk.css.map",
+    "static/js/2.14a3254f.chunk.js.LICENSE.txt": "/StuffieReact/static/js/2.14a3254f.chunk.js.LICENSE.txt",
+    "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.ec763292.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d195e5c3.js",
+    "static/css/2.92485e37.chunk.css",
+    "static/js/2.14a3254f.chunk.js",
+    "static/css/main.4c11a866.chunk.css",
+    "static/js/main.4831580e.chunk.js"
+  ]
 }
