@@ -1,5 +1,5 @@
 {
-  "name": "stuffiejs",
+  "name": "stuffiereact",
   "version": "0.1.0",
   "private": true,
   "homepage": "http://reyesrico.github.io/StuffieReact",
@@ -7,6 +7,7 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@types/crypto-js": "^3.1.44",
     "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.7",
     "@types/react-facebook-login": "^4.1.1",
     "@types/react-redux": "^7.1.7",
     "@types/react-router-dom": "^4.3.5",

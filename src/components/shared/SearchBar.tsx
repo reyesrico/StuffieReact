@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
@@ -9,23 +11,30 @@ import './SearchBar.scss';
 
 class SearchBar extends Component<any, any> {
   source: any = null;
+  node: any = null;
 
   state = {
     isLoading: false,
     isOpen: false,
+    searchText: '',
     results: []
   };
 
-  handleClickOutside() {
-    this.setState({ isOpen: false });
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOutside, true);
   }
 
-  open = () => {
-    this.setState({ isOpen: true });
+  componentWillUnmount() {
+      document.removeEventListener('click', this.handleClickOutside, true);
   }
 
-  toggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+  handleClickOutside = (event: any) => {
+    const domNode = ReactDOM.findDOMNode(this);
+
+    if (!domNode || !domNode.contains(event.target)) {
+      console.log(this.state.searchText);
+      this.setState({ searchText: '', isOpen: false });
+    }
   }
 
   fetchResults = (searchText: string) => {
@@ -33,7 +42,7 @@ class SearchBar extends Component<any, any> {
 
     this.source && this.source.cancel('Cancel pending requests.');
     this.source = axios.CancelToken.source();
-    this.setState({ isOpen: true, isLoading: true });
+    this.setState({ searchText, isOpen: true, isLoading: true });
 
     if (searchText) {
       if (selectProduct) {
@@ -99,13 +108,14 @@ class SearchBar extends Component<any, any> {
     const isOpen = this.state.isOpen ? 'dropdown--is-open' : '';
 
     return (
-      <div className="search-bar">
+      <div className="search-bar" ref={node => this.node = node}>
         <div className="search-bar__form">
           <TextField 
             name="search"
             type="input"
             placeholder="Find stuff..."
             onChange={(value: string) => this.fetchResults(value)}
+            value={this.state.searchText}
           >
           </TextField>
           <div className="search-bar__button">

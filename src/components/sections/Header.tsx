@@ -56,13 +56,13 @@ class Header extends Component<HeaderProps, any> {
             <div className='stuffie-header__user'>Stuffie</div>
           </div>
           <div className='stuffie-header__sections'>
-            <div className='stuffie-header__section-item'><Link to='/'>{t('Feed')}</Link></div>
+            <div className='stuffie-header__section-item'><Link to='/StuffieReact'>{t('Feed')}</Link></div>
             <div className='stuffie-header__section-item'>
               <Link to='/friends'>{t('Friends')}</Link>
               {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
             </div>
             <div className={`stuffie-header__section-item ${exchangeClass}`}>
-              <Link to='/products'>{window.innerWidth >= 1024 ? "Products" : "Prods"}</Link>
+              <Link to='/products'>{window.outerWidth >= 1024 ? "Products" : "Prods"}</Link>
               {exchangeRequests.length > 0 && (<div className="stuffie-header__warning">{exchangeRequests.length}</div>)}
             </div>
             {user.admin && (

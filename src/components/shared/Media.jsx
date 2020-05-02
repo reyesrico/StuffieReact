@@ -38,8 +38,6 @@ class Media extends Component {
     const { imageUrl } = this.state;
     const f = imageUrl === 'default_product' ? 'png' : format;
 
-    console.log(imageUrl);
-
     return (
       <div className="media__image">
         <Image publicId={imageUrl} format={f}>

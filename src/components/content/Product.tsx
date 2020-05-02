@@ -22,10 +22,10 @@ class Product extends Component<ProductProps, ProductState> {
 
   componentDidUpdate(prevProps: ProductProps, prevState: any) {
     const { match, products } = this.props;
-    const id = parseInt(match.params.id);
+    const id = match.params.id;
 
     if (id !== prevState.id) {
-      this.setState({ id: match.params.id, product: getProductFromProducts(id, products) });
+      this.setState({ id: match.params.id, product: getProductFromProducts(parseInt(id), products) });
     }
   }
 

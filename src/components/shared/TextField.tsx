@@ -4,7 +4,7 @@ import './TextField.scss';
 
 class TextField extends Component<TextFieldProps> {
   render() {
-    const { name, placeholder, type, value, onChange, disabled, ref } = this.props;
+    const { name, placeholder, type, value, onChange, disabled, reference } = this.props;
 
     return (
       <div className="textfield">
@@ -15,7 +15,7 @@ class TextField extends Component<TextFieldProps> {
             placeholder={placeholder || ''}
             value={value}
             disabled={disabled}
-            ref={ref ? ref : null}
+            ref={reference}
           />
         }
         { onChange &&
@@ -25,7 +25,8 @@ class TextField extends Component<TextFieldProps> {
             placeholder={placeholder || ''}
             disabled={disabled}
             onChange={event => onChange(event.target.value)}
-            ref={ref ? ref : null}
+            ref={reference}
+            value={value}
           />
         }
       </div>

@@ -115,10 +115,14 @@
   }
 
   .stuffie-header__section-item {
-    margin-right: 0;
+    margin-right: 4px;
     margin-left: 0;
     font-size: 12px;
     width: auto;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
   }
 
   .stuffie-header__button {

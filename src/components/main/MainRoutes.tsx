@@ -21,6 +21,7 @@ class MainRoutes extends Component<MainRoutesProps, any> {
     return (
       <Switch>
         <Route exact path="/" component={Content} />
+        <Route exact path="/StuffieReact" component={Content} />
         <Route path="/admin" component={Admin} />
         <Route path="/friends" component={Friends} />
         <Route path="/products" component={Products} />

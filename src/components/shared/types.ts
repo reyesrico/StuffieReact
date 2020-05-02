@@ -7,7 +7,7 @@ export interface TextFieldProps {
   value?: string,
   onChange?: Function,
   disabled?: boolean,
-  ref?: any
+  reference?: any
 }
 
 export interface MenuProps {

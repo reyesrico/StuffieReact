@@ -30,7 +30,7 @@ class Login extends Component<LoginProps, any> {
         localStorage.setItem('username', res.data[0].email);
         setMessage("Login successful");
       })
-      .catch((err: any) => setMessage("Error: Couldn't login. Try again."));
+      .catch(() => setMessage("Error: Couldn't login. Try again."));
     }
   }
 
