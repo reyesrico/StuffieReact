@@ -15,6 +15,7 @@ import { WarningMessageType } from '../shared/types';
 import { ExchangeProps } from './types';
 import { exchangeRequest } from '../../redux/exchange-requests/actions';
 import { getProductsList } from '../helpers/StuffHelper';
+import { getStuffiers } from '../../services/stuffier';
 
 import './Exchange.scss';
 
@@ -23,16 +24,25 @@ class Exchange extends Component<ExchangeProps, any> {
     userProducts: [],
     selectedProduct: {},
     message: '',
+    friend: { first_name: '' },
     type: WarningMessageType.EMPTY
   }
 
   componentDidMount() {
-    const { location, products } = this.props;
+    const { history, location, products } = this.props;
     const product: Product = location.product;
+
+    if (!product || product === undefined) {
+      history.push('/');
+    }
+
     const userProducts = getProductsList(products)
       .filter(p => p.category === product.category || p.subcategory === product.subcategory);
 
     this.setState({ userProducts });
+
+    getStuffiers([{ id: location.friend }])
+    .then((res: any) => this.setState({ friend: res.data[0] }));  
   }
 
   requestExchange = () => {
@@ -81,10 +91,10 @@ class Exchange extends Component<ExchangeProps, any> {
 
   render() {
     const { location } = this.props;
-    const { selectedProduct, userProducts, message, type } = this.state;
+    const { friend, selectedProduct, userProducts, message, type } = this.state;
     const product = location.product;
 
-    if (!userProducts) return;
+    if (!userProducts.length) return <div>No products to exchange under same category</div>;
 
     if (!product) return <Redirect to='/'/>
 
@@ -97,9 +107,15 @@ class Exchange extends Component<ExchangeProps, any> {
         { !isEmpty(selectedProduct) &&
           <div className="exchange__content">
             <div className="exchange__compare">
-              {this.renderProduct(selectedProduct)}
+              <div className="exchange__compare-info">
+                <h4>My Product</h4>
+                {this.renderProduct(selectedProduct)}
+              </div>
               <div className="exchange__line"></div>
-              {this.renderProduct(product)}
+              <div className="exchange__compare-info">
+                <h4>{friend?.first_name} Product</h4>
+                {this.renderProduct(product)}
+              </div>
             </div>
             <Button
               type="submit"

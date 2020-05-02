@@ -90,8 +90,8 @@ class Products extends Component<ProductsProps, any> {
         {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
         {!isProductsEmpty(products) &&
           (<div>
-            {categories.map((category: Category) => {
-              if (!products[category.id] || !products[category.id].length) return <div></div>;
+            {categories.map((category: Category, index: number) => {
+              if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`}></div>;
 
               return (
                 <div key={category.id}>

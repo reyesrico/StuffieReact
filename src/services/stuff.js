@@ -108,5 +108,5 @@ export const getSearchResults = (searchText, products, token) => {
 
 // For Exchange ElasticSearch
 export const getProductResults = (searchText, products) => (
-  products.filter(product => product.name.toLowerCase().includes(searchText))
+  products.filter(product => product.name.toLowerCase().includes(searchText.toLowerCase()))
 );
