@@ -110,7 +110,7 @@
 
   .stuffie-header__sections {
     @include flex(row, flex-end, center);
-    @include margin(-4px, bottom);
+    @include margin(-6px, bottom);
     width: 100%;
   }
 
@@ -121,7 +121,8 @@
     width: auto;
 
     &:last-of-type {
-      margin-right: 0;
+      @include margin(0, bottom);
+      @include border(bottom, $blue, 2px);
     }
   }
 
@@ -146,6 +147,15 @@
   }
 
   .stuffie-header__warning {
+    width: 8px;
+    height: 8px;
+    position: relative;
+    top: -16px;
+    left: 8px;
+    @include margin(-8px, left);
+  }
+
+  .stuffie-header__warning-text {
     display: none;
   }
 

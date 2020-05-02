@@ -63,14 +63,18 @@ class Header extends Component<HeaderProps, any> {
             </div>
             <div className={`stuffie-header__section-item ${exchangeClass}`}>
               <Link to='/products'>{window.outerWidth >= 1024 ? "Products" : "Prods"}</Link>
-              {exchangeRequests.length > 0 && (<div className="stuffie-header__warning">{exchangeRequests.length}</div>)}
+              {exchangeRequests.length > 0 && (
+              <div className="stuffie-header__warning">
+                <span className="stuffie-header__warning-text">{exchangeRequests.length}</span>
+              </div>)}
             </div>
             {user.admin && (
               <div className='stuffie-header__section-item'>
                 <Link to='/admin'>{t('Admin')}</Link>
-                { (userRequests.length > 0 || pendingProducts.length > 0) &&
-                  (<div className="stuffie-header__warning">{userRequests.length + pendingProducts.length}</div>)
-                }
+                {(userRequests.length > 0 || pendingProducts.length > 0) && (
+                  <div className="stuffie-header__warning">
+                    <span className="stuffie-header__warning-text">{userRequests.length + pendingProducts.length}</span>
+                  </div>)}
               </div>
             )}
             <div className="stuffie-header__section-item">
