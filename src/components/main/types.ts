@@ -15,6 +15,7 @@ export interface FetchDataProps {
   fetchProducts: Function,
   fetchSubCategories: Function,
   fetchExchangeRequests: Function,
+  fetchLoanRequests: Function,
   fetchPendingProducts: Function,
   fetchUserRequests: Function,
   t: Function

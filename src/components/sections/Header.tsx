@@ -41,8 +41,9 @@ class Header extends Component<HeaderProps, any> {
   }
 
   render() {
-    const { friendsRequests, exchangeRequests, pendingProducts, products, t, user, userRequests } = this.props;
+    const { friendsRequests, exchangeRequests, loanRequests, pendingProducts, products, t, user, userRequests } = this.props;
     const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
+    const requests = exchangeRequests.length + loanRequests.length;
 
     if (!t) return;
 
@@ -62,10 +63,10 @@ class Header extends Component<HeaderProps, any> {
               {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
             </div>
             <div className={`stuffie-header__section-item ${exchangeClass}`}>
-              <Link to='/products'>{window.outerWidth >= 1024 ? "Products" : "Prods"}</Link>
-              {exchangeRequests.length > 0 && (
+              <Link to='/products'>{window.outerWidth >= 1024 && !requests ? "Products" : "Prods"}</Link>
+              {requests > 0 && (
               <div className="stuffie-header__warning">
-                <span className="stuffie-header__warning-text">{exchangeRequests.length}</span>
+                <span className="stuffie-header__warning-text">{requests}</span>
               </div>)}
             </div>
             {user.admin && (
@@ -104,6 +105,7 @@ const mapStateToProps = (state: State) => ({
   friendsRequests: state.friendsRequests,
   products: state.products,
   exchangeRequests: state.exchangeRequests,
+  loanRequests: state.loanRequests,
   pendingProducts: state.pendingProducts,
 });
 

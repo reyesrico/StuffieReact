@@ -13,6 +13,7 @@ import { fetchFriendsRequests } from '../../redux/friends-requests/actions';
 import { fetchProducts } from '../../redux/products/actions';
 import { fetchSubCategories } from '../../redux/subcategories/actions';
 import { fetchExchangeRequests } from '../../redux/exchange-requests/actions';
+import { fetchLoanRequests } from '../../redux/loan-requests/actions';
 import { fetchPendingProducts } from '../../redux/pending-products/actions';
 import { fetchUserRequests } from '../../redux/user-requests/actions';
 
@@ -29,14 +30,16 @@ class FetchData extends Component<FetchDataProps, any> {
 
   fetchData = () => {
     const { user, fetchCategories, fetchFriends, fetchSubCategories, fetchProducts,
-      fetchFriendsRequests, fetchExchangeRequests,   fetchPendingProducts, fetchUserRequests } = this.props;
+      fetchFriendsRequests, fetchExchangeRequests, fetchLoanRequests,
+      fetchPendingProducts, fetchUserRequests } = this.props;
 
     let promises = [
       fetchCategories(),                  // values[0]
       fetchSubCategories(),               // values[1]
       fetchFriends(user.email),           // values[2]
       fetchFriendsRequests(user.email),   // values[3]
-      fetchExchangeRequests(user.id)      // values[4]
+      fetchExchangeRequests(user.id),     // values[4]
+      fetchLoanRequests(user.id)          // values[5]
     ];
 
     let adminPromises = [
@@ -82,6 +85,7 @@ const mapDispatchProps = {
   fetchProducts,
   fetchSubCategories,
   fetchExchangeRequests,
+  fetchLoanRequests,
   fetchPendingProducts,
   fetchUserRequests
 };

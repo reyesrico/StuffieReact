@@ -31,6 +31,10 @@ export const getListStuff = ids => {
   return Promise.resolve([]);
 };
 
+export const getProductsFromIds = ids => (
+  axios.get(routes.stuff.listDetail(ids), { headers: config.headers })
+);
+
 export const getCategories = (token = null) => (
   axios.get(routes.category.list(), { headers: config.headers, cancelToken: token })
 );
@@ -80,23 +84,24 @@ export const getPendingProducts = () => (
 */
 export const getSearchResults = (searchText, products, token) => {
   let results = [];
+  const text = searchText.toLowerCase();
 
   return Promise.all([getCategories(token), getSubCategories(token)]).then(values => {
     values[0].data.forEach(c => {
-      if (c.name.toLowerCase().includes(searchText)){
+      if (c.name.toLowerCase().includes(text)){
         results.push({ type: 'Category', name: c.name, id: c.id });
       }
     });
 
     values[1].data.forEach(s => {
-      if (s.name.toLowerCase().includes(searchText)) {
+      if (s.name.toLowerCase().includes(text)) {
         results.push({ type: 'Subcategory', name: s.name, id: s.id });
       }
     });
 
     Object.keys(products).forEach(key => {
       products[key].forEach(p => {
-        if (p.name.toLowerCase().includes(searchText)) {
+        if (p.name.toLowerCase().includes(text)) {
           results.push({ type: 'Product', name: p.name, id: p.id });
         }  
       });

@@ -17,3 +17,13 @@ export interface ExchangeProps {
   subcategories: Subcategory[],
   user: User
 }
+
+export interface LoanProps {
+  categories: Category[],
+  location: any,
+  subcategories: Subcategory[],
+  products: ProductsMap,
+  user: User,
+  loanRequest: Function,
+  history: any
+}

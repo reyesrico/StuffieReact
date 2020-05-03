@@ -1,6 +1,7 @@
 import Category from "../types/Category";
 import ExchangeRequest from "../types/ExchangeRequest";
 import FriendRequest from "../types/FriendRequest";
+import LoanRequest from '../types/LoanRequest';
 import Product from "../types/Product";
 import ProductsMap from "../types/ProductsMap";
 import Subcategory from '../types/Subcategory';
@@ -29,7 +30,9 @@ export interface ProductProps {
 export interface ProductsProps {
   categories: Category[],
   deleteRequest: Function,
+  deleteRequestLoan: Function,
   exchangeRequests: ExchangeRequest[],
+  loanRequests: LoanRequest[],
   friends: User[],
   history: any,
   products: ProductsMap,
@@ -78,6 +81,7 @@ export interface MenuState {
 export interface HeaderProps {
   logout: Function,
   exchangeRequests: ExchangeRequest[],
+  loanRequests: LoanRequest[],
   friendsRequests: FriendRequest[],
   pendingProducts: Product[],
   products: ProductsMap,

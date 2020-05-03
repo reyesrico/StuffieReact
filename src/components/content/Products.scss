@@ -5,12 +5,12 @@
 }
 
 .products__title {
-  @include flex(row, space-between);
+  @include flex(row, space-between, center);
   padding: 8px;
 }
 
-h3 {
-  margin: 0;
+h2 {
+  @include margin-none;
 }
 
 .products__request {

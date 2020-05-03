@@ -11,6 +11,7 @@ import userRequests from './user-requests/reducer';
 import friendsRequests from './friends-requests/reducer';
 import exchangeRequests from './exchange-requests/reducer';
 import pendingProducts from './pending-products/reducer';
+import loanRequests from './loan-requests/reducer';
 
 // To add object in state:
 // 1. Add reducer here
@@ -24,7 +25,8 @@ const appReducer = combineReducers({
   products,
   subcategories,
   exchangeRequests,
-  pendingProducts
+  pendingProducts,
+  loanRequests
 });
 
 const rootReducer = (state, action) => {

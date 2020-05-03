@@ -11,6 +11,12 @@ export function mapStuff(stuff: any) {
   });
 }
 
+export function mapIds(ids: number[]) {
+  return map(ids, id => {
+    return { id };
+  });
+}
+
 export function getProductsMap(categories: Category[], objects: any): ProductsMap {
   let productsMap: ProductsMap = {};
 

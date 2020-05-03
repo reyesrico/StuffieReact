@@ -44,6 +44,11 @@ const routes = {
     request: () => `${config.server}exchange-requests`,
     list: id => `${config.server}exchange-requests?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
     deleteRequest: _id => `${config.server}exchange-requests/${_id}`
+  },
+  loan: {
+    request: () => `${config.server}loan-requests`,
+    list: id => `${config.server}loan-requests?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
+    deleteRequest: _id => `${config.server}loan-requests/${_id}`
   }
 };
 
