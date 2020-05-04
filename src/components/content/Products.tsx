@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { get, map, uniq } from 'lodash';
-import { Link } from 'react-router-dom';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
 import ExchangeRequest from '../types/ExchangeRequest';
 import LoanRequest from '../types/LoanRequest';
+import Product from './Product';
 import State from '../../redux/State';
-import Product from '../types/Product';
 import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
 import { ProductsProps } from '../sections/types';
@@ -19,6 +18,7 @@ import { deleteRequestLoan } from '../../redux/loan-requests/actions';
 import { getProductsFromIds } from '../../services/stuff';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import { mapIds } from '../helpers/StuffHelper';
+import { default as ProductType } from '../types/Product';
 
 import './Products.scss';
 
@@ -80,8 +80,8 @@ class Products extends Component<ProductsProps, any> {
             const isUserRequestor = user === requestor;
             const isUserOwner = user === owner;
             const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
-            const ownerProduct = requestedProducts.find((p: Product) => p.id === request.id_stuff);
-            const requestorProduct = requestedProducts.find((p: Product) => p.id === request.id_friend_stuff);
+            const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+            const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
 
             return (
               <li className="products__request" key={index}>
@@ -133,7 +133,7 @@ class Products extends Component<ProductsProps, any> {
             const isUserRequestor = user === requestor;
             const isUserOwner = user === owner;
             const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
-            const product = requestedProducts.find((p: Product) => p.id === request.id_stuff);
+            const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
 
             return (
               <li className="products__request" key={index}>
@@ -190,11 +190,10 @@ class Products extends Component<ProductsProps, any> {
               return (
                 <div key={category.id}>
                   <h4>{category.name}</h4>
-                  <ul>
-                    {map(products[category.id as number], (product: Product) => {
-                      return (
-                        <li key={`${category.id}_${product.id}`}><Link to={`/product/${product.id}`}>{product.name}</Link></li>
-                      )
+                  <ul className="products__list">
+                    {map(products[category.id as number], (product: ProductType) => {
+                      const match = { params: { id: product.id } };
+                      return <Product key={product.id} match={match} />
                     })}
                   </ul>
                 </div>

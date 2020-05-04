@@ -6,7 +6,7 @@
 
 .products__title {
   @include flex(row, space-between, center);
-  padding: 8px;
+  @include padding(8px, vertical);
 }
 
 h2 {
@@ -51,4 +51,18 @@ h2 {
 
 .products__request-button {
   @include margin(4px, left);
+}
+
+h4 {
+  background-color: $blue;
+  color: $white;
+  font-weight: 200;
+}
+
+.products__list {
+  .product {
+    @include margin(12px, bottom);
+    border-radius: 8px;
+    box-shadow: 4px 4px 6px $darkgray;
+  }
 }
