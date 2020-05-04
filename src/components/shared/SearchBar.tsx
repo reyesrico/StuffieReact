@@ -32,7 +32,6 @@ class SearchBar extends Component<any, any> {
     const domNode = ReactDOM.findDOMNode(this);
 
     if (!domNode || !domNode.contains(event.target)) {
-      console.log(this.state.searchText);
       this.setState({ searchText: '', isOpen: false });
     }
   }

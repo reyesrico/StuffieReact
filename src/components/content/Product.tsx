@@ -15,17 +15,20 @@ class Product extends Component<ProductProps, ProductState> {
   }
 
   componentDidMount() {
-    const { match, products } = this.props;
+    const { match, products, product } = this.props;
+
     const id = parseInt(match.params.id);
-    this.setState({ id, product: getProductFromProducts(id, products) });
+    const p = product ? product : getProductFromProducts(id, products); 
+    this.setState({ id, product: p });
   }
 
   componentDidUpdate(prevProps: ProductProps, prevState: any) {
-    const { match, products } = this.props;
+    const { match, products, product } = this.props;
     const id = match.params.id;
 
     if (id !== prevState.id) {
-      this.setState({ id: match.params.id, product: getProductFromProducts(parseInt(id), products) });
+      const p = product ? product : getProductFromProducts(id, products); 
+      this.setState({ id, product: p });
     }
   }
 

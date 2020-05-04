@@ -189,7 +189,7 @@ class Products extends Component<ProductsProps, any> {
 
               return (
                 <div key={category.id}>
-                  <h4>{category.name}</h4>
+                  <h4 className="products__subheader">{category.name}</h4>
                   <ul className="products__list">
                     {map(products[category.id as number], (product: ProductType) => {
                       const match = { params: { id: product.id } };

@@ -24,7 +24,8 @@ export interface ProductProps {
   categories: Category[],
   subcategories: Subcategory[],
   match: any,
-  products: ProductsMap
+  products: ProductsMap,
+  product?: Product
 }
 
 export interface ProductsProps {
