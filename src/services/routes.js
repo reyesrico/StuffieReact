@@ -18,7 +18,7 @@ const routes = {
     addStuffiersStuff: () => `${config.server}stuffiers-stuff`,
     addStuff: () => `${config.server}stuff`,
     detail: id => `${config.server}stuff?q=${JSON.stringify({ id: parseInt(id) })}`,
-    listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}`,
+    listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}&metafields=true`,
     listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
     listStuffiers: ids_stuffier => `${config.server}stuffiers-stuff?q={"$or":${JSON.stringify(ids_stuffier)}}`,
     detailFromCategories: (category, subcategory) => `${config.server}stuff?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`,

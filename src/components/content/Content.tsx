@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty, map, sortBy } from 'lodash';
+import { map } from 'lodash';
 import { withTranslation } from 'react-i18next';
 
 import FeedPost from '../types/FeedPost';
@@ -10,49 +10,45 @@ import State from '../../redux/State';
 import User from '../types/User';
 import { ContentProps, ContentState } from './types';
 import { fetchFriendsProducts } from '../../redux/friends/actions';
+import { fetchFeed } from '../../redux/feed/actions';
 import './Content.scss';
 
 class Content extends Component<ContentProps, ContentState> {
+  _isMounted = false;
+
   state = {
     isLoading: false,
     feed: [],
   };
 
-  componentDidMount = () => {
-    const { fetchFriendsProducts, friends } = this.props;
+  componentDidMount() {
+    const { feed } = this.props;
+    this._isMounted = true;
+    console.log('entra');
 
-    if (isEmpty(this.state.feed)) {
+    if (!feed.length) {
       this.setState({ isLoading: true });
-
-      fetchFriendsProducts(friends)
-      .then((friendsFilled: User[]) => this.generateFeed(friendsFilled))
-      .finally(() => this.setState({ isLoading: false }));
     }
+
+    this.getFeed();
   }
 
-  generateFeed(friends: User[]) {
-    let feed: FeedPost[] = [];
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
-    friends.forEach((friend: User) => {
-      if (friend.products) {
-        friend.products.forEach(product => {
-          feed.push({
-            friend_id: friend.id,
-            friend_firstName: friend.first_name || '',
-            friend_lastName: friend.last_name || '',
-            product,
-            date: new Date().toString()
-            });  
-        })
-      }
-    });
+  getFeed = () => {
+    const { fetchFriendsProducts, fetchFeed, friends } = this.props;
 
-    this.setState({ feed: sortBy(feed, 'date') });
+    fetchFriendsProducts(friends)
+    .then((fullFriends: User[]) => fetchFeed(fullFriends))
+    .catch(() => console.log('Error Feed Fetched'))
+    .finally(() => this.setState({ isLoading: false }));
   }
 
   render() {
-    const { friends, t } = this.props;
-    const { isLoading, feed } = this.state;
+    const { feed, friends, t } = this.props;
+    const { isLoading } = this.state;
 
     if (isLoading) {
       return (
@@ -80,12 +76,14 @@ class Content extends Component<ContentProps, ContentState> {
 
 const mapDispatchProps = {
   fetchFriendsProducts,
+  fetchFeed
 };
 
 const mapStateToProps = (state: State) => ({
   user: state.user,
   friends: state.friends,
-  subcategories: state.subcategories
+  subcategories: state.subcategories,
+  feed: state.feed
 });
 
 export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(Content));

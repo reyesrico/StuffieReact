@@ -4,4 +4,5 @@ export default interface Product {
   category?: number,
   subcategory?: number,
   file_name?: string
+  _created?: string
 }

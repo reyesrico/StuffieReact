@@ -12,6 +12,7 @@ import friendsRequests from './friends-requests/reducer';
 import exchangeRequests from './exchange-requests/reducer';
 import pendingProducts from './pending-products/reducer';
 import loanRequests from './loan-requests/reducer';
+import feed from './feed/reducer';
 
 // To add object in state:
 // 1. Add reducer here
@@ -26,7 +27,8 @@ const appReducer = combineReducers({
   subcategories,
   exchangeRequests,
   pendingProducts,
-  loanRequests
+  loanRequests,
+  feed                    // Make feed the last one?
 });
 
 const rootReducer = (state, action) => {

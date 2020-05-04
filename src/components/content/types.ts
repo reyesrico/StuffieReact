@@ -15,9 +15,11 @@ export interface AddCategoryProps {
 
 export interface ContentProps {
   user: User,
+  feed: FeedPost[],
   friends: User[],
   subcategories: Subcategory[],
   fetchFriendsProducts: Function,
+  fetchFeed: Function,
   t: Function
 }
 
