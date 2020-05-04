@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/StuffieReact/static/css/main.32d2d7b1.chunk.css",
-    "main.js": "/StuffieReact/static/js/main.0d2d12bf.chunk.js",
-    "main.js.map": "/StuffieReact/static/js/main.0d2d12bf.chunk.js.map",
+    "main.js": "/StuffieReact/static/js/main.febb6ac2.chunk.js",
+    "main.js.map": "/StuffieReact/static/js/main.febb6ac2.chunk.js.map",
     "runtime-main.js": "/StuffieReact/static/js/runtime-main.90497eb9.js",
     "runtime-main.js.map": "/StuffieReact/static/js/runtime-main.90497eb9.js.map",
     "static/css/2.92485e37.chunk.css": "/StuffieReact/static/css/2.92485e37.chunk.css",
     "static/js/2.700bb490.chunk.js": "/StuffieReact/static/js/2.700bb490.chunk.js",
     "static/js/2.700bb490.chunk.js.map": "/StuffieReact/static/js/2.700bb490.chunk.js.map",
     "index.html": "/StuffieReact/index.html",
-    "precache-manifest.faeda7c1984d00cc69313b355d167a18.js": "/StuffieReact/precache-manifest.faeda7c1984d00cc69313b355d167a18.js",
+    "precache-manifest.0f664f323fdcf422e803162fc828cf10.js": "/StuffieReact/precache-manifest.0f664f323fdcf422e803162fc828cf10.js",
     "service-worker.js": "/StuffieReact/service-worker.js",
     "static/css/2.92485e37.chunk.css.map": "/StuffieReact/static/css/2.92485e37.chunk.css.map",
     "static/css/main.32d2d7b1.chunk.css.map": "/StuffieReact/static/css/main.32d2d7b1.chunk.css.map",
@@ -21,6 +21,6 @@
     "static/css/2.92485e37.chunk.css",
     "static/js/2.700bb490.chunk.js",
     "static/css/main.32d2d7b1.chunk.css",
-    "static/js/main.0d2d12bf.chunk.js"
+    "static/js/main.febb6ac2.chunk.js"
   ]
 }
