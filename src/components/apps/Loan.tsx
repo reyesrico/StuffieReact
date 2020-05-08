@@ -68,7 +68,7 @@ class Loan extends Component<LoanProps, any> {
           <hr />
           <Product match={match} key={product.id} product={product} />
         </div>
-        <Button type="submit" onClick={this.requestLoan} text="Request Loan" />
+        <Button type="submit" onClick={this.requestLoan} text="Request To Borrow" />
       </div>
     );
   }

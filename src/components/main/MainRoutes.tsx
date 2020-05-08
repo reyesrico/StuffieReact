@@ -4,6 +4,7 @@ import { Switch, Route } from 'react-router-dom';
 import AddCategory from '../content/AddCategory';
 import AddProduct from '../content/AddProduct';
 import Admin from '../admin/Admin';
+import Buy from '../apps/Buy';
 import CategoryPage from '../content/CategoryPage';
 import Content from '../content/Content';
 import Charts from '../apps/Charts';
@@ -34,6 +35,7 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/subcategory/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
         <Route path="/exchange" render={props => <Exchange { ...props } {...this.props } />} />
         <Route path="/loan" render={props => <Loan { ...props } {...this.props } />} />
+        <Route path="/buy" render={props => <Buy { ...props } {...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />
         <Route path="/tickets" component={Tickets} />

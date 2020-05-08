@@ -31,6 +31,7 @@ class FeedRow extends Component<FeedRowProps, any> {
     const { feedPost } = this.props;
     const exchangeTo = { pathname: `/exchange`, product: feedPost.product, friend: feedPost.friend_id };
     const loanTo = { pathname: `/loan`, product: feedPost.product, friend: feedPost.friend_id };
+    const buyTo = { pathname: `/buy`, product: feedPost.product, friend: feedPost.friend_id };
 
     return (
       <div className="feed-row">
@@ -54,7 +55,9 @@ class FeedRow extends Component<FeedRowProps, any> {
           <div className="feed-row__action feed-row__link">
             <Link to={exchangeTo}>Trade</Link>
           </div>
-          <div className="feed-row__action feed-row__link">Buy</div>
+          <div className="feed-row__action feed-row__link">
+            <Link to={buyTo}>Buy</Link>
+          </div>
         </div>
       </div>
     );
