@@ -3,6 +3,10 @@ import crypto from '../../config/crypto';
 
 class Test extends Component<any, any> {
 
+  componentDidMount() {
+    document.getElementById("myButton")?.addEventListener('click', this.debounce(() => console.log('click'), 4000));
+  }
+
   authenticate = () => {
     // TEST - ENCRYPT
     console.log(`secreto: ${crypto.encrypt("secreto")}`);
@@ -127,9 +131,95 @@ class Test extends Component<any, any> {
     return roman;
   }
 
+  proto = () => {
+    let animal = {
+      eats: true
+    };
+    
+    let rabbit: any = {
+      jumps: true,
+      __proto__: animal
+    };
+    
+    // Object.keys only returns own keys
+    // alert(Object.keys(rabbit)); // jumps
+    
+    // for..in loops over both own and inherited keys
+    // for(let prop in rabbit) alert(prop); // jumps, then eats
+    
+    const pa = rabbit.propertyIsEnumerable(rabbit?.__proto__?.hasOwnProperty);
+    
+    console.log(pa);    
+  }
+
+  myFlat = (array: Array<any>) => {
+    let res: any = [];
+    this.myFlatTemp(array, res);
+    return res;
+  }
+                  
+  myFlatTemp = (array: Array<any>, res: any) => {
+    array.forEach(value => {
+      if (!Array.isArray(value)) {
+          res.push(value);
+      }
+      else {
+        return this.myFlatTemp(value, res);
+      }
+    });
+  }
+
+  dom = () => {
+    const spans = document.getElementsByTagName('span');
+    if (spans && spans !== undefined) {
+      console.log(spans);
+      console.log(spans[0]);
+
+      // console.log(spans.parentNode);
+      // console.log(spans.parentElement);
+    }
+  }
+ 
+  excludeItems() {
+    // could be potentially more than 3 keys in the object above
+    let items = [{color: 'red', type: 'tv', age: 18}, {color: 'silver', type: 'phone', age: 20}];
+    let excludes = [{k: 'color', v: 'silver'}, {k: 'type', v: 'tv'}];
+
+    excludes.forEach(pair => {
+      items = items.filter(item => (item as any)[pair.k] === pair.v);
+    });
+
+    return items;
+  }
+
+  orderArray(){
+    let array = ['a', 'b', 'c', 'd', 'e'];
+    let indexes = [1, 3, 2, 4, 0];
+
+    indexes.forEach((index: number, i: number) => {
+      let value = array[i];
+      array[i] = array[index];
+      array[index] = value;
+    });
+
+    return array;
+  }
+
+  debounce = (callback: Function, time: number) => {
+    let timeout: any = null;
+
+    return () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          callback();
+        }, time);
+    }
+  }
+  
   render() {
-    console.log(this.flat([[1, 2, 3], [4, 5], [6]]));
-    this.loop(3, (n: any)=> n>0, (n: any)=> n-1, console.log);
+    // console.log(this.myFlat([1, [2, [4, 5]], 3]));
+    // console.log(this.flat([[1, 2, 3], [4, 5], [6]]));
+    // this.loop(3, (n: any)=> n>0, (n: any)=> n-1, console.log);
     // console.log(this.every([1, 3, 5], (n: any) => n < 10));
     // console.log(this.everySome([1, 3, 5], (n: any) => n < 10));
     // console.log(this.waysToDecode());
@@ -137,15 +227,19 @@ class Test extends Component<any, any> {
     // console.log(this.reduce([1, 2, 3, 4, 5], (acc: number, value: number) => value, 0));
     // console.log([1, 2, 3, 4, 5].reduce((acc, val) => acc + val));
 
-    console.log(this.getRoman(3748));
+    // console.log(this.getRoman(3748));
 
-    this.authenticate();
+    // this.authenticate();
     const x = this.getStuff();
     const a = this.reverseStuff('unodostres');
+    this.dom();
+    console.log(this.orderArray());
+
     return (
       <div>
         <span>This is my test = {a}</span>
         <span>This is my other test = {x}</span>
+        <button id="myButton">Click</button>
       </div>
     );
   }

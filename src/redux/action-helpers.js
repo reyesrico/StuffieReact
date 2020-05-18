@@ -20,7 +20,7 @@ export const makeStandardActionCreator = (ACTION_TYPE) => {
 // Doesn't handle dispatching for errors.
 export const makeApiActionCreator = (apiCall, successActionCreator) => {
   return (...args) => dispatch => {
-    return apiCall(...args).then(({ data }) => {
+    return apiCall.apply(this, [...args]).then(({ data }) => {
       dispatch(successActionCreator(data, {...args}));
       return Promise.resolve(data);
     });

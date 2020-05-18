@@ -24,7 +24,6 @@ class Content extends Component<ContentProps, ContentState> {
   componentDidMount() {
     const { feed } = this.props;
     this._isMounted = true;
-    console.log('entra');
 
     if (!feed.length) {
       this.setState({ isLoading: true });

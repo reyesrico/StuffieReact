@@ -1,0 +1,28 @@
+@import '../../sass/main.scss';
+
+.product {
+  @include padding(4px, horizontal);
+}
+
+.product__cost {
+  @include flex(row, space-between, center);
+  @include margin(4px, top);
+  @include border(top, $gray, 2px);
+  @include padding(4px, vertical);
+}
+
+.product__cost-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.product__cost-elements {
+  @include flex(row, flex-end, center);
+  font-size: 14px;
+  font-weight: bolder;
+
+  input {
+    @include margin(8px, horizontal);
+    width: 100px;
+  }
+}

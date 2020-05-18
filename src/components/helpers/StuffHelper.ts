@@ -3,6 +3,7 @@ import { find, forEach, isEmpty, map } from 'lodash';
 import Category from '../types/Category';
 import ProductsMap from '../types/ProductsMap';
 import Product from '../types/Product';
+import StuffiersStuff from '../types/StuffiersStuff';
 import User from '../types/User';
 
 export function mapStuff(stuff: any) {
@@ -51,12 +52,15 @@ export function getProductFromProducts(productId: number, products: ProductsMap)
   return product;
 }
 
-export function getFriendProducts(friends: User[], products: Product[], stuffiers_stuff: any) {
+export function getFriendProducts(friends: User[], products: Product[], stuffiers_stuff: StuffiersStuff[]) {
   let friendsProducts: User[] = [];
 
   forEach(friends, friend => {
-    const values = stuffiers_stuff.filter((row: any) => row.id_stuffier === friend.id)
-    .map((row: any) => find(products, product => product.id === row.id_stuff));
+    const values = stuffiers_stuff.filter((row: StuffiersStuff) => row.id_stuffier === friend.id)
+    .map((row: StuffiersStuff) => {
+      let product = find(products, (p: Product) => p.id === row.id_stuff);
+      return row.cost !== undefined ? { ...product, cost: row.cost } : product ? product : {};
+    });
 
     friendsProducts.push({ ...friend, products: values });
   });
@@ -71,4 +75,11 @@ export function isProductsEmpty(productsMap: ProductsMap) {
 
 export function getProductsList(productsMap: ProductsMap): Product[] {
   return Object.values(productsMap).filter(row => row.length > 0).flat();
+}
+
+export function mapCostToProducts(products: Product[], stuff: StuffiersStuff[]) {
+  return products.map(p => {
+    const extraStuff = stuff.find((s: StuffiersStuff) => s.id_stuff === p.id);
+    return extraStuff ? { ...p, cost: extraStuff.cost } : p;
+  });
 }

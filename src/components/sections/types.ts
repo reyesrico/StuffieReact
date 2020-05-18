@@ -25,7 +25,9 @@ export interface ProductProps {
   subcategories: Subcategory[],
   match: any,
   products: ProductsMap,
-  product?: Product
+  product?: Product,
+  updateProduct: Function,
+  user: User
 }
 
 export interface ProductsProps {

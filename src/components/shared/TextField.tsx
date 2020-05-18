@@ -4,7 +4,12 @@ import './TextField.scss';
 
 class TextField extends Component<TextFieldProps> {
   render() {
-    const { name, placeholder, type, value, onChange, disabled, reference } = this.props;
+    const { name, placeholder, type, value, onChange, disabled, reference, min, max } = this.props;
+    let range = null;
+
+    if (min || max) {
+      range = { min, max };
+    }
 
     return (
       <div className="textfield">
@@ -16,6 +21,7 @@ class TextField extends Component<TextFieldProps> {
             value={value}
             disabled={disabled}
             ref={reference}
+            {...range}
           />
         }
         { onChange &&
@@ -27,6 +33,7 @@ class TextField extends Component<TextFieldProps> {
             onChange={event => onChange(event.target.value)}
             ref={reference}
             value={value}
+            {...range}
           />
         }
       </div>

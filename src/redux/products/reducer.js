@@ -1,20 +1,25 @@
-import { PRODUCT_ADDED, PRODUCTS_FETCHED } from './constants';
-
-//PRODUCT_FETCHED,
+import { PRODUCT_ADDED, PRODUCTS_FETCHED, PRODUCT_UPDATED } from './constants';
 
 export default (state = [], action) => {
+  let product, products;
+
   switch (action.type) {
     case PRODUCT_ADDED:
-      const product = action.payload;
-      let products = state[product.category];
+      product = action.payload;
+      products = state[product.category];
 
       return {
         ...state,
         [product.category]: [...products, product]
       };
+    case PRODUCT_UPDATED:
+      product = action.payload;
+      products = state[product.category].filter(p => p.id !== product.id);
 
-    // case PRODUCT_FETCHED:
-    //   return action.payload || null;
+      return {
+        ...state,
+        [product.category]:  [...products, product]
+      };
     case PRODUCTS_FETCHED:
       return action.payload;
     default:

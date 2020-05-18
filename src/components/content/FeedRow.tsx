@@ -55,9 +55,10 @@ class FeedRow extends Component<FeedRowProps, any> {
           <div className="feed-row__action feed-row__link">
             <Link to={exchangeTo}>Trade</Link>
           </div>
-          <div className="feed-row__action feed-row__link">
-            <Link to={buyTo}>Buy</Link>
-          </div>
+          {feedPost.product.cost &&
+            (<div className="feed-row__action feed-row__link">
+              <Link to={buyTo}>Buy</Link>
+            </div>)}
         </div>
       </div>
     );
