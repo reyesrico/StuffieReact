@@ -82,7 +82,6 @@ export const getPendingProducts = () => (
 export const updateStuff = (id_stuffier, id_stuff, cost) => {
   return getStuffList(id_stuffier)
     .then(res => {
-      console.log(res.data);
       const stuff = res.data.find(row => row.id_stuff === id_stuff);
       if (stuff) {
         return axios.put(routes.stuff.updateStuff(stuff._id), {...stuff, cost }, { headers: config.headers });

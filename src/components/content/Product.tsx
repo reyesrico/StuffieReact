@@ -7,7 +7,9 @@ import Loading from '../shared/Loading';
 import Media from '../shared/Media';
 import State from '../../redux/State';
 import TextField from '../shared/TextField';
+import WarningMessage from '../shared/WarningMessage';
 import { ProductProps, ProductState } from '../sections/types';
+import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import { updateProduct } from '../../redux/products/actions';
 
@@ -18,6 +20,8 @@ class Product extends Component<ProductProps, ProductState> {
     id: null,
     product: { name: null, id: null, category: null, subcategory: null, cost: null },
     cost: 0.0,
+    message: '',
+    type: WarningMessageType.EMPTY
   }
 
   componentDidMount() {
@@ -31,26 +35,34 @@ class Product extends Component<ProductProps, ProductState> {
   componentDidUpdate(prevProps: ProductProps, prevState: any) {
     const { match, products, product } = this.props;
     const id = match.params.id;
+    const productFromId = getProductFromProducts(id, products);
 
-    if (id !== prevState.id) {
-      const p = product ? product : getProductFromProducts(id, products); 
+    if (id !== prevState.id || productFromId.cost !== prevState.product.cost) {
+      const p = product ? product : productFromId;
       this.setState({ id, product: p });
     }
   }
 
-  updateCost = () => {
+  updateCost = (clear: boolean = false) => {
     const { user, updateProduct } = this.props;
     const { product, cost } = this.state;
+    const updatedCost = clear ? 0 : cost;
 
-    updateProduct(user.id, product.id, cost).then((res: any) => {
-      console.log(res);
-    });
+    updateProduct(user.id, product.id, updatedCost)
+    .then(() => this.setState({ message: `Cost updated successfully`, type: WarningMessageType.SUCCESSFUL }))
+    .catch(() => this.setState({ message: `Cost not updated`, type: WarningMessageType.ERROR }));
   }
 
   renderCost = () => {
     const { product, cost } = this.state;
     if (product.cost)
-      return (<div>Cost ${product.cost}</div>);
+      return (
+      <div className="product__cost">
+        <div className="product__cost-value">Cost ${product.cost}</div>
+        <div className="product__cost-button">
+          <Button text="Stop Offer" onClick={() => this.updateCost(true)} />
+        </div>
+      </div>);
     else {
     return (
       <div className="product__cost">
@@ -65,8 +77,8 @@ class Product extends Component<ProductProps, ProductState> {
   }
 
   render() {
-    const { categories, subcategories } = this.props;
-    const { product } = this.state;
+    const { categories, subcategories, showCost } = this.props;
+    const { product, message, type } = this.state;
 
     if (!product) return <Loading size="lg" message="Loading product..." />;
 
@@ -75,6 +87,7 @@ class Product extends Component<ProductProps, ProductState> {
 
     return (
       <div className="product">
+        <WarningMessage message={message} type={type} />
         <h3>{ product.name }</h3>
         <hr />
           <Media
@@ -87,7 +100,7 @@ class Product extends Component<ProductProps, ProductState> {
         <hr />
         <div>Category: { category && category.name } </div>
         <div>Subcategory: { subcategory && subcategory.name } </div>
-        {this.renderCost()}
+        {showCost && this.renderCost()}
       </div>
     );
   }

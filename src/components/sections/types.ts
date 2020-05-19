@@ -26,6 +26,7 @@ export interface ProductProps {
   match: any,
   products: ProductsMap,
   product?: Product,
+  showCost?: boolean,
   updateProduct: Function,
   user: User
 }

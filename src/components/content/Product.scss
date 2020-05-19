@@ -8,7 +8,12 @@
   @include flex(row, space-between, center);
   @include margin(4px, top);
   @include border(top, $gray, 2px);
-  @include padding(4px, vertical);
+  @include padding(4px, all);
+  background-color: $lightgray;
+}
+
+.product__cost-value {
+  font-weight: bold;
 }
 
 .product__cost-text {

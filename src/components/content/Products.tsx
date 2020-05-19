@@ -193,7 +193,7 @@ class Products extends Component<ProductsProps, any> {
                   <ul className="products__list">
                     {map(products[category.id as number], (product: ProductType) => {
                       const match = { params: { id: product.id } };
-                      return <Product key={product.id} match={match} />
+                      return <Product key={product.id} match={match} showCost={true} />
                     })}
                   </ul>
                 </div>

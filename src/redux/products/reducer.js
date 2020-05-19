@@ -1,4 +1,5 @@
 import { PRODUCT_ADDED, PRODUCTS_FETCHED, PRODUCT_UPDATED } from './constants';
+import { findProduct } from '../../components/helpers/StuffHelper';
 
 export default (state = [], action) => {
   let product, products;
@@ -13,12 +14,13 @@ export default (state = [], action) => {
         [product.category]: [...products, product]
       };
     case PRODUCT_UPDATED:
-      product = action.payload;
+      product = findProduct(action.payload.id_stuff, state);
       products = state[product.category].filter(p => p.id !== product.id);
+      const productUpdated = {...product, cost: action.payload.cost};
 
       return {
         ...state,
-        [product.category]:  [...products, product]
+        [product.category]:  [...products, productUpdated]
       };
     case PRODUCTS_FETCHED:
       return action.payload;

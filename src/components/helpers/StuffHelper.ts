@@ -83,3 +83,7 @@ export function mapCostToProducts(products: Product[], stuff: StuffiersStuff[]) 
     return extraStuff ? { ...p, cost: extraStuff.cost } : p;
   });
 }
+
+export function findProduct(idProduct: number, productsMap: ProductsMap): Product {
+  return getProductsList(productsMap).find(p => p.id === idProduct) || {};
+}
