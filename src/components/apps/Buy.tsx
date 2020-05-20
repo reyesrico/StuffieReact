@@ -8,6 +8,8 @@ import WarningMessage from '../shared/WarningMessage';
 import { getStuffiers } from '../../services/stuffier';
 import { WarningMessageType } from '../shared/types';
 
+import './Buy.scss';
+
 class Buy extends Component<any, any> {
   _isMounted = false;
 
@@ -51,7 +53,7 @@ class Buy extends Component<any, any> {
       <div className="buy__product">
         <h2>{friend?.first_name} Product</h2>
         <hr />
-        <Product match={match} key={product.id} product={product} />
+        <Product match={match} key={product.id} product={product} showCost={true} hideOfferButton={true} />
       </div>
       <Button type="submit" onClick={() => console.log('submit')} text="Request Buy" />
     </div>

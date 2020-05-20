@@ -1,0 +1,5 @@
+@import '../../sass/main.scss';
+
+.buy__product {
+  @include margin(8px, bottom);
+}

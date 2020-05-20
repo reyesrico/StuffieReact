@@ -27,6 +27,7 @@ export interface ProductProps {
   products: ProductsMap,
   product?: Product,
   showCost?: boolean,
+  hideOfferButton?: boolean,
   updateProduct: Function,
   user: User
 }

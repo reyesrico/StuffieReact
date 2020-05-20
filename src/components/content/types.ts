@@ -43,7 +43,7 @@ export interface CategoryPageProps {
   location: any
 }
 
-export interface FeedRowProps {
+export type FeedRowProps = {
   feedPost: FeedPost,
   subcategories: Subcategory[]
 }
