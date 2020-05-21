@@ -16,6 +16,8 @@ import Product from '../content/Product';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
+import Covid from '../apps/Covid';
+
 import { MainRoutesProps } from './types';
 
 class MainRoutes extends Component<MainRoutesProps, any> {
@@ -39,7 +41,8 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />
         <Route path="/tickets" component={Tickets} />
-        <Route path="/test" component={Test} />        
+        <Route path="/test" component={Test} />
+        <Route path="/covid" component={Covid} />
       </Switch>
     );
   }

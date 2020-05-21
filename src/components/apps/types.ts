@@ -27,3 +27,16 @@ export interface LoanProps {
   loanRequest: Function,
   history: any
 }
+
+export type CountryDataRow = {
+  Active: number,
+  City: string,
+  CityCode: string,
+  Confirmed: number,
+  Country: string,
+  CountryCode: string,
+  Date: string,
+  Deaths: number,
+  Province: string,
+  Recovered: number
+}

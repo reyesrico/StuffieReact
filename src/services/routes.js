@@ -50,6 +50,11 @@ const routes = {
     request: () => `${config.server}loan-requests`,
     list: id => `${config.server}loan-requests?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
     deleteRequest: _id => `${config.server}loan-requests/${_id}`
+  },
+  covid: {
+    default: () => `https://api.covid19api.com/`,
+    all: () => `https://api.covid19api.com/all`,
+    country: country => `https://api.covid19api.com/dayone/country/${country}`
   }
 };
 
