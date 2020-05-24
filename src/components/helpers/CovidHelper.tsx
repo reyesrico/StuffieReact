@@ -35,7 +35,10 @@ export const getUniqueCities = (map: any, province: any) => {
 
   return provinceData.map((row: CountryDataRow) => row.City)
   .filter((value: any, index: number, self: any) => self.indexOf(value) === index)
-  .sort();
+  .sort()
+  .map((city: string) => {
+    return { value: city, name: city, label: city };
+  });
 }
 
 export const getCityData = (map: any, province: any, city: any) => {

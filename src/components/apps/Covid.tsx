@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Dropdown from 'react-dropdown';
+// import Dropdown from 'react-dropdown';
+import Select from 'react-select';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { isEqual, sortBy } from 'lodash';
 
@@ -145,9 +146,9 @@ class Covid extends Component<any, any> {
         <h2>COVID {countrySelected.label} Charts</h2>
         <hr />
         <div className="covid__dropdowns">
-          <Dropdown onChange={(countrySelected: any) => this.setState({ countrySelected })} options={countries} value={countrySelected.value} />
-          {countryHasProvince && <Dropdown onChange={(provinceSelected: any) => this.setState({ provinceSelected })} options={provinces} value={provinceSelected.value} />}
-          {countryHasCity && <Dropdown onChange={(citySelected: any ) => this.setState({ citySelected })} options={cities} value={citySelected.value}/>}
+          <Select onChange={(countrySelected: any) => this.setState({ countrySelected })} options={countries} value={countrySelected} />
+          {countryHasProvince && <Select onChange={(provinceSelected: any) => this.setState({ provinceSelected })} options={provinces} value={provinceSelected} />}
+          {countryHasCity && <Select onChange={(citySelected: any ) => this.setState({ citySelected })} options={cities} value={citySelected} />}
         </div>
         <hr/>
         {this.renderChart(country)}
