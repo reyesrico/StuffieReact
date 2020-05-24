@@ -1,56 +1,115 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+import Dropdown from 'react-dropdown';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { isEqual, sortBy } from 'lodash';
 
-import { getCountry } from '../../services/covid';
-// import { getAll, getDefault } from '../../services/covid';
+import Loading from '../shared/Loading';
 import { CountryDataRow } from './types';
+import { hasProvince, hasCity, createMap, getUniqueCities, getCityData, manageCountryData, getProvinces } from '../helpers/CovidHelper';
+import { getCountry, getCountries } from '../../services/covid';
+
+import './Covid.scss';
 
 class Covid extends Component<any, any> {
   state = {
+    defaultCountrySlug: 'mexico',
     menu: { 'fn': null },
     all: null,
     country: [],
-    countryData: []
+    countryData: [],
+    countries: [],
+    countrySelected: { name: null, Country: '', value: '', label: null },
+    isLoading: false,
+    provinces: [],
+    provinceData: [],
+    provinceSelected: { name: null, value: '', label: null },
+    cities: [],
+    citySelected: { name: null, value: '', label: null },
+    usMap: {}
   }
 
   componentDidMount() {
-    this.covid();
-  }
+    const { defaultCountrySlug } = this.state;
 
-  manageCountryData = () => {
-    const { country } = this.state;
+    getCountries().then((res: any) => {
+      let sorted = sortBy(res.data, ['Slug']);
+      let id = 0;
+      let countries = sorted.map((row: any, index: number) => {
+        if (row.Slug === defaultCountrySlug) {
+          id = index;
+        }
+        return { ...row, value: row.Slug, label: row.Country, name: row.Slug };
+      });
 
-    let row: CountryDataRow = country[0];
-
-    let confirmedInc: number[] = [row.Confirmed];
-    let dates: string[] = [moment(row.Date).format("MMM Do")];
-
-    for(let i = 1; i < country.length; i++) {
-      row = country[i];
-      let lastRow: CountryDataRow = country[i-1];
-      let increment = row.Confirmed - lastRow.Confirmed;
-      confirmedInc[i] = increment;
-      dates.push(moment(row.Date).format("MMM Do"));
-    }
-
-    let countryData = country.map((row: CountryDataRow, index: number) => {
-      return { ...row, Confirmed: confirmedInc[index], Date: dates[index] }
+      this.setState({ countries, countrySelected: countries[id] });
     });
-
-    return countryData;
   }
 
-  covid = () => {
-    // getDefault().then(res => this.setState({ menu: res.data }));
-    // getAll().then(res => this.setState({ all: res.data }));
-    getCountry("mexico").then(res => this.setState({ country: res.data }));
+  componentDidUpdate(prevProps: any, prevState: any) {
+    if (!this.state.isLoading) {
+      if(!isEqual(prevState.countrySelected, this.state.countrySelected)) {
+        this.getCountryInfo();
+      } else {
+        if (!isEqual(prevState.provinceSelected, this.state.provinceSelected)) {
+          if (hasCity(this.state.country)) {
+            let cities = getUniqueCities(this.state.usMap, this.state.provinceSelected);
+            this.setState({ cities, citySelected: cities[0] });
+          }
+        }
+      }  
+    }
   }
 
-  renderChart(country: CountryDataRow[]) {
-    
+  getCountryInfo = () => {
+    const { countrySelected } = this.state;
+
+    this.setState({ isLoading: true });
+
+    getCountry(countrySelected.value)
+    .then(res => {
+      const country = res.data;
+      let usMap, provinces, provinceSelected, cities, citySelected;
+
+      if (hasProvince(country)) {
+        usMap = createMap(country);
+        provinces = getProvinces(usMap);
+        provinceSelected = provinces[0];
+
+        if (hasCity(country)) {
+          cities = getUniqueCities(usMap, provinceSelected);
+          citySelected = cities[0];  
+        }
+
+        this.setState({ usMap, country, cities, provinces, provinceSelected, citySelected });
+      } else {
+        this.setState({
+          country,
+          usMap: {},
+          provinceSelected: { name: null },
+          provinces: [],
+          provinceData: [],
+          citySelected: { name: null },
+          cities: []
+        });
+      }
+    })
+    .finally(() => this.setState({ isLoading: false }));
+  }
+
+
+  renderChart(country: CountryDataRow[], managed: boolean = false) {
+    const { provinceSelected, usMap, citySelected } = this.state;
+    let data = hasCity(country)? getCityData(usMap, provinceSelected, citySelected):
+                // @ts-ignore
+               hasProvince(country)? usMap[provinceSelected.label]:
+               country;
+
+    data = managed ? manageCountryData(data) : data;
+
+    if (!data || !data.length) return <div>No data</div>;
+
     return (
-      <AreaChart width={500} height={250} data={country}
+      <AreaChart width={500} height={250} data={data}
       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
       <defs>
         <linearGradient id="colorDeaths" x1="0" y1="0" x2="0" y2="1">
@@ -73,18 +132,33 @@ class Covid extends Component<any, any> {
   }
 
   render() {
-    const { country } = this.state;
+    const { country, countries, countrySelected, isLoading, provinces, provinceSelected, cities, citySelected } = this.state;
 
-    if (!country.length) return (<div>Reading ...</div>);
+    let countryText = countrySelected.label ?? 'Country';
+    if (!countries.length || isLoading) return (<Loading size="xl" message={`Loading ${countryText} Data`} />);
 
-    let newCountry = this.manageCountryData();
+    let countryHasProvince = hasProvince(country);
+    let countryHasCity = hasCity(country);
 
     return (
       <div>
+        <h2>COVID {countrySelected.label} Charts</h2>
+        <hr />
+        <div className="covid__dropdowns">
+          <Dropdown onChange={(countrySelected: any) => this.setState({ countrySelected })} options={countries} value={countrySelected.value} />
+          {countryHasProvince && <Dropdown onChange={(provinceSelected: any) => this.setState({ provinceSelected })} options={provinces} value={provinceSelected.value} />}
+          {countryHasCity && <Dropdown onChange={(citySelected: any ) => this.setState({ citySelected })} options={cities} value={citySelected.value}/>}
+        </div>
+        <hr/>
         {this.renderChart(country)}
         <hr />
-        {this.renderChart(newCountry)}
-        <div>Mexico Data</div>
+        {this.renderChart(country, true)}
+        <hr />
+        <div className="covid__texts">
+          <div className="covid__text">{countrySelected.label}</div>
+          {countryHasProvince && <div className="covid__text">{provinceSelected?.label}</div>}
+          {countryHasCity && <div className="covid__text">{citySelected?.label}</div>}
+        </div>
       </div>
     );
   }

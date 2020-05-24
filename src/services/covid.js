@@ -13,3 +13,7 @@ export const getAll = () => (
 export const getCountry = (country) => (
   axios.get(routes.covid.country(country), { headers: config.headers })
 );
+
+export const getCountries = () => (
+  axios.get(routes.covid.countries(), { headers: config.headers })
+);

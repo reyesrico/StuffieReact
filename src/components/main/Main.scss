@@ -26,6 +26,7 @@
 .stuffie__content {
   @include content-background;
   @include margin(8px, 'horizontal');
+  align-self: stretch;
   width: 65%;
 }
 

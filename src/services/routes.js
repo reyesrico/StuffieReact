@@ -54,7 +54,9 @@ const routes = {
   covid: {
     default: () => `https://api.covid19api.com/`,
     all: () => `https://api.covid19api.com/all`,
-    country: country => `https://api.covid19api.com/dayone/country/${country}`
+    countries: () => `https://api.covid19api.com/countries`,
+    country: country => `https://api.covid19api.com/dayone/country/${country}`,
+   //  countryStatus: (country) => `/dayone/country/${country}/status/confirmed/live`
   }
 };
 
