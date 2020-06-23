@@ -1,0 +1,57 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;;
+}
+
+.app__input {
+  text-transform: uppercase;
+}
+
+.app__title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.app__keyword {
+  margin-bottom: 16px;
+}
+
+.app__table {
+  margin-bottom: 16px;
+  width: 80%;
+}
+
+.app__table-head {
+  background-color: white;
+  border-bottom: 2px solid black;
+  max-width: 12px;
+  text-align: center;
+}
+
+.app__table-head-selected {
+  background-color: cyan;
+  border-bottom: 2px solid black;
+  max-width: 12px;
+  text-align: center;
+}
+
+.app__table-body {
+  background-color: white;
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  max-width: 12px;
+  text-align: center;
+}
+
+.app__table-body-selected {
+  background-color: cyan;
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  max-width: 12px;
+  text-align: center;
+}
+
+.app__display {
+  margin-bottom: 16px;
+}
