@@ -20,20 +20,24 @@ export const getFriends = email => (
 );
 
 export const loginStuffier = (email, password) => (
-  axios.get(routes.user.loginUser(email, crypto.encrypt(password)), { headers: config.headers })
+  crypto.pbkdf2(password, email)
+    .then(res => axios.get(routes.user.loginUser(email, res), { headers: config.headers }))
+    .catch(err => Promise.reject(err))
 );
 
 export const getLastStuffierId = () => (
   axios.get(routes.user.lastId(), { headers: config.headers })
 );
 
-export const registerStuffier = (user) => {
-  const password = crypto.encrypt(user.password);
-  return getLastStuffierId().then(res => {
-    const id = Object.values(res.data)[0] + 1;
-    return axios.post(routes.user.registerUser(), { ...user, password, id, request: true }, { headers: config.headers });
-  });
-};
+export const registerStuffier = (user) => (
+  Promise.all([getLastStuffierId(), crypto.pbkdf2(user.password, user.email)])
+    .then(values => {
+      const id = Object.values(values[0].data)[0] + 1;
+      const password = values[1];
+      return axios.post(routes.user.registerUser(), { ...user, password, id, request: true }, { headers: config.headers });
+    })
+    .catch(err => Promise.reject(err))
+);
 
 export const getFriendsRequests = (email) => (
   axios.get(routes.user.friendsRequest(email), { headers: config.headers })

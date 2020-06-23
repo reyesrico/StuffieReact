@@ -28,7 +28,7 @@ Stuffie App: [https://reyesrico.github.io/StuffieReact/](https://reyesrico.githu
 
 | User                          | Password   | Name     |
 | ----------------------------- | :--------: | :------: |
-| user@stuffie.net              |            | John Doe |
+| user@stuffie.net              |  test      | John Doe |
 
 <hr />
 
