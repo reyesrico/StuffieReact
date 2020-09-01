@@ -38,6 +38,7 @@ class Apps extends Component<AppsProps, any> {
         <div className="apps__item"><Link to='/tickets'>Tickets</Link></div>
         <div className="apps__item"><Link to='/support'>Support</Link></div>
         <div className="apps__item"><Link to='/charts'>Charts</Link></div>
+        <div className="apps__item"><Link to='/spotify'>Spotify</Link></div>
         <div className="apps__item"><Link to='/test'>Test</Link></div>
         <div className="apps__item"><a href='https://reyesrico.github.io/CovidCharts'>Covid Charts</a></div>
         <div className="apps__item"><Link to='/test2'>Test2</Link></div>
