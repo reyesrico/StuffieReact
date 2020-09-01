@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { auth, getToken, search } from '../../services/spotify';
+import { getToken, search } from '../../services/spotify';
 import { get } from 'lodash';
-
-let x = get({}, 'merol');
 
 class SpotifyComponent extends Component {
   state = {

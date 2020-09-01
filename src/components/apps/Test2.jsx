@@ -164,6 +164,9 @@ class Test2 extends React.Component {
     )
   }
 }
+
+export default Test2;
+
 /*
 export default Test2;
 

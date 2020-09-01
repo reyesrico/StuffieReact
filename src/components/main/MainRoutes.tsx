@@ -17,7 +17,7 @@ import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
 import Spotify from '../apps/Spotify';
 import Test from '../apps/Test';
-import Test2 from '../apps/Test2';
+// import Test2 from '../apps/Test2';
 
 import { MainRoutesProps } from './types';
 
@@ -44,7 +44,7 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/spotify" component={Spotify} />
         <Route path="/tickets" component={Tickets} />
         <Route path="/test" component={Test} />
-        <Route path="/test2" component={Test2} />
+        {/* <Route path="/test2" component={Test2} /> */}
       </Switch>
     );
   }
