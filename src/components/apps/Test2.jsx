@@ -164,5 +164,83 @@ class Test2 extends React.Component {
     )
   }
 }
-
+/*
 export default Test2;
+
+const api = (function () {
+  const peopleFruits = {
+    alice: {
+      apple: 2, 
+      grape: 24,
+      pear: 3 
+    },
+    bob: {
+      apple: undefined,
+      strawberry: null,
+      pear: 12,
+      watermelon: 1
+    }
+  }
+
+  const sleep = ms => {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  const getNumFruit = async (name, fruit) => {
+    const wait = Math.floor(5000 * Math.random());
+    
+    await sleep(wait);
+    
+    return peopleFruits[name][fruit];
+  }
+  
+  const getFruits = () => {
+    let uniqueFruits = {};
+    
+    Object.values(peopleFruits).forEach(fruitsObject => {
+      Object.keys(fruitsObject)
+        .forEach(fruitName => {
+         if (!!fruitsObject[fruitName] && !uniqueFruits[fruitName]) {
+           uniqueFruits[fruitName] = 0;
+         }
+      });            
+    });
+    
+    return Object.keys(uniqueFruits);
+  }
+
+  return {
+    names: Object.keys(peopleFruits), // fill in, [ 'alice', 'bob' ]
+    availableFruits: getFruits(), // fill in, [ 'apple', 'grape', 'pear', 'watermelon' ]
+    getNumFruit,
+  }
+})();
+
+console.log(api.names);
+console.log(api.availableFruits);
+
+async logMessage = () => {
+  const peopleTypes = {};
+  api.names.forEach(name => {
+    peopleTypes[name] = { total: 0, numberFruits: [] };
+    await Promise.all(api.availableFruits.map(async (fruit) => {
+      const value = await api.getNumFruit(name, fruit);
+      if (!!value) {
+        peopleTypes[name] = { ...peopleTypes[name], total: peopleTypes[name].total + value };
+        peopleTypes[name] = { ...peopleTypes[name], numberFruits:  [...peopleTypes[name].numberFruits, `${fruit} - ${value}`] };      
+      }
+    }));
+ });
+  
+  Object.keys
+}
+
+/* 
+log a message for each person in the form of:
+"${NAME} has ${NUMBER_OF_TYPES} type(s) of fruit: [${FRUIT_NAME} - ${NUMBER_OF_FRUIT},]. All in all, ${NAME} has ${SUM} fruit(s)!"
+
+"alice, has 3 types of fruit: apple - 2, grape - 24, pear - 3. All in all, alice has 29 fruits!"
+"bob, has 2 types of fruit: pear - 12, watermelon - 1. All in all, bob has 13 fruits!"
+*/
+
+
