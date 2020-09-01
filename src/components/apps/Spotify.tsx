@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import { getToken, search } from '../../services/spotify';
+import { connect } from 'react-redux';
 import { get } from 'lodash';
 
-class SpotifyComponent extends Component {
+import State from '../../redux/State';
+import { getToken, search } from '../../services/spotify';
+
+import './Spotify.scss';
+
+class SpotifyComponent extends Component<any, any> {
   state = {
     accessToken: null,
     expiresIn: null,
@@ -10,7 +15,9 @@ class SpotifyComponent extends Component {
   }
 
   componentDidMount() {
-    getToken()
+    const { spotifyConf } = this.props;
+
+    getToken(spotifyConf.key, spotifyConf.secret)
       .then((res: any) => {
         this.setState({ accessToken: res.data.access_token, expiresIn: res.data.expires_in });
         return Promise.resolve(res.data.access_token);
@@ -19,34 +26,30 @@ class SpotifyComponent extends Component {
       .then(res => this.setState({ items: res.data.tracks.items }));
   }
 
-  renderSong() {
+  render() {
     const { items } = this.state;
 
-    if (items.length) {
-      let image = get(items[0], 'album.images[0]');
+    if (!items.length) return <div></div>;
 
-      return (
-        <div>
-          {image && <img src={get(image, 'url')} height={get(image, 'height')} width={get(image, 'width')} alt={""} />}
-          <audio
-            aria-label="Label"
-            autoPlay={true}
-            controls={true}
-            src={get(items[0], 'preview_url')}
-          />
-        </div>
-      );  
-    }
-  }
+    let image = get(items[0], 'album.images[0]');
 
-  render() {
     return (
-      <div>
-        <div>Spotify!!</div>
-        {this.renderSong()}
+      <div className="spotify">
+        {image && <img src={get(image, 'url')} height="30" width="30" alt={""} />}
+        <audio
+          aria-label="Label"
+          autoPlay={true}
+          className="spotify__audio"
+          controls={true}
+          src={get(items[0], 'preview_url')}
+        />
       </div>
-      );
+    );  
   }
 }
 
-export default SpotifyComponent;
+const mapStateToProps = (state: State) => ({
+  spotifyConf: state.spotifyConf
+});
+
+export default connect(mapStateToProps, null)(SpotifyComponent);

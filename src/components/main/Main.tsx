@@ -12,6 +12,7 @@ import State from '../../redux/State';
 
 import { MainProps } from './types'; 
 import './Main.scss';
+import Spotify from '../apps/Spotify';
 
 class Main extends Component<MainProps, any> {
   render() {
@@ -33,6 +34,9 @@ class Main extends Component<MainProps, any> {
             <div className="stuffie__user">
               {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
               <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+            </div>
+            <div className="stuffie__spotify">
+              <Spotify />
             </div>
             <div className="stuffie__apps">
               <Apps />

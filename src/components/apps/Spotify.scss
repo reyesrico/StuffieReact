@@ -1,0 +1,11 @@
+@import '../../sass/main.scss';
+
+.spotify {
+  @include flex(row, flex-start, stretch);
+}
+
+.spotify__audio {
+  width: 192px;
+  height: 30px;
+  margin-bottom: 4px;
+}
