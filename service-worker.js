@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/StuffieReact/precache-manifest.93015e4cc1ae5ae57614bc6ef60b5a09.js"
+  "/StuffieReact/precache-manifest.0a26bb5c1daa6b7e97607e1e971d0e7e.js"
 );
 
 self.addEventListener('message', (event) => {
