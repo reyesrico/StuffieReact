@@ -37,3 +37,31 @@ export const search = (token, track, artist) => {
 
   return axios.get(options.url, { headers: options.headers });
 }
+
+export const getPlaylists = token => {
+  const userId = '1286537068';
+  var options = {
+    url: `https://api.spotify.com/v1/users/${userId}/playlists`,
+    headers: { 'Authorization': 'Bearer ' + token }
+  };
+
+  return axios.get(options.url, { headers: options.headers });
+}
+
+export const getTracksFromPlaylist = (token, playlistId) => {
+  var options = {
+    url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+    headers: { 'Authorization': 'Bearer ' + token }
+  };
+
+  return axios.get(options.url, { headers: options.headers });
+}
+
+export const getTrack = (token, trackId) => {
+  var options = {
+    url: `https://api.spotify.com/v1/tracks/${trackId}`,
+    headers: { 'Authorization': 'Bearer ' + token }
+  };
+
+  return axios.get(options.url, { headers: options.headers });
+}
