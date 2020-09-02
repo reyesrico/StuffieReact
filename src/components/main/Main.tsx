@@ -8,11 +8,11 @@ import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
+import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 
 import { MainProps } from './types'; 
 import './Main.scss';
-import Spotify from '../apps/Spotify';
 
 class Main extends Component<MainProps, any> {
   render() {

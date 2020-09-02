@@ -47,6 +47,13 @@
   font-size: 16px;
 }
 
+.stuffie__spotify {
+  @include section-background;
+  @include margin(8px, bottom);
+  width: 200px;
+  height: 30px;
+}
+
 .stuffie__apps {
   @include section-background;
   width: 200px;
@@ -71,6 +78,10 @@
   .stuffie__content {
     font-size: 12px;
     width: 100%;
+  }
+
+  .stuffie__spotify {
+    display: none;
   }
 
   .stuffie__apps {

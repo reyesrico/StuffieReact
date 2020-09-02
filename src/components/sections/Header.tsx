@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import Apps from '../sections/Apps';
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
+import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 import { HeaderProps } from './types';
 import { logout } from '../../redux/user/actions';
@@ -88,7 +89,10 @@ class Header extends Component<HeaderProps, any> {
 
           {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
           <div className="stuffie-header__menu">
-            <div id="apps"><Apps /></div>
+            <div id="apps">
+              <div className="stuffie-header__menu-spotify"><Spotify /></div>
+              <div className="stuffie-header__menu-apps"><Apps /></div>
+            </div>
             <button className="icon" onClick={event => event && this.toggleMenu()}>
               <i className="fa fa-bars"></i>
             </button>
