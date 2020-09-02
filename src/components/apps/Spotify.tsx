@@ -38,7 +38,7 @@ class SpotifyComponent extends Component<any, any> {
         {image && <img src={get(image, 'url')} height="30" width="30" alt={""} />}
         <audio
           aria-label="Label"
-          autoPlay={true}
+          autoPlay={false}
           className="spotify__audio"
           controls={true}
           src={get(items[0], 'preview_url')}
