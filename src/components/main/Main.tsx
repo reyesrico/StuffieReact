@@ -8,6 +8,7 @@ import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import Menu from '../sections/Menu';
+import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 
 import { MainProps } from './types'; 
@@ -33,6 +34,9 @@ class Main extends Component<MainProps, any> {
             <div className="stuffie__user">
               {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
               <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+            </div>
+            <div className="stuffie__spotify">
+              <Spotify />
             </div>
             <div className="stuffie__apps">
               <Apps />

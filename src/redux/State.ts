@@ -8,6 +8,7 @@ import LoanRequest from '../components/types/LoanRequest';
 import Product from '../components/types/Product';
 import ProductsMap from '../components/types/ProductsMap';
 import SubCategory from '../components/types/Subcategory';
+import Conf from '../components/types/Conf';
 
 export default interface State {
   user: User,
@@ -20,5 +21,6 @@ export default interface State {
   exchangeRequests: ExchangeRequest[],
   loanRequests: LoanRequest[],
   pendingProducts: Product[],
-  feed: FeedPost[]
+  feed: FeedPost[],
+  spotifyConf: Conf
 }

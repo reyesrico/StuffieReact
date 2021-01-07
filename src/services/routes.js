@@ -57,6 +57,9 @@ const routes = {
     countries: () => `https://api.covid19api.com/countries`,
     country: country => `https://api.covid19api.com/dayone/country/${country}`,
    //  countryStatus: (country) => `/dayone/country/${country}/status/confirmed/live`
+  },
+  spotify: {
+    fetch: () => `${config.server}conf?q={"platform": "spotify"}`
   }
 };
 

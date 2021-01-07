@@ -15,7 +15,6 @@ import Products from '../content/Products';
 import Product from '../content/Product';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
-import Spotify from '../apps/Spotify';
 import Test from '../apps/Test';
 // import Test2 from '../apps/Test2';
 
@@ -41,7 +40,6 @@ class MainRoutes extends Component<MainRoutesProps, any> {
         <Route path="/buy" render={props => <Buy { ...props } {...this.props } />} />
         <Route path="/charts" component={Charts} />
         <Route path="/support" component={Support} />
-        <Route path="/spotify" component={Spotify} />
         <Route path="/tickets" component={Tickets} />
         <Route path="/test" component={Test} />
         {/* <Route path="/test2" component={Test2} /> */}

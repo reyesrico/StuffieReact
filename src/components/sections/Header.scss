@@ -191,6 +191,10 @@
       border: 0;
     }
   }
+
+  .stuffie-header__menu-spotify {
+    @include margin(4px, bottom);
+  }
 }
 
 @media screen and (max-width: 360px) {

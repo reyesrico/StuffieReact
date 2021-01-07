@@ -1,0 +1,1 @@
+export const SPOTIFY_FETCHED = 'APPS::SPOTIFY_FETCHED';

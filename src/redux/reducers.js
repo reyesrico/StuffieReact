@@ -12,6 +12,7 @@ import friendsRequests from './friends-requests/reducer';
 import exchangeRequests from './exchange-requests/reducer';
 import pendingProducts from './pending-products/reducer';
 import loanRequests from './loan-requests/reducer';
+import spotifyConf from './spotify/reducer';
 import feed from './feed/reducer';
 
 // To add object in state:
@@ -28,6 +29,7 @@ const appReducer = combineReducers({
   exchangeRequests,
   pendingProducts,
   loanRequests,
+  spotifyConf,
   feed                    // Make feed the last one?
 });
 

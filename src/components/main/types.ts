@@ -18,6 +18,7 @@ export interface FetchDataProps {
   fetchLoanRequests: Function,
   fetchPendingProducts: Function,
   fetchUserRequests: Function,
+  fetchSpotify: Function,
   t: Function
 }
 

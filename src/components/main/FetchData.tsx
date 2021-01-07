@@ -16,6 +16,7 @@ import { fetchExchangeRequests } from '../../redux/exchange-requests/actions';
 import { fetchLoanRequests } from '../../redux/loan-requests/actions';
 import { fetchPendingProducts } from '../../redux/pending-products/actions';
 import { fetchUserRequests } from '../../redux/user-requests/actions';
+import { fetchSpotify } from '../../redux/spotify/actions';
 
 import './FetchData.scss';
 
@@ -31,20 +32,21 @@ class FetchData extends Component<FetchDataProps, any> {
   fetchData = () => {
     const { user, fetchCategories, fetchFriends, fetchSubCategories, fetchProducts,
       fetchFriendsRequests, fetchExchangeRequests, fetchLoanRequests,
-      fetchPendingProducts, fetchUserRequests } = this.props;
+      fetchPendingProducts, fetchUserRequests, fetchSpotify } = this.props;
 
     let promises = [
-      fetchCategories(),                  // values[0]
+      fetchCategories(),                  // values[0] -- DO NOT MOVE
       fetchSubCategories(),               // values[1]
       fetchFriends(user.email),           // values[2]
       fetchFriendsRequests(user.email),   // values[3]
       fetchExchangeRequests(user.id),     // values[4]
-      fetchLoanRequests(user.id)          // values[5]
+      fetchLoanRequests(user.id),         // values[5]
+      fetchSpotify()                      // values[6]
     ];
 
     let adminPromises = [
-      fetchUserRequests(),                  // values[5]
-      fetchPendingProducts()                // values[6]
+      fetchUserRequests(),                  // values[7]
+      fetchPendingProducts()                // values[8]
     ];
 
     if (user.admin) {
@@ -87,7 +89,8 @@ const mapDispatchProps = {
   fetchExchangeRequests,
   fetchLoanRequests,
   fetchPendingProducts,
-  fetchUserRequests
+  fetchUserRequests,
+  fetchSpotify
 };
 
 export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(FetchData));
