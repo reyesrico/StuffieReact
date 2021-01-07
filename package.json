@@ -14,6 +14,7 @@
     "@types/react-select": "^3.0.13",
     "@types/recharts": "^1.8.9",
     "@types/tesseract.js": "0.0.2",
+    "axios": "^0.21.1",
     "browserslist": "^4.11.1",
     "caniuse-lite": "^1.0.30001043",
     "cloudinary-react": "^1.4.0",
@@ -65,7 +66,6 @@
   ],
   "devDependencies": {
     "@types/lodash": "^4.14.150",
-    "axios": "^0.18.1",
     "gh-pages": "^2.2.0",
     "react-router-dom": "^5.1.2"
   }
