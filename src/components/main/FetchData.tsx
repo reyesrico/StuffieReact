@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
 import Main from './Main';
 import State from '../../redux/State';
-import { FetchDataProps } from './types';
+// import { FetchDataProps } from './types';
 
 import { fetchCategories } from '../../redux/categories/actions';
 import { fetchFriends } from '../../redux/friends/actions';
@@ -19,78 +19,58 @@ import { fetchUserRequests } from '../../redux/user-requests/actions';
 import { fetchSpotify } from '../../redux/spotify/actions';
 
 import './FetchData.scss';
+import User from '../types/User';
 
-class FetchData extends Component<FetchDataProps, any> {
-  state = {
-    isLoading: true
-  };
+const fetchData = (user: User, dispatch: Function) => {
+  let promises = [
+    fetchCategories(),                  // values[0] -- DO NOT MOVE
+    fetchSubCategories(),               // values[1]
+    fetchFriends(user.email),           // values[2]
+    fetchFriendsRequests(user.email),   // values[3]
+    fetchExchangeRequests(user.id),     // values[4]
+    fetchLoanRequests(user.id),         // values[5]
+    fetchSpotify()                      // values[6]
+  ];
 
-  componentDidMount() {
-    this.fetchData();
+  let adminPromises = [
+    fetchUserRequests(),                  // values[7]
+    fetchPendingProducts()                // values[8]
+  ];
+
+  if (user.admin) {
+    promises = [...promises, ...adminPromises];
   }
 
-  fetchData = () => {
-    const { user, fetchCategories, fetchFriends, fetchSubCategories, fetchProducts,
-      fetchFriendsRequests, fetchExchangeRequests, fetchLoanRequests,
-      fetchPendingProducts, fetchUserRequests, fetchSpotify } = this.props;
-
-    let promises = [
-      fetchCategories(),                  // values[0] -- DO NOT MOVE
-      fetchSubCategories(),               // values[1]
-      fetchFriends(user.email),           // values[2]
-      fetchFriendsRequests(user.email),   // values[3]
-      fetchExchangeRequests(user.id),     // values[4]
-      fetchLoanRequests(user.id),         // values[5]
-      fetchSpotify()                      // values[6]
-    ];
-
-    let adminPromises = [
-      fetchUserRequests(),                  // values[7]
-      fetchPendingProducts()                // values[8]
-    ];
-
-    if (user.admin) {
-      promises = [...promises, ...adminPromises];
-    }
-
-    Promise.all(promises)
-    .then((values: any) => fetchProducts(user, values[0].data))
-    .catch((error: any) => console.log(error))
-    .finally(() => this.setState({ isLoading: false }));
-  }
-
-  render() {
-    const { t } = this.props;
-    const { isLoading } = this.state;
-
-    if (isLoading) {
-      return (
-        <div className="fetch-data__loading">
-          <Loading size="xl" message={t('Loading-data')} />
-        </div>
-      );
-    }
-
-    return (
-      <Main />);
-  }
+  promises.forEach(p => dispatch(p));
 }
 
-const mapStateToProps = (state: State) => ({
-  user: state.user,
-});
 
-const mapDispatchProps = {
-  fetchCategories,
-  fetchFriends,
-  fetchFriendsRequests,
-  fetchProducts,
-  fetchSubCategories,
-  fetchExchangeRequests,
-  fetchLoanRequests,
-  fetchPendingProducts,
-  fetchUserRequests,
-  fetchSpotify
-};
+const FetchData = () => {
+  const [ isLoading, setIsLoading ] = useState(true);
+  const user = useSelector((state: State) => state.user);
+  const categories = useSelector((state: State) => state.categories);
+  const dispatch = useDispatch();
+  const stableFetchData = useCallback(fetchData, []);
+  const { t } = useTranslation();
 
-export default connect(mapStateToProps, mapDispatchProps)(withTranslation()<any>(FetchData));
+  useEffect(() => {
+    stableFetchData(user, dispatch);
+  }, [stableFetchData, user, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchProducts(user, categories));
+    setIsLoading(false);
+  }, [categories, user, dispatch]);
+
+  if (isLoading) {
+    return (
+      <div className="fetch-data__loading">
+        <Loading size="xl" message={t('Loading-data')} />
+      </div>
+    );
+  }
+
+  return (<Main />);
+}
+
+export default FetchData;

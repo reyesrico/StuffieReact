@@ -78,6 +78,8 @@ export function getProductsList(productsMap: ProductsMap): Product[] {
 }
 
 export function mapCostToProducts(products: Product[], stuff: StuffiersStuff[]) {
+  if (!products || products.length === 0) return {};
+
   return products.map(p => {
     const extraStuff = stuff.find((s: StuffiersStuff) => s.id_stuff === p.id);
     return extraStuff ? { ...p, cost: extraStuff.cost } : p;
