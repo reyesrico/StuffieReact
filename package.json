@@ -15,7 +15,7 @@
     "@types/recharts": "^1.8.9",
     "@types/tesseract.js": "0.0.2",
     "adaptivecards": "^2.10.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "browserslist": "^4.11.1",
     "caniuse-lite": "^1.0.30001043",
     "cloudinary-react": "^1.4.0",
