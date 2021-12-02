@@ -1,49 +1,29 @@
 import React from 'react';
-import AdaptiveCards from "adaptivecards";
-
-const card = {
-  "type": "AdaptiveCard",
-  "version": "1.0",
-  "body": [
-    {
-      "type": "Image",
-      "url": "https://adaptivecards.io/content/adaptive-card-50.png"
-    },
-    {
-      "type": "TextBlock",
-      "text": "Hello **Adaptive Cards!**"
-    }
-  ],
-  "actions": [
-    {
-      "type": "Action.OpenUrl",
-      "title": "Learn more",
-      "url": "https://adaptivecards.io"
-    },
-    {
-      "type": "Action.OpenUrl",
-      "title": "GitHub",
-      "url": "https://github.com/Microsoft/AdaptiveCards"
-    }
-  ]
-};
+import * as AdaptiveCards from "adaptivecards";
+import cards from '../../config/cards';
 
 const Cards = () => {
-  console.log('merol');
-  let adaptiveCard = new AdaptiveCards.AdaptiveCard();
-  adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
-    fontFamily: "Segoe UI, Helvetica Neue, sans-serif"
-  });
+  const renderCard = (card: any) => {
+    let adaptiveCard = new AdaptiveCards.AdaptiveCard();
+    adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+      fontFamily: "Segoe UI, Helvetica Neue, sans-serif"
+    });
 
-  adaptiveCard.onExecuteAction = function (action) { alert("Ow!"); }
-  adaptiveCard.parse(card);
-  let renderedCard = adaptiveCard.render();
+    adaptiveCard.onExecuteAction = function (action) { console.log('merol'); }
+    adaptiveCard.parse(card);
+
+    return adaptiveCard.render();
+  };
 
   return (
     <div>
-      {renderedCard}
+      {
+        cards.map((c, index) => {
+          return (<div key={index} dangerouslySetInnerHTML={{ __html: renderCard(c)?.innerHTML || '' }}></div>);
+        })
+      }
     </div>
-  )
+  );
 }
 
 export default Cards;
