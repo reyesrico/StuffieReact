@@ -42,6 +42,7 @@ class Apps extends Component<AppsProps, any> {
         <div className="apps__item"><Link to='/test'>Test</Link></div>
         <div className="apps__item"><a href='https://reyesrico.github.io/CovidCharts'>Covid Charts</a></div>
         <div className="apps__item"><Link to='/test2'>Test2</Link></div>
+        <div className="apps__item"><Link to='/cards'>Cards</Link></div>
         <hr />
         <div className="apps__item">
           <Menu label={(isOpen: boolean) => this.renderCurrentLanguage(isOpen)}>
