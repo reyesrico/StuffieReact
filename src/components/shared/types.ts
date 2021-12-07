@@ -9,7 +9,8 @@ export interface TextFieldProps {
   disabled?: boolean,
   reference?: any,
   min?: number,
-  max?: number
+  max?: number,
+  children?: any
 }
 
 export interface MenuProps {
@@ -38,10 +39,11 @@ export interface LoadingProps {
 }
 
 export interface ButtonProps {
-  type?: 'submit' | 'reset' | 'submit',
+  type?: 'submit' | 'reset',
   onClick?: Function,
   text: string,
-  disabled?: boolean
+  disabled?: boolean,
+  children?: any
 }
 
 export enum WarningMessageType {

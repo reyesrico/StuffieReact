@@ -104,5 +104,4 @@ export interface HeaderState {
 export interface AppsProps {
   i18n: any,
   t: Function,
-  user: User
 }

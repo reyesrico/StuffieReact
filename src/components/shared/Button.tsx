@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { ButtonProps } from './types';
 import './Button.scss';
 
-class Button extends Component<ButtonProps, any> {
-  render() {
-    const { disabled, type, text, onClick } = this.props;
+const Button = (props: ButtonProps) => {
+  const { disabled, type, text, onClick } = props;
 
-    if(onClick) {
-      return (<button className="button" type={type || "button"} onClick={event => event && onClick()} disabled={disabled}>{text}</button>); 
-    }
-
-    return <button className="button" type={type || "button"} disabled={disabled}>{text}</button>
+  if (onClick) {
+    return (<button className="button" type={type || "button"} onClick={event => event && onClick()} disabled={disabled}>{text}</button>); 
   }
+
+  return <button className="button" type={type || "button"} disabled={disabled}>{text}</button>
 }
 
 export default Button;

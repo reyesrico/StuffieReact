@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import AddCategory from '../content/AddCategory';
@@ -22,34 +22,32 @@ import Test4 from '../apps/Test4';
 
 import { MainRoutesProps } from './types';
 
-class MainRoutes extends Component<MainRoutesProps, any> {
-  render() {
-    return (
-      <Switch>
-        <Route exact path="/" component={Content} />
-        <Route exact path="/StuffieReact" component={Content} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/friends" component={Friends} />
-        <Route path="/products" component={Products} />
-        <Route path="/product/add" component={AddProduct} />
-        <Route path="/product/:id" render={props => <Product { ...props } />} />
-        <Route path="/category/add" render={()=> <AddCategory type='category' />} />
-        <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
-        <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
-        <Route path="/subcategory/:id" render={props => <CategoryPage { ...props } { ...this.props } />} />
-        <Route path="/exchange" render={props => <Exchange { ...props } {...this.props } />} />
-        <Route path="/loan" render={props => <Loan { ...props } {...this.props } />} />
-        <Route path="/buy" render={props => <Buy { ...props } {...this.props } />} />
-        <Route path="/charts" component={Charts} />
-        <Route path="/support" component={Support} />
-        <Route path="/tickets" component={Tickets} />
-        <Route path="/test" component={Test} />
-        <Route path="/cards" component={Cards} />
-        <Route path="/test4" component={Test4} />
-        {/* <Route path="/test2" component={Test2} /> */}
-      </Switch>
-    );
-  }
+const MainRoutes = (mainRoutesProps: MainRoutesProps) => {
+  return (
+    <Switch>
+      <Route exact path="/" component={Content} />
+      <Route exact path="/StuffieReact" component={Content} />
+      <Route path="/admin" component={Admin} />
+      <Route path="/friends" component={Friends} />
+      <Route path="/products" component={Products} />
+      <Route path="/product/add" component={AddProduct} />
+      <Route path="/product/:id" render={props => <Product { ...props } />} />
+      <Route path="/category/add" render={()=> <AddCategory type='category' />} />
+      <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...mainRoutesProps } />} />
+      <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
+      <Route path="/subcategory/:id" render={props => <CategoryPage { ...props } { ...mainRoutesProps } />} />
+      <Route path="/exchange" render={props => <Exchange { ...props } {...mainRoutesProps } />} />
+      <Route path="/loan" render={props => <Loan { ...props } {...mainRoutesProps } />} />
+      <Route path="/buy" render={props => <Buy { ...props } {...mainRoutesProps } />} />
+      <Route path="/charts" component={Charts} />
+      <Route path="/support" component={Support} />
+      <Route path="/tickets" component={Tickets} />
+      <Route path="/test" component={Test} />
+      <Route path="/cards" component={Cards} />
+      <Route path="/test4" component={Test4} />
+      {/* <Route path="/test2" component={Test2} /> */}
+    </Switch>
+  );
 }
 
 export default MainRoutes;

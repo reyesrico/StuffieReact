@@ -83,12 +83,13 @@ class Products extends Component<ProductsProps, any> {
             const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
             const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
 
+            console.log({ owner });
             return (
               <li className="products__request" key={index}>
                 <div className="products__request-group">
-                  <div className="products__request-text">
-                    Owner: {isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
-                  </div>
+                  {/* <div className="products__request-text">
+                    Owner: {owner && isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
+                  </div> */}
                   <div className="products__request-text">
                     Product: {get(ownerProduct, 'name')}
                   </div>
@@ -117,7 +118,7 @@ class Products extends Component<ProductsProps, any> {
 
   renderLoans = () => {
     const { loanRequests, friends, user } = this.props;
-    const { requestedProducts } = this.state; 
+    const { requestedProducts } = this.state;
 
     return (
       <div className="products__requests">
@@ -138,9 +139,9 @@ class Products extends Component<ProductsProps, any> {
             return (
               <li className="products__request" key={index}>
                 <div className="products__request-group">
-                  <div className="products__request-text">
-                    Owner: {isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
-                  </div>
+                  {/* <div className="products__request-text">
+                    Owner: {owner && isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
+                  </div> */}
                   <div className="products__request-text">
                     Requestor: {isUserRequestor ? 'Me' : `${requestor.first_name} ${requestor.last_name} (${requestor.email})`}
                   </div>

@@ -15,7 +15,7 @@ import { WarningMessageType } from '../shared/types';
 import './Friends.scss';
 
 class Friends extends Component<FriendsProps, any> {
-  textField = React.createRef<TextField>();
+  textField = React.createRef<typeof TextField>();
 
   state = {
     requests: [],
@@ -123,8 +123,7 @@ class Friends extends Component<FriendsProps, any> {
               name="friend_email"
               value={emailToRequest}
               onChange={(emailToRequest: string) => this.setState({ emailToRequest })}
-            >
-            </TextField>
+            />
             <div className="friends__button">
               <Button text="Request" onClick={() => this.handleRequest()}></Button>
             </div>

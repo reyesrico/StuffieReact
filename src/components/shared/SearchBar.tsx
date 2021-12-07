@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 import axios from 'axios';
@@ -9,64 +9,76 @@ import TextField from '../shared/TextField';
 import { getSearchResults, getProductResults } from '../../services/stuff';
 import './SearchBar.scss';
 
-class SearchBar extends Component<any, any> {
-  source: any = null;
-  node: any = null;
+const SearchBar = (props: any) => {
+  let source: any = null;
 
-  state = {
-    isLoading: false,
-    isOpen: false,
-    searchText: '',
-    results: []
-  };
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
-  componentDidMount() {
-    document.addEventListener('click', this.handleClickOutside, true);
-  }
+  let [isLoading, setIsLoading] = useState(false);
+  let [isOpen, setIsOpen] = useState(false);
+  let [searchText, setSearchText] = useState('');;
+  let [results, setResults] = useState([]);
 
-  componentWillUnmount() {
-      document.removeEventListener('click', this.handleClickOutside, true);
-  }
+  useEffect(() => {
+    if (searchBarRef.current) {
+      console.log(searchBarRef.current);
+    }
 
-  handleClickOutside = (event: any) => {
-    const domNode = ReactDOM.findDOMNode(this);
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      console.log("Here, you can add clean up code - componentWillUnmount");
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
+
+  const handleClickOutside = (event: any) => {
+    const domNode = ReactDOM.findDOMNode(searchBarRef.current);
 
     if (!domNode || !domNode.contains(event.target)) {
-      this.setState({ searchText: '', isOpen: false });
+      setSearchText('');
+      setIsOpen(false);
     }
   }
 
-  fetchResults = (searchText: string) => {
-    const { products, selectProduct } = this.props;
+  const fetchResults = (searchText: string) => {
+    const { products, selectProduct } = props;
 
-    this.source && this.source.cancel('Cancel pending requests.');
-    this.source = axios.CancelToken.source();
-    this.setState({ searchText, isOpen: true, isLoading: true });
+    source && source.cancel('Cancel pending requests.');
+    source = axios.CancelToken.source();
+    setSearchText(searchText);
+    setIsOpen(true);
+    setIsLoading(true);
 
     if (searchText) {
       if (selectProduct) {
-        this.setState({ results: getProductResults(searchText, products), isOpen: true, isLoading: false });
+        setResults(getProductResults(searchText, products));
+        setIsOpen(true);
+        setIsLoading(false);
       } else {
-        getSearchResults(searchText, products, this.source.token).then((results: any) => {
+        getSearchResults(searchText, products, source.token).then((results: any) => {
           if (results.length) {
-            this.setState({ results, isOpen: true, isLoading: false });
+            setResults(results);
+            setIsOpen(true);
+            setIsLoading(false);
           } else {
-            this.setState({ isOpen: false, isLoading: false });
+            setIsOpen(false);
+            setIsLoading(false);
           }
-        });  
+        });
       }
     } else {
-      this.setState({ isOpen: false, isLoading: false });
+      setIsOpen(false);
+      setIsLoading(false);
     }
   }
 
-  getLinkTo = (result: any) => {
+  const getLinkTo = (result: any) => {
     return { pathname: `/${result.type.toLowerCase()}/${result.id}`, [result.type.toLowerCase()]: result.name };
   }
 
-  renderResults() {
-    const { results } = this.state;
-    const { selectProduct } = this.props;
+  const renderResults = () => {
+    const { selectProduct } = props;
 
     if (results.length) {
       return (
@@ -74,62 +86,59 @@ class SearchBar extends Component<any, any> {
           {results.map((result: any, index: number) => {
             return (
               <div className="search__result" key={index}>
-              {!selectProduct &&
-                <Link key={index} className="search__result-link" to={this.getLinkTo(result)}>
-                  {this.renderResultName(result)}
-                </Link>
-              }
-              {selectProduct && 
-                <button key={index} onClick={event => event && selectProduct(result)}>
-                  {this.renderResultName(result)}
-                </button>
-              }
+                {!selectProduct &&
+                  <Link key={index} className="search__result-link" to={getLinkTo(result)}>
+                    {renderResultName(result)}
+                  </Link>
+                }
+                {selectProduct &&
+                  <button key={index} onClick={event => event && selectProduct(result)}>
+                    {renderResultName(result)}
+                  </button>
+                }
               </div>);
           })}
         </div>
-      );  
+      );
     }
   }
 
-  renderResultName = (result: any) => {
+  const renderResultName = (result: any) => {
     const type = result.type ? result.type[0] : 'P';
 
     return (
       <div className="search__result-info">
         <div className="search__result-name">{result.name}</div>
         <div className={`search__result-type search__result-${type}`}>| {type}</div>
-      </div>                 
-    );
-  }
-
-  render() {
-    const { isLoading } = this.state;
-    const isOpen = this.state.isOpen ? 'dropdown--is-open' : '';
-
-    return (
-      <div className="search-bar" ref={node => this.node = node}>
-        <div className="search-bar__form">
-          <TextField 
-            name="search"
-            type="input"
-            placeholder="Find stuff..."
-            onChange={(value: string) => this.fetchResults(value)}
-            value={this.state.searchText}
-          >
-          </TextField>
-          <div className="search-bar__button">
-            <i className="fas fa-search"></i>
-          </div>
-        </div>
-        <div className="search-bar__content-container">
-          <div className={`search-bar__content ${isOpen}`}>
-            {isLoading && <Loading size="md"></Loading>}
-            {!isLoading && this.renderResults()}
-          </div>
-        </div>
       </div>
     );
   }
+
+  const isOpenCss = isOpen ? 'dropdown--is-open' : '';
+
+  return (
+    <div className="search-bar" ref={searchBarRef}>
+      <div className="search-bar__form">
+        <TextField
+          name="search"
+          type="input"
+          placeholder="Find stuff..."
+          onChange={(value: string) => fetchResults(value)}
+          value={searchText}
+        >
+        </TextField>
+        <div className="search-bar__button">
+          <i className="fas fa-search"></i>
+        </div>
+      </div>
+      <div className="search-bar__content-container">
+        <div className={`search-bar__content ${isOpenCss}`}>
+          {isLoading && <Loading size="md"></Loading>}
+          {!isLoading && renderResults()}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default SearchBar;

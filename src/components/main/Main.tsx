@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import Apps from '../sections/Apps';
 import Chat from '../sections/Chat';
@@ -11,49 +11,43 @@ import Menu from '../sections/Menu';
 import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 
-import { MainProps } from './types'; 
 import './Main.scss';
 
-class Main extends Component<MainProps, any> {
-  render() {
-    const { user, t } = this.props;
+const Main = () => {
+  const user = useSelector((state: State) => state.user);
+  const { t } = useTranslation();
 
-    return (
-      <div className="stuffie">
-        <div className="stuffie__header">
-          <Header />
-        </div>
-        <div className="stuffie__main">
-          <div className="stuffie__menu">
-            <Menu />
-          </div>
-          <div className="stuffie__content">
-            <MainRoutes />
-          </div>
-          <div className="stuffie__right">
-            <div className="stuffie__user">
-              {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
-              <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
-            </div>
-            <div className="stuffie__spotify">
-              <Spotify />
-            </div>
-            <div className="stuffie__apps">
-              <Apps />
-            </div>
-          </div>
-        </div>
-        <div className="stuffie_footer">
-          <Footer />
-        </div>
-        <Chat />
+  return (
+    <div className="stuffie">
+      <div className="stuffie__header">
+        <Header />
       </div>
-    );
-  }
+      <div className="stuffie__main">
+        <div className="stuffie__menu">
+          <Menu />
+        </div>
+        <div className="stuffie__content">
+          <MainRoutes />
+        </div>
+        <div className="stuffie__right">
+          <div className="stuffie__user">
+            {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
+            <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+          </div>
+          <div className="stuffie__spotify">
+            <Spotify />
+          </div>
+          <div className="stuffie__apps">
+            <Apps />
+          </div>
+        </div>
+      </div>
+      <div className="stuffie_footer">
+        <Footer />
+      </div>
+      <Chat />
+    </div>
+  );
 }
 
-const mapStateToProps = (state: State) => ({
-  user: state.user
-});
-
-export default connect(mapStateToProps, {})(withTranslation()<any>(Main));
+export default Main;

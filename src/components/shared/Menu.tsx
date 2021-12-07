@@ -1,42 +1,36 @@
-import React, { Component } from 'react';
-import { MenuProps, MenuState } from './types';
+import React, { useState } from 'react';
+import { MenuProps } from './types';
 
-// import enhanceWithClickOutside from 'react-click-outside';
 import './Menu.scss';
 
-class Menu extends Component<MenuProps, MenuState> {
-  state = {
-    isOpen: false,
-  };
+const Menu = (props: MenuProps) => {
+  const { label, children } = props;
+  let [isOpen, setIsOpen] = useState(false);
 
-  handleClickOutside() {
-    this.setState({ isOpen: false });
+  const handleClickOutside = () => {
+    setIsOpen(false);
   }
 
-  open = () => {
-    this.setState({ isOpen: true });
+  const open = () => {
+    setIsOpen(true);
   }
 
-  toggle = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+  const toggle = () => {
+    setIsOpen(!isOpen);
   }
 
-  render() {
-    const isOpen = this.state.isOpen ? 'dropdown--is-open' : '';
-
-    return (
-      <div className="dropdown">
-        <div className="dropdown__label" onClick={this.toggle}>
-          {this.props.label(this.state.isOpen)}
-        </div>
-        <div className="dropdown__content-container">
-          <div className={`dropdown__content ${isOpen}`}>
-            {this.props.children}
-          </div>
+  return (
+    <div className="dropdown">
+      <div className="dropdown__label" onClick={toggle}>
+        {label(isOpen)}
+      </div>
+      <div className="dropdown__content-container">
+        <div className={`dropdown__content ${isOpen ? 'dropdown--is-open' : ''}`}>
+          {children}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Menu;

@@ -18,14 +18,14 @@ class Menu extends Component<MenuProps, MenuState> {
     if (!products) return;
 
     return categories
-            .filter((category: Category) => products[category.id] && products[category.id].length)
-            .map(category => {
-              const newTo = { pathname: `/category/${category.id}`, category: category.name };
-              return (
-              <div key={category.id} className="menu__category">
-                <Link className="" key={category.id} to={newTo}>{category.name}</Link>
-              </div>);
-            });
+      .filter((category: Category) => products[category.id] && products[category.id].length)
+      .map(category => {
+        const newTo = { pathname: `/category/${category.id}`, category: category.name };
+        return (
+          <div key={category.id} className="menu__category">
+            <Link className="" key={category.id} to={newTo}>{category.name}</Link>
+          </div>);
+      });
   }
 
   render() {
@@ -36,7 +36,7 @@ class Menu extends Component<MenuProps, MenuState> {
         <div className='menu__title'>{t('Summary')}</div>
         {isProductsEmpty(products) && <div>No products</div>}
         <div className="menu__list">
-          { this.renderCategories() }
+          {this.renderCategories()}
         </div>
       </div>
     );
