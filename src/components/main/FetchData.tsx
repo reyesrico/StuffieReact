@@ -58,8 +58,7 @@ const FetchData = () => {
   }, [stableFetchData, user, dispatch]);
 
   useEffect(() => {
-    dispatch(fetchProducts(user, categories));
-    setIsLoading(false);
+    dispatch(fetchProducts(user, categories, setIsLoading));
   }, [categories, user, dispatch]);
 
   if (isLoading) {

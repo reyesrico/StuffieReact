@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Button from '../shared/Button';
@@ -14,8 +14,9 @@ import { loanRequest } from '../../redux/loan-requests/actions';
 
 import './Loan.scss';
 
-class Loan extends Component<LoanProps, any> {
+class Loan extends Component<any, any> {
   _isMounted = false;
+  navigate = useNavigate();
 
   state = {
     friend: { first_name: '' },
@@ -56,7 +57,9 @@ class Loan extends Component<LoanProps, any> {
     const { friend, message, type } = this.state; 
     const product = location.product;
 
-    if (!product) return <Redirect to='/' />
+    if (!product) {
+      this.navigate('/');
+    }
 
     const match = { params: { id: product.id } };
 
@@ -86,4 +89,4 @@ const mapDispatchProps = {
 };
 
 
-export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(Loan));
+export default connect(mapStateToProps, mapDispatchProps)(Loan);

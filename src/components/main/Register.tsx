@@ -10,7 +10,7 @@ import { registerUserHook } from '../../redux/user/actions';
 
 import './Register.scss';
 
-const Register = ({ setMessage }: RegisterProps) => {
+const Register = ({ setMessage }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');

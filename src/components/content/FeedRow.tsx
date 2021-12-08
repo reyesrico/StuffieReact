@@ -29,9 +29,9 @@ class FeedRow extends Component<FeedRowProps, any> {
 
   render() {
     const { feedPost } = this.props;
-    const exchangeTo = { pathname: `/exchange`, product: feedPost.product, friend: feedPost.friend_id };
-    const loanTo = { pathname: `/loan`, product: feedPost.product, friend: feedPost.friend_id };
-    const buyTo = { pathname: `/buy`, product: feedPost.product, friend: feedPost.friend_id };
+    const exchangeTo = { pathname: `/exchange`, state: { product: feedPost.product, friend: feedPost.friend_id } };
+    const loanTo = { pathname: `/loan`, state: { product: feedPost.product, friend: feedPost.friend_id } };
+    const buyTo = { pathname: `/buy`, state: { product: feedPost.product, friend: feedPost.friend_id } };
 
     return (
       <div className="feed-row">

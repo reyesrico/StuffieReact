@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
-import { withRouter } from 'react-router-dom';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -19,7 +18,7 @@ import { addRegisteredProduct, addProduct } from '../../redux/products/actions';
 
 import './AddProduct.scss';
 
-class AddProduct extends Component<AddProductProps, any> {
+class AddProduct extends Component<any, any> {
   state = {
     status: WarningMessageType.EMPTY,
     name: null,
@@ -168,4 +167,4 @@ const mapStateToProps = (state: State) => ({
   products: state.products
 });
 
-export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(AddProduct));
+export default connect(mapStateToProps, mapDispatchProps)(AddProduct);

@@ -12,11 +12,13 @@ import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { fetchUserHook } from '../../redux/user/actions';
 import './Auth.scss';
+import Main from './Main';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
   const user = useSelector((state: State) => state.user);
+  const products:any = useSelector((state: State) => state.products);
   const dispatch = useDispatch();
   const stableDispatch = useCallback(dispatch, []) // assuming that it doesn't need to change
 
@@ -75,7 +77,12 @@ const Auth = () => {
     );
   }
 
-  return <FetchData />
+  console.log({ products });
+  if (user && products && products.length) {
+    return (<Main />);
+  } else {
+    return <FetchData />
+  }
 };
 
 export default Auth;

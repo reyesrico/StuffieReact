@@ -22,7 +22,7 @@ import { default as ProductType } from '../types/Product';
 
 import './Products.scss';
 
-class Products extends Component<ProductsProps, any> {
+class Products extends Component<any, any> {
   state = {
     requestedProducts: [],
     message: '',
@@ -32,9 +32,9 @@ class Products extends Component<ProductsProps, any> {
   componentDidMount() {
     const { exchangeRequests, loanRequests } = this.props;
     
-    const loanIds = loanRequests.map(req => req.id_stuff);
-    const exchangeIds = exchangeRequests.map(req => req.id_stuff);
-    const exchangeFriendIds = exchangeRequests.map(req => req.id_friend_stuff);
+    const loanIds = loanRequests.map((req: any) => req.id_stuff);
+    const exchangeIds = exchangeRequests.map((req: any) => req.id_stuff);
+    const exchangeFriendIds = exchangeRequests.map((req: any) => req.id_friend_stuff);
 
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
 

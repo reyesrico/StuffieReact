@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
@@ -10,44 +10,30 @@ import { WarningMessageType } from '../shared/types';
 
 import './Buy.scss';
 
-class Buy extends Component<any, any> {
-  _isMounted = false;
+const Buy = () => {
+  let [friend, setFriend] = useState({ first_name: '' });
+  let [message, setMessage] = useState('');
+  let [type, setType] = useState(WarningMessageType.EMPTY);
+  const navigate = useNavigate();
+  let location = useLocation();
+  const product: ProductType = location.state["product"];
 
-  state = {
-    friend: { first_name: '' },
-    message: '',
-    type: WarningMessageType.EMPTY
-  }
-
-  componentDidMount() {
-    const { history, location } = this.props;
-    const product: ProductType = location.product;
-    this._isMounted = true;
-
-    if (this._isMounted) {
-      if (!product || product === undefined) {
-        history.push('/');
-      }
-  
-      getStuffiers([{ id: location.friend }])
-      .then((res: any) => this.setState({ friend: res.data[0] }));  
+  useEffect(() => {
+    if (!product || product === undefined) {
+      navigate('/');
     }
+
+    getStuffiers([{ id: location.state["friend"] }])
+      .then((res: any) => setFriend(res.data[0]));
+  });
+
+  if (!product) {
+    navigate('/');
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
+  const match = { params: { id: product.id } };
 
-  render () {
-    const { location } = this.props;
-    const { friend, message, type } = this.state;
-    const product = location.product;
-
-    if (!product) return <Redirect to='/' />
-
-    const match = { params: { id: product.id } };
-
-    return (
+  return (
     <div className="buy">
       <WarningMessage message={message} type={type} />
       <div className="buy__product">
@@ -57,8 +43,7 @@ class Buy extends Component<any, any> {
       </div>
       <Button type="submit" onClick={() => console.log('submit')} text="Request Buy" />
     </div>
-    );
-  }
+  );
 }
 
-export default withRouter<any, React.ComponentClass<any>>(Buy);
+export default Buy;

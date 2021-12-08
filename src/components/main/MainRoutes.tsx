@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import AddCategory from '../content/AddCategory';
 import AddProduct from '../content/AddProduct';
@@ -20,33 +20,31 @@ import Cards from '../apps/Cards';
 import Test4 from '../apps/Test4';
 // import Test2 from '../apps/Test2';
 
-import { MainRoutesProps } from './types';
-
-const MainRoutes = (mainRoutesProps: MainRoutesProps) => {
+const MainRoutes = () => {
   return (
-    <Switch>
-      <Route exact path="/" component={Content} />
-      <Route exact path="/StuffieReact" component={Content} />
-      <Route path="/admin" component={Admin} />
-      <Route path="/friends" component={Friends} />
-      <Route path="/products" component={Products} />
-      <Route path="/product/add" component={AddProduct} />
-      <Route path="/product/:id" render={props => <Product { ...props } />} />
-      <Route path="/category/add" render={()=> <AddCategory type='category' />} />
-      <Route path="/category/:id" render={props => <CategoryPage { ...props } { ...mainRoutesProps } />} />
-      <Route path="/subcategory/add" render={()=> <AddCategory type='subcategory' />} />
-      <Route path="/subcategory/:id" render={props => <CategoryPage { ...props } { ...mainRoutesProps } />} />
-      <Route path="/exchange" render={props => <Exchange { ...props } {...mainRoutesProps } />} />
-      <Route path="/loan" render={props => <Loan { ...props } {...mainRoutesProps } />} />
-      <Route path="/buy" render={props => <Buy { ...props } {...mainRoutesProps } />} />
-      <Route path="/charts" component={Charts} />
-      <Route path="/support" component={Support} />
-      <Route path="/tickets" component={Tickets} />
-      <Route path="/test" component={Test} />
-      <Route path="/cards" component={Cards} />
-      <Route path="/test4" component={Test4} />
-      {/* <Route path="/test2" component={Test2} /> */}
-    </Switch>
+    <Routes>
+      <Route path="/" element={<Content />} />
+      <Route path="StuffieReact" element={<Content />} />
+      <Route path="admin" element={<Admin />} />
+      <Route path="friends" element={<Friends />} />
+      <Route path="products" element={<Products />} />
+      <Route path="product/add" element={<AddProduct />} />
+      <Route path="product/:id" element={<Product />} />
+      <Route path="category/add" element={<AddCategory type='category' />} />
+      <Route path="category/:id" element={<CategoryPage />} />
+      <Route path="subcategory/add" element={<AddCategory type='subcategory' />} />
+      <Route path="subcategory/:id" element={<CategoryPage />} />
+      <Route path="exchange" element={<Exchange />} />
+      <Route path="loan" element={<Loan />} />
+      <Route path="buy" element={<Buy />} />
+      <Route path="charts" element={<Charts />} />
+      <Route path="support" element={<Support />} />
+      <Route path="tickets" element={<Tickets />} />
+      <Route path="test" element={<Test />} />
+      <Route path="cards" element={<Cards />} />
+      <Route path="test4" element={<Test4 />} />
+      {/* <Route path="/test2" element={<Test2 />} /> */}
+    </Routes>
   );
 }
 

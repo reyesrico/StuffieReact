@@ -12,7 +12,7 @@ import { addUserPicture, fetchUser, loginUserHook } from '../../redux/user/actio
 import './Login.scss';
 import State from '../../redux/State';
 
-const Login = ({ setMessage }: LoginProps) => {
+const Login = ({ setMessage }: any) => {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ loginFB, setLoginFB ] = useState(false);

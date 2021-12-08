@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
 import Button from '../shared/Button';
@@ -13,59 +13,59 @@ import SearchBar from '../shared/SearchBar';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { ExchangeProps } from './types';
-import { exchangeRequest } from '../../redux/exchange-requests/actions';
+import { requestExchangeHook } from '../../redux/exchange-requests/actions';
 import { getProductsList } from '../helpers/StuffHelper';
 import { getStuffiers } from '../../services/stuffier';
 
 import './Exchange.scss';
 
-class Exchange extends Component<ExchangeProps, any> {
-  state = {
-    userProducts: [],
-    selectedProduct: {},
-    message: '',
-    friend: { first_name: '' },
-    type: WarningMessageType.EMPTY
-  }
+const Exchange = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    const { history, location, products } = this.props;
-    const product: Product = location.product;
+  let categories = useSelector((state: State) => state.categories);
+  let products = useSelector((state: State) => state.products);
+  let subcategories = useSelector((state: State) => state.subcategories);
+  let user = useSelector((state: State) => state.user);
+  let [ userProducts, setUserProducts ] = useState<any>([]);
+  let [ selectedProduct, setSelectedProduct ] = useState<Product>({});
+  let [ message, setMessage ] = useState('');
+  let [ friend, setFriend ] = useState({ first_name: ''});
+  let [ type, setType ] = useState(WarningMessageType.EMPTY);
 
+  const product: Product = location.state["product"];
+
+
+  useEffect(() => {
     if (!product || product === undefined) {
-      history.push('/');
+      navigate('/');
     }
 
-    const userProducts = getProductsList(products)
+    const uProducts = getProductsList(products)
       .filter(p => p.category === product.category || p.subcategory === product.subcategory);
 
-    this.setState({ userProducts });
+    setUserProducts(uProducts);
 
-    getStuffiers([{ id: location.friend }])
-    .then((res: any) => this.setState({ friend: res.data[0] }));  
-  }
+    getStuffiers([{ id: location.state["friend"] }])
+    .then((res: any) => setFriend(res.data[0]));
+  }, [userProducts]);
 
-  requestExchange = () => {
-    const { exchangeRequest, history, location, user } = this.props;
-    const { selectedProduct } = this.state;
-
-    const idOwner = location.friend;
-
+  const requestExchange = () => {
+    const idOwner = location.state["friend"];
     console.log('This is to execute request exchange');
 
-    exchangeRequest(idOwner, location.product.id, user.id, get(selectedProduct, 'id'))
-    .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL }))
-    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL }))
-    .finally(() => history.push('/'));
+    dispatch(
+      requestExchangeHook(idOwner, product.id, user.id, get(selectedProduct, 'id'),
+                          setMessage, setType, navigate)
+    );
   }
 
-  selectProduct = (product: Product) => {
-    this.setState({ selectedProduct: product });
+  const selectProduct = (product: Product) => {
+    setSelectedProduct(product);
   }
 
-  renderProduct = (product: Product) => {
-    const { categories, subcategories } = this.props;
-
+  const renderProduct = (product: Product) => {
     const category: Category = categories.filter(c => c.id === product.category)[0];
     const subcategory: Subcategory = subcategories.filter(s => s.id === product.subcategory)[0];
 
@@ -89,55 +89,40 @@ class Exchange extends Component<ExchangeProps, any> {
     );
   }
 
-  render() {
-    const { location } = this.props;
-    const { friend, selectedProduct, userProducts, message, type } = this.state;
-    const product = location.product;
+  if (!userProducts.length) return <div>No products to exchange under same category</div>;
 
-    if (!userProducts.length) return <div>No products to exchange under same category</div>;
-
-    if (!product) return <Redirect to='/'/>
-
-    return (
-      <div className="exchange">
-        <WarningMessage message={message} type={type} />
-        <div className="exchange__header">
-          <SearchBar products={userProducts} selectProduct={(p: Product) => this.selectProduct(p)} />
-        </div>
-        { !isEmpty(selectedProduct) &&
-          <div className="exchange__content">
-            <div className="exchange__compare">
-              <div className="exchange__compare-info">
-                <h4>My Product</h4>
-                {this.renderProduct(selectedProduct)}
-              </div>
-              <div className="exchange__line"></div>
-              <div className="exchange__compare-info">
-                <h4>{friend?.first_name} Product</h4>
-                {this.renderProduct(product)}
-              </div>
-            </div>
-            <Button
-              type="submit"
-              onClick={this.requestExchange}
-              text="Request Exchange">
-            </Button>
-          </div>
-        }
-      </div>
-    );
+  if (!product) {
+    navigate('/');
   }
+
+  return (
+    <div className="exchange">
+      <WarningMessage message={message} type={type} />
+      <div className="exchange__header">
+        <SearchBar products={userProducts} selectProduct={(p: Product) => selectProduct(p)} />
+      </div>
+      { !isEmpty(selectedProduct) &&
+        <div className="exchange__content">
+          <div className="exchange__compare">
+            <div className="exchange__compare-info">
+              <h4>My Product</h4>
+              {renderProduct(selectedProduct)}
+            </div>
+            <div className="exchange__line"></div>
+            <div className="exchange__compare-info">
+              <h4>{friend?.first_name} Product</h4>
+              {renderProduct(product)}
+            </div>
+          </div>
+          <Button
+            type="submit"
+            onClick={requestExchange}
+            text="Request Exchange">
+          </Button>
+        </div>
+      }
+    </div>
+  );
 }
 
-const mapStateToProps = (state: State) => ({
-  categories: state.categories,
-  products: state.products,
-  subcategories: state.subcategories,
-  user: state.user
-});
-
-const mapDispatchProps = {
-  exchangeRequest
-};
-
-export default connect(mapStateToProps, mapDispatchProps)(withRouter<any, React.ComponentClass<any>>(Exchange));
+export default Exchange;

@@ -47,6 +47,7 @@
     "react-i18next": "^10.13.2",
     "react-loading": "^2.0.3",
     "react-redux": "^7.2.0",
+    "react-router": "^5.2.1",
     "react-scripts": "^3.4.1",
     "react-select": "^3.1.0",
     "react-test-renderer": "^16.13.1",
@@ -86,6 +87,6 @@
   "devDependencies": {
     "@types/lodash": "^4.14.150",
     "gh-pages": "^2.2.0",
-    "react-router-dom": "^5.1.2"
+    "react-router-dom": "^6.0.0-beta.8"
   }
 }

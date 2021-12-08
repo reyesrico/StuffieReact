@@ -14,7 +14,7 @@ import { updateProduct } from '../../redux/products/actions';
 
 import './Product.scss';
 
-class Product extends Component<ProductProps, ProductState> {
+class Product extends Component<any, ProductState> {
   state = {
     id: null,
     cost: 0.0,

@@ -31,8 +31,9 @@ export const addRegisteredProduct = (user, product) => dispatch => {
 }
 
 export const fetchProduct = makePaginatedApiActionCreator(getStuff, productFetched);
-export const fetchProducts = (user, categories) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);
+export const fetchProducts = (user, categories, setLoading) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);
   let extraStuff;
+  setLoading(true);
   return getStuffList(user.id)
          .then(res => {
            extraStuff = res.data;               // []Stuff (with cost)
@@ -43,7 +44,8 @@ export const fetchProducts = (user, categories) => dispatch => {  // makePaginat
            const products = getProductsMap(categories, objects);
            dispatch(productsFetched(products, user.email));
            return Promise.resolve(products);
-         });
+         })
+         .finally(() => setLoading(false));
 }
 
 export const updateProduct = makeApiActionCreator(updateStuff, productUpdated);
