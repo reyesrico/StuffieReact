@@ -44,6 +44,6 @@ export interface CategoryPageProps {
 }
 
 export type FeedRowProps = {
-  feedPost: FeedPost,
-  subcategories: Subcategory[]
+  key?: number,
+  feedPost: FeedPost
 }
