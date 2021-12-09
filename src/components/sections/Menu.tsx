@@ -23,7 +23,6 @@ const Menu = () => {
         const newTo = { pathname: `/category/${cat.id}`, state: { category: cat.name } };
         return (
           <div key={cat.id} className="menu__category">
-            <span>{newTo.state.category}</span>
             <Link className="" key={cat.id} to={newTo}>{cat.name}</Link>
           </div>);
       });

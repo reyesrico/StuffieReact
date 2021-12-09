@@ -1,92 +1,60 @@
-import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
-import ProductType from '../types/Product';
 import State from '../../redux/State';
 import WarningMessage from '../shared/WarningMessage';
-import { LoanProps } from './types';
 import { WarningMessageType } from '../shared/types';
 import { getStuffiers } from '../../services/stuffier';
-import { loanRequest } from '../../redux/loan-requests/actions';
+import { loanRequestHook } from '../../redux/loan-requests/actions';
 
 import './Loan.scss';
 
-class Loan extends Component<any, any> {
-  _isMounted = false;
-  navigate = useNavigate();
+const Loan = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-  state = {
-    friend: { first_name: '' },
-    message: '',
-    type: WarningMessageType.EMPTY
+  let [ friend, setFriend ] = useState({ first_name: ''});
+  let [ message, setMessage ] = useState('');
+  let [ type, setType ] = useState(WarningMessageType.EMPTY);
+
+  let user = useSelector((state: State) => state.user);
+  const product = location.state["product"];
+
+  if (!product) {
+    navigate('/');
   }
 
-  componentDidMount() {
-    const { history, location } = this.props;
-    const product: ProductType = location.product;
-    this._isMounted = true;
-
-    if (this._isMounted) {
-      if (!product || product === undefined) {
-        history.push('/');
-      }
-  
-      getStuffiers([{ id: location.friend }])
-      .then((res: any) => this.setState({ friend: res.data[0] }));  
-    }
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  requestLoan = () => {
-    const { loanRequest, location, user } = this.props;
-    const idOwner = location.friend;
-
-    loanRequest(idOwner, location.product.id, user.id)
-    .then(() => this.setState({ message: 'Exchange request successfully', type: WarningMessageType.SUCCESSFUL }))
-    .catch(() => this.setState({ message: 'Exchange request failed', type: WarningMessageType.SUCCESSFUL }))
-  }
-
-  render() {
-    const { location } = this.props;
-    const { friend, message, type } = this.state; 
-    const product = location.product;
-
-    if (!product) {
-      this.navigate('/');
+  useEffect(() => {
+    if (!product || product === undefined) {
+      navigate('/');
     }
 
-    const match = { params: { id: product.id } };
+    getStuffiers([{ id: location.state["friend"] }])
+    .then((res: any) => setFriend(res.data[0]));
+  });
 
-    return (
-      <div className="loan">
-        <WarningMessage message={message} type={type} />
-        <div className="loan__product">
-          <h2>{friend?.first_name} Product</h2>
-          <hr />
-          <Product match={match} key={product.id} product={product} />
-        </div>
-        <Button type="submit" onClick={this.requestLoan} text="Request To Borrow" />
+  const requestLoan = () => {
+    const idOwner = location.state["friend"];
+    dispatch(loanRequestHook(idOwner, product.id, user.id, setMessage, setType));
+  }
+
+  const match = { params: { id: product.id } };
+
+  return (
+    <div className="loan">
+      <WarningMessage message={message} type={type} />
+      <div className="loan__product">
+        <h2>{friend?.first_name} Product</h2>
+        <hr />
+        <Product match={match} key={product.id} product={product} />
       </div>
-    );
-  }
+      <Button type="submit" onClick={requestLoan} text="Request To Borrow" />
+    </div>
+  );
 }
 
-const mapStateToProps = (state: State) => ({
-  categories: state.categories,
-  products: state.products,
-  subcategories: state.subcategories,
-  user: state.user
-});
-
-const mapDispatchProps = {
-  loanRequest
-};
-
-
-export default connect(mapStateToProps, mapDispatchProps)(Loan);
+export default Loan;

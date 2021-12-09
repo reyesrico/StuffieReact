@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import crypto from '../../config/crypto';
 
-class Test extends Component<any, any> {
+const Test = () => {
+  useEffect(() => {
+    document.getElementById("myButton")?.addEventListener('click', debounce(() => console.log('click'), 4000));
+  });
 
-  componentDidMount() {
-    document.getElementById("myButton")?.addEventListener('click', this.debounce(() => console.log('click'), 4000));
-  }
-
-  authenticate = () => {
+  // eslint-disable-next-line
+  const authenticate = () => {
     // TEST - ENCRYPT
     console.log(`secreto: ${crypto.encrypt("secreto")}`);
     console.log(`mario: ${crypto.encrypt("mario")}`);
@@ -15,7 +15,7 @@ class Test extends Component<any, any> {
     console.log(`merol: ${crypto.encrypt("merol")}`);
   }
 
-  getStuff = () => {
+  const getStuff = () => {
     let stuff = [
       { id: 1, name: 'Carlos Reyes 1' },
       { id: 2, name: 'Carlos Reyes 2' },
@@ -32,21 +32,24 @@ class Test extends Component<any, any> {
     });
   }
 
-  reverseStuff(name: string) {
+  const reverseStuff = (name: string) => {
     return name.split('').reverse().join('');
   }
 
-  flat(array: any[]) {
+  // eslint-disable-next-line
+  const flat = (array: any[]) => {
     return array.reduce((acc, value) => [...acc, ...value], []);
   }
 
-  loop(value: number, test: Function, update: Function, body: Function) {
+  // eslint-disable-next-line
+  const loop = (value: number, test: Function, update: Function, body: Function) => {
     for (let i = value; test(i); i = update(i)) {
       body(i);
     }
   }
 
-  every(array: any[], test: Function) {
+  // eslint-disable-next-line
+  const every = (array: any[], test: Function) => {
     let res = true;
     array.forEach(v => {
       if (!test(v)) {
@@ -58,14 +61,15 @@ class Test extends Component<any, any> {
     return res;
   }
 
-  everySome(array: any[], test: Function) {
+  // eslint-disable-next-line
+  const everySome = (array: any[], test: Function) => {
     return !array.some((v: any) => !test(v));
   }
 
-  waysToDecode(message = '4123') {
+  // eslint-disable-next-line
+  const waysToDecode = (message = '4123') => {
     let counter = 0;
     let chars = message.split('');
-    
     for(let i = 0; i < chars.length; i++) {
       if ((chars[i] === '1' || chars[i] === '2') && i+1 < chars.length) {
         counter++;
@@ -75,7 +79,8 @@ class Test extends Component<any, any> {
     return counter + 1;
   }
 
-  getAnagrams(array = ["star", "rats", "car", "arc", "arts", "star", "stars"]) {
+  // eslint-disable-next-line
+  const getAnagrams = (array = ["star", "rats", "car", "arc", "arts", "star", "stars"]) => {
     let myMap:  { [key:string]: string[] } = { };
 
     array.forEach(word => {                                     // N
@@ -95,7 +100,8 @@ class Test extends Component<any, any> {
   }                                                             // N * K log K + N = O(N * K log K)
 
   // [1, 2, 3, 4].reduce((acc, value) => acc + value, 0)
-  reduce(array: number[], callback: Function, initValue: number) {
+  // eslint-disable-next-line
+  const reduce = (array: number[], callback: Function, initValue: number) => {
     let acc = initValue;
     array.forEach(value => {
       acc = callback(acc, value);
@@ -104,7 +110,8 @@ class Test extends Component<any, any> {
     return acc;
   }
 
-  getRoman(decimal: number) {
+  // eslint-disable-next-line
+  const getRoman = (decimal: number) => {
     let roman = '';
     let currentVal = decimal;
 
@@ -131,56 +138,51 @@ class Test extends Component<any, any> {
     return roman;
   }
 
-  proto = () => {
-    let animal = {
-      eats: true
-    };
-    
-    let rabbit: any = {
-      jumps: true,
-      __proto__: animal
-    };
-    
+  // eslint-disable-next-line
+  const proto = () => {
+    let animal = { eats: true };
+    let rabbit: any = { jumps: true, __proto__: animal };
+
     // Object.keys only returns own keys
     // alert(Object.keys(rabbit)); // jumps
-    
+
     // for..in loops over both own and inherited keys
     // for(let prop in rabbit) alert(prop); // jumps, then eats
-    
+
     const pa = rabbit.propertyIsEnumerable(rabbit?.__proto__?.hasOwnProperty);
-    
-    console.log(pa);    
+    console.log(pa);
   }
 
-  myFlat = (array: Array<any>) => {
+  // eslint-disable-next-line
+  const myFlat = (array: Array<any>) => {
     let res: any = [];
-    this.myFlatTemp(array, res);
+    myFlatTemp(array, res);
     return res;
   }
-                  
-  myFlatTemp = (array: Array<any>, res: any) => {
+
+  const myFlatTemp = (array: Array<any>, res: any) => {
     array.forEach(value => {
       if (!Array.isArray(value)) {
           res.push(value);
       }
       else {
-        return this.myFlatTemp(value, res);
+        return myFlatTemp(value, res);
       }
     });
   }
 
-  dom = () => {
+  const dom = () => {
     const spans = document.getElementsByTagName('span');
     if (spans && spans !== undefined) {
       console.log(spans);
       console.log(spans[0]);
-
       // console.log(spans.parentNode);
       // console.log(spans.parentElement);
     }
   }
- 
-  excludeItems() {
+
+  // eslint-disable-next-line
+  const excludeItems = () => {
     // could be potentially more than 3 keys in the object above
     let items = [{color: 'red', type: 'tv', age: 18}, {color: 'silver', type: 'phone', age: 20}];
     let excludes = [{k: 'color', v: 'silver'}, {k: 'type', v: 'tv'}];
@@ -192,7 +194,7 @@ class Test extends Component<any, any> {
     return items;
   }
 
-  orderArray(){
+  const orderArray = () => {
     let array = ['a', 'b', 'c', 'd', 'e'];
     let indexes = [1, 3, 2, 4, 0];
 
@@ -205,7 +207,7 @@ class Test extends Component<any, any> {
     return array;
   }
 
-  debounce = (callback: Function, time: number) => {
+  const debounce = (callback: Function, time: number) => {
     let timeout: any = null;
 
     return () => {
@@ -215,8 +217,8 @@ class Test extends Component<any, any> {
         }, time);
     }
   }
-  
-  render() {
+
+  const render = () => {
     // console.log(this.myFlat([1, [2, [4, 5]], 3]));
     // console.log(this.flat([[1, 2, 3], [4, 5], [6]]));
     // this.loop(3, (n: any)=> n>0, (n: any)=> n-1, console.log);
@@ -230,19 +232,20 @@ class Test extends Component<any, any> {
     // console.log(this.getRoman(3748));
 
     // this.authenticate();
-    const x = this.getStuff();
-    const a = this.reverseStuff('unodostres');
-    this.dom();
-    console.log(this.orderArray());
-
-    return (
-      <div>
-        <span>This is my test = {a}</span>
-        <span>This is my other test = {x}</span>
-        <button id="myButton">Click</button>
-      </div>
-    );
   }
+
+  const x = getStuff();
+  const a = reverseStuff('unodostres');
+  dom();
+  console.log(orderArray());
+
+  return (
+    <div>
+      <span>This is my test = {a}</span>
+      <span>This is my other test = {x}</span>
+      <button id="myButton">Click</button>
+    </div>
+  );
 }
 
 export default Test;
