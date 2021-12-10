@@ -34,9 +34,9 @@ const Main = () => {
             {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
             <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
           </div>
-          <div className="stuffie__spotify">
+          {/* <div className="stuffie__spotify">
             <Spotify />
-          </div>
+          </div> */}
           <div className="stuffie__apps">
             <Apps />
           </div>

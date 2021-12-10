@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { get, map, uniq } from 'lodash';
 
 import Button from '../shared/Button';
@@ -10,11 +11,10 @@ import Product from './Product';
 import State from '../../redux/State';
 import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
-import { ProductsProps } from '../sections/types';
 import { WarningMessageType } from '../shared/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
-import { deleteRequest } from '../../redux/exchange-requests/actions';
-import { deleteRequestLoan } from '../../redux/loan-requests/actions';
+import { deleteRequestHook } from '../../redux/exchange-requests/actions';
+import { deleteRequestLoanHook } from '../../redux/loan-requests/actions';
 import { getProductsFromIds } from '../../services/stuff';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import { mapIds } from '../helpers/StuffHelper';
@@ -22,16 +22,21 @@ import { default as ProductType } from '../types/Product';
 
 import './Products.scss';
 
-class Products extends Component<any, any> {
-  state = {
-    requestedProducts: [],
-    message: '',
-    type: WarningMessageType.EMPTY
-  }
+const Products = () => {
+  const navigate = useNavigate();
 
-  componentDidMount() {
-    const { exchangeRequests, loanRequests } = this.props;
-    
+  let user = useSelector((state: State) => state.user);
+  let categories = useSelector((state: State) => state.categories);
+  let friends = useSelector((state: State) => state.friends);
+  let exchangeRequests = useSelector((state: State) => state.exchangeRequests);
+  let loanRequests = useSelector((state: State) => state.loanRequests);
+  let products = useSelector((state: State) => state.products);
+  let [requestedProducts, setRequestProducts] = useState([]);
+  let [message, setMessage] = useState('');
+  let [type, setType] = useState(WarningMessageType.EMPTY);
+
+
+  useEffect(() => {
     const loanIds = loanRequests.map((req: any) => req.id_stuff);
     const exchangeIds = exchangeRequests.map((req: any) => req.id_stuff);
     const exchangeFriendIds = exchangeRequests.map((req: any) => req.id_friend_stuff);
@@ -39,33 +44,22 @@ class Products extends Component<any, any> {
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
 
     getProductsFromIds(mapIds(ids))
-    .then(res => this.setState({ requestedProducts: res.data }));
-  }
+    .then(res => setRequestProducts(res.data));
+  });
 
-  generateReport = () => {
-    const { products, user } = this.props;
-
+  const generateReport = () => {
     downloadExcel(products, `${user.first_name}_products`);
   }
 
-  executeDeleteExchange = (_id: number, isLoan = false) => {
-    const { deleteRequest, deleteRequestLoan } = this.props;
-
+  const executeDeleteExchange = (_id: number, isLoan = false) => {
     if (isLoan) {
-      deleteRequestLoan(_id)
-      .then(() => this.setState({ message: `Loan request deleted`, type: WarningMessageType.SUCCESSFUL }))
-      .catch(() => this.setState({ message: `Loan request couldn't be deleted`, type: WarningMessageType.ERROR }));
+      deleteRequestLoanHook(_id, dispatch, setMessage, setType);
     } else {
-      deleteRequest(_id)
-      .then(() => this.setState({ message: `Exchange request deleted`, type: WarningMessageType.SUCCESSFUL }))
-      .catch(() => this.setState({ message: `Exchange request couldn't be deleted`, type: WarningMessageType.ERROR }));  
+      deleteRequestHook(_id, dispatch, setMessage, setType);
     }
   }
 
-  renderRequests = () => {
-    const { exchangeRequests, friends, user } = this.props;
-    const { requestedProducts } = this.state;
-
+  const renderRequests = () => {
     return (
       <div className="products__requests">
         <hr />
@@ -83,7 +77,7 @@ class Products extends Component<any, any> {
             const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
             const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
 
-            console.log({ owner });
+            // console.log({ owner });
             return (
               <li className="products__request" key={index}>
                 <div className="products__request-group">
@@ -105,7 +99,7 @@ class Products extends Component<any, any> {
                     <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => this.executeDeleteExchange(request._id)} text={rejectText}></Button>
+                    <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText}></Button>
                   </div>
                 </div>
               </li>
@@ -116,10 +110,7 @@ class Products extends Component<any, any> {
     )
   }
 
-  renderLoans = () => {
-    const { loanRequests, friends, user } = this.props;
-    const { requestedProducts } = this.state;
-
+ const renderLoans = () => {
     return (
       <div className="products__requests">
         <hr />
@@ -154,7 +145,7 @@ class Products extends Component<any, any> {
                     <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => this.executeDeleteExchange(request._id, true)} text={rejectText}></Button>
+                    <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText}></Button>
                   </div>
                 </div>
               </li>
@@ -166,62 +157,43 @@ class Products extends Component<any, any> {
   }
 
 
-  render() {
-    const { categories, exchangeRequests, loanRequests, history, products, user } = this.props;
-    const { message, type } = this.state;
-
-    return (
-      <div className="products">
-        <WarningMessage message={message} type={type} />
-        <div className="products__title">
-          <h2>{user.first_name} Stuff</h2>
-          <div className="products__add-product">
-            <Button text="Add Product" onClick={() => history.push('/product/add')}></Button>
-          </div>
+  return (
+    <div className="products">
+      <WarningMessage message={message} type={type} />
+      <div className="products__title">
+        <h2>{user.first_name} Stuff</h2>
+        <div className="products__add-product">
+          <Button text="Add Product" onClick={() => navigate('/product/add')}></Button>
         </div>
-        {exchangeRequests.length > 0 && this.renderRequests()}
-        {loanRequests.length > 0 && this.renderLoans()}
-        <hr />
-        {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
-        {!isProductsEmpty(products) &&
-          (<div>
-            {categories.map((category: Category, index: number) => {
-              if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`}></div>;
-
-              return (
-                <div key={category.id}>
-                  <h4 className="products__subheader">{category.name}</h4>
-                  <ul className="products__list">
-                    {map(products[category.id as number], (product: ProductType) => {
-                      const match = { params: { id: product.id } };
-                      return <Product key={product.id} match={match} showCost={true} product={product} />
-                    })}
-                  </ul>
-                </div>
-              )
-            })}
-            <hr />
-            <Button onClick={() => this.generateReport()} text="Generate Report"></Button>
-          </div>)
-        }
       </div>
-    );
-  }
-};
+      {exchangeRequests.length > 0 && renderRequests()}
+      {loanRequests.length > 0 && renderLoans()}
+      <hr />
+      {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
+      {!isProductsEmpty(products) &&
+        (<div>
+          {categories.map((category: Category, index: number) => {
+            if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`}></div>;
 
-const mapStateToProps = (state: State) => ({
-  user: state.user,
-  categories: state.categories,
-  friends: state.friends,
-  exchangeRequests: state.exchangeRequests,
-  loanRequests: state.loanRequests,
-  products: state.products
-});
-
-const mapDispatchProps = {
-  deleteRequest,
-  deleteRequestLoan
+            return (
+              <div key={category.id}>
+                <h4 className="products__subheader">{category.name}</h4>
+                <ul className="products__list">
+                  {map(products[category.id as number], (product: ProductType) => {
+                    const match = { params: { id: product.id } };
+                    return <Product key={product.id} match={match} showCost={true} product={product} />
+                  })}
+                </ul>
+              </div>
+            )
+          })}
+          <hr />
+          <Button onClick={() => generateReport()} text="Generate Report"></Button>
+        </div>)
+      }
+    </div>
+  );
 };
 
 export { Products as ProductsComponent };
-export default connect(mapStateToProps, mapDispatchProps)(Products);
+export default Products;

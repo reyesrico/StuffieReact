@@ -94,7 +94,7 @@ const Header = () => {
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
         <div className="stuffie-header__menu">
           <div id="apps">
-            <div className="stuffie-header__menu-spotify"><Spotify /></div>
+            {/* <div className="stuffie-header__menu-spotify"><Spotify /></div> */}
             <div className="stuffie-header__menu-apps"><Apps /></div>
           </div>
           <button className="icon" onClick={event => event && toggleMenu()}>

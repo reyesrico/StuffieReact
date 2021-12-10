@@ -2,6 +2,7 @@ import { makePaginatedApiActionCreator, makeStandardActionCreator, makeApiAction
 import { PRODUCT_ADDED, PRODUCT_FETCHED, PRODUCTS_FETCHED, PRODUCT_UPDATED } from './constants';
 import { addStuff, addStuffStuffier, getListStuff, getStuffList, getStuff, updateStuff } from '../../services/stuff';
 import { mapStuff, getProductsMap, mapCostToProducts } from '../../components/helpers/StuffHelper';
+import { WarningMessageType } from '../../components/shared/types';
 
 const productFetched = makeStandardActionCreator(PRODUCT_FETCHED);
 const productsFetched = makeStandardActionCreator(PRODUCTS_FETCHED);
@@ -49,3 +50,15 @@ export const fetchProducts = (user, categories, setLoading) => dispatch => {  //
 }
 
 export const updateProduct = makeApiActionCreator(updateStuff, productUpdated);
+export const updateProductHook = (userId, productId, updatedCost, dispatch, setMessage, setType) => {
+  updateStuff(userId, productId, updatedCost)
+  .then(() => {
+    dispatch(productUpdated(userId, productId, updatedCost));
+    setMessage(`Cost updated successfully`);
+    setType(WarningMessageType.SUCCESSFUL);
+  })
+  .catch(() => {
+    setMessage(`Cost not updated`);
+    setType(WarningMessageType.ERROR);
+  });
+}

@@ -47,3 +47,17 @@ export const deleteRequestLoan = _id => dispatch => {
   })
   .catch(error => Promise.reject(error));
 }
+
+export const deleteRequestLoanHook = (_id, dispatch, setMessage, setType) => {
+  return deleteLoanRequest(_id)
+  .then(res => {
+    const result = res.data.result[0];
+    dispatch(requestDeleteLoan(result))
+    setMessage("Loan request deleted");
+    setType(WarningMessageType.SUCCESSFUL);
+  })
+  .catch(() => {
+    setMessage(`Loan request couldn't be deleted`);
+    setType(WarningMessageType.ERROR);
+  });
+}

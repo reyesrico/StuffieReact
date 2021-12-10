@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import State from '../../redux/State';
@@ -9,49 +8,45 @@ import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
 import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
 import { mapIds } from '../helpers/UserHelper';
-import { FriendsProps } from './types';
 import { WarningMessageType } from '../shared/types';
 
 import './Friends.scss';
+import { useSelector } from 'react-redux';
 
-class Friends extends Component<FriendsProps, any> {
-  textField = React.createRef<typeof TextField>();
+const Friends = () => {
+  let textFieldRef = React.createRef<typeof TextField>();
+  const { t } = useTranslation();
 
-  state = {
-    requests: [],
-    emailToRequest: '',
-    message: null,
-    textfield: null,
-    executeStatus: WarningMessageType.EMPTY
-  };
+  let user = useSelector((state: State) => state.user);
+  let friends = useSelector((state: State) => state.friends);
+  let friendsRequests = useSelector((state: State) => state.friendsRequests);
+  let [requests, setRequests] = useState([]);
+  let [emailToRequest, setEmailToRequest] = useState('');
+  let [message, setMessage] = useState('');
+  let [executeStatus, setExecuteStatus] = useState(WarningMessageType.EMPTY);
 
-  componentDidMount() {
-    const { friendsRequests } = this.props;
-
+  useEffect(() => {
     if (friendsRequests.length > 0) {
       getStuffiers(mapIds(friendsRequests))
-      .then((res: any) => this.setState({ requests: res.data }));
+      .then((res: any) => setRequests(res.data));
     }
-  }
+  });
 
-  executeRequest = (friend: User, isAccepted = false) => {
-    const { user } = this.props;
+  const executeRequest = (friend: User, isAccepted = false) => {
     let promises = [deleteRequest(user.email, friend.id)];
     isAccepted && promises.push(addFriend(user.email, friend.id));
 
     Promise.all(promises)
     .then((values: any) => {
-      !isAccepted && this.setState({ executeStatus: WarningMessageType.WARNING });
+      !isAccepted && setExecuteStatus(WarningMessageType.WARNING);
       console.log(values[0].data);
-      isAccepted && this.setState({ executeStatus: WarningMessageType.SUCCESSFUL });
+      isAccepted && setExecuteStatus(WarningMessageType.SUCCESSFUL);
       isAccepted && console.log(values[1].data);
     })
-    .catch(() => this.setState({ executeStatus: WarningMessageType.ERROR }));
+    .catch(() => setExecuteStatus(WarningMessageType.ERROR));
   }
 
-  renderRequests = () => {
-    const { requests } = this.state;
-
+  const renderRequests = () => {
     return (
       <div className="friends__requests">
         <hr />
@@ -67,10 +62,10 @@ class Friends extends Component<FriendsProps, any> {
                   {friend.first_name} {friend.last_name} ({friend.email})
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => this.executeRequest(friend, true)} text="Accept"></Button>
+                  <Button onClick={() => executeRequest(friend, true)} text="Accept"></Button>
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => this.executeRequest(friend)} text="Reject"></Button>
+                  <Button onClick={() => executeRequest(friend)} text="Reject"></Button>
                 </div>
               </li>
             )}
@@ -80,17 +75,19 @@ class Friends extends Component<FriendsProps, any> {
     )
   }
 
-  handleRequest = () => {
-    const { user } = this.props;
-    const { emailToRequest } = this.state;
-
+  const handleRequest = () => {
     requestToBeFriend(emailToRequest, user.id)
-    .then(() => this.setState({ message: 'Request sent succesfully', emailToRequest: '' }))
-    .catch(() => this.setState({ message: 'Request couldnt be sent', emailToRequest: '' }))
+    .then(() => {
+      setMessage('Request sent succesfully');
+      setEmailToRequest('');
+    })
+    .catch(() => {
+      setMessage('Request couldnt be sent');
+      setEmailToRequest('');
+    });
   }
 
-  getMessage = () => {
-    const { emailToRequest, executeStatus } = this.state;
+  const getMessage = () => {
     const message =
       executeStatus === WarningMessageType.ERROR ? 'was not added' :
       executeStatus === WarningMessageType.WARNING ? 'was rejected!' :
@@ -101,44 +98,33 @@ class Friends extends Component<FriendsProps, any> {
     return `Friend ${emailToRequest} ${message}`;
   }
 
-  render() {
-    const { friends, t, user } = this.props;
-    const { requests, message, emailToRequest, executeStatus } = this.state;
-
-    return (
-      <div className="friends">
-        <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
-        <WarningMessage message={this.getMessage()} type={executeStatus}/>
-        <ul>
-          {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
-        </ul>
-        {requests.length > 0 && this.renderRequests()}
-        <hr />
-        <div>
-          <h3 className="friends__title">{t('Add-Friend')}</h3>
-          <div className="friends__form">
-            <TextField
-              placeholder="Friend Email"
-              type="text"
-              name="friend_email"
-              value={emailToRequest}
-              onChange={(emailToRequest: string) => this.setState({ emailToRequest })}
-            />
-            <div className="friends__button">
-              <Button text="Request" onClick={() => this.handleRequest()}></Button>
-            </div>
+  return (
+    <div className="friends">
+      <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
+      <WarningMessage message={getMessage()} type={executeStatus}/>
+      <ul>
+        {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
+      </ul>
+      {requests.length > 0 && renderRequests()}
+      <hr />
+      <div>
+        <h3 className="friends__title">{t('Add-Friend')}</h3>
+        <div className="friends__form">
+          <TextField
+            placeholder="Friend Email"
+            type="text"
+            name="friend_email"
+            value={emailToRequest}
+            onChange={(emailToRequest: string) => setEmailToRequest(emailToRequest)}
+          />
+          <div className="friends__button">
+            <Button text="Request" onClick={() => handleRequest()}></Button>
           </div>
-          {message && (<div className="friends__message">{message}</div>)}
         </div>
+        {message && (<div className="friends__message">{message}</div>)}
       </div>
-    );
-  }
+    </div>
+  );
 };
 
-const mapStateToProps = (state: State) => ({
-  user: state.user,
-  friends: state.friends,
-  friendsRequests: state.friendsRequests
-});
-
-export default connect(mapStateToProps, {})(withTranslation()<any>(Friends));
+export default Friends;

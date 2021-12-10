@@ -23,10 +23,8 @@ const SearchBar = (props: any) => {
     if (searchBarRef.current) {
       console.log(searchBarRef.current);
     }
-
     document.addEventListener('click', handleClickOutside, true);
     return () => {
-      console.log("Here, you can add clean up code - componentWillUnmount");
       document.removeEventListener('click', handleClickOutside, true);
     };
   });

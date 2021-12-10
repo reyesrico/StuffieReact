@@ -47,3 +47,17 @@ export const deleteRequest = _id => dispatch => {
   })
   .catch(error => Promise.reject(error));
 }
+
+export const deleteRequestHook = (_id, dispatch, setMessage, setType) => {
+  return deleteExchangeRequest(_id)
+  .then(res => {
+    const result = res.data.result[0];
+    dispatch(requestDelete(result))
+    setMessage(`Exchange request deleted`);
+    setType(WarningMessageType.SUCCESSFUL);
+  })
+  .catch(() => {
+    setMessage(`Exchange request couldn't be deleted`);
+    setType(WarningMessageType.ERROR);
+  });
+}
