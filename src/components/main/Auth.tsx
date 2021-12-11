@@ -77,7 +77,6 @@ const Auth = () => {
     );
   }
 
-  console.log({ products });
   if (user && products && products.length) {
     return (<Main />);
   } else {

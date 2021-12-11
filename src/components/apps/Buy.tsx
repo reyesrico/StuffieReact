@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
-import ProductType from '../types/Product';
 import WarningMessage from '../shared/WarningMessage';
 import { getStuffiers } from '../../services/stuffier';
 import { WarningMessageType } from '../shared/types';
@@ -11,12 +10,14 @@ import { WarningMessageType } from '../shared/types';
 import './Buy.scss';
 
 const Buy = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const product = location.state["product"];
+  const match = { params: { id: product.id } };
+
   let [friend, setFriend] = useState({ first_name: '' });
   let [message, setMessage] = useState('');
   let [type, setType] = useState(WarningMessageType.EMPTY);
-  const navigate = useNavigate();
-  let location = useLocation();
-  const product: ProductType = location.state["product"];
 
   useEffect(() => {
     if (!product || product === undefined) {
@@ -27,11 +28,12 @@ const Buy = () => {
       .then((res: any) => setFriend(res.data[0]));
   });
 
-  if (!product) {
-    navigate('/');
+  const buy = () => {
+    setMessage('Buy');
+    setType(WarningMessageType.SUCCESSFUL);
   }
 
-  const match = { params: { id: product.id } };
+  if (!product) { navigate('/'); }
 
   return (
     <div className="buy">
@@ -41,7 +43,7 @@ const Buy = () => {
         <hr />
         <Product match={match} key={product.id} product={product} showCost={true} hideOfferButton={true} />
       </div>
-      <Button type="submit" onClick={() => console.log('submit')} text="Request Buy" />
+      <Button type="submit" onClick={() => buy()} text="Request Buy" />
     </div>
   );
 }

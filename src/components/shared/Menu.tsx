@@ -7,13 +7,14 @@ const Menu = (props: MenuProps) => {
   const { label, children } = props;
   let [isOpen, setIsOpen] = useState(false);
 
-  const handleClickOutside = () => {
-    setIsOpen(false);
-  }
 
-  const open = () => {
-    setIsOpen(true);
-  }
+  // const handleClickOutside = () => {
+  //   setIsOpen(false);
+  // }
+
+  // const open = () => {
+  //   setIsOpen(true);
+  // }
 
   const toggle = () => {
     setIsOpen(!isOpen);

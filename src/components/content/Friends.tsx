@@ -14,7 +14,7 @@ import './Friends.scss';
 import { useSelector } from 'react-redux';
 
 const Friends = () => {
-  let textFieldRef = React.createRef<typeof TextField>();
+  // let textFieldRef = React.createRef<typeof TextField>();
   const { t } = useTranslation();
 
   let user = useSelector((state: State) => state.user);

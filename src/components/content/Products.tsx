@@ -69,10 +69,10 @@ const Products = () => {
         </h3>
         <ul>
           {exchangeRequests.map((request: ExchangeRequest, index: number) => {
-            const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
+            // const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
-            const isUserOwner = user === owner;
+            // const isUserOwner = user === owner;
             const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
             const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
             const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
@@ -120,10 +120,10 @@ const Products = () => {
         </h3>
         <ul>
           {loanRequests.map((request: LoanRequest, index: number) => {
-            const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
+            // const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
-            const isUserOwner = user === owner;
+            // const isUserOwner = user === owner;
             const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
             const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
 

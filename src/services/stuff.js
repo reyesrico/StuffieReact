@@ -9,11 +9,11 @@ export const getStuffList = id_stuffier => (
 
 export const getStuffiersList = friends => {
   if (friends.length > 0) {
-    const ids = map(friends, friend => { 
+    const ids = map(friends, friend => {
       return { id_stuffier: friend.id };
     });
-  
-    return axios.get(routes.stuff.listStuffiers(ids), { headers: config.headers });  
+
+    return axios.get(routes.stuff.listStuffiers(ids), { headers: config.headers });
   }
 
   return Promise.resolve([]);

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { I18nextProvider, withTranslation } from 'react-i18next';
+import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 
 import i18n from './config/i18n';

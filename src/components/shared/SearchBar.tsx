@@ -20,9 +20,9 @@ const SearchBar = (props: any) => {
   let [results, setResults] = useState([]);
 
   useEffect(() => {
-    if (searchBarRef.current) {
-      console.log(searchBarRef.current);
-    }
+    // if (searchBarRef.current) {
+    //   console.log(searchBarRef.current);
+    // }
     document.addEventListener('click', handleClickOutside, true);
     return () => {
       document.removeEventListener('click', handleClickOutside, true);

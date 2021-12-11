@@ -22,6 +22,19 @@ export const addProduct = (product, user) => dispatch => {
   .catch(error => Promise.reject(error));
 }
 
+export const addProductHook = (product, user, dispatch) => {
+  return addStuff(product)
+  .then(res => {
+    const product = res.data;
+    return addStuffStuffier(user.id, product.id);
+  })
+  .then(() => {
+    dispatch(productAdded(product, user.email));
+    return Promise.resolve(product);
+  })
+  .catch(error => Promise.reject(error));
+}
+
 export const addRegisteredProduct = (user, product) => dispatch => {
   return addStuffStuffier(user.id, product.id)
   .then(() => {
@@ -30,6 +43,16 @@ export const addRegisteredProduct = (user, product) => dispatch => {
   })
   .catch(error => Promise.reject(error));
 }
+
+export const addRegisteredProductHook = (user, product, dispatch) => {
+  return addStuffStuffier(user.id, product.id)
+  .then(() => {
+    dispatch(productAdded(product, user.email));
+    return Promise.resolve(product);
+  })
+  .catch(error => Promise.reject(error));
+}
+
 
 export const fetchProduct = makePaginatedApiActionCreator(getStuff, productFetched);
 export const fetchProducts = (user, categories, setLoading) => dispatch => {  // makePaginatedApiActionCreator(getListStuff, productsFetched);

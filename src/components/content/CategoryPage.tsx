@@ -1,11 +1,10 @@
 import React from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 
 import State from '../../redux/State';
 import Stuff from '../types/Stuff';
-import Category from '../types/Category';
 
 /* Category ID never will have 5 digits
    Subcategory ID will have 5 digits or more.
@@ -14,7 +13,7 @@ const CategoryPage = () => {
   let products = useSelector((state: State) => state.products);
   let categories = useSelector((state: State) => state.categories);
   // let subcategories = useSelector((state: State) => state.subcategories);
-  const location = useLocation();
+  // const location = useLocation();
 
 
   let { id } = useParams();

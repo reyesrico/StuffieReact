@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import Tesseract from 'tesseract.js';
 
 const Tickets = () => {
+  let progressValue = 0;
   let [ file, setFile ] = useState<File>();
-  let [ progressValue, setProgressValue ] = useState(0);
 
   const handleChange = (event: any) => {
     if (event && event.target && event.target.files) {

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Chat.scss';
 
 const Chat = () => {
-  let [ messageList, setMessageList ] = useState<any>([]);
+  // let [ messageList, setMessageList ] = useState<any>([]);
 
+  /*
   const onMessageWasSent = (message: any) => {
     let mList = [...messageList, message];
     setMessageList(mList);
@@ -20,6 +21,7 @@ const Chat = () => {
       setMessageList(mList);
     }
   }
+  */
 
   return (<div className="chat">Get new Chat-Window</div>);
 };

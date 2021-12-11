@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Apps from '../sections/Apps';
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
-import Spotify from '../apps/Spotify';
+// import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 import { logout } from '../../redux/user/actions';
 import './Header.scss';

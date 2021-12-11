@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { options } from '../../config/options';
@@ -7,11 +7,9 @@ import Menu from '../shared/Menu';
 import './Apps.scss';
 
 const Apps = (props: any) => {
-  let [ lang, setLang ] = useState(options[0]);
   const { t, i18n } = useTranslation();
 
   const changeLang = (lang: any) => {
-    setLang(lang);
     i18n.changeLanguage(lang.value);
   };
 

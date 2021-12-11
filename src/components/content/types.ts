@@ -6,10 +6,10 @@ import Subcategory from '../types/Subcategory';
 import User from '../types/User';
 
 export interface AddCategoryProps {
-  addCategory: Function;
-  addSubCategory: Function;
-  categories: Category[],
-  subcategories: Subcategory[],
+  // addCategory: Function;
+  // addSubCategory: Function;
+  // categories: Category[],
+  // subcategories: Subcategory[],
   type: string;
 }
 

@@ -6,7 +6,6 @@ import Button from '../shared/Button';
 import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
 import config from '../../services/config';
-import { LoginProps } from './types';
 import { addUserPicture, fetchUser, loginUserHook } from '../../redux/user/actions';
 
 import './Login.scss';

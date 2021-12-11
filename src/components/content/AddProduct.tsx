@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
 import Button from '../shared/Button';
@@ -10,161 +11,144 @@ import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 import WarningMessage from '../shared/WarningMessage';
-import { AddProductProps } from '../sections/types';
 import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import { getStuffFromCategories } from '../../services/stuff';
-import { addRegisteredProduct, addProduct } from '../../redux/products/actions';
+import { addProductHook, addRegisteredProductHook } from '../../redux/products/actions';
 
 import './AddProduct.scss';
 
-class AddProduct extends Component<any, any> {
-  state = {
-    status: WarningMessageType.EMPTY,
-    name: null,
-    file_name: null,
-    category: this.props.categories[0],
-    product: { id: null, name: null },
-    subcategory: this.props.subcategories[0],
-    stuffStuffier: {},
-    productsByCategories: []
-  };
+const AddProduct = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  componentDidMount() {
-    this.renderProducts(this.state.category, this.state.subcategory);
-  }
+  let user = useSelector((state: State) => state.user);
+  let categories = useSelector((state: State) => state.categories);
+  let subcategories = useSelector((state: State) => state.subcategories);
+  let products = useSelector((state: State) => state.products);
 
-  createProduct = () => {
-    const { addProduct, user } = this.props;
-    const { name, category, subcategory } = this.state;
+  let [status, setStatus] = useState(WarningMessageType.EMPTY);
+  let [name, setName] = useState('');
+  // let [file_name, setFileName] = useState(null);
+  let [category, setCategory] = useState(categories[0]);
+  let [product, setProduct] = useState<any>({ id: null, name: null });
+  let [subcategory, setSubcategory] = useState(subcategories[0]);
+  let [stuffStuffier, setStuffStuffier] = useState({});
+  let [productsByCategories, setProductsByCategories] = useState([]);
 
+  useEffect(() => {
+    renderProducts(category, subcategory);
+  });
+
+  // useEffect(() => {
+  //   renderProducts(category, subcategory);
+  // }, [subcategory]);
+
+
+  const createProduct = () => {
     if (!name || !category || !subcategory) return;
 
-    addProduct({ name, category: category.id, subcategory: subcategory.id }, user)
+    addProductHook({ name, category: category.id, subcategory: subcategory.id }, user)
       .then((product: Product) => {
-        this.setState({ product, stuffStuffier: product, status: WarningMessageType.SUCCESSFUL });
+        setProduct(product);
+        setStuffStuffier(product);
+        setStatus(WarningMessageType.SUCCESSFUL);
       })
       .catch(() => {
         const product = { name, category: category.id, subcategory: subcategory.id };
-        this.setState({ product, stuffStuffier: product, status: WarningMessageType.ERROR });
+        setProduct(product);
+        setStuffStuffier(product);
+        setStatus(WarningMessageType.ERROR);
       });
   }
 
-  setProduct() {
-    const { addRegisteredProduct, history, user } = this.props;
-    const { product } = this.state;
-
-    addRegisteredProduct(user, product).then((p: Product) => {
-      this.setState({ stuffStuffier: p, status: WarningMessageType.SUCCESSFUL });
-      history.push('/products');
+  const registerProduct = () => {
+    addRegisteredProductHook(user, product, dispatch).then((p: Product) => {
+      setStuffStuffier(p);
+      setStatus(WarningMessageType.SUCCESSFUL);
+      navigate('/products');
     });
   }
 
-  clearState = () => {
-    this.setState({
-      status: WarningMessageType.EMPTY,
-      name: null,
-      file_name: null,
-      category: this.props.categories[0],
-      subcategory: this.props.subcategories[0],
-      product: {},
-      stuffStuffier: {},
-    });
-  }
+  // const clearState = () => {
+  //   setStatus(WarningMessageType.EMPTY);
+  //   setName('');
+  //   // setFileName(null);
+  //   setCategory(categories[0]);
+  //   setSubcategory(subcategories[0]);
+  //   setProduct({});
+  //   setStuffStuffier({});
+  // }
 
-  getMessage = () => {
-    const { stuffStuffier, status, product } = this.state;
+  const getMessage = () => {
     const message = status === WarningMessageType.ERROR ? 'was not added' : 'was added successfully!';
-
-    if (product && !isEmpty(stuffStuffier)) {
-      return `Stuff ${product.name} ${message}`;
-    }
-
-    return "";
+    return (product && !isEmpty(stuffStuffier)) ? `Stuff ${product.name} ${message}` : "";
   }
 
-  renderProducts(category: Category, subcategory: Subcategory) {
-    const { products } = this.props;
-
+  const renderProducts = (category: Category, subcategory: Subcategory) => {
     getStuffFromCategories(category.id, subcategory.id).then(res => {
       const product = res.data[0];
       const productsByCategories = res.data.filter((p: Product) => p.id && !getProductFromProducts(p.id, products));
-      this.setState({ productsByCategories, product });
-    })
+      setProductsByCategories(productsByCategories);
+      setProduct(product);
+    });
   }
 
-  updateCategory = (category: Category) => {
-    this.renderProducts(category, this.state.subcategory);
-    this.setState({ category });
+  const updateCategory = (category: Category) => {
+    renderProducts(category, subcategory);
+    setCategory(category);
   }
 
-  updateSubcategory = (subcategory: Subcategory) => {
-    this.renderProducts(this.state.category, subcategory);
-    this.setState({ subcategory });
+  const updateSubcategory = (subcategory: Subcategory) => {
+    renderProducts(category, subcategory);
+    setSubcategory(subcategory);
   }
 
-  render() {
-    const { categories, subcategories } = this.props;
-    const { product, productsByCategories, category, status, subcategory } = this.state;
+  return (
+    <div className="add-product">
+      <h3>Add Stuff</h3>
+      <WarningMessage message={getMessage()} type={status} />
+      <hr />
+      <form>
+        <div>Select Product</div>
+        <div className="add-product__row">
+          <label>Category</label>
+          <Dropdown onChange={(category: any) => updateCategory(category)} values={categories} />
+        </div>
+        <div className="add-product__row">
+          <label>SubCategory</label>
+          <Dropdown onChange={(subcategory: any) => updateSubcategory(subcategory)} values={subcategories} />
+        </div>
+        {!productsByCategories.length && <div>There are no products</div>}
+        {productsByCategories.length > 0 && (
+          <div className="add-product__row">
+            <label>Product</label>
+            <Dropdown onChange={(product: Product) => setProduct(product)} values={productsByCategories} />
+          </div>
+        )}
+        <hr />
+        <Button text="Add Product" disabled={!(category && subcategory && product && product.name)}
+          onClick={() => registerProduct()}>
+        </Button>
+        <hr />
+        <div>Create New Product</div>
+        <div className="add-product__row">
+          <label>Name</label>
+          <TextField name="name" type="text" onChange={(name: string) => setName(name)} />
+        </div>
+        <div className="add-product__row">
+          <label>Category</label>
+          <Dropdown onChange={(category: any) => setCategory(category)} values={categories} />
+        </div>
+        <div className="add-product__row">
+          <label>SubCategory</label>
+          <Dropdown onChange={(subcategory: any) => setSubcategory(subcategory)} values={subcategories} />
+        </div>
+        <hr />
+        <Button onClick={() => createProduct()} text="Send"></Button>
+      </form>
+    </div>
+  );
+}
 
-    return (
-      <div className="add-product">
-        <h3>Add Stuff</h3>
-        <WarningMessage message={this.getMessage()} type={status} />
-        <hr/>
-        <form>
-          <div>Select Product</div>
-          <div className="add-product__row">
-            <label>Category</label>
-            <Dropdown onChange={(category: any) => this.updateCategory(category)} values={categories} />
-          </div>
-          <div className="add-product__row">
-            <label>SubCategory</label>
-            <Dropdown onChange={(subcategory: any) => this.updateSubcategory(subcategory)} values={subcategories} />
-          </div>
-          { !productsByCategories.length && <div>There are no products</div>}
-          { productsByCategories.length > 0 && (
-            <div className="add-product__row">
-              <label>Product</label>
-              <Dropdown onChange={(product: Product) => this.setState({ product })} values={productsByCategories} />
-            </div>
-          )}
-          <hr />
-          <Button text="Add Product" disabled={!(category && subcategory && product && product.name)}
-            onClick={() => this.setProduct()}>
-          </Button>
-          <hr />
-          <div>Create New Product</div>
-          <div className="add-product__row">
-            <label>Name</label>
-            <TextField name="name" type="text" onChange={(name:string) => this.setState({ name })}/>
-          </div>
-          <div className="add-product__row">
-            <label>Category</label>
-            <Dropdown onChange={(category:any) => this.setState({ category })} values={categories} />
-          </div>
-          <div className="add-product__row">
-            <label>SubCategory</label>
-            <Dropdown onChange={(subcategory:any) => this.setState({ subcategory })} values={subcategories} />
-          </div>
-          <hr />
-          <Button onClick={() => this.createProduct()} text="Send"></Button>
-        </form>
-      </div>
-    );
-  }
-};
-
-const mapDispatchProps = {
-  addProduct,
-  addRegisteredProduct,
-};
-
-const mapStateToProps = (state: State) => ({
-  user: state.user,
-  categories: state.categories,
-  subcategories: state.subcategories,
-  products: state.products
-});
-
-export default connect(mapStateToProps, mapDispatchProps)(AddProduct);
+export default AddProduct;

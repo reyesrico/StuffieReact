@@ -12,7 +12,6 @@ import Subcategory from '../types/Subcategory';
 import SearchBar from '../shared/SearchBar';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
-import { ExchangeProps } from './types';
 import { requestExchangeHook } from '../../redux/exchange-requests/actions';
 import { getProductsList } from '../helpers/StuffHelper';
 import { getStuffiers } from '../../services/stuffier';
@@ -49,7 +48,7 @@ const Exchange = () => {
 
     getStuffiers([{ id: location.state["friend"] }])
     .then((res: any) => setFriend(res.data[0]));
-  }, [userProducts]);
+  }, [userProducts, location.state, navigate, product, products]);
 
   const requestExchange = () => {
     const idOwner = location.state["friend"];

@@ -31,5 +31,20 @@ export const fetchFriendsProducts = (friends) => dispatch => {
     const friendsFilled = getFriendProducts(friends, products, stuffiers_stuff);
     dispatch(friendProductsFetched(friendsFilled))
     return Promise.resolve(friendsFilled);
-  });  
+  });
+}
+
+export const fetchFriendsProductsHook = (friends, dispatch) => {
+  let stuffiers_stuff = [];
+  return getStuffiersList(friends)
+  .then(res => {
+    stuffiers_stuff = res.data;
+    return getListStuff(mapStuff(res.data));
+  })
+  .then(res => {
+    const products = res.data;
+    const friendsFilled = getFriendProducts(friends, products, stuffiers_stuff);
+    // dispatch(friendProductsFetched(friendsFilled))
+    return Promise.resolve(friendsFilled);
+  });
 }

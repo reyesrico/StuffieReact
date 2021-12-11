@@ -10,3 +10,9 @@ export const fetchSubCategory = makePaginatedApiActionCreator(getSubcategory, su
 
 const subCategoryAdded = makeStandardActionCreator(SUBCATEGORY_ADDED);
 export const addSubCategory = makePaginatedApiActionCreator(addSubCategoryCall, subCategoryAdded);
+export const addSubCategoryHook = (subCategory, dispatch) => {
+  return addSubCategoryCall(subCategory).then(res => {
+    dispatch(subCategoryAdded(res.data));
+    return Promise.resolve(res.data);
+  }).catch(err => Promise.reject(err));
+};

@@ -218,26 +218,25 @@ const Test = () => {
     }
   }
 
-  const render = () => {
-    // console.log(this.myFlat([1, [2, [4, 5]], 3]));
-    // console.log(this.flat([[1, 2, 3], [4, 5], [6]]));
-    // this.loop(3, (n: any)=> n>0, (n: any)=> n-1, console.log);
-    // console.log(this.every([1, 3, 5], (n: any) => n < 10));
-    // console.log(this.everySome([1, 3, 5], (n: any) => n < 10));
-    // console.log(this.waysToDecode());
-    // console.log(this.getAnagrams());
-    // console.log(this.reduce([1, 2, 3, 4, 5], (acc: number, value: number) => value, 0));
-    // console.log([1, 2, 3, 4, 5].reduce((acc, val) => acc + val));
-
-    // console.log(this.getRoman(3748));
-
-    // this.authenticate();
+  const debug = () => {
+    console.log(myFlat([1, [2, [4, 5]], 3]));
+    console.log(flat([[1, 2, 3], [4, 5], [6]]));
+    loop(3, (n: any)=> n>0, (n: any)=> n-1, console.log);
+    console.log(every([1, 3, 5], (n: any) => n < 10));
+    console.log(everySome([1, 3, 5], (n: any) => n < 10));
+    console.log(waysToDecode());
+    console.log(getAnagrams());
+    console.log(reduce([1, 2, 3, 4, 5], (acc: number, value: number) => value, 0));
+    console.log([1, 2, 3, 4, 5].reduce((acc, val) => acc + val));
+    console.log(getRoman(3748));
+    authenticate();
   }
 
   const x = getStuff();
   const a = reverseStuff('unodostres');
   dom();
   console.log(orderArray());
+  debug();
 
   return (
     <div>

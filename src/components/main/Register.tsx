@@ -5,7 +5,6 @@ import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
 import User from '../types/User';
-import { RegisterProps } from './types';
 import { registerUserHook } from '../../redux/user/actions';
 
 import './Register.scss';
