@@ -8,3 +8,6 @@ export const fetchUserRequests = makeApiActionCreator(getUserRequests, userReque
 
 const userRequestDeleted = makeStandardActionCreator(USER_REQUEST_DELETED);
 export const deleteRequest = makeApiActionCreator(deleteUserRequest, userRequestDeleted);
+export const deleteRequestHook = (user, dispatch) => {
+  deleteUserRequest(user).then(() => dispatch(userRequestDeleted));
+}
