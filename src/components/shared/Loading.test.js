@@ -1,15 +1,15 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import Loading from './Loading';
+import Loading, { getSize }from './Loading';
 
 describe('Loading', () => {
   let wrapper;
-  let instance;
+  // let instance;
   const props = { size: 'md', message: 'message '};
 
   beforeEach(() => {
     wrapper = shallow(<Loading size={props.size} message={props.message} />);
-    instance = wrapper.instance();
+    // instance = wrapper.instance();
   });
 
   it('renders without crashing', () => {
@@ -17,6 +17,6 @@ describe('Loading', () => {
   });
 
   it('getSize', () => {
-    expect(instance.getSize()).toEqual(16);
+    expect(getSize('md')).toEqual(16);
   });
 });

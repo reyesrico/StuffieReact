@@ -4,7 +4,7 @@ import { LoadingProps, LoadingSize } from './types';
 
 import './Loading.scss';
 
-const getSize = (size: LoadingSize) => {
+export const getSize = (size: LoadingSize) => {
   switch (size) {
     case 'sm':
       return 8;
