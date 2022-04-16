@@ -63,7 +63,7 @@
     "spotify-web-api-js": "^1.5.2",
     "ssri": "^7.1.1",
     "tesseract.js": "^1.0.19",
-    "trim-newlines": "^1.0.0",
+    "trim-newlines": "^3.0.1",
     "typescript": "^3.9.10",
     "url-parse": "^1.5.10",
     "websocket-extensions": "^0.1.4",
