@@ -16,7 +16,7 @@
     "@types/recharts": "^1.8.23",
     "@types/tesseract.js": "0.0.2",
     "adaptivecards": "^2.10.0",
-    "ansi-html": "^0.0.7",
+    "ansi-html": "^0.0.8",
     "axios": "^0.21.4",
     "browserslist": "^4.20.2",
     "caniuse-lite": "^1.0.30001332",
