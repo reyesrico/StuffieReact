@@ -1,8 +1,8 @@
-import XLSX from 'xlsx';
+// import XLSX from 'xlsx';
 import Product from '../types/Product';
 
 // const excelType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-const excelfileExtension = '.xlsx';
+// const excelfileExtension = '.xlsx';
 
 function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
@@ -55,15 +55,15 @@ export function getDataToExport(products: any) {
 *  Example: https://sheetjs.com/demos/writexlsx.html 
 */
 export function downloadExcel(products: any, fileName: string) {
-  const data = getDataToExport(products);
+  // const data = getDataToExport(products);
 
-  let worsheet_name = "Products_Sheet";
-  let worksheet_book = XLSX.utils.book_new();
+  // let worsheet_name = "Products_Sheet";
+  // let worksheet_book = XLSX.utils.book_new();
 
-  /* convert from array of arrays to workbook */
-  let worksheet = XLSX.utils.aoa_to_sheet(data);
+  // /* convert from array of arrays to workbook */
+  // let worksheet = XLSX.utils.aoa_to_sheet(data);
 
-  /* add worksheet to workbook */
-  XLSX.utils.book_append_sheet(worksheet_book, worksheet, worsheet_name);
-  XLSX.writeFile(worksheet_book, `${fileName}${excelfileExtension}`);
+  // /* add worksheet to workbook */
+  // XLSX.utils.book_append_sheet(worksheet_book, worksheet, worsheet_name);
+  // XLSX.writeFile(worksheet_book, `${fileName}${excelfileExtension}`);
 }

@@ -33,7 +33,7 @@ const Exchange = () => {
   let [ friend, setFriend ] = useState({ first_name: ''});
   let [ type, setType ] = useState(WarningMessageType.EMPTY);
 
-  const product: Product = location.state["product"];
+  const product: Product = (location.state as any)["product"];
 
 
   useEffect(() => {
@@ -46,12 +46,12 @@ const Exchange = () => {
 
     setUserProducts(uProducts);
 
-    getStuffiers([{ id: location.state["friend"] }])
+    getStuffiers([{ id: (location.state as any)["friend"] }])
     .then((res: any) => setFriend(res.data[0]));
   }, [userProducts, location.state, navigate, product, products]);
 
   const requestExchange = () => {
-    const idOwner = location.state["friend"];
+    const idOwner = (location.state as any)["friend"];
     console.log('This is to execute request exchange');
 
     dispatch(

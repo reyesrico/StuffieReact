@@ -22,7 +22,7 @@ const Loan = () => {
   let [ type, setType ] = useState(WarningMessageType.EMPTY);
 
   let user = useSelector((state: State) => state.user);
-  const product = location.state["product"];
+  const product = (location.state as any)["product"];
 
   if (!product) {
     navigate('/');
@@ -33,12 +33,12 @@ const Loan = () => {
       navigate('/');
     }
 
-    getStuffiers([{ id: location.state["friend"] }])
+    getStuffiers([{ id: (location.state as any)["friend"] }])
     .then((res: any) => setFriend(res.data[0]));
   });
 
   const requestLoan = () => {
-    const idOwner = location.state["friend"];
+    const idOwner = (location.state as any)["friend"];
     dispatch(loanRequestHook(idOwner, product.id, user.id, setMessage, setType));
   }
 

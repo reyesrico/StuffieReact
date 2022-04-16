@@ -12,7 +12,7 @@ import './Buy.scss';
 const Buy = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const product = location.state["product"];
+  const product = (location.state as any)["product"];
   const match = { params: { id: product.id } };
 
   let [friend, setFriend] = useState({ first_name: '' });
@@ -24,7 +24,7 @@ const Buy = () => {
       navigate('/');
     }
 
-    getStuffiers([{ id: location.state["friend"] }])
+    getStuffiers([{ id: (location.state as any)["friend"] }])
       .then((res: any) => setFriend(res.data[0]));
   });
 

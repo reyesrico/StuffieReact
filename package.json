@@ -38,7 +38,6 @@
     "merge-deep": "^3.0.3",
     "moment": "^2.29.2",
     "node-forge": "^1.3.1",
-    "node-sass": "^7.0.1",
     "npm": "^8.7.0",
     "object-path": "^0.11.8",
     "query-string": "^6.14.1",
@@ -51,7 +50,9 @@
     "react-loading": "^2.0.3",
     "react-redux": "^7.2.8",
     "react-router": "^5.2.1",
-    "react-scripts": "^5.0.1",
+    "react-router-dom": "^6.3.0",
+    "react-script": "^2.0.5",
+    "react-scripts": "^3.3.0",
     "react-select": "^3.2.0",
     "react-test-renderer": "^16.14.0",
     "recharts": "^1.8.5",
@@ -64,7 +65,7 @@
     "ssri": "^7.1.1",
     "tesseract.js": "^2.1.5",
     "trim-newlines": "^4.0.2",
-    "typescript": "^3.9.10",
+    "typescript": "^4.6.3",
     "url-parse": "^1.5.10",
     "websocket-extensions": "^0.1.4",
     "xlsx": "^0.18.5",
@@ -90,6 +91,6 @@
   "devDependencies": {
     "@types/lodash": "^4.14.181",
     "gh-pages": "^2.2.0",
-    "react-router-dom": "^6.3.0"
+    "sass": "^1.50.0"
   }
 }

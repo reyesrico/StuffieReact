@@ -17,8 +17,7 @@ const Tickets = () => {
     event.preventDefault();
 
     if (file) {
-      Tesseract.recognize(file, 'eng')
-        .progress(progressUpdate)
+      Tesseract.recognize(file, 'eng', { logger: m => console.log(m) })
         .then(result);
     }
   }
@@ -31,6 +30,8 @@ const Tickets = () => {
     result.innerHTML = res ? res.text : '';
   }
 
+  /*
+  // Used to be Tessearact.recognize().progress(progressUpdate).then()
   const progressUpdate = (packet: any) => {
     if ('progress' in packet) {
       var progress = document.querySelector('progress') as any;
@@ -39,6 +40,7 @@ const Tickets = () => {
       (document.getElementById("info") as HTMLElement).innerHTML = `Analyzing file...`;
     }
   }
+  */
 
   return (
     <div className="tickets">
