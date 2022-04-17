@@ -6,7 +6,7 @@
 }
 
 .stuffie__header {
-  border-bottom: 2px solid $blue; 
+  border-bottom: 2px solid $blue;
   width: 100%;
 }
 
@@ -16,8 +16,13 @@
   width: 100%;
 }
 
+.stuffie__left {
+  @include flex(column);
+}
+
 .stuffie__menu {
   @include section-background;
+  @include margin(8px, top);
   min-height: 250px;
   max-height: 250px;
   width: 200px;
@@ -58,6 +63,14 @@
   @include section-background;
   width: 200px;
 }
+
+.stuffie__chat {
+  @include section-background;
+  @include margin(8px, top);
+  width: 200px;
+  height: 200px;
+}
+
 
 // ---------
 // MEDIA

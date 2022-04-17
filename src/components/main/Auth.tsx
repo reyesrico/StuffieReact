@@ -13,6 +13,7 @@ import { WarningMessageType } from '../shared/types';
 import { fetchUserHook } from '../../redux/user/actions';
 import './Auth.scss';
 import Main from './Main';
+import Chat from '../sections/Chat';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -77,11 +78,13 @@ const Auth = () => {
     );
   }
 
-  if (user && products && products.length) {
-    return (<Main />);
-  } else {
-    return <FetchData />
-  }
+  return (<Chat />);
+
+  // if (user && products && products.length) {
+  //   return (<Main />);
+  // } else {
+  //   return <FetchData />
+  // }
 };
 
 export default Auth;

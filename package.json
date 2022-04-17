@@ -68,6 +68,7 @@
     "typescript": "^4.6.3",
     "url-parse": "^1.5.10",
     "websocket-extensions": "^0.1.4",
+    "ws": "^7.5.0",
     "xlsx": "^0.18.5",
     "y18n": "^3.2.2"
   },

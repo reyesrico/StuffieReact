@@ -23,22 +23,27 @@ const Main = () => {
         <Header />
       </div>
       <div className="stuffie__main">
-        <div className="stuffie__menu">
-          <Menu />
+        <div className="stuffie__left">
+          <div className="stuffie__user">
+              {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
+              <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+          </div>
+          <div className="stuffie__menu">
+            <Menu />
+          </div>
         </div>
         <div className="stuffie__content">
           <MainRoutes />
         </div>
         <div className="stuffie__right">
-          <div className="stuffie__user">
-            {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
-            <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
-          </div>
           {/* <div className="stuffie__spotify">
             <Spotify />
           </div> */}
           <div className="stuffie__apps">
             <Apps />
+          </div>
+          <div className="stuffie__chat">
+            <Chat />
           </div>
         </div>
       </div>
