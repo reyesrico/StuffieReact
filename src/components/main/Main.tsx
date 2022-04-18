@@ -28,8 +28,11 @@ const Main = () => {
               {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
               <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
           </div>
-          <div className="stuffie__menu">
+          <div className="stuffie__left-section">
             <Menu />
+          </div>
+          <div className="stuffie__left-section">
+            <Chat />
           </div>
         </div>
         <div className="stuffie__content">
@@ -50,7 +53,6 @@ const Main = () => {
       <div className="stuffie_footer">
         <Footer />
       </div>
-      <Chat />
     </div>
   );
 }

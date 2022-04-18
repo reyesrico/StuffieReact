@@ -20,7 +20,7 @@
   @include flex(column);
 }
 
-.stuffie__menu {
+.stuffie__left-section {
   @include section-background;
   @include margin(8px, top);
   min-height: 250px;

@@ -4,11 +4,14 @@ import TextField from '../shared/TextField';
 import { map } from 'lodash';
 import './Chat.scss';
 
+let url = 'ws://stuffie-server.herokuapp.com';
+// let urlDev = 'ws://localhost:8080/';
+
 const Chat = () => {
   let [messages, setMessages] = useState<any>([]);
   let [newMessage, setNewMessage] = useState('');
   let [disabledButton, setDisabledButton] = useState(true);
-  let socket = new WebSocket('ws://localhost:8080/');
+  let socket = new WebSocket(url);
 
   useEffect(() => {
     console.log('entereing useEffect');
@@ -24,13 +27,10 @@ const Chat = () => {
       console.log(e.message);
     };
     socket.onmessage = (e: any) => {
-      const m = e.data;
-      console.log({messages});
-      let ms = [...messages, m];
-      console.log({ms});
-      setMessages(ms);
+      const message = e.data;
+      setMessages((messages: string[]) => [...messages, message]);
     };
-  }, []);
+  }, [socket.onclose, socket.onerror, socket.onmessage, socket.onopen]);
 
   const showMessages = () => {
     console.log('showing messages');
