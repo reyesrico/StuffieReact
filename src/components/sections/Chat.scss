@@ -2,7 +2,7 @@
 
 .chat {
   display: block;
-  max-height: 300px;
+  max-height: 500px;
   width: 100%;
 }
 
@@ -40,11 +40,11 @@
 }
 
 .chat__message-text {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .chat__message-name {
-  font-size: 10px;
+  font-size: 8px;
   font-style: italic;
 }
 
@@ -57,7 +57,16 @@
   width: 100%;
 }
 
-.chat__form-right {
-  @include flex(row, flex-end);
+.chat__form-bottom {
+  @include flex(row, space-between);
   width: 100%;
+}
+
+.chat__status {
+  font-size: 8px;
+  height: 30px;
+  width: 70%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

@@ -115,7 +115,7 @@ const Friends = () => {
             type="text"
             name="friend_email"
             value={emailToRequest}
-            onChange={(emailToRequest: string) => setEmailToRequest(emailToRequest)}
+            onChange={(e: any) => setEmailToRequest(e.target.value)}
           />
           <div className="friends__button">
             <Button text="Request" onClick={() => handleRequest()}></Button>

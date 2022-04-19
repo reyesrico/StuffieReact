@@ -101,11 +101,11 @@ const AddCategory = (props: AddCategoryProps) => {
         <hr />
         <div className="add-category__row">
           <label>Id</label>
-          <TextField name="id" type="text" onChange={(id: string) => setId(id)} />
+          <TextField name="id" type="text" onChange={(e: any) => setId(e.target.value)} />
         </div>
         <div className="add-category__row">
           <label>{label}</label>
-          <TextField name="name" type="text" onChange={(name: string) => setName(name)} />
+          <TextField name="name" type="text" onChange={(e: any) => setName(e.target.value)} />
         </div>
         <hr />
         <Button onClick={() => createValue()} text={"Send"} />

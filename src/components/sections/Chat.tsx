@@ -20,7 +20,8 @@ const Chat = () => {
   let [messages, setMessages] = useState<any>([]);
   let [newMessage, setNewMessage] = useState('');
   let [disabledButton, setDisabledButton] = useState(true);
-  let socket = new WebSocket(url);
+  let [status, setStatus] = useState('');
+  let socket: WebSocket = new WebSocket(url);
 
   useEffect(() => {
     if (messageEl &&  messageEl.current) {
@@ -32,20 +33,32 @@ const Chat = () => {
 
     socket.onopen = () => {
       console.log('Connected to the server');
+      setStatus('Connected to the server');
       setDisabledButton(false);
     };
-    socket.onclose = (e) => {
-      console.log('Disconnected. Check internet or server.')
+    socket.onclose = () => {
+      console.log('Disconnected. Check internet or server.');
+      setStatus('Disconnected. Check internet and refresh page.');
       setDisabledButton(true);
     };
     socket.onerror = (e: any) => {
       console.log(e.message);
+      setStatus(`Error: ${e.message}`);
     };
     socket.onmessage = (e: any) => {
+      setStatus('Receiving message');
+      setDisabledButton(false);
       const message = e.data;
       setMessages((messages: any[]) => [...messages, message]);
     };
+
   }, [socket.onclose, socket.onerror, socket.onmessage, socket.onopen]);
+
+  const handleKeypress = (e: any) => {
+    if (!disabledButton && e.key === 'Enter') {
+      sendMessage();
+    }
+  }
 
   const getChatBubble = (userName: string, message: any) => {
     let chatMessage = 'chat__message';
@@ -66,7 +79,7 @@ const Chat = () => {
         <div className={row} key={index}>
           <div className={getChatBubble(userName, message)}>
             <div className='chat__message-text'>{text}</div>
-            <div className='chat__message-name'>{userName}</div>
+            {user.id !== message.id && <div className='chat__message-name'>{userName}</div>}
           </div>
         </div>
       );
@@ -75,9 +88,15 @@ const Chat = () => {
 
   const sendMessage = () => {
     console.log(`send Message ${newMessage}`);
-    let message = { id: user.id, user: `${user.first_name} ${user.last_name}`, text: newMessage };
-    socket.send(JSON.stringify(message) as string);
-    setNewMessage('');
+    if (socket.readyState === WebSocket.OPEN) {
+      let message = { id: user.id, user: `${user.first_name} ${user.last_name}`, text: newMessage };
+      socket.send(JSON.stringify(message) as string);
+      setStatus('Sending Message');
+      setDisabledButton(true);
+      setNewMessage('');
+    } else {
+      setStatus(`Wait: ${socket.readyState} / ${socket.CONNECTING}`);
+    }
   }
 
   return (
@@ -87,8 +106,11 @@ const Chat = () => {
         {showMessages()}
       </div>
       <div className="chat__form">
-        <TextField name="id" type="text" onChange={(message: string) => setNewMessage(message)} value={newMessage} />
-        <div className="chat__form-right"><Button disabled={disabledButton} onClick={() => sendMessage()} text={"Submit"} /></div>
+        <TextField name="id" type="text" onChange={(e: any) => setNewMessage(e.target.value)} value={newMessage} onKeyPress={handleKeypress} />
+        <div className="chat__form-bottom">
+          <div className="chat__status">Status: {status}</div>
+          <Button disabled={disabledButton} onClick={() => sendMessage()} text={"Submit"} />
+        </div>
       </div>
     </div>
   );

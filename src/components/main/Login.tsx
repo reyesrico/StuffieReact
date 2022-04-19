@@ -10,8 +10,10 @@ import { addUserPicture, fetchUser, loginUserHook } from '../../redux/user/actio
 
 import './Login.scss';
 import State from '../../redux/State';
+import Loading from '../shared/Loading';
 
 const Login = ({ setMessage }: any) => {
+  let [isLoading, setIsLoading] = useState(false);
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ loginFB, setLoginFB ] = useState(false);
@@ -20,13 +22,21 @@ const Login = ({ setMessage }: any) => {
 
   const onClick = (e: any) => {
     if (email && password) {
+      setIsLoading(true);
       loginUserHook(email, password)
         .then((response: any) => {
           dispatch(fetchUser(response.data[0].email));
           localStorage.setItem('username', response.data[0].email);
           setMessage("Login successful");
         })
-        .catch(() => setMessage("Error: Couldn't login. Try again."));
+        .catch(() => setMessage("Error: Couldn't login. Try again."))
+        .finally(() => setIsLoading(false));
+    }
+  }
+
+  const handleKeypress = (e: any) => {
+    if (email && password && e.key === 'Enter') {
+      onClick(e);
     }
   }
 
@@ -44,6 +54,8 @@ const Login = ({ setMessage }: any) => {
     }
   }
 
+  if (isLoading) return <Loading size="md" />
+
   return (
     <div className="login">
       <h1>Login</h1>
@@ -52,12 +64,13 @@ const Login = ({ setMessage }: any) => {
           type="email"
           name="email"
           placeholder="Email"
-          onChange={(email: string) => setEmail(email)} />
+          onChange={(e: any) => setEmail(e.target.value)} />
         <TextField
           type="password"
           name="password"
           placeholder="Password"
-          onChange={(password: string) => setPassword(password)} />
+          onKeyPress={handleKeypress}
+          onChange={(e: any) => setPassword(e.target.value)} />
         <Button onClick={onClick} text="Login" />
       </form>
       <hr className="login__hr" />

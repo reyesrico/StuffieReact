@@ -121,7 +121,7 @@ const SearchBar = (props: any) => {
           name="search"
           type="input"
           placeholder="Find stuff..."
-          onChange={(value: string) => fetchResults(value)}
+          onChange={(e: any) => fetchResults(e.target.value)}
           value={searchText}
         >
         </TextField>

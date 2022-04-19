@@ -45,7 +45,7 @@ const Product = (props: any) => {
         <div className="product__cost-text">Want to sell it? Just set a cost! (MAX $100)</div>
         <div className="product__cost-elements">
           $<TextField type="number" name="costTF" value={cost.toString()}
-            min={0} max={100} onChange={(cost: number) => setCost(cost)} />
+            min={0} max={100} onChange={(e: any) => setCost(e.target.value)} />
           <Button text="Sell" onClick={updateCost}/>
         </div>
       </div>);

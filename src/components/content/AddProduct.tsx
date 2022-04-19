@@ -134,7 +134,7 @@ const AddProduct = () => {
         <div>Create New Product</div>
         <div className="add-product__row">
           <label>Name</label>
-          <TextField name="name" type="text" onChange={(name: string) => setName(name)} />
+          <TextField name="name" type="text" onChange={(e: any) => setName(e.target.value)} />
         </div>
         <div className="add-product__row">
           <label>Category</label>

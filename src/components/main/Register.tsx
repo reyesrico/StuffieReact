@@ -24,7 +24,13 @@ const Register = ({ setMessage }: any) => {
       lastName.length > 0;
   }
 
-  const handleSubmit = (event: React.FormEvent<EventTarget>) => {
+  const handleKeypress = (e: any) => {
+    if (enableButton() && e.key === 'Enter') {
+      handleSubmit(e);
+    }
+  }
+
+  const handleSubmit = (event: any) => {
     const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
     event.preventDefault();
     dispatch(registerUserHook(user, setIsLoading, setMessage));
@@ -42,7 +48,7 @@ const Register = ({ setMessage }: any) => {
               name="email"
               placeholder="Email"
               disabled={isLoading}
-              onChange={(email: string) => setEmail(email)} />
+              onChange={(e: any) => setEmail(e.target.value)} />
           </div>
           <div className="register__row">
             <div className="register__text">Password</div>
@@ -51,7 +57,7 @@ const Register = ({ setMessage }: any) => {
               name="password"
               placeholder="Password"
               disabled={isLoading}
-              onChange={(password: string) => setPassword(password)} />
+              onChange={(e: any) => setPassword(e.target.value)} />
           </div>
           <div className="register__row">
             <div className="register__text">First Name</div>
@@ -60,7 +66,7 @@ const Register = ({ setMessage }: any) => {
               name="firstName"
               placeholder="First Name"
               disabled={isLoading}
-              onChange={(firstName: string) => setFirstName(firstName)} />
+              onChange={(e: any) => setFirstName(e.target.value)} />
           </div>
           <div className="register__row">
             <div className="register__text">Last Name</div>
@@ -69,7 +75,8 @@ const Register = ({ setMessage }: any) => {
               name="lastName"
               placeholder="Last Name"
               disabled={isLoading}
-              onChange={(lastName: string) => setLastName(lastName)} />
+              onKeyPress={handleKeypress}
+              onChange={(e: any) => setLastName(e.target.value)} />
           </div>
         </div>
         <div className="register__button">
