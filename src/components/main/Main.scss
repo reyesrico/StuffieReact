@@ -23,8 +23,6 @@
 .stuffie__left-section {
   @include section-background;
   @include margin(8px, top);
-  min-height: 250px;
-  max-height: 250px;
   width: 200px;
 }
 

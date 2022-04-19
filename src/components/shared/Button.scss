@@ -2,6 +2,5 @@
 
 .button {
   @include button-input;
-  // @include margin(12px, top);
-  // width: 100%;
+  @include margin(4px, 'vertical');
 }

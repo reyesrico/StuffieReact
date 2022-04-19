@@ -117,7 +117,7 @@ $padding_background: 12px;
 }
 
 @mixin header-background() {
-  background-image: linear-gradient(to right, $white, $lightblue, $darkblue);
+  background-image: linear-gradient(to right, $white, $lighterblue, $darkblue);
 }
 
 @mixin content-background() {
@@ -160,4 +160,12 @@ $padding_background: 12px;
   font-size: 8px;
   height: 20px;
   width: 20px;
+}
+
+@mixin chat-bubble($position: flex-start, $color: $lightgray) {
+  @include background();
+  @include flex(column, $position);
+  background-color: $color;
+  margin-bottom: 4px;
+  width: 60%;
 }

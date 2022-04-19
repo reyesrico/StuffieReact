@@ -2,4 +2,62 @@
 
 .chat {
   display: block;
+  max-height: 300px;
+  width: 100%;
+}
+
+.chat__title {
+  @include section-title();
+}
+
+.chat__messages {
+  @include flex(column);
+  overflow-y: scroll;
+  height: 200px;
+}
+
+.chat__message-row-right {
+  @include flex(row, flex-end);
+  width: 100%;
+}
+
+.chat__message-row-left {
+  @include flex(row);
+  width: 100%;
+}
+
+.chat__message-stuffie {
+  @include chat-bubble(flex-start, $darkgray);
+  font-weight: bold;
+}
+
+.chat__message-user {
+  @include chat-bubble(flex-end, $lightblue);
+}
+
+.chat__message-other {
+  @include chat-bubble();
+}
+
+.chat__message-text {
+  font-size: 16px;
+}
+
+.chat__message-name {
+  font-size: 10px;
+  font-style: italic;
+}
+
+.chat__form {
+  @include margin(8px, top);
+  @include border(top);
+  @include padding(4px, top);
+  position: sticky;
+  bottom: 16px;
+  width: 100%;
+}
+
+.chat__form-right {
+  @include flex(row, flex-end);
+  width: 100%;
 }

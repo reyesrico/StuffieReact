@@ -45,9 +45,6 @@ const Main = () => {
           <div className="stuffie__apps">
             <Apps />
           </div>
-          <div className="stuffie__chat">
-            <Chat />
-          </div>
         </div>
       </div>
       <div className="stuffie_footer">
