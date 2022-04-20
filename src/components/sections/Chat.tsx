@@ -9,7 +9,7 @@ import TextField from '../shared/TextField';
 
 import './Chat.scss';
 
-let url = 'ws://stuffie-server.herokuapp.com';
+let url = 'wss://stuffie-server.herokuapp.com';
 // let urlDev = 'ws://localhost:8080/';
 
 const Chat = () => {
@@ -45,19 +45,27 @@ const Chat = () => {
       console.log(e.message);
       setStatus(`Error: ${e.message}`);
     };
+
+    // Unmount
+    // return () => {
+    //   console.log('unmounting...');
+    //   if (socket.readyState === WebSocket.OPEN) {
+    //     socket.close();
+    //   }
+    // }
+
+  }, [socket, socket.onclose, socket.onerror, socket.onopen, status]);
+
+
+  // https://rossbulat.medium.com/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
+  useEffect(() => {
     socket.onmessage = (e: any) => {
       setStatus('Receiving message');
       setDisabledButton(false);
       const message = e.data;
       setMessages((messages: any[]) => [...messages, message]);
     };
-
-    // Unmount
-    return () => {
-      socket.close();
-    }
-
-  }, [socket, socket.onclose, socket.onerror, socket.onmessage, socket.onopen]);
+  }, [socket.onmessage]); //only re-run the effect if new message comes in
 
   const handleKeypress = (e: any) => {
     if (!disabledButton && e.key === 'Enter') {
