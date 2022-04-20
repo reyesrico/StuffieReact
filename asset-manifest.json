@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/StuffieReact/static/css/main.81fa3735.chunk.css",
-    "main.js": "/StuffieReact/static/js/main.78755f3d.chunk.js",
-    "main.js.map": "/StuffieReact/static/js/main.78755f3d.chunk.js.map",
-    "runtime-main.js": "/StuffieReact/static/js/runtime-main.90497eb9.js",
-    "runtime-main.js.map": "/StuffieReact/static/js/runtime-main.90497eb9.js.map",
-    "static/css/2.92485e37.chunk.css": "/StuffieReact/static/css/2.92485e37.chunk.css",
-    "static/js/2.55ddeff6.chunk.js": "/StuffieReact/static/js/2.55ddeff6.chunk.js",
-    "static/js/2.55ddeff6.chunk.js.map": "/StuffieReact/static/js/2.55ddeff6.chunk.js.map",
+    "main.css": "/StuffieReact/static/css/main.3aff33f4.chunk.css",
+    "main.js": "/StuffieReact/static/js/main.f68e1d61.chunk.js",
+    "main.js.map": "/StuffieReact/static/js/main.f68e1d61.chunk.js.map",
+    "runtime-main.js": "/StuffieReact/static/js/runtime-main.a5cc19e1.js",
+    "runtime-main.js.map": "/StuffieReact/static/js/runtime-main.a5cc19e1.js.map",
+    "static/css/2.67de9313.chunk.css": "/StuffieReact/static/css/2.67de9313.chunk.css",
+    "static/js/2.06b6d889.chunk.js": "/StuffieReact/static/js/2.06b6d889.chunk.js",
+    "static/js/2.06b6d889.chunk.js.map": "/StuffieReact/static/js/2.06b6d889.chunk.js.map",
     "index.html": "/StuffieReact/index.html",
-    "precache-manifest.a5dcfa160fe04aa8f4c7605535de20e1.js": "/StuffieReact/precache-manifest.a5dcfa160fe04aa8f4c7605535de20e1.js",
+    "precache-manifest.8781b6394c62d76f60a8d163a11b8923.js": "/StuffieReact/precache-manifest.8781b6394c62d76f60a8d163a11b8923.js",
     "service-worker.js": "/StuffieReact/service-worker.js",
-    "static/css/2.92485e37.chunk.css.map": "/StuffieReact/static/css/2.92485e37.chunk.css.map",
-    "static/css/main.81fa3735.chunk.css.map": "/StuffieReact/static/css/main.81fa3735.chunk.css.map",
-    "static/js/2.55ddeff6.chunk.js.LICENSE.txt": "/StuffieReact/static/js/2.55ddeff6.chunk.js.LICENSE.txt",
-    "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.ec763292.svg"
+    "static/css/2.67de9313.chunk.css.map": "/StuffieReact/static/css/2.67de9313.chunk.css.map",
+    "static/css/main.3aff33f4.chunk.css.map": "/StuffieReact/static/css/main.3aff33f4.chunk.css.map",
+    "static/js/2.06b6d889.chunk.js.LICENSE.txt": "/StuffieReact/static/js/2.06b6d889.chunk.js.LICENSE.txt",
+    "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.d824df7e.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.90497eb9.js",
-    "static/css/2.92485e37.chunk.css",
-    "static/js/2.55ddeff6.chunk.js",
-    "static/css/main.81fa3735.chunk.css",
-    "static/js/main.78755f3d.chunk.js"
+    "static/js/runtime-main.a5cc19e1.js",
+    "static/css/2.67de9313.chunk.css",
+    "static/js/2.06b6d889.chunk.js",
+    "static/css/main.3aff33f4.chunk.css",
+    "static/js/main.f68e1d61.chunk.js"
   ]
 }
