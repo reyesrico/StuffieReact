@@ -52,7 +52,12 @@ const Chat = () => {
       setMessages((messages: any[]) => [...messages, message]);
     };
 
-  }, [socket.onclose, socket.onerror, socket.onmessage, socket.onopen]);
+    // Unmount
+    return () => {
+      socket.close();
+    }
+
+  }, [socket, socket.onclose, socket.onerror, socket.onmessage, socket.onopen]);
 
   const handleKeypress = (e: any) => {
     if (!disabledButton && e.key === 'Enter') {
