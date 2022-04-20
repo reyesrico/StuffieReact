@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e0166f2e9139d998e18192aafa25f262",
+    "revision": "2eeb9d5beac13764948e1e36fa726d23",
     "url": "/StuffieReact/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/StuffieReact/static/css/2.67de9313.chunk.css"
   },
   {
-    "revision": "2cb0b5af65175da4e219",
+    "revision": "514c930a22ea3de8f825",
     "url": "/StuffieReact/static/css/main.3aff33f4.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/StuffieReact/static/js/2.06b6d889.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2cb0b5af65175da4e219",
-    "url": "/StuffieReact/static/js/main.f68e1d61.chunk.js"
+    "revision": "514c930a22ea3de8f825",
+    "url": "/StuffieReact/static/js/main.7bd0d06a.chunk.js"
   },
   {
     "revision": "554f4b48b7e2a30c558d",
