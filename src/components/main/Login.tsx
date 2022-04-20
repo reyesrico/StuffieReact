@@ -10,10 +10,8 @@ import { addUserPicture, fetchUser, loginUserHook } from '../../redux/user/actio
 
 import './Login.scss';
 import State from '../../redux/State';
-import Loading from '../shared/Loading';
 
-const Login = ({ setMessage }: any) => {
-  let [isLoading, setIsLoading] = useState(false);
+const Login = ({ setMessage, setIsLoading }: any) => {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ loginFB, setLoginFB ] = useState(false);
@@ -22,7 +20,6 @@ const Login = ({ setMessage }: any) => {
 
   const onClick = (e: any) => {
     if (email && password) {
-      setIsLoading(true);
       loginUserHook(email, password)
         .then((response: any) => {
           dispatch(fetchUser(response.data[0].email));
@@ -30,7 +27,7 @@ const Login = ({ setMessage }: any) => {
           setMessage("Login successful");
         })
         .catch(() => setMessage("Error: Couldn't login. Try again."))
-        .finally(() => setIsLoading(false));
+        .finally(() => setIsLoading(true));
     }
   }
 
@@ -54,7 +51,7 @@ const Login = ({ setMessage }: any) => {
     }
   }
 
-  if (isLoading) return <Loading size="md" />
+  // if (isLoading) return <Loading size="md" />
 
   return (
     <div className="login">

@@ -2,19 +2,17 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import Button from '../shared/Button';
-import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
 import User from '../types/User';
 import { registerUserHook } from '../../redux/user/actions';
 
 import './Register.scss';
 
-const Register = ({ setMessage }: any) => {
+const Register = ({ setMessage, setIsLoading }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   const enableButton = () => {
@@ -34,6 +32,7 @@ const Register = ({ setMessage }: any) => {
     const user: User = { email, password, first_name: firstName, last_name: lastName, admin: false };
     event.preventDefault();
     dispatch(registerUserHook(user, setIsLoading, setMessage));
+    setIsLoading(true);
   }
 
   return (
@@ -47,7 +46,6 @@ const Register = ({ setMessage }: any) => {
               type="text"
               name="email"
               placeholder="Email"
-              disabled={isLoading}
               onChange={(e: any) => setEmail(e.target.value)} />
           </div>
           <div className="register__row">
@@ -56,7 +54,6 @@ const Register = ({ setMessage }: any) => {
               type="password"
               name="password"
               placeholder="Password"
-              disabled={isLoading}
               onChange={(e: any) => setPassword(e.target.value)} />
           </div>
           <div className="register__row">
@@ -65,7 +62,6 @@ const Register = ({ setMessage }: any) => {
               type="text"
               name="firstName"
               placeholder="First Name"
-              disabled={isLoading}
               onChange={(e: any) => setFirstName(e.target.value)} />
           </div>
           <div className="register__row">
@@ -74,14 +70,12 @@ const Register = ({ setMessage }: any) => {
               type="text"
               name="lastName"
               placeholder="Last Name"
-              disabled={isLoading}
               onKeyPress={handleKeypress}
               onChange={(e: any) => setLastName(e.target.value)} />
           </div>
         </div>
         <div className="register__button">
-          <Button type="submit" text="Register" disabled={!enableButton() || isLoading}></Button>
-          {isLoading && (<div className="register__loading"><Loading size="md" /></div>)}
+          <Button type="submit" text="Register" disabled={!enableButton()}></Button>
         </div>
       </form>
     </div>

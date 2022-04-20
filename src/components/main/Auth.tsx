@@ -16,10 +16,10 @@ import Main from './Main';
 // import Chat from '../sections/Chat';
 
 const Auth = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const user = useSelector((state: State) => state.user);
-  const products:any = useSelector((state: State) => state.products);
+  const products: any = useSelector((state: State) => state.products);
   const dispatch = useDispatch();
   const stableDispatch = useCallback(dispatch, []) // assuming that it doesn't need to change
 
@@ -33,6 +33,7 @@ const Auth = () => {
   }, [stableDispatch]);
 
   useEffect(() => {
+    setIsLoading(false);
     setMessage('');
   }, [user])
 
@@ -49,12 +50,22 @@ const Auth = () => {
   const request = get(user, 'request');
   let msg = request ? "User already registered, wait for authorization. Don't register again." : message;
 
-  if (isLoading) {
-    return (
-      <div className="auth__loading">
-        <Loading size="xl" message="Loading" />
-      </div>
-    );
+  const renderPage = () => {
+    if (isLoading) {
+      return (<div className="auth__loading"><Loading size="xl" message="Loading" /></div>);
+    } else {
+      return (
+        <div className="auth__content">
+          <Register
+            setMessage={(message: string) => setMessage(message)}
+            setIsLoading={(isLoading: boolean) => setIsLoading(isLoading)} />
+          <div className="auth__line"></div>
+          <Login
+            setMessage={(message: string) => setMessage(message)}
+            setIsLoading={(isLoading: boolean) => setIsLoading(isLoading)} />
+        </div>
+      );
+    }
   }
 
   if (isEmpty(user) || request) {
@@ -69,11 +80,7 @@ const Auth = () => {
         </div>
         <div className="auth__horizontal-line"></div>
         <WarningMessage message={msg} type={getMessageType(msg)} />
-        <div className="auth__content">
-          <Register setMessage={(message: string) => setMessage(message)} />
-          <div className="auth__line"></div>
-          <Login setMessage={(message: string) => setMessage(message)} />
-        </div>
+        {renderPage()}
       </div>
     );
   }

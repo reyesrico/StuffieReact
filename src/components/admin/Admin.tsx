@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
 import Product from '../types/Product';
@@ -10,12 +10,13 @@ import { deleteRequestHook } from '../../redux/user-requests/actions';
 import './Admin.scss';
 
 const Admin = () => {
+  const dispatch = useDispatch();
   let userRequests = useSelector((state: State) => state.userRequests);
   let pendingProducts = useSelector((state: State) => state.pendingProducts);
 
   const executeRequest = (user: User, isAccepted = false) => {
     if (isAccepted) {
-      deleteRequestHook(user);
+      deleteRequestHook(user, dispatch);
     }
   }
 
