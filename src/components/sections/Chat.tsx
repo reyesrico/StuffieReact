@@ -21,51 +21,58 @@ const Chat = () => {
   let [newMessage, setNewMessage] = useState('');
   let [disabledButton, setDisabledButton] = useState(true);
   let [status, setStatus] = useState('');
-  let socket: WebSocket = new WebSocket(url);
+
+  // https://stackoverflow.com/questions/60152922/proper-way-of-using-react-hooks-websockets
+  const socket: any = useRef(null);
 
   useEffect(() => {
-    if (messageEl &&  messageEl.current) {
+    if (messageEl && messageEl.current) {
       (messageEl.current as any).addEventListener('DOMNodeInserted', (event: any) => {
         const { currentTarget: target } = event;
         target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
       });
     }
+  });
 
-    socket.onopen = () => {
+  useEffect(() => {
+    socket.current = new WebSocket(url);
+
+    socket.current.onopen = () => {
       console.log('Connected to the server');
       setStatus('Connected to the server');
       setDisabledButton(false);
     };
-    socket.onclose = () => {
+
+    socket.current.onclose = () => {
       console.log('Disconnected. Check internet or server.');
       setStatus('Disconnected. Check internet and refresh page.');
       setDisabledButton(true);
     };
-    socket.onerror = (e: any) => {
+
+    socket.current.onerror = (e: any) => {
       console.log(e.message);
       setStatus(`Error: ${e.message}`);
     };
 
-    // Unmount
-    // return () => {
-    //   console.log('unmounting...');
-    //   if (socket.readyState === WebSocket.OPEN) {
-    //     socket.close();
-    //   }
-    // }
+    const wsCurrent = socket.current;
 
-  }, [socket, socket.onclose, socket.onerror, socket.onopen, status]);
+    return () => {
+      console.log('Unmounting...');
+      wsCurrent.close();
+    };
+  }, []);
 
-
-  // https://rossbulat.medium.com/react-hooks-managing-web-sockets-with-useeffect-and-usestate-2dfc30eeceec
   useEffect(() => {
-    socket.onmessage = (e: any) => {
+    if (!socket.current) return;
+
+    socket.current.onmessage = (e: any) => {
+      console.log('Receiving message');
       setStatus('Receiving message');
       setDisabledButton(false);
       const message = e.data;
       setMessages((messages: any[]) => [...messages, message]);
     };
-  }, [socket.onmessage]); //only re-run the effect if new message comes in
+  }, []);
 
   const handleKeypress = (e: any) => {
     if (!disabledButton && e.key === 'Enter') {
@@ -100,10 +107,10 @@ const Chat = () => {
   }
 
   const sendMessage = () => {
-    console.log(`send Message ${newMessage}`);
-    if (socket.readyState === WebSocket.OPEN) {
+    console.log(`Sending Message ${newMessage}`);
+    if (socket.current.readyState === WebSocket.OPEN) {
       let message = { id: user.id, user: `${user.first_name} ${user.last_name}`, text: newMessage };
-      socket.send(JSON.stringify(message) as string);
+      socket.current.send(JSON.stringify(message) as string);
       setStatus('Sending Message');
       setDisabledButton(true);
       setNewMessage('');
