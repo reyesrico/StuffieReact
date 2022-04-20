@@ -40,6 +40,7 @@
   border-radius: 4px 4px 0px 0px;
   color: $white;
   font-size: 16px;
+  height: 20px;
   width: 80px;
 
   &:first-of-type {
@@ -66,7 +67,7 @@
 }
 
 .stuffie-header__search {
-  @include margin(19px, top);
+  @include margin(18px, top);
   width: 250px;
 }
 

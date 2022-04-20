@@ -44,7 +44,7 @@ export const fetchFriendsProductsHook = (friends, dispatch) => {
   .then(res => {
     const products = res.data;
     const friendsFilled = getFriendProducts(friends, products, stuffiers_stuff);
-    // dispatch(friendProductsFetched(friendsFilled))
+    dispatch(friendProductsFetched(friendsFilled))
     return Promise.resolve(friendsFilled);
   });
 }

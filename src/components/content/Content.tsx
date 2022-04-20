@@ -9,51 +9,39 @@ import Loading from '../shared/Loading';
 import State from '../../redux/State';
 import User from '../types/User';
 import { fetchFriendsProductsHook } from '../../redux/friends/actions';
-import { generateFeed } from '../../redux/feed/actions';
+import { fetchFeedHook } from '../../redux/feed/actions';
 import './Content.scss';
 
-const getFeed = (friends: any, dispatch: any, setIsLoading: Function, setFeed: any) => {
-  // setIsLoading(true);
+const getFeed = (friends: any, dispatch: any, setIsLoading: Function) => {
+  setIsLoading(true);
   fetchFriendsProductsHook(friends, dispatch)
-    .then((fullFriends: User[]) => {
-      console.log({ fullFriends });
-      let feed = generateFeed(fullFriends);
-      console.log({ feed });
-      setFeed(feed);
-    })
+    .then((fullFriends: User[]) => fetchFeedHook(fullFriends, dispatch))
     .catch(() => console.log('Error Feed Fetched'))
-    .finally(() => {
-      // setIsLoading(false);
-    });
+    .finally(() => setIsLoading(false));
 }
 
 const Content = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const feed = useSelector((state: State) => state.feed);
   let [isLoading, setIsLoading] = useState(false);
   let friends = useSelector((state: State) => state.friends);
-  let [feed, setFeed] = useState([]);
 
   useEffect(() => {
-    getFeed(friends, dispatch, setIsLoading, setFeed);
-  }, [friends, dispatch]);
+    if (!feed || !feed.length) {
+      getFeed(friends, dispatch, setIsLoading);
+    }
+  }, [friends, dispatch, feed, setIsLoading]);
 
-  if (isLoading) {
-    return (
-      <div className="content__loading">
-        <Loading size="xl" message={t("Loading-Feed")} />
-      </div>
-    );
-  }
+  if (isLoading) return (
+    <div className="content__loading">
+      <Loading size="xl" message={t("Loading-Feed")} />
+    </div>
+  );
 
-  if (!friends.length) {
-    return <div>No Friends! Add friends!</div>
-  }
-  if (!feed.length) {
-    return <div>No Feed!</div>
-  }
+  if (!friends.length) return <div>{t('No Friends')}</div>
+  if (!feed || !feed.length) return <div>{t('No Feed')}</div>
 
-  if (!feed) { return <div> No Feed </div>}
   return (
     <div className="content">
       <div className="content__info">

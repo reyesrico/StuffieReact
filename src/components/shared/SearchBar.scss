@@ -13,6 +13,7 @@
     @include padding(12px, left);
     @include padding(34px, right);
     @include border-none;
+    border-radius: 4px 4px 0px 0px;
     height: 28px;
   }
 

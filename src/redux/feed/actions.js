@@ -38,6 +38,5 @@ export const fetchFeed = fullFriends => dispatch => {
 
 export const fetchFeedHook = (friends, dispatch) => {
   let feed = generateFeed(friends);
-  console.log({ feed });
-  // dispatch(feedFetched(feed));
+  dispatch(feedFetched(feed));
 }

@@ -9,6 +9,8 @@
     "Friends-Title": "{{ first_name }} Friends",
     "Language": "Language",
     "Logout": "Logout",
+    "No Feed": "No Feed",
+    "No Friends": "No friends registered! Please add friends!",
     "Products": "Products",
     "Spanish": "Spanish",
     "Summary": "Summary",
