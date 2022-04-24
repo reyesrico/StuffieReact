@@ -174,31 +174,6 @@
     }
   }
 
-  .stuffie-header__menu {
-    @include flex(row, center, center);
-    @include margin(12px, left);
-    @include margin(22px, right);
-    position: relative;
-    width: 20px;
-
-    /* Hide the links inside the navigation menu (except for logo/home) */
-    #menu {
-      display: none;
-    }
-
-    .fa-bars {
-      font-size: 22px;
-    }
-
-    /* Style the hamburger menu */
-    button.icon {
-      background-color: transparent;
-      position: absolute;
-      left: 0;
-      border: 0;
-    }
-  }
-
   .stuffie-header__apps {
     @include flex(row, center, center);
     @include margin(12px, right);
@@ -230,5 +205,30 @@
 @media screen and (max-width: $small) {
   .stuffie-header__user {
     display: none;
+  }
+
+  .stuffie-header__menu {
+    @include flex(row, center, center);
+    @include margin(12px, left);
+    @include margin(16px, right);
+    position: relative;
+    width: 20px;
+
+    /* Hide the links inside the navigation menu (except for logo/home) */
+    #menu {
+      display: none;
+    }
+
+    .fa-bars {
+      font-size: 22px;
+    }
+
+    /* Style the hamburger menu */
+    button.icon {
+      background-color: transparent;
+      position: absolute;
+      left: 0;
+      border: 0;
+    }
   }
 }
