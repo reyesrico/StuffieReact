@@ -49,6 +49,7 @@
 }
 
 .chat__form {
+  @include margin(4px, left);
   @include margin(8px, top);
   @include border(top);
   @include padding(4px, top);

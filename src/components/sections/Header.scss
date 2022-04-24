@@ -75,6 +75,10 @@
   display: none;
 }
 
+.stuffie-header__apps {
+  display: none;
+}
+
 .stuffie-header__warning {
   @include warning;
 }
@@ -116,13 +120,13 @@
   }
 
   .stuffie-header__section-item {
+    @include margin(4px, bottom);
     margin-right: 4px;
     margin-left: 0;
     font-size: 12px;
     width: auto;
 
     &:last-of-type {
-      @include margin(0, bottom);
       @include border(bottom, $blue, 2px);
     }
   }
@@ -139,7 +143,7 @@
   }
 
   .stuffie-header__info {
-    width: auto;
+    @include flex(row, center, center);
   }
 
   .stuffie-header__user {
@@ -172,6 +176,31 @@
 
   .stuffie-header__menu {
     @include flex(row, center, center);
+    @include margin(12px, left);
+    @include margin(22px, right);
+    position: relative;
+    width: 20px;
+
+    /* Hide the links inside the navigation menu (except for logo/home) */
+    #menu {
+      display: none;
+    }
+
+    .fa-bars {
+      font-size: 22px;
+    }
+
+    /* Style the hamburger menu */
+    button.icon {
+      background-color: transparent;
+      position: absolute;
+      left: 0;
+      border: 0;
+    }
+  }
+
+  .stuffie-header__apps {
+    @include flex(row, center, center);
     @include margin(12px, right);
     position: relative;
 
@@ -198,7 +227,7 @@
   }
 }
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: $small) {
   .stuffie-header__user {
     display: none;
   }

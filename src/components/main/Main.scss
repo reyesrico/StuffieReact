@@ -73,6 +73,12 @@
 // ---------
 // MEDIA
 // ---------
+@media screen and (max-width: $small) {
+  .stuffie__left {
+    display: none;
+  }
+}
+
 @media screen and (max-width: $large) {
   .stuffie {
     width: 100%;

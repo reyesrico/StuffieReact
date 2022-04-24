@@ -4,11 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import Apps from '../sections/Apps';
+import Chat from './Chat';
 import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 import { logout } from '../../redux/user/actions';
+
 import './Header.scss';
 
 const Header = () => {
@@ -34,7 +36,7 @@ const Header = () => {
   }
 
   /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
-  const toggleMenu = () => {
+  const toggleApps = () => {
     let x: any = document.getElementById("apps");
     if (x.style.display === "block") {
       x.style.display = "none";
@@ -43,6 +45,24 @@ const Header = () => {
         display: block;
         float: right;
         top: 28px; right: 0px;
+        position: absolute; background-color: white;
+        width: 146px;
+        padding: 8px;
+        box-shadow: 5px 5px #888888;
+        border-radius: 6px;
+      `;
+    }
+  }
+
+  const toggleMenu = () => {
+    let x: any = document.getElementById("menu");
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.cssText = `
+        display: block;
+        float: left;
+        top: 28px; left: 0px;
         position: absolute; background-color: white;
         width: 146px;
         padding: 8px;
@@ -89,15 +109,26 @@ const Header = () => {
         </div>
       </div>
       <div className="stuffie-header__search">
+        <div className="stuffie-header__menu">
+          <div id="menu">
+            <div className="stuffie-header__menu-apps">
+              <Chat/>
+            </div>
+          </div>
+          <button className="icon" onClick={event => event && toggleMenu()}>
+            <i className="fa fa-bars"></i>
+          </button>
+        </div>
+
         <SearchBar products={products}></SearchBar>
 
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
-        <div className="stuffie-header__menu">
+        <div className="stuffie-header__apps">
           <div id="apps">
             {/* <div className="stuffie-header__menu-spotify"><Spotify /></div> */}
-            <div className="stuffie-header__menu-apps"><Apps /></div>
+            <div className="stuffie-header__apps-apps"><Apps /></div>
           </div>
-          <button className="icon" onClick={event => event && toggleMenu()}>
+          <button className="icon" onClick={event => event && toggleApps()}>
             <i className="fa fa-bars"></i>
           </button>
         </div>

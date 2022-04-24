@@ -6,6 +6,7 @@
 // ---------
 @media screen and (max-width: $large) {
   .footer {
+    @include flex(column, center, center);
     font-size: 12px;
   }
 }
