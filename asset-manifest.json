@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/StuffieReact/static/css/main.3aff33f4.chunk.css",
-    "main.js": "/StuffieReact/static/js/main.6eb8a310.chunk.js",
-    "main.js.map": "/StuffieReact/static/js/main.6eb8a310.chunk.js.map",
+    "main.css": "/StuffieReact/static/css/main.17d2ed42.chunk.css",
+    "main.js": "/StuffieReact/static/js/main.8b93ced5.chunk.js",
+    "main.js.map": "/StuffieReact/static/js/main.8b93ced5.chunk.js.map",
     "runtime-main.js": "/StuffieReact/static/js/runtime-main.a5cc19e1.js",
     "runtime-main.js.map": "/StuffieReact/static/js/runtime-main.a5cc19e1.js.map",
     "static/css/2.67de9313.chunk.css": "/StuffieReact/static/css/2.67de9313.chunk.css",
     "static/js/2.06b6d889.chunk.js": "/StuffieReact/static/js/2.06b6d889.chunk.js",
     "static/js/2.06b6d889.chunk.js.map": "/StuffieReact/static/js/2.06b6d889.chunk.js.map",
     "index.html": "/StuffieReact/index.html",
-    "precache-manifest.8aa9b84079cf8f308182caefd0f308c0.js": "/StuffieReact/precache-manifest.8aa9b84079cf8f308182caefd0f308c0.js",
+    "precache-manifest.9bff060990c542da0ce3740b12e97436.js": "/StuffieReact/precache-manifest.9bff060990c542da0ce3740b12e97436.js",
     "service-worker.js": "/StuffieReact/service-worker.js",
     "static/css/2.67de9313.chunk.css.map": "/StuffieReact/static/css/2.67de9313.chunk.css.map",
-    "static/css/main.3aff33f4.chunk.css.map": "/StuffieReact/static/css/main.3aff33f4.chunk.css.map",
+    "static/css/main.17d2ed42.chunk.css.map": "/StuffieReact/static/css/main.17d2ed42.chunk.css.map",
     "static/js/2.06b6d889.chunk.js.LICENSE.txt": "/StuffieReact/static/js/2.06b6d889.chunk.js.LICENSE.txt",
     "static/media/all.css": "/StuffieReact/static/media/fa-solid-900.d824df7e.woff2"
   },
@@ -20,7 +20,7 @@
     "static/js/runtime-main.a5cc19e1.js",
     "static/css/2.67de9313.chunk.css",
     "static/js/2.06b6d889.chunk.js",
-    "static/css/main.3aff33f4.chunk.css",
-    "static/js/main.6eb8a310.chunk.js"
+    "static/css/main.17d2ed42.chunk.css",
+    "static/js/main.8b93ced5.chunk.js"
   ]
 }
