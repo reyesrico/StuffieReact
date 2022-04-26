@@ -36,7 +36,12 @@ export const fetchFeed = fullFriends => dispatch => {
   return feed;
 }
 
-export const fetchFeedHook = (friends, dispatch) => {
+export const fetchFeedHook = (friends, sessionStorage, dispatch) => {
   let feed = generateFeed(friends);
+  sessionStorage.setItem('feed', JSON.stringify(feed));
+  dispatchFeedFetched(feed, dispatch);
+}
+
+export const dispatchFeedFetched = (feed, dispatch) => {
   dispatch(feedFetched(feed));
 }

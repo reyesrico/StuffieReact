@@ -13,7 +13,20 @@ import { WarningMessageType } from '../shared/types';
 import { fetchUserHook } from '../../redux/user/actions';
 import './Auth.scss';
 import Main from './Main';
-// import Chat from '../sections/Chat';
+
+const getMessageType = (message: string) => {
+  if (message.toLowerCase().includes('Error')) {
+    return WarningMessageType.ERROR;
+  } else if (message.toLowerCase().includes('successful')) {
+    return WarningMessageType.SUCCESSFUL;
+  }
+
+  return WarningMessageType.WARNING;
+}
+
+const fetchUser = (userName: string, setIsLoading: Function, dispatch: Function) => {
+  fetchUserHook(userName, setIsLoading, dispatch);
+}
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,31 +34,16 @@ const Auth = () => {
   const user = useSelector((state: State) => state.user);
   const products: any = useSelector((state: State) => state.products);
   const dispatch = useDispatch();
-  const stableDispatch = useCallback(dispatch, []) // assuming that it doesn't need to change
+  const stableFetchUser = useCallback(fetchUser, []);
 
   useEffect(() => {
-    let username = localStorage.getItem('username');
-    if (username) {
-      stableDispatch(fetchUserHook(username, setIsLoading));
+    let userName = localStorage.getItem('username');
+    if (userName) {
+      stableFetchUser(userName, setIsLoading, dispatch);
     } else {
       setIsLoading(false);
     }
-  }, [stableDispatch]);
-
-  useEffect(() => {
-    setIsLoading(false);
-    setMessage('');
-  }, [user])
-
-  const getMessageType = (message: string) => {
-    if (message.toLowerCase().includes('Error')) {
-      return WarningMessageType.ERROR;
-    } else if (message.toLowerCase().includes('successful')) {
-      return WarningMessageType.SUCCESSFUL;
-    }
-
-    return WarningMessageType.WARNING;
-  }
+  }, [stableFetchUser, dispatch]);
 
   const request = get(user, 'request');
   let msg = request ? "User already registered, wait for authorization. Don't register again." : message;
@@ -69,6 +67,7 @@ const Auth = () => {
   }
 
   if (isEmpty(user) || request) {
+    let userName = localStorage.getItem('username');
     return (
       <div className="auth">
         <div className="auth__header">
@@ -80,18 +79,19 @@ const Auth = () => {
         </div>
         <div className="auth__horizontal-line"></div>
         <WarningMessage message={msg} type={getMessageType(msg)} />
-        {renderPage()}
+        {isLoading && (<div className="auth__loading"><Loading size="xl" message="Loading" /></div>)}
+        {!userName && renderPage()}
       </div>
     );
   }
-
-  // return (<Chat />);
 
   if (user && products && products.length) {
     return (<Main />);
   } else {
     return <FetchData />
   }
+
+  // return (<Chat />);
 };
 
 export default Auth;

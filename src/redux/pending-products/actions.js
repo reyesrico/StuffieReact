@@ -11,3 +11,14 @@ export const fetchPendingProducts = () => dispatch => {
   })
   .catch(error => Promise.reject(error));
 }
+
+export const fetchPendingProductsHook = (sessionStorage, dispatch) => {
+  getPendingProducts().then(res =>{
+    sessionStorage.setItem('products-requests', JSON.stringify(res.data));
+    dispatchPedingProducts(res.data, dispatch);
+  });
+}
+
+export const dispatchPedingProducts = (requests, dispatch) => {
+  dispatch(pendingProductsFetched(requests));
+}

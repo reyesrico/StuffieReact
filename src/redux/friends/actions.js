@@ -17,6 +17,20 @@ export const fetchFriends = (email) => dispatch => {
   });
 }
 
+export const fetchFriendsHook = (email, sessionStorage, dispatch) => {
+  getFriends(email)
+    .then(res => getStuffiers(mapFriends(res.data)))
+    .then(res => {
+      const friends = res.data || [];   // TODO: Make this call better
+      sessionStorage.setItem('friends', JSON.stringify(friends));
+      dispatchFriendsFetched(friends, email, dispatch);
+    });
+}
+
+export const dispatchFriendsFetched = (friends, email, dispatch) => {
+  dispatch(friendsFetched(friends, email));
+}
+
 const friendProductsFetched = makeStandardActionCreator(FRIEND_PRODUCTS_FETCHED);
 export const fetchFriendsProducts = (friends) => dispatch => {
   let stuffiers_stuff = [];

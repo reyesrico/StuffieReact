@@ -28,12 +28,23 @@ export const fetchUser = (email) => dispatch => {   //makePaginatedApiActionCrea
 }
 
 // https://kurthutten.com/blog/react-hook-lazy-loading-pattern/
-export const fetchUserHook = (email, setIsLoading) => dispatch => {
+export const fetchUserHook = (email, setIsLoading, dispatch) => {
   setIsLoading(true);
   return getStuffier(email)
     .then(res => dispatch(userFetched(res.data[0], email)))
     .catch(err => err)
     .finally(() => setIsLoading(false));
+}
+
+export const fetchUserHookWithMessage = (email, setIsLoading, setMessage, dispatch) => {
+  setIsLoading(true);
+  return getStuffier(email)
+    .then(res => {
+      dispatch(userFetched(res.data[0], email));
+      setMessage("Login successful");
+    })
+    .catch(_ => setMessage("Error: Couldn't login. Try again."))
+    .finally(() => setIsLoading(true));
 }
 
 const userRegistered = makeStandardActionCreator(USER_REGISTERED);
@@ -64,6 +75,7 @@ export const addUserPicture = (user, picture) => dispatch => {
 export const logout = () => {
   localStorage.removeItem('picture');
   localStorage.removeItem('username');
+  window.sessionStorage.clear();
 
   return {
     type: REVOKE_USER,

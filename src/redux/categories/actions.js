@@ -5,6 +5,17 @@ import { addCategoryCall, getCategories, getCategory } from '../../services/stuf
 const categoriesFetched = makeStandardActionCreator(CATEGORIES_FETCHED);
 export const fetchCategories = makePaginatedApiActionCreator(getCategories, categoriesFetched);
 
+export const fetchCategoriesHook = (sessionStorage, dispatch) => {
+  getCategories().then(res =>{
+    sessionStorage.setItem('categories', JSON.stringify(res.data));
+    dispatchCategoriesFetched(res.data, dispatch);
+  });
+}
+
+export const dispatchCategoriesFetched = (categories, dispatch) => {
+  dispatch(categoriesFetched(categories));
+}
+
 const categoryFeteched = makeStandardActionCreator(CATEGORY_FETCHED);
 export const fetchCategory = makePaginatedApiActionCreator(getCategory, categoryFeteched);
 

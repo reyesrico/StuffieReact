@@ -45,7 +45,7 @@ const Products = () => {
 
     getProductsFromIds(mapIds(ids))
     .then(res => setRequestProducts(res.data));
-  });
+  }, [exchangeRequests, loanRequests]);
 
   const generateReport = () => {
     downloadExcel(products, `${user.first_name}_products`);

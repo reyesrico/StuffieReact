@@ -9,14 +9,19 @@ import Loading from '../shared/Loading';
 import State from '../../redux/State';
 import User from '../types/User';
 import { fetchFriendsProductsHook } from '../../redux/friends/actions';
-import { fetchFeedHook } from '../../redux/feed/actions';
+import { dispatchFeedFetched, fetchFeedHook } from '../../redux/feed/actions';
 import './Content.scss';
 
-const getFeed = (friends: any, dispatch: any, setIsLoading: Function) => {
-  fetchFriendsProductsHook(friends, dispatch)
-    .then((fullFriends: User[]) => fetchFeedHook(fullFriends, dispatch))
-    .catch(() => console.log('Error Feed Fetched'))
-    .finally(() => setIsLoading(false));
+const getFeed = (friends: any, dispatch: any, sessionStorage: Storage, setIsLoading: Function) => {
+  if (sessionStorage.getItem('feed')) {
+    let feed = JSON.parse(sessionStorage.getItem('feed') || '');
+    dispatchFeedFetched(feed, dispatch);
+  } else {
+    fetchFriendsProductsHook(friends, dispatch)
+      .then((fullFriends: User[]) => fetchFeedHook(fullFriends, sessionStorage, dispatch))
+      .catch(() => console.log('Error Feed Fetched'))
+      .finally(() => setIsLoading(false));
+  }
 }
 
 const Content = () => {
@@ -28,11 +33,13 @@ const Content = () => {
   const stableGetFeed = useCallback(getFeed, []);
 
   useEffect(() => {
+    let sessionStorage = window.sessionStorage;
+
     if (feed && feed.length) {
       setIsLoading(false);
     } else {
       if (friends && friends.length) {
-        stableGetFeed(friends, dispatch, setIsLoading);
+        stableGetFeed(friends, dispatch, sessionStorage, setIsLoading);
       }
     }
   }, [stableGetFeed, feed, friends, dispatch]);

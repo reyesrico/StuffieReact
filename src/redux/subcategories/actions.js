@@ -5,6 +5,17 @@ import { addSubCategoryCall, getSubCategories, getSubcategory } from '../../serv
 const subCategoriesFetched = makeStandardActionCreator(SUBCATEGORIES_FETCHED);
 export const fetchSubCategories = makePaginatedApiActionCreator(getSubCategories, subCategoriesFetched);
 
+export const fetchSubCategoriesHook = (sessionStorage, dispatch) => {
+  getSubCategories().then(res =>{
+    sessionStorage.setItem('subcategories', JSON.stringify(res.data));
+    dispatchSubCategoriesFetched(res.data, dispatch);
+  });
+}
+
+export const dispatchSubCategoriesFetched = (subcategories, dispatch) => {
+  dispatch(subCategoriesFetched(subcategories));
+}
+
 const subCategoryFetched = makeStandardActionCreator(SUBCATEGORY_FETCHED);
 export const fetchSubCategory = makePaginatedApiActionCreator(getSubcategory, subCategoryFetched);
 

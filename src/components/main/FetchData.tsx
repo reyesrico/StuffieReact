@@ -5,61 +5,135 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../shared/Loading';
 import Main from './Main';
 import State from '../../redux/State';
+import User from '../types/User';
 // import { FetchDataProps } from './types';
 
-import { fetchCategories } from '../../redux/categories/actions';
-import { fetchFriends } from '../../redux/friends/actions';
-import { fetchFriendsRequests } from '../../redux/friends-requests/actions';
-import { fetchProducts } from '../../redux/products/actions';
-import { fetchSubCategories } from '../../redux/subcategories/actions';
-import { fetchExchangeRequests } from '../../redux/exchange-requests/actions';
-import { fetchLoanRequests } from '../../redux/loan-requests/actions';
-import { fetchPendingProducts } from '../../redux/pending-products/actions';
-import { fetchUserRequests } from '../../redux/user-requests/actions';
-import { fetchSpotify } from '../../redux/spotify/actions';
+import { dispatchCategoriesFetched, fetchCategoriesHook } from '../../redux/categories/actions';
+import { dispatchFriendsFetched, fetchFriendsHook } from '../../redux/friends/actions';
+import { fetchFriendsRequestsHook } from '../../redux/friends-requests/actions';
+import { dispatchProductsFetched, fetchProductsHook } from '../../redux/products/actions';
+import { dispatchSubCategoriesFetched, fetchSubCategoriesHook } from '../../redux/subcategories/actions';
+import { fetchExchangeRequestsHook } from '../../redux/exchange-requests/actions';
+import { fetchLoanRequestsHook } from '../../redux/loan-requests/actions';
+import { dispatchPedingProducts, fetchPendingProductsHook } from '../../redux/pending-products/actions';
+// import { fetchSpotify } from '../../redux/spotify/actions';
 
 import './FetchData.scss';
-import User from '../types/User';
+import Category from '../types/Category';
 
-const fetchData = (user: User, dispatch: Function) => {
-  let promises = [
-    fetchCategories(),                  // values[0] -- DO NOT MOVE
-    fetchSubCategories(),               // values[1]
-    fetchFriends(user.email),           // values[2]
-    fetchFriendsRequests(user.email),   // values[3]
-    fetchExchangeRequests(user.id),     // values[4]
-    fetchLoanRequests(user.id),         // values[5]
-    fetchSpotify()                      // values[6]
-  ];
-
-  let adminPromises = [
-    fetchUserRequests(),                  // values[7]
-    fetchPendingProducts()                // values[8]
-  ];
-
-  if (user.admin) {
-    promises = [...promises, ...adminPromises];
+const fetchBasis = (user: User, sessionStorage: Storage, dispatch: Function) => {
+  if (sessionStorage.getItem('categories')) {
+    let cats = JSON.parse(sessionStorage.getItem('categories') || '');
+    dispatchCategoriesFetched(cats, dispatch);
+  } else {
+    fetchCategoriesHook(sessionStorage, dispatch);
   }
 
-  promises.forEach(p => dispatch(p));
+  if (sessionStorage.getItem('subcategories')) {
+    let subcats = JSON.parse(sessionStorage.getItem('subcategories') || '');
+    dispatchSubCategoriesFetched(subcats, dispatch);
+  } else {
+    fetchSubCategoriesHook(sessionStorage, dispatch);
+  }
+
+  if (sessionStorage.getItem('friends')) {
+    let friends = JSON.parse(sessionStorage.getItem('friends') || '');
+    dispatchFriendsFetched(friends, user.email, dispatch);
+  } else {
+    fetchFriendsHook(user.email, sessionStorage, dispatch);
+  }
 }
 
+const fetchAdmin = (sessionStorage: Storage, dispatch: Function) => {
+  let hookPromises = [];
+
+  if (sessionStorage.getItem('user-requests')) {
+    let uRequests = JSON.parse(sessionStorage.getItem('user-requests') || '');
+    dispatchSubCategoriesFetched(uRequests, dispatch);
+  } else {
+    hookPromises.push(fetchSubCategoriesHook);
+  }
+
+  if (sessionStorage.getItem('products-requests')) {
+    let pRequests = JSON.parse(sessionStorage.getItem('products-requests') || '');
+    dispatchPedingProducts(pRequests, dispatch);
+  } else {
+    hookPromises.push(fetchPendingProductsHook);
+  }
+
+  if (hookPromises.length) {
+    hookPromises.forEach(p => p(sessionStorage, dispatch));
+  }
+}
+
+
+const fetchProducts = (user: User, categories: Category[], setIsLoading: Function, sessionStorage: Storage, dispatch: Function) => {
+  if (sessionStorage.getItem('products')) {
+    let prods = JSON.parse(sessionStorage.getItem('products') || '');
+    dispatchProductsFetched(prods, user.email, dispatch);
+    setIsLoading(false);
+  } else if (categories.length) {
+    fetchProductsHook(user, categories, setIsLoading, sessionStorage, dispatch);
+  }
+}
 
 const FetchData = () => {
   const [ isLoading, setIsLoading ] = useState(true);
   const user = useSelector((state: State) => state.user);
   const categories = useSelector((state: State) => state.categories);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  // const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
+  // const friendsRequests = useSelector((state: State) => state.friendsRequests);
+  // const loanRequests = useSelector((state: State) => state.loanRequests);
   const dispatch = useDispatch();
-  const stableFetchData = useCallback(fetchData, []);
+  const stableFetchBasis = useCallback(fetchBasis, []);
+  const stableFetchProducts = useCallback(fetchProducts, []);
+  // Admin
+  const stableFetchAdmin = useCallback(fetchAdmin, []);
+  // Data not critical
+  const stableFetchFriendsRequests = useCallback(fetchFriendsRequestsHook, []);
+  const stableFetchExchangeRequests = useCallback(fetchExchangeRequestsHook, []);
+  const stableFetchLoanRequests = useCallback(fetchLoanRequestsHook, []);
+
   const { t } = useTranslation();
 
   useEffect(() => {
-    stableFetchData(user, dispatch);
-  }, [stableFetchData, user, dispatch]);
+    let sessionStorage = window.sessionStorage;
+    stableFetchBasis(user, sessionStorage, dispatch);
+  }, [stableFetchBasis, user, dispatch])
+
+  // fetchProducts
+  useEffect(() => {
+    let sessionStorage = window.sessionStorage;
+    stableFetchProducts(user, categories, setIsLoading, sessionStorage, dispatch);
+  }, [stableFetchProducts, user, categories, dispatch]);
 
   useEffect(() => {
-    dispatch(fetchProducts(user, categories, setIsLoading));
-  }, [categories, user, dispatch]);
+    let sessionStorage = window.sessionStorage;
+    if (user.admin) {
+      stableFetchAdmin(sessionStorage, dispatch);
+    }
+  }, [stableFetchAdmin, user, dispatch]);
+
+  useEffect(() => {
+    if (categories.length && subcategories.length) {
+      stableFetchFriendsRequests(user.email, dispatch);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (categories.length && subcategories.length) {
+      stableFetchExchangeRequests(user.id, dispatch);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (categories.length && subcategories.length) {
+      stableFetchLoanRequests(user.id, dispatch);
+    }
+  }, [])
+
+  // fetchSpotify
 
   if (isLoading) {
     return (

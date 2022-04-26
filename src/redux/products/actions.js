@@ -72,6 +72,27 @@ export const fetchProducts = (user, categories, setLoading) => dispatch => {  //
          .finally(() => setLoading(false));
 }
 
+export const fetchProductsHook = (user, categories, setLoading, sessionStorage, dispatch)  => {
+  let extraStuff;
+  setLoading(true);
+  return getStuffList(user.id)
+         .then(res => {
+           extraStuff = res.data;               // []Stuff (with cost)
+           return getListStuff(mapStuff(res.data));
+          })
+         .then(res => {                         // []Product
+           const objects = mapCostToProducts(res.data, extraStuff);
+           const products = getProductsMap(categories, objects);
+           sessionStorage.setItem('products', JSON.stringify(products));
+           dispatchProductsFetched(products, user.email, dispatch);
+         })
+         .finally(() => setLoading(false));
+}
+
+export const dispatchProductsFetched = (products, email, dispatch) => {
+  dispatch(productsFetched(products, email));
+}
+
 export const updateProduct = makeApiActionCreator(updateStuff, productUpdated);
 export const updateProductHook = (userId, productId, updatedCost, dispatch, setMessage, setType) => {
   updateStuff(userId, productId, updatedCost)
