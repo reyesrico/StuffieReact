@@ -18,20 +18,23 @@ const Login = ({ setMessage, setIsLoading }: any) => {
   const user = useSelector((state: State) => state.user);
   const dispatch = useDispatch();
 
-  const onClick = (e: any) => {
+  const onClick = (email: string, password: string) => {
     if (email && password) {
       loginUserHook(email, password)
         .then((response: any) => {
           fetchUserHookWithMessage(response.data[0].email, setIsLoading, setMessage, dispatch);
           localStorage.setItem('username', response.data[0].email);
         })
-        .catch(() => setMessage("Error: Couldn't login. Try again."))
+        .catch((err: any) => {
+          console.log({ err });
+          setMessage(err && err["message"] || "Error: Couldn't login. Try again.");
+        })
     }
   }
 
   const handleKeypress = (e: any) => {
     if (email && password && e.key === 'Enter') {
-      onClick(e);
+      onClick(email, password);
     }
   }
 
@@ -66,7 +69,7 @@ const Login = ({ setMessage, setIsLoading }: any) => {
           placeholder="Password"
           onKeyPress={handleKeypress}
           onChange={(e: any) => setPassword(e.target.value)} />
-        <Button onClick={onClick} text="Login" />
+        <Button onClick={() => onClick(email, password)} text="Login" />
       </form>
       <hr className="login__hr" />
       <FacebookLogin

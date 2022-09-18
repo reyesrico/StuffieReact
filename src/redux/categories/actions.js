@@ -1,12 +1,15 @@
 import { makePaginatedApiActionCreator, makeStandardActionCreator } from '../action-helpers';
 import { CATEGORY_ADDED, CATEGORIES_FETCHED, CATEGORY_FETCHED } from './constants';
 import { addCategoryCall, getCategories, getCategory } from '../../services/stuff';
+import StuffieConnect from "@stuffie/connect";
+
+const { Stuff } = StuffieConnect();
 
 const categoriesFetched = makeStandardActionCreator(CATEGORIES_FETCHED);
 export const fetchCategories = makePaginatedApiActionCreator(getCategories, categoriesFetched);
 
 export const fetchCategoriesHook = (sessionStorage, dispatch) => {
-  getCategories().then(res =>{
+  Stuff().getCategories().then(res =>{
     sessionStorage.setItem('categories', JSON.stringify(res.data));
     dispatchCategoriesFetched(res.data, dispatch);
   });

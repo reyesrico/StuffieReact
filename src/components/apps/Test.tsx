@@ -13,6 +13,7 @@ const Test = () => {
     console.log(`mario: ${crypto.encrypt("mario")}`);
     console.log(`doc: ${crypto.encrypt("secrdoceto")}`);
     console.log(`merol: ${crypto.encrypt("merol")}`);
+    console.log(`test: ${crypto.encrypt("test")}`);
   }
 
   const getStuff = () => {

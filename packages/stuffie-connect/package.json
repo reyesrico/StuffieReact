@@ -1,0 +1,33 @@
+{
+  "name": "@stuffie/connect",
+  "version": "1.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "tsc",
+    "run-test": "node test",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Carlos Reyes",
+  "license": "ISC",
+  "homepage": "https://github.com/reyesrico/StuffieReact/packages/stuffie-connect#README",
+  "dependencies": {
+    "@types/node": "^18.7.18",
+    "axios": "^0.27.2",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
+    "D": "^1.0.0"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "devDependencies": {
+    "typescript": "^4.8.3"
+  }
+}

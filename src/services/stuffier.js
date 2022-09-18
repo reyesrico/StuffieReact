@@ -20,9 +20,10 @@ export const getFriends = email => (
 );
 
 export const loginStuffier = (email, password) => (
-  crypto.pbkdf2(password, email)
-    .then(res => axios.get(routes.user.loginUser(email, res), { headers: config.headers }))
-    .catch(err => Promise.reject(err))
+  axios.get(routes.user.loginUser(email, crypto.encrypt(password)), { headers: config.headers })
+  // crypto.pbkdf2(password, email)
+  //   .then(res => axios.get(routes.user.loginUser(email, res), { headers: config.headers }))
+  //   .catch(err => Promise.reject(err))
 );
 
 export const getLastStuffierId = () => (

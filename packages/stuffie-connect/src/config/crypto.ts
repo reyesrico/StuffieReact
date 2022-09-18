@@ -6,7 +6,7 @@ const crypto = {
   digest: clear => cryptoLib.createHash('sha256').update(clear).digest('hex'),
   pbkdf2: (clear, salt) => {
     return new Promise((resolve, reject) => {
-      cryptoLib.pbkdf2(clear, salt, 1000, 256, 'sha256',
+      cryptoLib.pbkdf2(clear, salt, 100, 256, 'sha256',
         (err, derivedKey) => err ? reject(err) : resolve(derivedKey.toString('hex'))
       );
     });
