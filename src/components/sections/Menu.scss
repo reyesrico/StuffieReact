@@ -8,6 +8,16 @@
   @include flex(column, flex-start, stretch);
 }
 
-.menu__category {
-  @include section-button;
+.menu__category-row {
+  @include flex(row, flex-start, flex-start);
+  @include margin(4px, vertical);
+
+  &:hover {
+    font-weight: bold;
+  }
+}
+
+.menu__category-name {
+  @include margin(4px, left);
+  font-size: 14px;
 }

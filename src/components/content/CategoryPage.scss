@@ -1,0 +1,26 @@
+@import '../../sass/main.scss';
+
+.category-page__row {
+  @include flex(row, space-between);
+  @include border-radius;
+  @include padding(8px, 'all');
+  @include margin(8px, vertical);
+  background-color: $white;
+
+  &:hover {
+    @include border(all, $gray);
+  }
+}
+
+.category-page__header {
+  @include flex(row, flex-strt);
+}
+
+.category-page__header-text {
+  @include margin(8px, left);
+}
+
+.category-page__icon {
+  align-self: center;
+  width: 20px;
+}

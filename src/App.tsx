@@ -8,6 +8,10 @@ import TopRoutes from './components/main/TopRoutes';
 import './App.scss';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
+// https://developer.microsoft.com/en-us/fluentui#/styles/web/icons
+import { initializeIcons } from '@fluentui/font-icons-mdl2';
+initializeIcons();
+
 const App = (props: any) => {
 	const { store } = props;
 	return (

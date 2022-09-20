@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import Category from '../types/Category';
 import State from '../../redux/State';
+import { Icon } from '@fluentui/react/lib/Icon';
 import { isProductsEmpty } from '../../components/helpers/StuffHelper';
 import './Menu.scss';
 
@@ -23,7 +24,16 @@ const Menu = () => {
         const newTo = { pathname: `/category/${cat.id}`, state: { category: cat.name } };
         return (
           <div key={cat.id} className="menu__category">
-            <Link className="" key={cat.id} to={newTo}>{cat.name}</Link>
+            <Link
+              key={cat.id}
+              to={newTo}
+              style={{ color: 'inherit', textDecoration: 'inherit' }}
+            >
+              <div className='menu__category-row'>
+                <Icon iconName="LocationDot"></Icon>
+                <span className='menu__category-name'>{cat.name}</span>
+              </div>
+            </Link>
           </div>);
       });
   }
