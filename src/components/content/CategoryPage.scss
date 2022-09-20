@@ -5,6 +5,7 @@
   @include border-radius;
   @include padding(8px, 'all');
   @include margin(8px, vertical);
+  @include border(all, $lightergray);
   background-color: $white;
 
   &:hover {
