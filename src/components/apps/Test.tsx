@@ -1,20 +1,9 @@
 import React, { useEffect } from 'react';
-import crypto from '../../config/crypto';
 
 const Test = () => {
   useEffect(() => {
     document.getElementById("myButton")?.addEventListener('click', debounce(() => console.log('click'), 4000));
   });
-
-  // eslint-disable-next-line
-  const authenticate = () => {
-    // TEST - ENCRYPT
-    console.log(`secreto: ${crypto.encrypt("secreto")}`);
-    console.log(`mario: ${crypto.encrypt("mario")}`);
-    console.log(`doc: ${crypto.encrypt("secrdoceto")}`);
-    console.log(`merol: ${crypto.encrypt("merol")}`);
-    console.log(`test: ${crypto.encrypt("test")}`);
-  }
 
   const getStuff = () => {
     let stuff = [
@@ -230,7 +219,6 @@ const Test = () => {
     console.log(reduce([1, 2, 3, 4, 5], (acc: number, value: number) => value, 0));
     console.log([1, 2, 3, 4, 5].reduce((acc, val) => acc + val));
     console.log(getRoman(3748));
-    authenticate();
   }
 
   const x = getStuff();

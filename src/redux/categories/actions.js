@@ -25,7 +25,7 @@ export const fetchCategory = makePaginatedApiActionCreator(getCategory, category
 const categoryAdded = makeStandardActionCreator(CATEGORY_ADDED);
 export const addCategory = makePaginatedApiActionCreator(addCategoryCall, categoryAdded);
 export const addCategoryHook = (category, dispatch) => {
-  return addCategoryCall(category).then(res => {
+  return Stuff().addCategoryCall(category).then(res => {
     dispatch(categoryAdded(res.data));
     return Promise.resolve(res.data);
   }).catch(err => Promise.reject(err));
