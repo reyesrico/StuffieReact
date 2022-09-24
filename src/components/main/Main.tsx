@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import Apps from '../sections/Apps';
 import Chat from '../sections/Chat';
@@ -26,7 +27,9 @@ const Main = () => {
         <div className="stuffie__left">
           <div className="stuffie__user">
               {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
-              <div className="stuffie__welcome">{t('Welcome')} {user.first_name}</div>
+              <div className="stuffie__welcome">
+                {t('Welcome')} <Link to="/stuffier">{user.first_name}</Link>
+              </div>
           </div>
           <div className="stuffie__left-section">
             <Menu />

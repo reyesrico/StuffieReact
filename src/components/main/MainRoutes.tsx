@@ -13,6 +13,7 @@ import Friends from '../content/Friends';
 import Loan from '../apps/Loan';
 import Products from '../content/Products';
 import Product from '../content/Product';
+import Stuffier from '../content/Stuffier';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
@@ -25,6 +26,7 @@ const MainRoutes = () => {
     <Routes>
       <Route path="/" element={<Content />} />
       <Route path="StuffieReact" element={<Content />} />
+      <Route path="stuffier" element={<Stuffier />} />
       <Route path="admin" element={<Admin />} />
       <Route path="friends" element={<Friends />} />
       <Route path="products" element={<Products />} />

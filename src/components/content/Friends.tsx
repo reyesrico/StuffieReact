@@ -13,6 +13,27 @@ import { WarningMessageType } from '../shared/types';
 import './Friends.scss';
 import { useSelector } from 'react-redux';
 
+type FriendRowProps = {
+  user: User
+}
+
+const FriendRow = ({ user }: FriendRowProps) => {
+  return (
+    <div>
+      <div>
+        {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
+      </div>
+      <div>
+        <h4>{user.first_name}{user.last_name}</h4>
+        <div>
+          <span>{user.email}</span>
+          <span>Products: {user.products?.length}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const Friends = () => {
   // let textFieldRef = React.createRef<typeof TextField>();
   const { t } = useTranslation();
@@ -59,7 +80,7 @@ const Friends = () => {
             return (
               <li className="friends__request" key={index}>
                 <div className="friends__request-text">
-                  {friend.first_name} {friend.last_name} ({friend.email})
+                {friend.first_name} {friend.last_name} ({friend.email})
                 </div>
                 <div className="friends__request-button">
                   <Button onClick={() => executeRequest(friend, true)} text="Accept"></Button>
@@ -103,7 +124,11 @@ const Friends = () => {
       <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
       <WarningMessage message={getMessage()} type={executeStatus}/>
       <ul>
-        {friends.map((friend: any) => (<li key={friend.id}>{friend.first_name} {friend.last_name} - {friend.email}</li>))}
+        {friends.map((friend: any) => (
+          <li key={friend.id}>
+            <FriendRow user={friend} />
+          </li>
+        ))}
       </ul>
       {requests.length > 0 && renderRequests()}
       <hr />
