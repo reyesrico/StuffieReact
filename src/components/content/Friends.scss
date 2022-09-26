@@ -61,3 +61,20 @@
   padding: 0 8px;
   width: 100%;
 }
+
+.friend-row__photo {
+  @include border(all, $blue, 1px);
+  @include margin(4px, right);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.friend-row__header {
+  @include flex(row, flex-start, center);
+  @include margin(8px, bottom);
+}
+
+.friend-row__header-name {
+  @include margin(0, all);
+}

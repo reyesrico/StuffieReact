@@ -1,0 +1,36 @@
+@import '../../sass/main.scss';
+
+.stuffier__header {
+  @include flex(row, flex-start, center);
+  @include border(bottom, $black);
+  @include padding(8px, bottom);
+  @include margin(16px, bottom);
+}
+
+.stuffier__photo {
+  @include border(all, $blue, 2px);
+  @include margin(8px, right);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.stuffier__form {
+  @include flex(column, center, center);
+  width: 100%;
+}
+
+.stuffier__label {
+  width: 128px;
+  font-size: 14px;
+}
+
+.stuffier__row {
+  @include flex(row, space-evenly, center);
+  @include margin(8px, bottom);
+  width: 100%;
+}
+
+.stuffier__textfield {
+  max-width: 300;
+}

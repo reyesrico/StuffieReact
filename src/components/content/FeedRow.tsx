@@ -8,10 +8,17 @@ import { FeedRowProps } from './types';
 
 import './FeedRow.scss';
 import Subcategory from '../types/Subcategory';
+import { existImage, userImageUrl } from '../../services/cloudinary-helper';
 
 const FeedRow = (props: FeedRowProps) => {
   let subcategories: Subcategory[] = useSelector((state: State) => state.subcategories);
+  let [picture, setPicture] = React.useState<string>();
   const { feedPost } = props;
+
+  React.useEffect(() => {
+    existImage(feedPost.friend_id, "stuffiers/")
+      .then(() => setPicture(userImageUrl(feedPost.friend_id)));
+  }, []);
 
   const getProductType = () => {
     let subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
@@ -21,7 +28,15 @@ const FeedRow = (props: FeedRowProps) => {
   const renderMessage = () => {
     return (
     <div className="feed-row__description">
-      <span className="feed-row__name">{feedPost.friend_firstName} {feedPost.friend_lastName} </span> added <b>{feedPost.product.name}</b> in {getProductType()}
+      {picture && (
+        <img src={picture} className="feed-row__photo" alt={`${feedPost.friend_firstName} photo`} />
+      )}
+      <div className="feed-row__added">
+        <span>
+          <span className="feed-row__name">{feedPost.friend_firstName}</span>
+          <span>added <b>{feedPost.product.name}</b> in {getProductType()}</span>
+        </span>
+      </div>
     </div>
     );
   }

@@ -3,7 +3,7 @@ import { TextFieldProps } from './types';
 import './TextField.scss';
 
 const TextField = (props: TextFieldProps) => {
-  const { placeholder, value, onChange, disabled, reference, min, max } = props;
+  const { placeholder, value, onChange, disabled, reference, min, max, containerStyle } = props;
   let range = null;
 
   if (min || max) {
@@ -11,7 +11,7 @@ const TextField = (props: TextFieldProps) => {
   }
 
   return (
-    <div className="textfield">
+    <div style={containerStyle}>
       {value !== null && !onChange &&
         <input
           placeholder={placeholder || ''}

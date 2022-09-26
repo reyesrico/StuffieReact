@@ -24,6 +24,7 @@ const routes = {
   },
   user: {
     detail: (email: string) => `${config.server}stuffiers?q=${JSON.stringify({ email })}`,
+    update: (id:  number) => `${config.server}stuffiers/${id}`,
     listDetail: (ids: number[]) => `${config.server}stuffiers?q={"$or":${JSON.stringify(ids)}}`,
     friends: (email: string) => `${config.server}friends?q=${JSON.stringify({ email_stuffier: email })}`,
     list: () => `${config.server}stuffiers`,

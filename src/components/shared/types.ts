@@ -12,6 +12,7 @@ export interface TextFieldProps {
   min?: number,
   max?: number,
   children?: any
+  containerStyle?: any;
 }
 
 export interface MenuProps {

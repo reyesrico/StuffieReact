@@ -1,8 +1,19 @@
 import { makeStandardActionCreator } from '../action-helpers';
 
 import { REVOKE_USER } from '../constants';
-import { LOGIN_USER_FETCHED, USER_FETCHED, USER_REGISTERED, USER_PICTURE_ADDED } from './constants';
-import { loginStuffier, getStuffier, registerStuffier } from '../../services/stuffier';
+import {
+  LOGIN_USER_FETCHED,
+  USER_FETCHED,
+  USER_REGISTERED,
+  USER_PICTURE_ADDED,
+  USER_UPDATED
+} from './constants';
+import {
+  loginStuffier,
+  getStuffier,
+  registerStuffier,
+  updateStuffier
+} from '../../services/stuffier';
 
 export const loginUserFetched = makeStandardActionCreator(LOGIN_USER_FETCHED);
 export const loginUser = (email, password) => dispatch => {
@@ -64,6 +75,21 @@ export const registerUserHook = (user, setIsLoading, setMessage) => dispatch => 
     })
     .catch(err => setMessage(`Error: Couldn't register. Try again. ${err}`))
     .finally(() => setIsLoading(false));
+}
+
+// NOT GOING TO USE DATABASE TO STORE PICTURE
+// I AM GOING TO USE ID FOR SAVING AND GETTING PICTURE
+// UPDATE USER IS NOT CALLED AND USED YET!
+export const userUpdated = makeStandardActionCreator(USER_UPDATED);
+export const updateUser = (user) => dispatch => {
+  // setIsLoading(true);
+  updateStuffier(user)
+    .then(res => {
+      console.log({ userUpdated: res.data });
+      dispatch(userUpdated(res.data));
+    });
+    // .catch(err => setMessage(`Error: Couldn't update user. ${err}`))
+    // .finally(() => setIsLoading(false));
 }
 
 const userPictureAdded = makeStandardActionCreator(USER_PICTURE_ADDED);

@@ -12,22 +12,27 @@ import { WarningMessageType } from '../shared/types';
 
 import './Friends.scss';
 import { useSelector } from 'react-redux';
+import { existImage, userImageUrl } from '../../services/cloudinary-helper';
 
 type FriendRowProps = {
   user: User
 }
 
 const FriendRow = ({ user }: FriendRowProps) => {
+  const [picture, setPicture] = React.useState<string>();
+
+  React.useEffect(() => {
+    existImage(user.id, "stuffiers/")
+      .then(() => setPicture(userImageUrl(user.id)));
+  }, []);
+
   return (
-    <div>
-      <div>
-        {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
-      </div>
-      <div>
-        <h4>{user.first_name}{user.last_name}</h4>
+    <div className='friend-row'>
+      <div className='friend-row__header'>
+        {picture && (<img src={picture} className="friend-row__photo" alt="User Pic"></img>)}
         <div>
+          <h3 className='friend-row__header-name'>{user.first_name} {user.last_name}</h3>
           <span>{user.email}</span>
-          <span>Products: {user.products?.length}</span>
         </div>
       </div>
     </div>
@@ -51,7 +56,7 @@ const Friends = () => {
       getStuffiers(mapIds(friendsRequests))
       .then((res: any) => setRequests(res.data));
     }
-  });
+  }, []);
 
   const executeRequest = (friend: User, isAccepted = false) => {
     let promises = [deleteRequest(user.email, friend.id)];
@@ -92,6 +97,7 @@ const Friends = () => {
             )}
           )}
         </ul>
+        <hr />
       </div>
     )
   }
@@ -125,13 +131,12 @@ const Friends = () => {
       <WarningMessage message={getMessage()} type={executeStatus}/>
       <ul>
         {friends.map((friend: any) => (
-          <li key={friend.id}>
+          <li key={friend.id} style={{ borderBottom: "1px solid black" }}>
             <FriendRow user={friend} />
           </li>
         ))}
       </ul>
       {requests.length > 0 && renderRequests()}
-      <hr />
       <div>
         <h3 className="friends__title">{t('Add-Friend')}</h3>
         <div className="friends__form">

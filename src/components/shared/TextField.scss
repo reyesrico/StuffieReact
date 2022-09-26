@@ -1,17 +1,12 @@
 @import '../../sass/main.scss';
 
-.textfield {
-  @include flex(row, center);
+input {
+  @include padding(4px, all);
+  font-size: 16px;
   width: 100%;
 
-  input {
-    @include padding(4px, all);
-    font-size: 16px;
-    width: 100%;
-  }
-
-  input:focus {
+  &:focus {
     border: solid 2px $blue;
-    outline: none;
+    outline: none;  
   }
 }

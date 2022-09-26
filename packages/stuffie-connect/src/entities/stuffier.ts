@@ -8,6 +8,14 @@ const Stuffier = () => {
   const getStuffier = (email: string) => (
     axios.get(routes.user.detail(email), { headers: config.headers })
   );
+
+  const updateStuffier = (user: User) => (
+    axios.put(
+      routes.user.update(user.id),
+      { ...user, request: false },
+      { headers: config.headers }
+    )
+  );
   
   const getStuffiers = (ids: number[]) => {
     if (ids.length > 0) {
@@ -77,7 +85,8 @@ const Stuffier = () => {
     deleteRequest,
     requestToBeFriend,
     registerStuffier,
-    loginStuffier
+    loginStuffier,
+    updateStuffier
   }
 }
 

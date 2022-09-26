@@ -13,11 +13,10 @@
   @include margin(4px, vertical);
 
   &:hover {
-    font-weight: bold;
+    font-weight: 600;
   }
 }
 
 .menu__category-name {
   @include margin(4px, left);
-  font-size: 14px;
 }

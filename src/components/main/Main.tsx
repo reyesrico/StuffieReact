@@ -13,10 +13,25 @@ import Menu from '../sections/Menu';
 import State from '../../redux/State';
 
 import './Main.scss';
+import {
+  defaultImageUrl,
+  existImage,
+  userImageUrl
+} from '../../services/cloudinary-helper';
 
 const Main = () => {
   const user = useSelector((state: State) => state.user);
   const { t } = useTranslation();
+  const [picture, setPicture] = React.useState<string>();
+
+  React.useEffect(() => {
+    existImage(user.id, "stuffiers/")
+      .then(res => {
+        console.log({res});
+        setPicture(userImageUrl(user.id));
+      })
+      .catch(() => setPicture(defaultImageUrl));
+  }, []);
 
   return (
     <div className="stuffie">
@@ -26,9 +41,13 @@ const Main = () => {
       <div className="stuffie__main">
         <div className="stuffie__left">
           <div className="stuffie__user">
-              {user.picture && (<img src={user.picture} alt="User Pic"></img>)}
+              {picture && (
+                <Link to="/stuffier">
+                  <img src={picture} className="stuffie__picture" alt="User Pic"/>
+                </Link>
+              )}
               <div className="stuffie__welcome">
-                {t('Welcome')} <Link to="/stuffier">{user.first_name}</Link>
+                {t('Welcome')}{user.first_name}
               </div>
           </div>
           <div className="stuffie__left-section">

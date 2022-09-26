@@ -45,7 +45,7 @@
 }
 
 .stuffie__welcome {
-  @include margin(4px, left);
+  @include margin(8px, left);
   font-weight: bold;
   font-size: 16px;
 }
@@ -69,6 +69,16 @@
   height: 200px;
 }
 
+.stuffie__picture {
+  @include border(all, $blue, 2px);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+
+  &:hover {
+    @include border(all, $warning, 2px);
+  }
+}
 
 // ---------
 // MEDIA
@@ -84,12 +94,17 @@
     width: 100%;
   }
 
-  .stuffie__menu {
-    display: none;
+  .stuffie__user {
+    max-width: 168px;
   }
 
-  .stuffie__user {
-    display: none;
+  .stuffie__welcome {
+    font-size: 14px;
+  }
+
+  .stuffie__left-section {
+    max-width: 168px;
+    font-size: 14px;
   }
 
   .stuffie__content {

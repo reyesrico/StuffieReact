@@ -9,8 +9,25 @@
   margin-bottom: 16px;
 }
 
+.feed-row__photo {
+  @include border(all, $blue, 1px);
+  @include margin(4px, right);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
 .feed-row__description {
-  @include margin(8px, bottom);
+  @include flex(row, flex-start, center);
+  @include margin(12px, bottom);
+}
+
+.feed-row__added {
+  @include flex(row, flex-start);
+}
+
+.feed-row__name {
+  @include margin(4px, right);
 }
 
 .feed-row__product {

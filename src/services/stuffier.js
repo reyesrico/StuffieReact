@@ -33,7 +33,8 @@ export const getLastStuffierId = () => (
 export const registerStuffier = (user) => (
   Promise.all([getLastStuffierId(), crypto.pbkdf2(user.password, user.email)])
     .then(values => {
-      const id = Object.values(values[0].data)[0] + 1;
+      const data = values[0].data;
+      const id = Object.values(data)[0] + 1;
       const password = values[1];
       return axios.post(routes.user.registerUser(), { ...user, password, id, request: true }, { headers: config.headers });
     })
@@ -64,3 +65,11 @@ export const getUserRequests = () => (
 export const deleteUserRequest = user => (
   axios.put(routes.user.deleteUserRequest(user._id), { ...user, request: false }, { headers: config.headers })
 );
+
+export const updateStuffier = (user) => {
+  axios.put(
+    routes.user.update(user.id),
+    { ...user, request: false },
+    { headers: config.headers }
+  ); 
+}

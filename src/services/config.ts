@@ -1,9 +1,11 @@
 const config = {
   cloudinary: {
     url: 'https://res.cloudinary.com/reyesrico/image/upload/c_scale,f_auto,w_100/v1',
+    urlSingle: 'https://res.cloudinary.com/reyesrico/image/upload',
     cloudName: 'reyesrico',
     apiKey: '981789986692969',
-    apiSecret: 'xxQPfLvWpN_iIlt1RfMZnB3jRw0'
+    apiSecret: 'xxQPfLvWpN_iIlt1RfMZnB3jRw0',
+    uploadPreset: 'itzef221'
   },
   cloudinary_headers: {
     'cache-control': 'no-cache',
