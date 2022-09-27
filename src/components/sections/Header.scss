@@ -207,6 +207,18 @@
     display: none;
   }
 
+  .stuffie-header__user-name {
+    @include flex(row, flex-start, center);
+    @include margin(16px, bottom);
+    align-self: center;
+    box-shadow: 2px 2px 1px 1px darkgrey;
+    border-radius: 8%;
+  }
+
+  .stuffie__welcome {
+    overflow-wrap: anywhere;
+  }
+
   .stuffie-header__menu {
     @include flex(row, center, center);
     @include margin(12px, left);

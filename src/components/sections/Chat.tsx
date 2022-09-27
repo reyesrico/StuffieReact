@@ -119,6 +119,8 @@ const Chat = () => {
     }
   }
 
+  const width = window.screen.width <= 900 ? "85%" : "auto";
+
   return (
     <div className="chat">
       <div className='chat__title'>{t('Chat')}</div>
@@ -126,7 +128,14 @@ const Chat = () => {
         {showMessages()}
       </div>
       <div className="chat__form">
-        <TextField name="id" type="text" onChange={(e: any) => setNewMessage(e.target.value)} value={newMessage} onKeyPress={handleKeypress} />
+        <TextField
+          name="id"
+          type="text"
+          onChange={(e: any) => setNewMessage(e.target.value)}
+          value={newMessage}
+          onKeyPress={handleKeypress}
+          containerStyle={{ width }}
+        />
         <div className="chat__form-bottom">
           <div className="chat__status">Status: {status}</div>
           <Button disabled={disabledButton} onClick={() => sendMessage()} text={"Submit"} />

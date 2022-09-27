@@ -10,6 +10,7 @@ import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 import { logout } from '../../redux/user/actions';
+import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
 
 import './Header.scss';
 
@@ -25,6 +26,17 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [picture, setPicture] = React.useState<string>();
+
+  React.useEffect(() => {
+    existImage(user.id, "stuffiers/")
+      .then(res => {
+        console.log({ res });
+        setPicture(userImageUrl(user.id));
+      })
+      .catch(() => setPicture(defaultImageUrl));
+  }, []);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
   const requests = exchangeRequests.length + loanRequests.length;
@@ -112,7 +124,19 @@ const Header = () => {
         <div className="stuffie-header__menu">
           <div id="menu">
             <div className="stuffie-header__menu-apps">
-              <Chat/>
+              <div className="stuffie-header__user-name">
+                {picture && (
+                  <Link to="/stuffier">
+                    <img src={picture} className="stuffie__picture" alt="User Pic" />
+                  </Link>
+                )}
+                <div className="stuffie__welcome">
+                  {user.first_name}
+                </div>
+              </div>
+            </div>
+            <div className="stuffie-header__menu-apps">
+              <Chat />
             </div>
           </div>
           <button className="icon" onClick={event => event && toggleMenu()}>
@@ -136,4 +160,4 @@ const Header = () => {
     </div>
   );
 }
-  export default Header;
+export default Header;

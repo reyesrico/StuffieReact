@@ -113,6 +113,7 @@ const SearchBar = (props: any) => {
   }
 
   const isOpenCss = isOpen ? 'dropdown--is-open' : '';
+  const width = window.screen.width <= 900 ? "100%" : "auto";
 
   return (
     <div className="search-bar" ref={searchBarRef}>
@@ -123,6 +124,7 @@ const SearchBar = (props: any) => {
           placeholder="Find stuff..."
           onChange={(e: any) => fetchResults(e.target.value)}
           value={searchText}
+          containerStyle={{ width }}
         >
         </TextField>
         <div className="search-bar__button">
