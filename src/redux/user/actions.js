@@ -93,9 +93,14 @@ export const updateUser = (user) => dispatch => {
 }
 
 const userPictureAdded = makeStandardActionCreator(USER_PICTURE_ADDED);
-export const addUserPicture = (user, picture) => dispatch => {
+export const addUserFBPicture = (user, picture) => dispatch => {
   const facebookUser = { ...user, picture };
   dispatch(userPictureAdded(facebookUser, facebookUser.email));
+}
+
+export const addUserPicture = (user, picture) => dispatch => {
+  const userUpdated  = { ...user, picture };
+  dispatch(userPictureAdded(userUpdated));
 }
 
 export const logout = () => {

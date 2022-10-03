@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import {
   apiKey,
-  defaultImageUrl,
   existImage,
   signature,
   userImageUrl
@@ -18,6 +17,7 @@ import TextField from '../shared/TextField';
 // import { updateStuffier } from '../../services/stuffier';
 
 import './Stuffier.scss';
+import { addUserPicture } from '../../redux/user/actions';
 
 const Stuffier = () => {
   const { t } = useTranslation();
@@ -80,6 +80,7 @@ const Stuffier = () => {
             const data = res.data;
             sessionStorage.setItem("signature", data.signature);
             setPicture(res.url);
+            dispatch(addUserPicture(user, picture));
           })
           .catch((err) => setError(err));
       });

@@ -6,7 +6,7 @@ import Button from '../shared/Button';
 import FacebookUser from '../types/FacebookUser';
 import TextField from '../shared/TextField';
 import config from '../../services/config';
-import { addUserPicture, fetchUser, fetchUserHookWithMessage, loginUserHook } from '../../redux/user/actions';
+import { addUserFBPicture, fetchUser, fetchUserHookWithMessage, loginUserHook } from '../../redux/user/actions';
 
 import './Login.scss';
 import State from '../../redux/State';
@@ -44,7 +44,7 @@ const Login = ({ setMessage, setIsLoading }: any) => {
         dispatch(fetchUser(response.email));
         const picture = response.picture.data.url;
         localStorage.setItem('username', (user.email || ''));
-        dispatch(addUserPicture(user, picture));
+        dispatch(addUserFBPicture(user, picture));
         setMessage("Login successful");
       } catch(_) {
         setMessage("Error: Couldn't login. Try again.");

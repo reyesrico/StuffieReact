@@ -31,7 +31,7 @@ const Main = () => {
         setPicture(userImageUrl(user.id));
       })
       .catch(() => setPicture(defaultImageUrl));
-  }, []);
+  }, [user]);
 
   return (
     <div className="stuffie">

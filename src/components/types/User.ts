@@ -9,4 +9,5 @@ export default interface User {
   last_name?: string,
   admin?: boolean,
   products?: Product[]
+  picture?: string;
 }
