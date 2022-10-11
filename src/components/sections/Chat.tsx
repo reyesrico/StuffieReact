@@ -119,7 +119,7 @@ const Chat = () => {
     }
   }
 
-  const width = window.screen.width <= 900 ? "85%" : "auto";
+  const width = window.screen.width <= 900 ? "85%" : "90%";
 
   return (
     <div className="chat">

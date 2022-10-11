@@ -2,6 +2,7 @@
   "translations": {
     "Add-Friend": "Agregar Amigo",
     "Admin": "Admin",
+    "Category": "Categoria",
     "ChangePassword": "Cambiar Password",
     "Chat": "Chat",
     "ConfirmPassword": "Confirmar Password",
@@ -15,8 +16,10 @@
     "Logout": "Salir",
     "No Feed": "No Feed",
     "No Friends": "No hay amigos registrados, no olvides agregar nuevos amigos!",
+    "NoProducts": "No hay productos",
     "Products": "Productos",
     "Spanish": "Español",
+    "Subcategory": "Subcategoria",
     "Submit": "Enviar",
     "Summary": "Inventario",
     "Support": "Soporte",

@@ -14,6 +14,7 @@ import Loan from '../apps/Loan';
 import Products from '../content/Products';
 import Product from '../content/Product';
 import Stuffier from '../content/Stuffier';
+import SubcategoryPage from '../content/SubcategoryPage';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
@@ -35,7 +36,7 @@ const MainRoutes = () => {
       <Route path="category/add" element={<AddCategory type='category' />} />
       <Route path="category/:id" element={<CategoryPage />} />
       <Route path="subcategory/add" element={<AddCategory type='subcategory' />} />
-      <Route path="subcategory/:id" element={<CategoryPage />} />
+      <Route path="subcategory/:id" element={<SubcategoryPage />} />
       <Route path="exchange" element={<Exchange />} />
       <Route path="loan" element={<Loan />} />
       <Route path="buy" element={<Buy />} />

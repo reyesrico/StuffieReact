@@ -2,27 +2,38 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { map } from 'lodash';
-import { useTranslation } from 'react-i18next';
 
+import Media from '../shared/Media';
 import State from '../../redux/State';
 import Stuff from '../types/Stuff';
-import Media from '../shared/Media';
+import Subcategory from '../types/Subcategory';
 import { Icon } from '@fluentui/react/lib/Icon';
 import './CategoryPage.scss';
+import { useTranslation } from 'react-i18next';
 
-const CategoryPage = () => {
+const SubcategoryPage = () => {
   const { t } = useTranslation();
   let products = useSelector((state: State) => state.products);
-  let categories = useSelector((state: State) => state.categories);
+  let subcategories = useSelector((state: State) => state.subcategories);
   let { id } = useParams();
-  let categoryId = id ? parseInt(id) : -1;
-  let category: any = categories.find(c => c.id === categoryId);
+  let subcategoryId = id ? parseInt(id) : -1;
+  let subcategory: Subcategory | undefined = subcategories.find(c => c.id === subcategoryId);
 
-  const stuff: any = products[category.id];
-  const name = category.name;
+  const stuff = Object.keys(products)
+      .filter((categoryId: string) => id?.startsWith(categoryId))
+      .reduce((ps: any, categoryId: string) => {
+        let psBySub = products[parseInt(categoryId)].filter((p: any) => {
+          return p.subcategory === subcategoryId
+        });
+        return ps.concat(psBySub);
+      }, []);
+
+  console.log({ stuff });
+  const name = subcategory?.name;
+
   return (
     <div className="category-page">
-      <h3>{t('Category')} {name}</h3>
+      <h3>{t('Subcategory')} {name}</h3>
       <hr />
       {!products && <div>{t('NoProducts')}</div>}
       {!stuff || !stuff.length && <div>{t('NoProducts')}</div>}
@@ -61,4 +72,4 @@ const CategoryPage = () => {
   );
 }
 
-export default CategoryPage;
+export default SubcategoryPage;

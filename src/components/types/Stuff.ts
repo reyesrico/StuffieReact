@@ -4,7 +4,7 @@ import Subcategory from "./Subcategory";
 export default interface Stuff {
   id: number,
   name: string,
-  category: Category,
-  subcategory: Subcategory,
+  category: number, //Category,
+  subcategory: number, /// Subcategory,
   fileName: string
 }

@@ -82,10 +82,11 @@ const SearchBar = (props: any) => {
       return (
         <div className="search__results">
           {results.map((result: any, index: number) => {
+            const linkTo = `/${result.type.toLowerCase()}/${result.id}`;
             return (
               <div className="search__result" key={index}>
                 {!selectProduct &&
-                  <Link key={index} className="search__result-link" to={getLinkTo(result)}>
+                  <Link key={index} className="search__result-link" to={linkTo}>
                     {renderResultName(result)}
                   </Link>
                 }
