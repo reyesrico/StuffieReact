@@ -20,6 +20,17 @@ import { isProductsEmpty } from '../helpers/StuffHelper';
 import { mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
 
+// import Swiper core and required modules
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
 import './Products.scss';
 
 const Products = () => {
@@ -44,7 +55,7 @@ const Products = () => {
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
 
     getProductsFromIds(mapIds(ids))
-    .then(res => setRequestProducts(res.data));
+      .then(res => setRequestProducts(res.data));
   }, [exchangeRequests, loanRequests]);
 
   const generateReport = () => {
@@ -103,14 +114,15 @@ const Products = () => {
                   </div>
                 </div>
               </li>
-            )}
+            )
+          }
           )}
         </ul>
       </div>
     )
   }
 
- const renderLoans = () => {
+  const renderLoans = () => {
     return (
       <div className="products__requests">
         <hr />
@@ -149,7 +161,8 @@ const Products = () => {
                   </div>
                 </div>
               </li>
-            )}
+            )
+          }
           )}
         </ul>
       </div>
@@ -178,14 +191,26 @@ const Products = () => {
             return (
               <div key={category.id}>
                 <h4 className="products__subheader">{category.name}</h4>
-                <ul className="products__list">
+                <Swiper
+                  // install Swiper modules
+                  modules={[Navigation, Pagination, Scrollbar, A11y]}
+                  spaceBetween={50}
+                  slidesPerView={3}
+                  navigation
+                  pagination={{ clickable: true }}
+                  scrollbar={{ draggable: true }}
+                  onSwiper={(swiper) => console.log(swiper)}
+                  onSlideChange={() => console.log('slide change')}
+                >
                   {map(products[category.id as number], (product: ProductType) => {
                     const match = { params: { id: product.id } };
-                    return <Product key={product.id} match={match} showCost={true} product={product} />
+                    return (
+                    <SwiperSlide>
+                      <Product key={product.id} match={match} showCost={true} product={product} />
+                    </SwiperSlide>);
                   })}
-                </ul>
-              </div>
-            )
+                </Swiper>
+              </div>);
           })}
           <hr />
           <Button onClick={() => generateReport()} text="Generate Report"></Button>
