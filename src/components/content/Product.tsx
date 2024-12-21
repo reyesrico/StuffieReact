@@ -66,7 +66,7 @@ const Product = (props: any) => {
         <div className="product__cost-elements">
           $<TextField type="number" name="costTF" value={cost.toString()}
             min={0} max={100} onChange={(e: any) => setCost(e.target.value)} />
-          <Button text="Sell" onClick={updateCost}/>
+          <Button text="Sell" onClick={() => updateCost()}/>
         </div>
       </div>);
     }

@@ -10,16 +10,26 @@ const TextField = (props: TextFieldProps) => {
     range = { min, max };
   }
 
+  const style = React.useMemo(() => {
+    return {
+      ...containerStyle,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
+  }, [containerStyle]);
+
   return (
-    <div style={containerStyle}>
+    <div style={style}>
       {value !== null && !onChange &&
         <input
           placeholder={placeholder || ''}
           value={value}
           disabled={disabled}
           ref={reference}
+          onChange={onChange}
           {...range}
-          {...props}
         />
       }
       {onChange &&
@@ -28,8 +38,8 @@ const TextField = (props: TextFieldProps) => {
           disabled={disabled}
           ref={reference}
           value={value}
+          onChange={onChange}
           {...range}
-          {...props}
         />
       }
     </div>

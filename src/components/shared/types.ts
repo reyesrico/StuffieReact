@@ -42,7 +42,7 @@ export interface LoadingProps {
 
 export interface ButtonProps {
   type?: 'submit' | 'reset',
-  onClick?: Function,
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   text: string,
   disabled?: boolean,
   children?: any
