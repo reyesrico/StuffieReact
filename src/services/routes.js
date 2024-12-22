@@ -1,56 +1,70 @@
-import config from './config';
+import config, { useCodehooks } from './config';
+
+const server = config.server;
+
+const urlRoutes = {
+  categories: `${server}categories`,
+  subcategories: `${server}subcategories`,
+  stuff: `${server}stuff`,
+  stuffiers_stuff: useCodehooks ? `${server}stuffiersstuff` : `${server}stuffiers-stuff`,
+  stuffiers: `${server}stuffiers`,
+  friends: `${server}friends`,
+  friend_requests: useCodehooks ? `${server}friendrequests` : `${server}friend-requests`,
+  exchange_requests: useCodehooks ? `${server}exchangerequests` : `${server}exchange-requests`,
+  loan_requests: useCodehooks ? `${server}loanrequests` : `${server}loan-requests`,
+}
 
 const routes = {
   category: {
-    add: () => `${config.server}categories`,
-    list: () => `${config.server}categories`,
-    detail: id => `${config.server}categories?q=${JSON.stringify({ id: parseInt(id) })}`
+    add: () => urlRoutes.categories,
+    list: () => urlRoutes.categories,
+    detail: id => `${urlRoutes.categories}?q=${JSON.stringify({ id: parseInt(id) })}`
   },
   cloudinary: {
     exist: () => `https://${config.cloudinary.apiKey}:${config.cloudinary.apiSecret}@api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/resources/image`
   },
   subcategory: {
-    add: () => `${config.server}subcategories`,
-    list: () => `${config.server}subcategories`,
-    detail: id => `${config.server}subcategories?q=${JSON.stringify({ id: parseInt(id) })}`
+    add: () => urlRoutes.subcategories,
+    list: () => urlRoutes.subcategories,
+    detail: id => `${urlRoutes.subcategories}?q=${JSON.stringify({ id: parseInt(id) })}`
   },
   stuff: {
-    addStuffiersStuff: () => `${config.server}stuffiers-stuff`,
-    addStuff: () => `${config.server}stuff`,
-    detail: id => `${config.server}stuff?q=${JSON.stringify({ id: parseInt(id) })}`,
-    listDetail: ids => `${config.server}stuff?q={"$or":${JSON.stringify(ids)}}&metafields=true`,
-    listForStuffier: id_stuffier => `${config.server}stuffiers-stuff?q=${JSON.stringify({ id_stuffier })}`,
-    listStuffiers: ids_stuffier => `${config.server}stuffiers-stuff?q={"$or":${JSON.stringify(ids_stuffier)}}`,
-    detailFromCategories: (category, subcategory) => `${config.server}stuff?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`,
-    listPendingPics: () =>  `${config.server}stuff?q={"$or": [ {"file_name": {"$exists": false}}, {"file_name": ""} ]}`,
-    updateStuff: (_id) => `${config.server}stuffiers-stuff/${_id}`
+    addStuffiersStuff: () => urlRoutes.stuffiers_stuff,
+    addStuff: () => urlRoutes.stuff,
+    detail: id => `${urlRoutes.stuff}?q=${JSON.stringify({ id: parseInt(id) })}`,
+    listDetail: ids => `${urlRoutes.stuff}?q={"$or":${JSON.stringify(ids)}}&metafields=true`,
+    listForStuffier: id_stuffier => `${urlRoutes.stuffiers_stuff}?q=${JSON.stringify({ id_stuffier })}`,
+    listStuffiers: ids_stuffier => `${urlRoutes.stuffiers_stuff}?q={"$or":${JSON.stringify(ids_stuffier)}}`,
+    detailFromCategories: (category, subcategory) => `${urlRoutes.stuff}?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`,
+    listPendingPics: () =>  `${urlRoutes.stuff}?q={"$or": [ {"file_name": {"$exists": false}}, {"file_name": ""} ]}`,
+    updateStuff: (_id) => `${urlRoutes.stuffiers_stuff}/${_id}`
   },
   user: {
-    detail: email => `${config.server}stuffiers?q=${JSON.stringify({ email })}`,
-    update: id => `${config.server}stuffiers/${id}`,
-    listDetail: ids => `${config.server}stuffiers?q={"$or":${JSON.stringify(ids)}}`,
-    friends: email => `${config.server}friends?q=${JSON.stringify({ email_stuffier: email })}`,
-    list: () => `${config.server}stuffiers`,
-    loginUser: (email, password) => `${config.server}stuffiers?q=${JSON.stringify({ email, password })}`,
-    registerUser: () => `${config.server}stuffiers`,
-    lastId: () => `${config.server}stuffiers?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
-    requestToBeFriend: () => `${config.server}friend-requests`,
-    friendsRequest: email_stuffier => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier })}`,
-    friendRequestDetail: (email_stuffier, id_friend) => `${config.server}friend-requests?q=${JSON.stringify({ email_stuffier, id_friend })}`,
-    deleteFriendRequest: id => `${config.server}friend-requests/${id}`,
-    friend: () => `${config.server}friends`,
-    userRequests: () => `${config.server}stuffiers?q={"request": true}`,
-    deleteUserRequest: id => `${config.server}stuffiers/${id}`
+    detail: email => `${urlRoutes.stuffiers}?q=${JSON.stringify({ email })}`,
+    update: id => `${urlRoutes.stuffiers}/${id}`,
+    listDetail: ids => `${urlRoutes.stuffiers}?q={"$or":${JSON.stringify(ids)}}`,
+    friends: email => `${urlRoutes.friends}?q=${JSON.stringify({ email_stuffier: email })}`,
+    list: () => urlRoutes.stuffiers,
+    loginUser: (email, password) => `${urlRoutes.stuffiers}?q=${JSON.stringify({ email, password })}`,
+    registerUser: () => urlRoutes.stuffiers,
+    lastId: () => `${urlRoutes.stuffiers}?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
+    requestToBeFriend: () => urlRoutes.friend_requests,
+    friendsRequest: email_stuffier => `${urlRoutes.friend_requests}?q=${JSON.stringify({ email_stuffier })}`,
+    friendRequestDetail: (email_stuffier, id_friend) => `${urlRoutes.friend_requests}?q=${JSON.stringify({ email_stuffier, id_friend })}`,
+    deleteFriendRequest: id => `${urlRoutes.friend_requests}/${id}`,
+    friend: () => urlRoutes.friends,
+    userRequests: () => `${urlRoutes.stuffiers}?q={"request": true}`,
+    deleteUserRequest: id => `${urlRoutes.stuffiers}/${id}`
   },
   exchange: {
-    request: () => `${config.server}exchange-requests`,
-    list: id => `${config.server}exchange-requests?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
-    deleteRequest: _id => `${config.server}exchange-requests/${_id}`
+    request: () => urlRoutes.exchange_requests,
+    list: id => `${urlRoutes.exchange_requests}?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
+    deleteRequest: _id => `${urlRoutes.exchange_requests}/${_id}`
   },
   loan: {
-    request: () => `${config.server}loan-requests`,
-    list: id => `${config.server}loan-requests?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
-    deleteRequest: _id => `${config.server}loan-requests/${_id}`
+    request: () => urlRoutes.loan_requests,
+    list: id => `${urlRoutes.loan_requests}?q={ "$or": [{ "id_stuffier": ${id} } ,{ "id_friend": ${id} }] }`,
+    deleteRequest: _id => `${urlRoutes.loan_requests}/${_id}`
   },
   covid: {
     default: () => `https://api.covid19api.com/`,
@@ -60,7 +74,7 @@ const routes = {
    //  countryStatus: (country) => `/dayone/country/${country}/status/confirmed/live`
   },
   spotify: {
-    fetch: () => `${config.server}conf?q={"platform": "spotify"}`
+    fetch: () => `${server}conf?q={"platform": "spotify"}`
   }
 };
 

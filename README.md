@@ -32,6 +32,12 @@ Stuffie App: [https://reyesrico.github.io/StuffieReact/](https://reyesrico.githu
 
 <hr />
 
+## Want to help?
+Clone repo, add a Cloudinary and ChatGPT accounts
+
+config.ts
+useCodehooks = true | false (if blocked)
+
 ## About
 Author: [Carlos Reyes-Rico (Carlos Reyes)](https://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html)
 

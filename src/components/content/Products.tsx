@@ -202,10 +202,10 @@ const Products = () => {
                   onSwiper={(swiper) => console.log(swiper)}
                   onSlideChange={() => console.log('slide change')}
                 >
-                  {map(products[category.id as number], (product: ProductType) => {
+                  {map(products[category.id as number], (product: ProductType, prodIndex: number) => {
                     const match = { params: { id: product.id } };
                     return (
-                    <SwiperSlide>
+                    <SwiperSlide key={`prodIndex_${prodIndex}`}>
                       <Product key={product.id} match={match} showCost={true} product={product} />
                     </SwiperSlide>);
                   })}

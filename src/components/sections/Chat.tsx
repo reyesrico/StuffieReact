@@ -11,21 +11,21 @@ import { useChatGpt } from '../../services/useChatGpt';
 
 const Chat = () => {
   const user = useSelector((state: State) => state.user);
-  const { messages, sendMessage } = useChatGpt();
+  const { messages, sendMessage, isLoading } = useChatGpt();
   const { t } = useTranslation();
   const messageEl = useRef(null);
   const [newMessage, setNewMessage] = useState("");
   const width = window.screen.width <= 900 ? "85%" : "90%";
 
-  useEffect(() => {
-    // TBR
-    if (messageEl && messageEl.current) {
-      (messageEl.current as any).addEventListener('DOMNodeInserted', (event: any) => {
-        const { currentTarget: target } = event;
-        target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
-      });
-    }
-  }, [messages]);
+  // useEffect(() => {
+  //   // TBR
+  //   if (messageEl && messageEl.current) {
+  //     (messageEl.current as any).addEventListener('DOMNodeInserted', (event: any) => {
+  //       const { currentTarget: target } = event;
+  //       target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+  //     });
+  //   }
+  // }, [messages]);
 
   const getChatBubble = (userName: string, message: any) => {
     let chatMessage = 'chat__message';
@@ -34,6 +34,11 @@ const Chat = () => {
     }
 
     return chatMessage + (user.id === message.id ? '-user' : '-other');
+  }
+
+  const onSubmit = () => {
+    sendMessage(newMessage);
+    setNewMessage("");
   }
 
   return (
@@ -55,8 +60,8 @@ const Chat = () => {
           containerStyle={{ width }}
         />
         <div className="chat__form-bottom">
-          {/* <div className="chat__status">Status: {status}</div> */}
-          <Button onClick={() => sendMessage(newMessage)} text={"Submit"} />
+          <div className="chat__status">Loading: {isLoading}</div>
+          {!isLoading && <Button onClick={() => onSubmit()} text={"Submit"} />}
         </div>
       </div>
     </div>
