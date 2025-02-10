@@ -16,6 +16,7 @@ const Chat = () => {
   const messageEl = useRef(null);
   const [newMessage, setNewMessage] = useState("");
   const width = window.screen.width <= 900 ? "85%" : "90%";
+  const status = isLoading ? "Loading..." : "Ready";
 
   // useEffect(() => {
   //   // TBR
@@ -60,7 +61,7 @@ const Chat = () => {
           containerStyle={{ width }}
         />
         <div className="chat__form-bottom">
-          <div className="chat__status">Loading: {isLoading}</div>
+          <div className="chat__status">Status: {status}</div>
           {!isLoading && <Button onClick={() => onSubmit()} text={"Submit"} />}
         </div>
       </div>
