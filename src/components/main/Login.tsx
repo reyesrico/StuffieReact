@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import FacebookLogin from 'react-facebook-login';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
 import FacebookUser from '../types/FacebookUser';
+import State from '../../redux/State';
 import TextField from '../shared/TextField';
+import UserContext from '../context/UserContext';
 import config from '../../services/config';
 import { addUserFBPicture, fetchUser, fetchUserHookWithMessage, loginUserHook } from '../../redux/user/actions';
 
 import './Login.scss';
-import State from '../../redux/State';
 
 const Login = ({ setMessage, setIsLoading }: any) => {
+  const { loginUser } = useContext(UserContext);
+
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const [ loginFB, setLoginFB ] = useState(false);
@@ -22,6 +25,8 @@ const Login = ({ setMessage, setIsLoading }: any) => {
     if (email && password) {
       loginUserHook(email, password)
         .then((response: any) => {
+          // console.log({ data: response.data });
+          loginUser(response.data[0]);
           fetchUserHookWithMessage(response.data[0].email, setIsLoading, setMessage, dispatch);
           localStorage.setItem('username', response.data[0].email);
         })

@@ -39,12 +39,15 @@ export const fetchUser = (email) => dispatch => {   //makePaginatedApiActionCrea
 }
 
 // https://kurthutten.com/blog/react-hook-lazy-loading-pattern/
-export const fetchUserHook = (email, setIsLoading, dispatch) => {
-  setIsLoading(true);
+export const fetchUserHook = (email, dispatch) => { // THIS ONE
+  // setIsLoading(true);
   return getStuffier(email)
-    .then(res => dispatch(userFetched(res.data[0], email)))
-    .catch(err => err)
-    .finally(() => setIsLoading(false));
+    .then(res => {
+      dispatch(userFetched(res.data[0], email));
+      return Promise.resolve(res.data[0]);
+    });
+    // .catch(err => err)
+    // .finally(() => setIsLoading(false));
 }
 
 export const fetchUserHookWithMessage = (email, setIsLoading, setMessage, dispatch) => {

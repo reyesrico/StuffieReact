@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +20,7 @@ import { dispatchPedingProducts, fetchPendingProductsHook } from '../../redux/pe
 
 import './FetchData.scss';
 import Category from '../types/Category';
+import UserContext from '../context/UserContext';
 
 const fetchBasis = (user: User, sessionStorage: Storage, dispatch: Function) => {
   if (sessionStorage.getItem('categories')) {
@@ -79,7 +80,9 @@ const fetchProducts = (user: User, categories: Category[], setIsLoading: Functio
 
 const FetchData = () => {
   const [ isLoading, setIsLoading ] = useState(true);
-  const user = useSelector((state: State) => state.user);
+  const { user: userContextValue } = useContext(UserContext);
+  const [user, setUser] = useState(userContextValue);
+  // const user = useSelector((state: State) => state.user);
   const categories = useSelector((state: State) => state.categories);
   const subcategories = useSelector((state: State) => state.subcategories);
   // const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
@@ -96,6 +99,12 @@ const FetchData = () => {
   const stableFetchLoanRequests = useCallback(fetchLoanRequestsHook, []);
 
   const { t } = useTranslation();
+
+  // Forcing getting new userContextValue
+  useEffect(() => {
+    console.log("entra " + userContextValue);
+    setUser(userContextValue);
+  }, [userContextValue]);
 
   useEffect(() => {
     let sessionStorage = window.sessionStorage;

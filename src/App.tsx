@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 
 import i18n from './config/i18n';
 import TopRoutes from './components/main/TopRoutes';
+import { UserProvider } from './components/context/UserContext';
+
 import './App.scss';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
@@ -18,9 +20,11 @@ const App = (props: any) => {
 		<div className="stuffie__app">
 			<Provider store={store}>
 				<I18nextProvider i18n={i18n}>
-					<BrowserRouter>
-						<TopRoutes />
-					</BrowserRouter>
+					<UserProvider>
+						<BrowserRouter>
+							<TopRoutes />
+						</BrowserRouter>
+					</UserProvider>
 				</I18nextProvider>
 			</Provider>
 		</div>

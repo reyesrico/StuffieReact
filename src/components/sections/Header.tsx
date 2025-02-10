@@ -9,14 +9,16 @@ import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
+import UserContext from '../context/UserContext';
 import { logout } from '../../redux/user/actions';
 import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
 
 import './Header.scss';
 
 const Header = () => {
-  let state = useSelector((state: State) => state);
-  let user = state.user;
+  const { user, logoutUser } = React.useContext(UserContext);
+  // let state = useSelector((state: State) => state);
+  // let user = state.user;
   let userRequests = useSelector((state: State) => state.userRequests);
   let friendsRequests = useSelector((state: State) => state.friendsRequests);
   let products = useSelector((state: State) => state.products);
@@ -43,6 +45,7 @@ const Header = () => {
 
   const handleLogout = (event: any) => {
     event.preventDefault();
+    logoutUser();
     dispatch(logout());
     navigate('/');
   }

@@ -1,18 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
 
 import Loading from '../shared/Loading';
 import Login from './Login';
 import FetchData from './FetchData';
+import Main from './Main';
 import Media from '../shared/Media';
 import Register from './Register';
 import State from '../../redux/State';
+import UserContext from '../context/UserContext';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { fetchUserHook } from '../../redux/user/actions';
 import './Auth.scss';
-import Main from './Main';
 
 const getMessageType = (message: string) => {
   if (message.toLowerCase().includes('Error')) {
@@ -24,17 +25,22 @@ const getMessageType = (message: string) => {
   return WarningMessageType.WARNING;
 }
 
-const fetchUser = (userName: string, setIsLoading: Function, dispatch: Function) => {
-  fetchUserHook(userName, setIsLoading, dispatch);
-}
 
 const Auth = () => {
+  const { user, loginUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const user = useSelector((state: State) => state.user);
+  // const user = useSelector((state: State) => state.user);
   const products: any = useSelector((state: State) => state.products);
   const dispatch = useDispatch();
-  const stableFetchUser = useCallback(fetchUser, []);
+  // const stableFetchUser = useCallback(fetchUser, []);
+
+  const stableFetchUser = useCallback(async (userName: string, setIsLoading, dispatch)=> {
+    setIsLoading(true);
+    const data = await fetchUserHook(userName, dispatch);
+    loginUser(data);
+    setIsLoading(false);
+  }, [dispatch]);  
 
   useEffect(() => {
     let userName = localStorage.getItem('username');
