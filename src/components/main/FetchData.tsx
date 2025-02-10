@@ -20,7 +20,7 @@ import { dispatchPedingProducts, fetchPendingProductsHook } from '../../redux/pe
 
 import './FetchData.scss';
 import Category from '../types/Category';
-import UserContext from '../context/UserContext';
+import UserContext from '../../context/UserContext';
 
 const fetchBasis = (user: User, sessionStorage: Storage, dispatch: Function) => {
   if (sessionStorage.getItem('categories')) {

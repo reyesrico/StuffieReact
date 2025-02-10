@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 
 import i18n from './config/i18n';
 import TopRoutes from './components/main/TopRoutes';
-import { UserProvider } from './components/context/UserContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { UserProvider } from './context/UserContext';
 
 import './App.scss';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
@@ -21,9 +22,11 @@ const App = (props: any) => {
 			<Provider store={store}>
 				<I18nextProvider i18n={i18n}>
 					<UserProvider>
-						<BrowserRouter>
-							<TopRoutes />
-						</BrowserRouter>
+						<ThemeProvider>
+							<BrowserRouter>
+								<TopRoutes />
+							</BrowserRouter>
+						</ThemeProvider>
 					</UserProvider>
 				</I18nextProvider>
 			</Provider>

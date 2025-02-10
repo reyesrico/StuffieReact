@@ -27,7 +27,7 @@
 }
 
 .stuffie__content {
-  @include content-background;
+  // @include content-background;
   @include margin(8px, 'horizontal');
   align-self: stretch;
   width: 65%;
@@ -57,8 +57,9 @@
   height: 30px;
 }
 
-.stuffie__apps {
+.stuffie__right-section {
   @include section-background;
+  @include margin(8px, bottom);
   width: 200px;
 }
 

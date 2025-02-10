@@ -6,7 +6,7 @@ import Button from '../shared/Button';
 import FacebookUser from '../types/FacebookUser';
 import State from '../../redux/State';
 import TextField from '../shared/TextField';
-import UserContext from '../context/UserContext';
+import UserContext from '../../context/UserContext';
 import config from '../../services/config';
 import { addUserFBPicture, fetchUser, fetchUserHookWithMessage, loginUserHook } from '../../redux/user/actions';
 

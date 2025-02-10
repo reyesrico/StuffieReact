@@ -5,19 +5,20 @@ import { Link } from 'react-router-dom';
 
 import Apps from '../sections/Apps';
 import Chat from '../sections/Chat';
-import MainRoutes from './MainRoutes';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
+import MainRoutes from './MainRoutes';
 import Menu from '../sections/Menu';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
-
-import './Main.scss';
+import Theme from '../sections/Theme';
 import {
   defaultImageUrl,
   existImage,
   userImageUrl
 } from '../../services/cloudinary-helper';
+
+import './Main.scss';
 
 const Main = () => {
   const user = useSelector((state: State) => state.user);
@@ -61,10 +62,10 @@ const Main = () => {
           <MainRoutes />
         </div>
         <div className="stuffie__right">
-          {/* <div className="stuffie__spotify">
-            <Spotify />
-          </div> */}
-          <div className="stuffie__apps">
+          <div className="stuffie__right-section">
+            <Theme />
+          </div>
+          <div className="stuffie__right-section">
             <Apps />
           </div>
         </div>

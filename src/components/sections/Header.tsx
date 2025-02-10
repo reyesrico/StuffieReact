@@ -9,7 +9,7 @@ import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
-import UserContext from '../context/UserContext';
+import UserContext from '../../context/UserContext';
 import { logout } from '../../redux/user/actions';
 import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
 

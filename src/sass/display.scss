@@ -1,3 +1,5 @@
+@import "../styles/theme"; 
+
 $border-radius: 10px;
 $padding_background: 12px;
 
@@ -113,7 +115,8 @@ $padding_background: 12px;
 
 @mixin section-background() {
   @include background;
-  background-color: $white;
+  background-color: var(--background-color);
+  // background-color: $white;
 }
 
 @mixin header-background() {

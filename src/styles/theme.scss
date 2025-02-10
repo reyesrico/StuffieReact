@@ -1,0 +1,29 @@
+:root {
+  // SCSS Section Theme
+  --background-color: white;
+  --text-color: black;
+
+  // Global HTML Theme
+  background-color: #e5eaed;
+  color: black;
+}
+
+[data-theme="dark"] {
+  // SCSS Section Theme
+  --background-color: #b2b2b2;
+  --text-color: black;
+
+  // Global HTML Theme
+  background-color: #5b5d5e;
+  // color: #e5e5e5;
+}
+
+[data-theme="light"] {
+  // SCSS Section Theme
+  --background-color: white;
+  --text-color: black;
+
+  // Global HTML Theme
+  background-color: #e5eaed;
+  color: black;
+}

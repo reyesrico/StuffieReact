@@ -30,7 +30,7 @@ const Menu = () => {
               style={{ color: 'inherit', textDecoration: 'inherit' }}
             >
               <div className='menu__category-row'>
-                <Icon iconName="LocationDot"></Icon>
+                <Icon iconName="ArrowEnter"></Icon>
                 <span className='menu__category-name'>{cat.name}</span>
               </div>
             </Link>

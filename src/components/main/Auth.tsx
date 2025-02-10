@@ -9,7 +9,7 @@ import Main from './Main';
 import Media from '../shared/Media';
 import Register from './Register';
 import State from '../../redux/State';
-import UserContext from '../context/UserContext';
+import UserContext from '../../context/UserContext';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { fetchUserHook } from '../../redux/user/actions';

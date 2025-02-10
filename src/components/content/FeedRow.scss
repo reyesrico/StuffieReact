@@ -1,10 +1,11 @@
 @import '../../sass/main.scss';
 
 .feed-row {
+  @include section-background;
   @include flex(column);
   @include border-radius;
   @include padding(8px, 'all');
-  background-color: $white;
+  // background-color: $white;
   box-shadow: 0px 2px $blue;
   margin-bottom: 16px;
 }
