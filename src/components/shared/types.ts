@@ -26,7 +26,7 @@ export interface MenuState {
 
 export interface DropDownProps {
   onChange: Function,
-  values: any
+  values: any[]
 }
 
 export interface DropDownState {

@@ -9,6 +9,7 @@ import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
+import Theme from './Theme';
 import UserContext from '../../context/UserContext';
 import { logout } from '../../redux/user/actions';
 import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
@@ -152,7 +153,7 @@ const Header = () => {
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
         <div className="stuffie-header__apps">
           <div id="apps">
-            {/* <div className="stuffie-header__menu-spotify"><Spotify /></div> */}
+            <div className="stuffie-header__menu-theme"><Theme /></div>
             <div className="stuffie-header__apps-apps"><Apps /></div>
           </div>
           <button className="icon" onClick={event => event && toggleApps()}>

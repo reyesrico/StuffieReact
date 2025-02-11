@@ -4,7 +4,8 @@
   "private": true,
   "homepage": "http://reyesrico.github.io/StuffieReact",
   "dependencies": {
-    "@fluentui/react": "^8.96.0",
+    "@fluentui/react": "^8.122.9",
+    "@fluentui/react-components": "^9.58.3",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@stuffie/connect": "^1.0.1",
     "@testing-library/react-hooks": "^7.0.2",

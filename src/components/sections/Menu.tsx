@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import Category from '../types/Category';
 import State from '../../redux/State';
-import { Icon } from '@fluentui/react/lib/Icon';
+// import { Icon } from '@fluentui/react/lib/Icon';
+import { CircleSmallFilled } from "@fluentui/react-icons"; 
 import { isProductsEmpty } from '../../components/helpers/StuffHelper';
 import './Menu.scss';
 
@@ -30,7 +31,7 @@ const Menu = () => {
               style={{ color: 'inherit', textDecoration: 'inherit' }}
             >
               <div className='menu__category-row'>
-                <Icon iconName="ArrowEnter"></Icon>
+                <CircleSmallFilled />
                 <span className='menu__category-name'>{cat.name}</span>
               </div>
             </Link>
