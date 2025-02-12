@@ -130,7 +130,8 @@ $padding_background: 12px;
 
 @mixin content-detail-background() {
   @include background;
-  background-color: $white;
+  background-color: var(--background-color);
+  // background-color: $white;
   height: calc(100% - #{$padding_background * 2});
 }
 

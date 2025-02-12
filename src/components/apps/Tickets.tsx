@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import Tesseract from 'tesseract.js';
 
+import Button from '../shared/Button';
+
 const Tickets = () => {
   let progressValue = 0;
   let [ file, setFile ] = useState<File>();
+  const [imageUrl, setImageUrl] = useState<string>("https://i0.wp.com/i.redd.it/a7hqgjbxn0v21.jpg");
+  const [caption, setCaption] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (event: any) => {
     if (event && event.target && event.target.files) {
@@ -42,6 +47,44 @@ const Tickets = () => {
   }
   */
 
+  const testFetch = (method: string, action: string, url: string, headers: any, payload: any) => {
+    fetch(`${url}/${action}`, {
+      method,
+      headers,
+      body: method === "POST" ? JSON.stringify(payload) : null,
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data);
+
+      // TODO: Handle the response data
+      const info = action === 'generate-caption' ? data.caption : data.message;
+      setCaption(info);
+    })
+    .catch(err => console.log(err))
+    .finally(() => setIsLoading(false));
+  }
+
+
+  const generateCaption = () => {
+    // Testing variables
+    const useLocal = true;
+    const method = 'POST'; // 'GET' or 'POST'
+    const action = 'generate-caption'; // 'test' or 'test-post' or 'generate-caption'
+
+    const url = useLocal ? 'http://localhost:8000' : 'https://stuffie-api-server-sg9r.onrender.com';
+    console.log({ url });
+    const payload = {
+      url: imageUrl,
+    };
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    setIsLoading(true);
+    testFetch(method, action, url, headers, payload);
+  }
+
   return (
     <div className="tickets">
       <h3>Tickets</h3>
@@ -62,6 +105,14 @@ const Tickets = () => {
       </div>
       <hr />
       <div id="result"></div>
+      <hr />
+      <div>Trying with stuffie-api-server</div>
+      <div>
+        <Button onClick={generateCaption} text="GenerateCaption"></Button>
+        <hr />
+        {isLoading && <div>Loading...</div>}
+        {caption && <div>{caption}</div>}
+      </div>
     </div>
   );
 }
