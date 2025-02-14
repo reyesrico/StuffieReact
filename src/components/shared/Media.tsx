@@ -6,8 +6,9 @@ import { existImage } from '../../services/cloudinary-helper';
 import './Media.scss';
 
 const Media = (props: any) => {
-  let { format } = props;
-  let [imageUrl, setImageUrl] = useState('default_product');
+  const { format, fileName, isLogo, width } = props;
+  const [imageUrl, setImageUrl] = useState('default_product');
+  const f = imageUrl === 'default_product' ? 'png' : format;
 
   const didMountRef = useRef(false);
   const prevProps = useRef(props);
@@ -29,30 +30,23 @@ const Media = (props: any) => {
   });
 
   const setUrl = () => {
-    const { fileName, category, subcategory, isProduct } = props;
+    const { fileName, category, subcategory, isProduct, isLogo } = props;
 
     if (isProduct && category && subcategory) {
       const imageUrl = `products/${category}/${subcategory}/${fileName}`;
       existImage(imageUrl)
         .then(() => setImageUrl(imageUrl))
         .catch(() => setImageUrl('default_product'));
-    } else {
+    } else if (!isLogo) {
       setImageUrl(fileName);
     }
   }
 
-  const renderImage = () => {
-    const { format, width } = props;
-    const f = imageUrl === 'default_product' ? 'png' : format;
+  const publicId = React.useMemo(() => {
+    console.log({ fileName });
+    return isLogo ? fileName : imageUrl;
+  }, [fileName, isLogo, imageUrl]);
 
-    return (
-      <div className="media__image">
-        <Image publicId={imageUrl} format={f}>
-          <Transformation width={width} fetchFormat="auto" crop="scale" />
-        </Image>
-      </div>
-    );
-  }
 
   const renderVideo = () => {
     const { fileName, format } = props;
@@ -63,7 +57,13 @@ const Media = (props: any) => {
   return (
     <CloudinaryContext cloudName={config.cloudinary.cloudName}>
       {isVideo && renderVideo()}
-      {!isVideo && renderImage()}
+      {!isVideo && (
+        <div className="media__image">
+        <Image publicId={publicId} format={f}>
+          <Transformation width={width} fetchFormat="auto" crop="scale" />
+        </Image>
+      </div>
+      )}
     </CloudinaryContext>
   );
 }

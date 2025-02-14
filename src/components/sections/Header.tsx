@@ -90,17 +90,16 @@ const Header = () => {
     }
   }
 
+  const logoFileName = React.useMemo(() => {
+    return theme === "light" ? "logo_2020" : "logo_2020_dark";
+  }, [theme])
+
   return (
     <div className="stuffie-header">
       <div className="stuffie-header__left">
         <div className="stuffie-header__info">
           <div className="stuffie-header__logo">
-            <Media
-              fileName={theme === "light" ? "logo_2020" : "logo_2020_dark"}
-              format="jpg"
-              height="50"
-              width="50"
-            />
+            <Media fileName={logoFileName} format="jpg" height="50" width="50" />
           </div>
           <div className='stuffie-header__user'>Stuffie</div>
         </div>
