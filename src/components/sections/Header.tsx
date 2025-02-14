@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,7 @@ import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
 import Theme from './Theme';
+import ThemeContext from '../../context/ThemeContext';
 import UserContext from '../../context/UserContext';
 import { logout } from '../../redux/user/actions';
 import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
@@ -17,6 +18,7 @@ import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudi
 import './Header.scss';
 
 const Header = () => {
+  const  { theme } = useContext(ThemeContext);
   const { user, logoutUser } = React.useContext(UserContext);
   // let state = useSelector((state: State) => state);
   // let user = state.user;
@@ -93,7 +95,12 @@ const Header = () => {
       <div className="stuffie-header__left">
         <div className="stuffie-header__info">
           <div className="stuffie-header__logo">
-            <Media fileName="logo_2020" format="jpg" height="50" width="50" />
+            <Media
+              fileName={theme === "light" ? "logo_2020" : "logo_2020_dark"}
+              format="jpg"
+              height="50"
+              width="50"
+            />
           </div>
           <div className='stuffie-header__user'>Stuffie</div>
         </div>
