@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/StuffieReact/static/css/main.c39fe425.css",
-    "main.js": "/StuffieReact/static/js/main.e2a7a7ee.js",
+    "main.js": "/StuffieReact/static/js/main.1943c542.js",
     "static/media/fa-solid-900.svg": "/StuffieReact/static/media/fa-solid-900.7a8b4f130182d19a2d7c.svg",
     "static/media/fa-brands-400.svg": "/StuffieReact/static/media/fa-brands-400.2f517e09eb2ca6650ff5.svg",
     "static/media/fa-solid-900.eot": "/StuffieReact/static/media/fa-solid-900.9bbb245e67a133f6e486.eot",
@@ -19,10 +19,10 @@
     "static/media/fa-regular-400.woff2": "/StuffieReact/static/media/fa-regular-400.7a3337626410ca2f4071.woff2",
     "index.html": "/StuffieReact/index.html",
     "main.c39fe425.css.map": "/StuffieReact/static/css/main.c39fe425.css.map",
-    "main.e2a7a7ee.js.map": "/StuffieReact/static/js/main.e2a7a7ee.js.map"
+    "main.1943c542.js.map": "/StuffieReact/static/js/main.1943c542.js.map"
   },
   "entrypoints": [
     "static/css/main.c39fe425.css",
-    "static/js/main.e2a7a7ee.js"
+    "static/js/main.1943c542.js"
   ]
 }
