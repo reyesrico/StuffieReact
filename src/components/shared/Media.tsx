@@ -43,7 +43,6 @@ const Media = (props: any) => {
   }
 
   const publicId = React.useMemo(() => {
-    console.log({ fileName });
     return isLogo ? fileName : imageUrl;
   }, [fileName, isLogo, imageUrl]);
 

@@ -9,11 +9,13 @@ export const fetchSubCategoriesHook = (sessionStorage, dispatch) => {
   getSubCategories().then(res =>{
     sessionStorage.setItem('subcategories', JSON.stringify(res.data));
     dispatchSubCategoriesFetched(res.data, dispatch);
+    return res.data;
   });
 }
 
 export const dispatchSubCategoriesFetched = (subcategories, dispatch) => {
   dispatch(subCategoriesFetched(subcategories));
+  return subcategories;
 }
 
 const subCategoryFetched = makeStandardActionCreator(SUBCATEGORY_FETCHED);

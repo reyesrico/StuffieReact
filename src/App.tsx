@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 
 import i18n from './config/i18n';
@@ -16,21 +17,26 @@ import { initializeIcons } from '@fluentui/font-icons-mdl2';
 
 initializeIcons();
 
+// Create a client
+const queryClient = new QueryClient();
+
 const App = (props: any) => {
 	const { store } = props;
 	return (
 		<div className="stuffie__app">
 			<Provider store={store}>
 				<I18nextProvider i18n={i18n}>
-					<UserProvider>
-						<ThemeProvider>
-							{/* <FluentProvider> { /* theme={theme === "light" ? webLightTheme : webDarkTheme}> */ }
-								<BrowserRouter>
-									<TopRoutes />
-								</BrowserRouter>
-							{/* </FluentProvider> */}
-						</ThemeProvider>
-					</UserProvider>
+					<QueryClientProvider client={queryClient}>
+						<UserProvider>
+							<ThemeProvider>
+								{/* <FluentProvider> { /* theme={theme === "light" ? webLightTheme : webDarkTheme}> */ }
+									<BrowserRouter>
+										<TopRoutes />
+									</BrowserRouter>
+								{/* </FluentProvider> */}
+							</ThemeProvider>
+						</UserProvider>
+					</QueryClientProvider>
 				</I18nextProvider>
 			</Provider>
 		</div>

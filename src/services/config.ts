@@ -1,7 +1,7 @@
 
 // useCodehooks = true: use Codehooks as backend
 // otherwise use RestDB as backend
-export const useCodehooks = false;
+export const useCodehooks = true; // false;
 
 const data = {
   cloudinary: {

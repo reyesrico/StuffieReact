@@ -37,7 +37,6 @@ const Header = () => {
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
       .then(res => {
-        console.log({ res });
         setPicture(userImageUrl(user.id));
       })
       .catch(() => setPicture(defaultImageUrl));

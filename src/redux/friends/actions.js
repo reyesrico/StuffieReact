@@ -24,11 +24,13 @@ export const fetchFriendsHook = (email, sessionStorage, dispatch) => {
       const friends = res.data || [];   // TODO: Make this call better
       sessionStorage.setItem('friends', JSON.stringify(friends));
       dispatchFriendsFetched(friends, email, dispatch);
+      return friends;
     });
 }
 
 export const dispatchFriendsFetched = (friends, email, dispatch) => {
   dispatch(friendsFetched(friends, email));
+  return friends;
 }
 
 const friendProductsFetched = makeStandardActionCreator(FRIEND_PRODUCTS_FETCHED);

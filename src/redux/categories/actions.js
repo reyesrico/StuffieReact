@@ -12,11 +12,13 @@ export const fetchCategoriesHook = (sessionStorage, dispatch) => {
   Stuff().getCategories().then(res =>{
     sessionStorage.setItem('categories', JSON.stringify(res.data));
     dispatchCategoriesFetched(res.data, dispatch);
+    return res.data;
   });
 }
 
 export const dispatchCategoriesFetched = (categories, dispatch) => {
   dispatch(categoriesFetched(categories));
+  return categories;
 }
 
 const categoryFeteched = makeStandardActionCreator(CATEGORY_FETCHED);

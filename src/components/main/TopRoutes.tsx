@@ -12,8 +12,8 @@ const TopRoutes = () => {
   const { theme } = React.useContext(ThemeContext);
 
   React.useEffect(() => {
-    console.log({ theme });
-    console.log({ doc: document.documentElement });
+    // console.log({ theme });
+    // console.log({ doc: document.documentElement });
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 

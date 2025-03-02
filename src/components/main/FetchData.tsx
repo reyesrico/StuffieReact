@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
@@ -21,6 +22,38 @@ import { dispatchPedingProducts, fetchPendingProductsHook } from '../../redux/pe
 import './FetchData.scss';
 import Category from '../types/Category';
 import UserContext from '../../context/UserContext';
+
+const elementActions = {
+  categories: { dispatch: dispatchCategoriesFetched, fetchHook: fetchCategoriesHook },
+  products: { dispatch: dispatchProductsFetched, fetchHook: fetchProductsHook },
+  subcategories: { dispatch: dispatchSubCategoriesFetched, fetchHook: fetchSubCategoriesHook },
+  friends: { dispatch: dispatchFriendsFetched, fetchHook: fetchFriendsHook },
+};
+
+const sessionOrHookAction = (
+  key: keyof typeof elementActions,
+  params: {
+    dispatch?: string[],
+    hook?: string[],
+  } | null,
+  dispatch: Function
+) => {
+  const { dispatch: dispatchHook, fetchHook } = elementActions[key];
+
+  if (window.sessionStorage.getItem(key) && params?.dispatch) {
+    let data = JSON.parse(window.sessionStorage.getItem(key) || '');
+    return dispatchHook(data, ...params.dispatch, dispatch);
+  } else if (window.sessionStorage.getItem(key)) {
+    let data = JSON.parse(window.sessionStorage.getItem(key) || '');
+    return dispatchHook(data, dispatch);
+  } else {
+    if (params?.hook) {
+      return fetchHook(...params.hook, window.sessionStorage, dispatch);
+    } else {
+      return fetchHook(window.sessionStorage, dispatch);
+    }
+  }
+}
 
 const fetchBasis = (user: User, sessionStorage: Storage, dispatch: Function) => {
   if (sessionStorage.getItem('categories')) {
@@ -68,29 +101,46 @@ const fetchAdmin = (sessionStorage: Storage, dispatch: Function) => {
 }
 
 
-const fetchProducts = (user: User, categories: Category[], setIsLoading: Function, sessionStorage: Storage, dispatch: Function) => {
-  if (sessionStorage.getItem('products')) {
-    let prods = JSON.parse(sessionStorage.getItem('products') || '');
-    dispatchProductsFetched(prods, user.email, dispatch);
-    setIsLoading(false);
-  } else if (categories.length) {
-    fetchProductsHook(user, categories, setIsLoading, sessionStorage, dispatch);
-  }
-}
 
 const FetchData = () => {
-  const [ isLoading, setIsLoading ] = useState(true);
   const { user: userContextValue } = useContext(UserContext);
   const [user, setUser] = useState(userContextValue);
-  // const user = useSelector((state: State) => state.user);
-  const categories = useSelector((state: State) => state.categories);
-  const subcategories = useSelector((state: State) => state.subcategories);
   // const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
   // const friendsRequests = useSelector((state: State) => state.friendsRequests);
   // const loanRequests = useSelector((state: State) => state.loanRequests);
   const dispatch = useDispatch();
-  const stableFetchBasis = useCallback(fetchBasis, []);
-  const stableFetchProducts = useCallback(fetchProducts, []);
+
+  const { isLoading: isLoadingCategories, data: cats } = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => sessionOrHookAction('categories', null, dispatch),
+  });
+  const { isLoading: isLoadingSubCategories } = useQuery({
+    queryKey: ['subcategories'],
+    queryFn: () => sessionOrHookAction('subcategories', null, dispatch),
+  });
+  const { isLoading: isLoadingFriends } = useQuery({
+    queryKey: ['friends'],
+    queryFn: () => sessionOrHookAction('friends', {
+      hook: [user.email],
+    }, dispatch),
+    enabled: user.email !== '',
+  });
+
+  const categories = useSelector((state: State) => state.categories);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  const products = useSelector((state: State) => state.products);
+
+  const { isLoading: isLoadingProducts } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => sessionOrHookAction('products', {
+      dispatch: [products, user.email],
+      hook: [user, categories],
+    }, dispatch),
+    enabled: categories.length > 0 && user.email !== '',
+  });
+
+  console.log({ cats });
+
   // Admin
   const stableFetchAdmin = useCallback(fetchAdmin, []);
   // Data not critical
@@ -102,49 +152,38 @@ const FetchData = () => {
 
   // Forcing getting new userContextValue
   useEffect(() => {
-    console.log("entra " + userContextValue);
     setUser(userContextValue);
   }, [userContextValue]);
 
-  useEffect(() => {
-    let sessionStorage = window.sessionStorage;
-    stableFetchBasis(user, sessionStorage, dispatch);
-  }, [stableFetchBasis, user, dispatch])
 
-  // fetchProducts
-  useEffect(() => {
-    let sessionStorage = window.sessionStorage;
-    stableFetchProducts(user, categories, setIsLoading, sessionStorage, dispatch);
-  }, [stableFetchProducts, user, categories, dispatch]);
+  // useEffect(() => {
+  //   let sessionStorage = window.sessionStorage;
+  //   if (user.admin) {
+  //     stableFetchAdmin(sessionStorage, dispatch);
+  //   }
+  // }, [stableFetchAdmin, user, dispatch]);
 
-  useEffect(() => {
-    let sessionStorage = window.sessionStorage;
-    if (user.admin) {
-      stableFetchAdmin(sessionStorage, dispatch);
-    }
-  }, [stableFetchAdmin, user, dispatch]);
+  // useEffect(() => {
+  //   if (categories.length && subcategories.length) {
+  //     stableFetchFriendsRequests(user.email, dispatch);
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    if (categories.length && subcategories.length) {
-      stableFetchFriendsRequests(user.email, dispatch);
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (categories.length && subcategories.length) {
+  //     stableFetchExchangeRequests(user.id, dispatch);
+  //   }
+  // }, [])
 
-  useEffect(() => {
-    if (categories.length && subcategories.length) {
-      stableFetchExchangeRequests(user.id, dispatch);
-    }
-  }, [])
-
-  useEffect(() => {
-    if (categories.length && subcategories.length) {
-      stableFetchLoanRequests(user.id, dispatch);
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (categories.length && subcategories.length) {
+  //     stableFetchLoanRequests(user.id, dispatch);
+  //   }
+  // }, [])
 
   // fetchSpotify
 
-  if (isLoading) {
+  if (isLoadingCategories || isLoadingSubCategories || isLoadingFriends || isLoadingProducts) {
     return (
       <div className="fetch-data__loading">
         <Loading size="xl" message={t('Loading-data')} />
