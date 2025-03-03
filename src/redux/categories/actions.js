@@ -15,6 +15,18 @@ export const fetchCategoriesHook = (sessionStorage, dispatch) => {
   });
 }
 
+export const fetchCategoriesHookWithCategories = (sessionStorage, dispatch) => {
+  if (sessionStorage.getItem('categories')) {
+    dispatchCategoriesFetched(JSON.parse(sessionStorage.getItem('categories')), dispatch);
+    return Promise.resolve(JSON.parse(sessionStorage.getItem('categories')));
+  }
+  return Stuff().getCategories().then(res =>{
+    sessionStorage.setItem('categories', JSON.stringify(res.data));
+    dispatchCategoriesFetched(res.data, dispatch);
+    return res.data;
+  });
+}
+
 export const dispatchCategoriesFetched = (categories, dispatch) => {
   dispatch(categoriesFetched(categories));
 }

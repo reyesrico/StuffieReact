@@ -13,6 +13,18 @@ export const fetchUserRequestsHook = (sessionStorage, dispatch) => {
   });
 }
 
+export const fetchUserRequestsHookWithUserRequests = (sessionStorage, dispatch) => {
+  if (sessionStorage.getItem('user-requests')) {
+    dispatchUserRequests(JSON.parse(sessionStorage.getItem('user-requests')), dispatch);
+    return Promise.resolve(JSON.parse(sessionStorage.getItem('user-requests')));
+  }
+  return getUserRequests().then(res =>{
+    sessionStorage.setItem('user-requests', JSON.stringify(res.data));
+    dispatchUserRequests(res.data, dispatch);
+    return res.data;
+  });
+}
+
 export const dispatchUserRequests = (requests, dispatch) => {
   dispatch(userRequestsFetched(requests));
 }

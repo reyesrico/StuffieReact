@@ -13,11 +13,24 @@ export const fetchPendingProducts = () => dispatch => {
 }
 
 export const fetchPendingProductsHook = (sessionStorage, dispatch) => {
-  getPendingProducts().then(res =>{
+  getPendingProducts().then(res => {
     sessionStorage.setItem('products-requests', JSON.stringify(res.data));
     dispatchPedingProducts(res.data, dispatch);
   });
 }
+
+export const fetchPendingProductsHookWithPendingProducts = (sessionStorage, dispatch) => {
+  if (sessionStorage.getItem('products-requests')) {
+    dispatchPedingProducts(JSON.parse(sessionStorage.getItem('products-requests')), dispatch);
+    return Promise.resolve(JSON.parse(sessionStorage.getItem('products-requests')));
+  }
+  return getPendingProducts().then(res => {
+    sessionStorage.setItem('products-requests', JSON.stringify(res.data));
+    dispatchPedingProducts(res.data, dispatch);
+    return res.data;
+  });
+}
+
 
 export const dispatchPedingProducts = (requests, dispatch) => {
   dispatch(pendingProductsFetched(requests));

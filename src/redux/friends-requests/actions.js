@@ -16,3 +16,10 @@ export const fetchFriendsRequestsHook = (email, dispatch) => {
     dispatch(friendsRequestsFetched(res.data));
   });
 }
+
+export const fetchFriendsRequestsHookWithFriendsRequests = (email, dispatch) => {
+  return getFriendsRequests(email).then(res => {
+    dispatch(friendsRequestsFetched(res.data));
+    return Promise.resolve(res.data);
+  });
+}

@@ -199,8 +199,8 @@ const Products = () => {
                   navigation
                   pagination={{ clickable: true }}
                   scrollbar={{ draggable: true }}
-                  onSwiper={(swiper) => console.log(swiper)}
-                  onSlideChange={() => console.log('slide change')}
+                  // onSwiper={(swiper) => console.log(swiper)}
+                  // onSlideChange={() => console.log('slide change')}
                 >
                   {map(products[category.id as number], (product: ProductType, prodIndex: number) => {
                     const match = { params: { id: product.id } };

@@ -43,6 +43,13 @@ export const fetchExchangeRequestsHook = (userId, dispatch) => {
   });
 }
 
+export const fetchExchangeRequestsHookWithExchanges = (userId, dispatch) => {
+  return getExchangeRequests(userId).then(res => {
+    dispatch(requestExchanges(res.data, userId));
+    return Promise.resolve(res.data);
+  });
+}
+
 const requestDelete = makeStandardActionCreator(EXCHANGE_DELETED);
 export const deleteRequest = _id => dispatch => {
   return deleteExchangeRequest(_id)

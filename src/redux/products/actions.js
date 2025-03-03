@@ -89,6 +89,26 @@ export const fetchProductsHook = (user, categories, setLoading, sessionStorage, 
          .finally(() => setLoading(false));
 }
 
+export const fetchProductsHookWithProducts = (user, categories, sessionStorage, dispatch) => {
+  let extraStuff;
+  if (sessionStorage.getItem('products')) {
+    dispatchProductsFetched(JSON.parse(sessionStorage.getItem('products')), user.email, dispatch);
+    return Promise.resolve(JSON.parse(sessionStorage.getItem('products')));
+  }
+  return getStuffList(user.id)
+         .then(res => {
+           extraStuff = res.data;               // []Stuff (with cost)
+           return getListStuff(mapStuff(res.data));
+          })
+         .then(res => {                         // []Product
+           const objects = mapCostToProducts(res.data, extraStuff);
+           const products = getProductsMap(categories, objects);
+           sessionStorage.setItem('products', JSON.stringify(products));
+           dispatchProductsFetched(products, user.email, dispatch);
+           return products;
+         });
+}
+
 export const dispatchProductsFetched = (products, email, dispatch) => {
   dispatch(productsFetched(products, email));
 }

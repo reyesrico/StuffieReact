@@ -27,6 +27,21 @@ export const fetchFriendsHook = (email, sessionStorage, dispatch) => {
     });
 }
 
+export const fetchFriendsHookWithFriends = (email, sessionStorage, dispatch) => {
+  if (sessionStorage.getItem('friends')) {
+    dispatchFriendsFetched(JSON.parse(sessionStorage.getItem('friends')), email, dispatch);
+    return Promise.resolve(JSON.parse(sessionStorage.getItem('friends')));
+  }
+  return getFriends(email)
+    .then(res => getStuffiers(mapFriends(res.data)))
+    .then(res => {
+      const friends = res.data || [];   // TODO: Make this call better
+      sessionStorage.setItem('friends', JSON.stringify(friends));
+      dispatchFriendsFetched(friends, email, dispatch);
+      return friends;
+    });
+}
+
 export const dispatchFriendsFetched = (friends, email, dispatch) => {
   dispatch(friendsFetched(friends, email));
 }

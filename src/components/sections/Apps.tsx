@@ -33,6 +33,7 @@ const Apps = (props: any) => {
       <div className="apps__item"><Link to='/test2'>Test2</Link></div>
       <div className="apps__item"><Link to='/cards'>Cards</Link></div>
       <div className="apps__item"><Link to='/test4'>Test4</Link></div>
+      <div className="apps__item"><Link to='/test5'>Test5</Link></div>
       <hr />
       <div className="apps__item">
         <Menu label={(isOpen: boolean) => renderCurrentLanguage(isOpen)}>

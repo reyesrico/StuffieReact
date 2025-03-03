@@ -43,6 +43,13 @@ export const fetchLoanRequestsHook = (userId, dispatch) => {
   });
 }
 
+export const fetchLoanRequestsHookWithLoans = (userId, dispatch) => {
+  return getLoanRequests(userId).then(res => {
+    dispatch(fetchLoans(res.data, userId));
+    return Promise.resolve(res.data);
+  });
+}
+
 const requestDeleteLoan = makeStandardActionCreator(LOAN_DELETED);
 export const deleteRequestLoan = _id => dispatch => {
   return deleteLoanRequest(_id)

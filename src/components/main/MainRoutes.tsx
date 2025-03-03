@@ -20,6 +20,7 @@ import Tickets from '../apps/Tickets';
 import Test from '../apps/Test';
 import Cards from '../apps/Cards';
 import Test4 from '../apps/Test4';
+import Test5 from '../apps/Test5';
 // import Test2 from '../apps/Test2';
 
 const MainRoutes = () => {
@@ -46,6 +47,7 @@ const MainRoutes = () => {
       <Route path="test" element={<Test />} />
       <Route path="cards" element={<Cards />} />
       <Route path="test4" element={<Test4 />} />
+      <Route path="test5" element={<Test5 />} />
       {/* <Route path="/test2" element={<Test2 />} /> */}
     </Routes>
   );
