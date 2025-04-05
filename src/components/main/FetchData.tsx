@@ -43,7 +43,7 @@ const FetchData = () => {
       fetchCategoriesHookWithCategories(sessionStorage, dispatch),
     enabled: !categories.length, // Only fetch if categories is not available in the Redux store
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -54,7 +54,7 @@ const FetchData = () => {
       fetchSubCategoriesHookWithSubCategories(sessionStorage, dispatch),
     enabled: !subcategories.length, // Only fetch if categories is not available in the Redux store
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -64,7 +64,7 @@ const FetchData = () => {
     queryFn: () => fetchFriendsHookWithFriends(user.email, sessionStorage, dispatch),
     enabled: !!user && !friends.length,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -74,7 +74,7 @@ const FetchData = () => {
     queryFn: () => fetchProductsHookWithProducts(user, categories, sessionStorage, dispatch),
     enabled: isProductsEmpty(products) && (categories.length > 0),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -86,7 +86,7 @@ const FetchData = () => {
     queryFn: () => fetchUserRequestsHookWithUserRequests(sessionStorage, dispatch),
     enabled: user.admin && !userRequests.length,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -95,7 +95,7 @@ const FetchData = () => {
     queryFn: () => fetchPendingProductsHookWithPendingProducts(sessionStorage, dispatch),
     enabled: user.admin && (!pendingProducts.length && !isProductsEmpty(products)),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -105,7 +105,7 @@ const FetchData = () => {
     queryFn: () => fetchFriendsRequestsHookWithFriendsRequests(user.email, dispatch),
     enabled: !friendsRequests.length,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -114,7 +114,7 @@ const FetchData = () => {
     queryFn: () => fetchExchangeRequestsHookWithExchanges(user.id, dispatch),
     enabled: !exchangeRequests.length,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -123,7 +123,7 @@ const FetchData = () => {
     queryFn: () => fetchLoanRequestsHook(user.id, dispatch),
     enabled: !loanRequests.length,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 

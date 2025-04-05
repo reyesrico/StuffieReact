@@ -21,7 +21,7 @@ import './Exchange.scss';
 const Exchange = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   let categories = useSelector((state: State) => state.categories);
   let products = useSelector((state: State) => state.products);

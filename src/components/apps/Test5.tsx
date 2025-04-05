@@ -38,7 +38,7 @@ const Test5 = () => {
       fetchCategoriesHookWithCategories(sessionStorage, dispatch),
     enabled: !categories, // Only fetch if categories is not available in the Redux store
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -48,7 +48,7 @@ const Test5 = () => {
       fetchSubCategoriesHookWithSubCategories(sessionStorage, dispatch),
     enabled: !subcategories, // Only fetch if categories is not available in the Redux store
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -58,7 +58,7 @@ const Test5 = () => {
     queryFn: () => fetchProductsHookWithProducts(user, categories, sessionStorage, dispatch),
     enabled: isProductsEmpty(products) && (categories.length > 0),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -68,7 +68,7 @@ const Test5 = () => {
     queryFn: () => fetchUserRequestsHookWithUserRequests(sessionStorage, dispatch),
     enabled: user.admin && !userRequests,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
@@ -77,7 +77,7 @@ const Test5 = () => {
     queryFn: () => fetchPendingProductsHookWithPendingProducts(sessionStorage, dispatch),
     enabled: user.admin && (!pendingProducts && !isProductsEmpty(products)),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    // cacheTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
   

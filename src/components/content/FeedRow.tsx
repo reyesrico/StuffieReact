@@ -17,7 +17,8 @@ const FeedRow = (props: FeedRowProps) => {
 
   React.useEffect(() => {
     existImage(feedPost.friend_id, "stuffiers/")
-      .then(() => setPicture(userImageUrl(feedPost.friend_id)));
+      .then(() => setPicture(userImageUrl(feedPost.friend_id)))
+      .catch(() => console.log('No image found for user:', feedPost.friend_id)); // fallback to default if no image found
   }, []);
 
   const getProductType = () => {

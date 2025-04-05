@@ -33,7 +33,7 @@ const cards = [
   {
     "type": "AdaptiveCard",
     "version": "1.6",
-    "body": {
+    "body": [{
       "type": "Carousel",
       "timer": 5000,
       "pages": [
@@ -77,7 +77,7 @@ const cards = [
           ]
         }
       ]
-    },
+    }],
     "actions": [
       {
         "type": "Action.OpenUrl",
@@ -94,6 +94,7 @@ const cards = [
   {
     "type": "AdaptiveCard",
     "version": "1.0",
+    "body": [{}],
     "actions": [
       {
         "type": "Action.Submit",

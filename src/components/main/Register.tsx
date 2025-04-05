@@ -13,7 +13,7 @@ const Register = ({ setMessage, setIsLoading }: any) => {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   const enableButton = () => {
     return email.length > 0 &&

@@ -21,7 +21,8 @@ import { mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
 
 // import Swiper core and required modules
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
+import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
+// import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';

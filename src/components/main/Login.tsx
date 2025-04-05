@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
@@ -46,10 +46,10 @@ const Login = ({ setMessage, setIsLoading }: any) => {
   const responseFacebook = (response: FacebookUser) => {
     if (response) {
       try {
-        dispatch(fetchUser(response.email));
+        // dispatch(fetchUser(response.email));
         const picture = response.picture.data.url;
         localStorage.setItem('username', (user.email || ''));
-        dispatch(addUserFBPicture(user, picture));
+        // dispatch(addUserFBPicture(user, picture));
         setMessage("Login successful");
       } catch(_) {
         setMessage("Error: Couldn't login. Try again.");
@@ -77,13 +77,13 @@ const Login = ({ setMessage, setIsLoading }: any) => {
         <Button onClick={() => onClick(email, password)} text="Login" />
       </form>
       <hr className="login__hr" />
-      <FacebookLogin
+      {/* <FacebookLogin
         appId={config.fb.appId}
         autoLoad={loginFB}
         fields="name,email,picture"
         scope="public_profile,user_friends"
         onClick={(event) => event && setLoginFB(true)}
-        callback={responseFacebook} />
+        callback={responseFacebook} /> */}
     </div>
   );
 }

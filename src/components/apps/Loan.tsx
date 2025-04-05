@@ -15,7 +15,7 @@ import './Loan.scss';
 const Loan = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
 
   let [ friend, setFriend ] = useState({ first_name: ''});
   let [ message, setMessage ] = useState('');

@@ -35,7 +35,7 @@ const Auth = () => {
   const dispatch = useDispatch();
   // const stableFetchUser = useCallback(fetchUser, []);
 
-  const stableFetchUser = useCallback(async (userName: string, setIsLoading, dispatch)=> {
+  const stableFetchUser = useCallback(async (userName: string, setIsLoading: Function, dispatch: Function)=> {
     setIsLoading(true);
     const data = await fetchUserHook(userName, dispatch);
     loginUser(data);

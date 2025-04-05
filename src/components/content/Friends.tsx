@@ -23,7 +23,8 @@ const FriendRow = ({ user }: FriendRowProps) => {
 
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
-      .then(() => setPicture(userImageUrl(user.id)));
+      .then(() => setPicture(userImageUrl(user.id)))
+      .catch(() => console.log('No image found for user:', user.id)); // fallback to default if no image found
   }, []);
 
   return (
