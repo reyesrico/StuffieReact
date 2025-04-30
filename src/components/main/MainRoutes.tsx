@@ -11,6 +11,7 @@ import Charts from '../apps/Charts';
 import Exchange from '../apps/Exchange';
 import Friends from '../content/Friends';
 import Loan from '../apps/Loan';
+import Map from '../apps/Map';
 import Products from '../content/Products';
 import Product from '../content/Product';
 import Stuffier from '../content/Stuffier';
@@ -41,6 +42,7 @@ const MainRoutes = () => {
       <Route path="exchange" element={<Exchange />} />
       <Route path="loan" element={<Loan />} />
       <Route path="buy" element={<Buy />} />
+      <Route path="map" element={<Map />} />
       <Route path="charts" element={<Charts />} />
       <Route path="support" element={<Support />} />
       <Route path="tickets" element={<Tickets />} />

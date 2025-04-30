@@ -24,6 +24,7 @@ const Apps = (props: any) => {
   return (
     <div className="apps">
       <div className="apps__title">Apps &amp; extras</div>
+      <div className="apps__item"><Link to='/map'>Map</Link></div>
       <div className="apps__item"><Link to='/tickets'>Tickets</Link></div>
       <div className="apps__item"><Link to='/support'>{t('Support')}</Link></div>
       <div className="apps__item"><Link to='/charts'>Charts</Link></div>
