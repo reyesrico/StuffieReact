@@ -1,0 +1,50 @@
+/* Common piece style */
+.piece {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #333;
+  box-sizing: border-box;
+  position: absolute;
+}
+
+/* Piece I */
+.piece-I-0 { background-color: cyan; transform: rotate(0deg); }
+.piece-I-1 { background-color: cyan; transform: rotate(90deg); }
+.piece-I-2 { background-color: cyan; transform: rotate(180deg); }
+.piece-I-3 { background-color: cyan; transform: rotate(270deg); }
+
+/* Piece O (Rotation doesn't change shape) */
+.piece-O-0,
+.piece-O-1,
+.piece-O-2,
+.piece-O-3 { background-color: yellow; }
+
+/* Piece T */
+.piece-T-0 { background-color: purple; transform: rotate(0deg); }
+.piece-T-1 { background-color: purple; transform: rotate(90deg); }
+.piece-T-2 { background-color: purple; transform: rotate(180deg); }
+.piece-T-3 { background-color: purple; transform: rotate(270deg); }
+
+/* Piece S */
+.piece-S-0 { background-color: green; transform: rotate(0deg); }
+.piece-S-1 { background-color: green; transform: rotate(90deg); }
+.piece-S-2 { background-color: green; transform: rotate(180deg); }
+.piece-S-3 { background-color: green; transform: rotate(270deg); }
+
+/* Piece Z */
+.piece-Z-0 { background-color: red; transform: rotate(0deg); }
+.piece-Z-1 { background-color: red; transform: rotate(90deg); }
+.piece-Z-2 { background-color: red; transform: rotate(180deg); }
+.piece-Z-3 { background-color: red; transform: rotate(270deg); }
+
+/* Piece J */
+.piece-J-0 { background-color: blue; transform: rotate(0deg); }
+.piece-J-1 { background-color: blue; transform: rotate(90deg); }
+.piece-J-2 { background-color: blue; transform: rotate(180deg); }
+.piece-J-3 { background-color: blue; transform: rotate(270deg); }
+
+/* Piece L */
+.piece-L-0 { background-color: orange; transform: rotate(0deg); }
+.piece-L-1 { background-color: orange; transform: rotate(90deg); }
+.piece-L-2 { background-color: orange; transform: rotate(180deg); }
+.piece-L-3 { background-color: orange; transform: rotate(270deg); }
