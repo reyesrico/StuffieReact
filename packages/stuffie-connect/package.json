@@ -19,7 +19,7 @@
   "homepage": "https://github.com/reyesrico/StuffieReact/packages/stuffie-connect#README",
   "dependencies": {
     "@types/node": "^18.7.18",
-    "axios": "^0.27.2",
+    "axios": "^0.30.2",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
     "D": "^1.0.0"
