@@ -33,10 +33,21 @@ Stuffie App: [https://reyesrico.github.io/StuffieReact/](https://reyesrico.githu
 <hr />
 
 ## Want to help?
-Clone repo, add a Cloudinary and ChatGPT accounts
+Clone the repo and set up your environment:
 
-config.ts
-useCodehooks = true | false (if blocked)
+### 🔧 Setup Instructions
+1. Clone the repository
+2. Copy `.env.example` to `.env`
+3. Fill in your API keys in `.env` (see [SECURITY_SETUP.md](./SECURITY_SETUP.md) for details)
+4. Run `npm install`
+5. Run `npm start`
+
+**Required API Accounts:**
+- Cloudinary (for image uploads)
+- RestDB or Codehooks (backend)
+- OpenAI (optional, for ChatGPT features)
+
+See [SECURITY_SETUP.md](./SECURITY_SETUP.md) for complete environment configuration guide.
 
 ## About
 Author: [Carlos Reyes-Rico (Carlos Reyes)](https://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html)

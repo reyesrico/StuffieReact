@@ -22,4 +22,4 @@ export const signature = (folder, userId, timestamp) => {
   return sha1(data2);
 }
 
-export const apiKey = config.cloudinary.apiKey;
+export const apiKey = config.cloudinary.apiKey || '';
