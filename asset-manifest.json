@@ -1,28 +1,21 @@
 {
   "files": {
-    "main.css": "/StuffieReact/static/css/main.c39fe425.css",
-    "main.js": "/StuffieReact/static/js/main.1943c542.js",
-    "static/media/fa-solid-900.svg": "/StuffieReact/static/media/fa-solid-900.7a8b4f130182d19a2d7c.svg",
-    "static/media/fa-brands-400.svg": "/StuffieReact/static/media/fa-brands-400.2f517e09eb2ca6650ff5.svg",
-    "static/media/fa-solid-900.eot": "/StuffieReact/static/media/fa-solid-900.9bbb245e67a133f6e486.eot",
-    "static/media/fa-solid-900.ttf": "/StuffieReact/static/media/fa-solid-900.be9ee23c0c6390141475.ttf",
-    "static/media/fa-regular-400.svg": "/StuffieReact/static/media/fa-regular-400.4689f52cc96215721344.svg",
-    "static/media/fa-brands-400.eot": "/StuffieReact/static/media/fa-brands-400.23f19bb08961f37aaf69.eot",
-    "static/media/fa-brands-400.ttf": "/StuffieReact/static/media/fa-brands-400.527940b104eb2ea366c8.ttf",
-    "static/media/fa-solid-900.woff": "/StuffieReact/static/media/fa-solid-900.eeccf4f66002c6f2ba24.woff",
-    "static/media/fa-brands-400.woff": "/StuffieReact/static/media/fa-brands-400.2285773e6b4b172f07d9.woff",
-    "static/media/fa-solid-900.woff2": "/StuffieReact/static/media/fa-solid-900.1551f4f60c37af51121f.woff2",
-    "static/media/fa-brands-400.woff2": "/StuffieReact/static/media/fa-brands-400.d878b0a6a1144760244f.woff2",
-    "static/media/fa-regular-400.eot": "/StuffieReact/static/media/fa-regular-400.77206a6bb316fa0aded5.eot",
-    "static/media/fa-regular-400.ttf": "/StuffieReact/static/media/fa-regular-400.491974d108fe4002b2aa.ttf",
-    "static/media/fa-regular-400.woff": "/StuffieReact/static/media/fa-regular-400.bb58e57c48a3e911f15f.woff",
-    "static/media/fa-regular-400.woff2": "/StuffieReact/static/media/fa-regular-400.7a3337626410ca2f4071.woff2",
+    "main.css": "/StuffieReact/static/css/main.3d3bd123.css",
+    "main.js": "/StuffieReact/static/js/main.e60f3530.js",
+    "static/media/fa-solid-900.ttf": "/StuffieReact/static/media/fa-solid-900.2582b0e4bcf85eceead0.ttf",
+    "static/media/fa-brands-400.ttf": "/StuffieReact/static/media/fa-brands-400.1815e00441357e01619e.ttf",
+    "static/media/fa-solid-900.woff2": "/StuffieReact/static/media/fa-solid-900.2463b90d9a316e4e5294.woff2",
+    "static/media/fa-brands-400.woff2": "/StuffieReact/static/media/fa-brands-400.c210719e60948b211a12.woff2",
+    "static/media/fa-regular-400.ttf": "/StuffieReact/static/media/fa-regular-400.914997e1bdfc990d0897.ttf",
+    "static/media/fa-regular-400.woff2": "/StuffieReact/static/media/fa-regular-400.89999bdf5d835c012025.woff2",
+    "static/media/fa-v4compatibility.ttf": "/StuffieReact/static/media/fa-v4compatibility.da94ef451f4969af06e6.ttf",
+    "static/media/fa-v4compatibility.woff2": "/StuffieReact/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
     "index.html": "/StuffieReact/index.html",
-    "main.c39fe425.css.map": "/StuffieReact/static/css/main.c39fe425.css.map",
-    "main.1943c542.js.map": "/StuffieReact/static/js/main.1943c542.js.map"
+    "main.3d3bd123.css.map": "/StuffieReact/static/css/main.3d3bd123.css.map",
+    "main.e60f3530.js.map": "/StuffieReact/static/js/main.e60f3530.js.map"
   },
   "entrypoints": [
-    "static/css/main.c39fe425.css",
-    "static/js/main.1943c542.js"
+    "static/css/main.3d3bd123.css",
+    "static/js/main.e60f3530.js"
   ]
 }
