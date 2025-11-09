@@ -7,7 +7,7 @@ const GetMap = (atlas: any, container: HTMLDivElement | null) => {
     view: 'Auto',
     authOptions: {
       authType: 'subscriptionKey',
-      subscriptionKey: '2yPnxVcYp4mdzXBTsK7A0NOTersPLOt42GebVpwJcBeW458wDX8zJQQJ99BDACYeBjFeIIR0AAAgAZMPEK9E' // Replace with your actual key.
+      subscriptionKey: process.env.REACT_APP_AZURE_MAPS_KEY
     }
   });
 
