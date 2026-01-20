@@ -39,8 +39,7 @@ const FetchData = () => {
   // Basic data - Categories
   const { isFetching: isFetchingCategories } = useQuery({
     queryKey: ['categories'],
-    queryFn: () =>
-      fetchCategoriesHookWithCategories(sessionStorage, dispatch),
+    queryFn: () => fetchCategoriesHookWithCategories(sessionStorage, dispatch),
     enabled: !categories.length, // Only fetch if categories is not available in the Redux store
     staleTime: 5 * 60 * 1000, // 5 minutes
     // cacheTime: 10 * 60 * 1000, // 10 minutes

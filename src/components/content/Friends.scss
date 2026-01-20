@@ -62,6 +62,20 @@
   width: 100%;
 }
 
+.friends__list {
+  @include flex(column);
+}
+
+.friend-row {
+  @include section-background;
+  @include flex(column);
+  @include border-radius;
+  @include padding(8px, 'all');
+  box-shadow: 0px 2px $blue;
+  margin-bottom: 16px;
+  width: 95%;
+}
+
 .friend-row__photo {
   @include border(all, $blue, 1px);
   @include margin(4px, right);
@@ -70,11 +84,20 @@
   border-radius: 50%;
 }
 
-.friend-row__header {
+.friend-row__description {
   @include flex(row, flex-start, center);
-  @include margin(8px, bottom);
 }
 
-.friend-row__header-name {
-  @include margin(0, all);
+.friend-row__info {
+  @include flex(column, flex-start, flex-start);
+}
+
+.friend-row__name {
+  @include margin(4px, right);
+  font-weight: bold;
+}
+
+.friend-row__email {
+  color: $darkgray;
+  font-size: 14px;
 }

@@ -42,7 +42,7 @@ const Menu = () => {
   return (
     <div>
       <div className='menu__title'>{t('Summary')}</div>
-      {isProductsEmpty(products) && <div>No products</div>}
+      {/* {isProductsEmpty(products) && <div>No products</div>} */}
       <div className="menu__list">
         {renderCategories()}
       </div>

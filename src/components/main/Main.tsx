@@ -11,7 +11,7 @@ import MainRoutes from './MainRoutes';
 import Menu from '../sections/Menu';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
-import Theme from '../sections/Theme';
+import Settings from '../sections/Settings';
 import {
   defaultImageUrl,
   existImage,
@@ -62,10 +62,10 @@ const Main = () => {
         </div>
         <div className="stuffie__right">
           <div className="stuffie__right-section">
-            <Theme />
+            <Apps />
           </div>
           <div className="stuffie__right-section">
-            <Apps />
+            <Settings />
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ export const getStuffiersList = friends => {
     return axios.get(routes.stuff.listStuffiers(ids), { headers: config.headers });
   }
 
-  return Promise.resolve([]);
+  return Promise.resolve({ data: [] });
 };
 
 export const getStuff = id => (
@@ -28,7 +28,7 @@ export const getListStuff = ids => {
     return axios.get(routes.stuff.listDetail(ids), { headers: config.headers });
   }
 
-  return Promise.resolve([]);
+  return Promise.resolve({ data: [] });
 };
 
 export const getProductsFromIds = ids => (

@@ -29,11 +29,11 @@ const FriendRow = ({ user }: FriendRowProps) => {
 
   return (
     <div className='friend-row'>
-      <div className='friend-row__header'>
+      <div className='friend-row__description'>
         {picture && (<img src={picture} className="friend-row__photo" alt="User Pic"></img>)}
-        <div>
-          <h3 className='friend-row__header-name'>{user.first_name} {user.last_name}</h3>
-          <span>{user.email}</span>
+        <div className='friend-row__info'>
+          <span className='friend-row__name'>{user.first_name} {user.last_name}</span>
+          <span className='friend-row__email'>{user.email}</span>
         </div>
       </div>
     </div>
@@ -130,13 +130,11 @@ const Friends = () => {
     <div className="friends">
       <h2 className="friends__title">{t('Friends-Title', { first_name: user.first_name })}</h2>
       <WarningMessage message={getMessage()} type={executeStatus}/>
-      <ul>
+      <div className="friends__list">
         {friends.map((friend: any) => (
-          <li key={friend.id} style={{ borderBottom: "1px solid black" }}>
-            <FriendRow user={friend} />
-          </li>
+          <FriendRow key={friend.id} user={friend} />
         ))}
-      </ul>
+      </div>
       {requests.length > 0 && renderRequests()}
       <div>
         <h3 className="friends__title">{t('Add-Friend')}</h3>

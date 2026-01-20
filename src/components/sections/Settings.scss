@@ -1,0 +1,16 @@
+@import '../../sass/main.scss';
+
+.settings__title {
+  @include section-title();
+}
+
+.settings__item {
+  @include section-button;
+  padding: 4px 0;
+  background-color: transparent;
+}
+
+[data-theme="dark"] .settings__item {
+  background-color: #E5EAEd;
+  color: #6D6C6C;
+}

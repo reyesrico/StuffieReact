@@ -13,12 +13,7 @@ export const fetchSubCategoriesHook = (sessionStorage, dispatch) => {
 }  
 
 export const fetchSubCategoriesHookWithSubCategories = (sessionStorage, dispatch) => {
-  if (sessionStorage.getItem('subcategories')) {
-    dispatchSubCategoriesFetched(JSON.parse(sessionStorage.getItem('subcategories')), dispatch);
-    return Promise.resolve(JSON.parse(sessionStorage.getItem('subcategories')));
-  }
-  return getSubCategories().then(res =>{
-    sessionStorage.setItem('subcategories', JSON.stringify(res.data));
+  return getSubCategories().then(res => {
     dispatchSubCategoriesFetched(res.data, dispatch);
     return res.data;
   });

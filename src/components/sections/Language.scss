@@ -1,0 +1,6 @@
+@import '../../sass/main.scss';
+
+.language__buttons-container {
+  @include flex(column, flex-start, center);
+  background-color: var(--background-color);
+}

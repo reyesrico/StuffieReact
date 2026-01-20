@@ -1,25 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { options } from '../../config/options';
 
-import Menu from '../shared/Menu';
 import './Apps.scss';
 
 const Apps = (props: any) => {
-  const { t, i18n } = useTranslation();
-
-  const changeLang = (lang: any) => {
-    i18n.changeLanguage(lang.value);
-  };
-
-  const renderCurrentLanguage = (isOpen: boolean) => {
-    return (
-      <div className={isOpen ? 'apps__language-open' : 'apps__language'}>
-        {t('Language')}
-      </div>
-    );
-  }
+  const { t } = useTranslation();
 
   return (
     <div className="apps">
@@ -36,14 +22,6 @@ const Apps = (props: any) => {
       <div className="apps__item"><Link to='/test4'>Test4</Link></div>
       <div className="apps__item"><Link to='/test5'>Test5</Link></div>
       <div className="apps__item"><Link to='/tetris'>Tetris</Link></div>
-      <hr />
-      <div className="apps__item">
-        <Menu label={(isOpen: boolean) => renderCurrentLanguage(isOpen)}>
-          {options.map(option => {
-            return (<div key={option.value} className="apps__option" onClick={() => changeLang(option)}>{option.label}</div>);
-          })}
-        </Menu>
-      </div>
     </div>
   );
 }
