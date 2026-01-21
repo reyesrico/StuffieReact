@@ -157,8 +157,15 @@ export const useCachedData = <T,>({
    * Manual refresh function that bypasses cache
    */
   const refresh = useCallback(async (): Promise<void> => {
-    setIsRefreshing(true);
-    await fetchAndCache(true);
+    try {
+      setIsRefreshing(true);
+      await fetchAndCache(true);
+    } finally {
+      // Ensure isRefreshing is reset even if fetchAndCache throws
+      if (isMountedRef.current) {
+        setIsRefreshing(false);
+      }
+    }
   }, [fetchAndCache]);
 
   // Initial data load

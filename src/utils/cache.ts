@@ -127,29 +127,32 @@ export const clearCache = (key: string): void => {
 };
 
 /**
+ * Helper function to get localStorage keys to remove based on filter
+ * @param prefix - Optional prefix to filter keys
+ * @returns Array of keys to remove
+ */
+const getKeysToRemove = (prefix?: string): string[] => {
+  const keys = Object.keys(localStorage);
+  
+  if (prefix) {
+    return keys.filter(key => key.startsWith(prefix));
+  }
+  
+  // Clear all cache entries by matching our cache key patterns
+  const cacheKeyPrefixes = ['cache_'];
+  return keys.filter(key => 
+    cacheKeyPrefixes.some(cachePrefix => key.startsWith(cachePrefix))
+  );
+};
+
+/**
  * Removes all cache entries (with optional prefix filter)
  * @param prefix - Optional prefix to filter which keys to clear
  */
 export const clearAllCache = (prefix?: string): void => {
   try {
-    if (prefix) {
-      const keys = Object.keys(localStorage);
-      keys.forEach(key => {
-        if (key.startsWith(prefix)) {
-          localStorage.removeItem(key);
-        }
-      });
-    } else {
-      // Clear all cache entries by removing entries that match our cache key patterns
-      // This is safer than clearing everything as it preserves non-cache localStorage items
-      const keys = Object.keys(localStorage);
-      const cacheKeyPrefixes = ['cache_'];
-      keys.forEach(key => {
-        if (cacheKeyPrefixes.some(prefix => key.startsWith(prefix))) {
-          localStorage.removeItem(key);
-        }
-      });
-    }
+    const keysToRemove = getKeysToRemove(prefix);
+    keysToRemove.forEach(key => localStorage.removeItem(key));
   } catch (error) {
     console.error('Error clearing all cache:', error);
   }
