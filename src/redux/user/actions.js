@@ -1,3 +1,5 @@
+import { clearAllCache } from '../../utils/cache';
+
 import { makeStandardActionCreator } from '../action-helpers';
 
 import { REVOKE_USER } from '../constants';
@@ -107,6 +109,9 @@ export const addUserPicture = (user, picture) => dispatch => {
 }
 
 export const logout = () => {
+  // Clear cache on logout to prevent data leaks
+  clearAllCache('cache_');
+  
   localStorage.removeItem('picture');
   localStorage.removeItem('username');
   window.sessionStorage.clear();
