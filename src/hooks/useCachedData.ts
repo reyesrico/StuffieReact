@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getCache, setCache, getStaleCache, CACHE_KEYS } from '../utils/cache';
+import { getCache, setCache, getStaleCache } from '../utils/cache';
 
 /**
  * Options for useCachedData hook
@@ -166,6 +166,7 @@ export const useCachedData = <T,>({
     if (enabled) {
       fetchAndCache();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]); // Only run on mount or when enabled changes
 
   return {
@@ -213,6 +214,7 @@ export const useCachedDataSimple = <T,>(
     };
 
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey, expiresIn]); // fetchFn intentionally excluded to avoid re-fetching
 
   return data;

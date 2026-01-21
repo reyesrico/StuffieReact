@@ -10,7 +10,6 @@ import UserContext from '../../context/UserContext';
 
 import { fetchCategoriesHookWithCategories } from '../../redux/categories/actions';
 import { fetchFriendsHookWithFriends } from '../../redux/friends/actions';
-import { fetchProductsHookWithProducts } from '../../redux/products/actions';
 import { fetchSubCategoriesHookWithSubCategories } from '../../redux/subcategories/actions';
 import { fetchExchangeRequestsHookWithExchanges } from '../../redux/exchange-requests/actions';
 import { fetchFriendsRequestsHookWithFriendsRequests } from '../../redux/friends-requests/actions';
@@ -18,6 +17,7 @@ import { fetchLoanRequestsHook } from '../../redux/loan-requests/actions';
 import { fetchPendingProductsHookWithPendingProducts } from '../../redux/pending-products/actions';
 import { fetchUserRequestsHookWithUserRequests } from '../../redux/user-requests/actions';
 import { isProductsEmpty } from '../helpers/StuffHelper';
+import { useProductsWithCache } from '../../hooks/useDataWithCache';
 
 import './FetchData.scss';
 
@@ -67,15 +67,8 @@ const FetchData = () => {
     refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 
-  // Basic data - Products
-  const { isFetching: isFetchingProducts } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => fetchProductsHookWithProducts(user, categories, sessionStorage, dispatch),
-    enabled: isProductsEmpty(products) && (categories.length > 0),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    // cacheTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnWindowFocus: false, // Disable refetching on window focus
-  });
+  // Basic data - Products (using cache with 30 min expiration)
+  const { isLoading: isFetchingProducts } = useProductsWithCache();
 
   // Admin
   const userRequests = useSelector((state: State) => state.userRequests);

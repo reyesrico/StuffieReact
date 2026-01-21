@@ -1,6 +1,20 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { useCachedData } from './useCachedData';
 import * as cache from '../utils/cache';
+
+// Helper to wait for async updates
+const waitFor = async (callback: () => void, timeout = 3000) => {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeout) {
+    try {
+      callback();
+      return;
+    } catch (error) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
+  callback();
+};
 
 // Mock the cache module
 jest.mock('../utils/cache', () => ({

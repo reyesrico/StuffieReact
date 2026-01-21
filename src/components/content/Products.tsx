@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { get, map, uniq } from 'lodash';
 
@@ -19,6 +19,7 @@ import { getProductsFromIds } from '../../services/stuff';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import { mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
+import { useProductsWithCache } from '../../hooks/useDataWithCache';
 
 // import Swiper core and required modules
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
@@ -36,6 +37,7 @@ import './Products.scss';
 
 const Products = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   let user = useSelector((state: State) => state.user);
   let categories = useSelector((state: State) => state.categories);
@@ -46,6 +48,9 @@ const Products = () => {
   let [requestedProducts, setRequestProducts] = useState([]);
   let [message, setMessage] = useState('');
   let [type, setType] = useState(WarningMessageType.EMPTY);
+
+  // Use caching hook for products with manual refresh capability
+  const { isRefreshing, refresh: refreshProducts } = useProductsWithCache();
 
 
   useEffect(() => {
@@ -178,6 +183,11 @@ const Products = () => {
         <h2>{user.first_name} Stuff</h2>
         <div className="products__add-product">
           <Button text="Add Product" onClick={() => navigate('/product/add')}></Button>
+          <Button 
+            text={isRefreshing ? "Refreshing..." : "Refresh Products"} 
+            onClick={refreshProducts}
+            disabled={isRefreshing}
+          ></Button>
         </div>
       </div>
       {exchangeRequests.length > 0 && renderRequests()}

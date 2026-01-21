@@ -107,6 +107,10 @@ export const addUserPicture = (user, picture) => dispatch => {
 }
 
 export const logout = () => {
+  // Clear cache on logout to prevent data leaks
+  const { clearAllCache } = require('../../utils/cache');
+  clearAllCache('cache_');
+  
   localStorage.removeItem('picture');
   localStorage.removeItem('username');
   window.sessionStorage.clear();
