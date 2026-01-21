@@ -49,9 +49,6 @@ Clone the repo and set up your environment:
 
 See [SECURITY_SETUP.md](./SECURITY_SETUP.md) for complete environment configuration guide.
 
-## Security
-For information about recent security updates, see [Security Updates](./docs/SECURITY_UPDATE_CVE-2026-23950.md).
-
 ## About
 Author: [Carlos Reyes-Rico (Carlos Reyes)](https://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html)
 
