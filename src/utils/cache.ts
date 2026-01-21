@@ -140,16 +140,15 @@ export const clearAllCache = (prefix?: string): void => {
         }
       });
     } else {
-      // Clear all cache entries - use with caution
-      // Note: This will also clear username and other localStorage items
-      // In production, you might want to maintain a registry of cache keys
+      // Clear all cache entries by removing entries that match our cache key patterns
+      // This is safer than clearing everything as it preserves non-cache localStorage items
       const keys = Object.keys(localStorage);
-      const cacheKeys = keys.filter(key => 
-        key.startsWith('cache_') || 
-        key.includes('products') || 
-        key.includes('user_info')
-      );
-      cacheKeys.forEach(key => localStorage.removeItem(key));
+      const cacheKeyPrefixes = ['cache_'];
+      keys.forEach(key => {
+        if (cacheKeyPrefixes.some(prefix => key.startsWith(prefix))) {
+          localStorage.removeItem(key);
+        }
+      });
     }
   } catch (error) {
     console.error('Error clearing all cache:', error);

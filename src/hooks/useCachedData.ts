@@ -162,12 +162,15 @@ export const useCachedData = <T,>({
   }, [fetchAndCache]);
 
   // Initial data load
+  // Note: fetchAndCache is intentionally excluded from dependencies to prevent re-fetching
+  // when its dependencies change. We only want to fetch once on mount or when enabled changes.
+  // The fetchAndCache function is stable across renders due to useCallback with all required deps.
   useEffect(() => {
     if (enabled) {
       fetchAndCache();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]); // Only run on mount or when enabled changes
+  }, [enabled]);
 
   return {
     data,
@@ -214,8 +217,11 @@ export const useCachedDataSimple = <T,>(
     };
 
     loadData();
+    // Note: fetchFn is intentionally excluded to prevent infinite re-fetching loops
+    // when parent components re-render. The loadData function captures fetchFn from
+    // the initial render and uses it consistently.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cacheKey, expiresIn]); // fetchFn intentionally excluded to avoid re-fetching
+  }, [cacheKey, expiresIn]);
 
   return data;
 };
