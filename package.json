@@ -63,7 +63,7 @@
     "redux-freeze": "^0.1.7",
     "redux-thunk": "^3.1.0",
     "request": "^2.88.2",
-    "serialize-javascript": "^6.0.2",
+    "serialize-javascript": "^7.0.3",
     "spotify-web-api-js": "^1.5.2",
     "ssri": "^12.0.0",
     "swiper": "^12.1.2",
