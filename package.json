@@ -76,12 +76,12 @@
     "y18n": "^5.0.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "craco start",
+    "build": "craco build",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "test": "react-scripts test",
-    "test:ci": "react-scripts test --watchAll=false",
+    "test": "craco test",
+    "test:ci": "craco test --watchAll=false",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
     "typecheck": "tsc --noEmit",
@@ -103,6 +103,7 @@
     "node": ">=20"
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@tanstack/eslint-plugin-query": "^5.71.5",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
