@@ -12,7 +12,6 @@ const Test = () => {
   const { getStuff, reverseStuff, dom, orderArray, debug } = useTest();
 
   const sendInfo = async () => {
-    console.log({env: process.env, key: process.env.REACT_APP_OPENAI_API_KEY});
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -24,14 +23,12 @@ const Test = () => {
       ],
     });
     setMessage(completion.choices[0].message.content || '');
-    console.log(completion.choices[0].message.content);
   }
 
   const sendInfo2 = async () => {
     const p: Promise<string> = new Promise((resolve) => setTimeout(() => resolve('done'), 1000));
     const a = await p;
     setT(a);
-    console.log(a);
   };
 
   return (

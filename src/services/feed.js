@@ -3,7 +3,7 @@ import { getFriendProducts, mapStuff } from '../components/helpers/StuffHelper';
 
 export const setFriendsProducts = (friends) => {
   let stuffiers_stuff = null;
-  if (friends && friends.length()) {
+  if (friends && friends.length > 0) {
     return getStuffiersList(friends)
     .then(res => {
       stuffiers_stuff = res.data;
