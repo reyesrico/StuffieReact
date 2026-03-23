@@ -1,11 +1,370 @@
 @use '../../sass/main' as *;
 
 .spotify {
-  @include flex(row, flex-start, stretch);
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  &--loading,
+  &--error {
+    @include flex(column, center, center);
+    padding: 40px;
+    text-align: center;
+    min-height: 200px;
+  }
+
+  &--error {
+    color: $darkgray;
+  }
+
+  &__error-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  &__header {
+    @include flex(row, space-between, center);
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+      color: $darkgray;
+    }
+  }
+
+  &__empty {
+    color: $gray;
+    text-align: center;
+    padding: 20px;
+  }
+
+  // Player Section
+  &__player {
+    background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    @include flex(row, flex-start, center);
+    gap: 20px;
+    color: $white;
+  }
+
+  &__player-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &__player-info {
+    flex: 1;
+  }
+
+  &__player-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  &__player-artist {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  &__player-album {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  &__player-open {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: $white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 12px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  &__player-controls {
+    @include flex(row, center, center);
+    gap: 8px;
+  }
+
+  &__control-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: $white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s, transform 0.1s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &--small {
+      width: 32px;
+      height: 32px;
+      font-size: 14px;
+    }
+
+    &--play {
+      width: 48px;
+      height: 48px;
+      font-size: 20px;
+      background: $white;
+      color: #191414;
+
+      &:hover {
+        transform: scale(1.05);
+        background: $white;
+      }
+    }
+
+    &--active {
+      background: rgba(29, 185, 84, 0.8);
+
+      &:hover {
+        background: rgba(29, 185, 84, 0.9);
+      }
+    }
+  }
+
+  &__audio {
+    display: none; // Hidden audio element, controls are custom
+  }
+
+  // Playlists Grid
+  &__playlists {
+    h3 {
+      margin-bottom: 16px;
+      color: $darkgray;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+
+  &__playlist-card {
+    background: $white;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  &__playlist-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  &__playlist-info {
+    padding: 12px;
+  }
+
+  &__playlist-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: $darkgray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__playlist-count {
+    font-size: 12px;
+    color: $gray;
+    margin-top: 4px;
+  }
+
+  // Tracks List
+  &__tracks {
+    h3 {
+      margin-bottom: 8px;
+      color: $darkgray;
+    }
+  }
+
+  &__tracks-header {
+    @include flex(row, space-between, center);
+    margin-bottom: 8px;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  &__play-all {
+    background: #1DB954;
+    border: none;
+    color: $white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+
+    &:hover {
+      background: #1ed760;
+      transform: scale(1.02);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  &__tracks-note {
+    font-size: 12px;
+    color: $gray;
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background: $lightergray;
+    border-radius: 6px;
+  }
+
+  &__track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__track {
+    @include flex(row, flex-start, center);
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $lightergray;
+    }
+
+    &--playing {
+      background: rgba(29, 185, 84, 0.15);
+    }
+
+    &--has-preview {
+      cursor: pointer;
+    }
+  }
+
+  &__track-play {
+    width: 24px;
+    text-align: center;
+    color: #1DB954;
+    font-size: 12px;
+  }
+
+  &__track-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  &__track-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__track-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: $darkgray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__track-artist {
+    font-size: 12px;
+    color: $gray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__track-duration {
+    font-size: 12px;
+    color: $gray;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  &__track-link {
+    font-size: 16px;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(29, 185, 84, 0.2);
+    }
+  }
+
+  &__track-playing {
+    color: #1DB954;
+    font-size: 14px;
+    font-weight: bold;
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
 }
 
-.spotify__audio {
-  width: 192px;
-  height: 30px;
-  margin-bottom: 4px;
+// Responsive
+@media (max-width: 600px) {
+  .spotify {
+    padding: 12px;
+
+    &__player {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    &__player-image {
+      width: 120px;
+      height: 120px;
+    }
+
+    &__grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    &__audio {
+      width: 100%;
+    }
+  }
 }

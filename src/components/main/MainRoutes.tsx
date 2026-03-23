@@ -14,6 +14,7 @@ import Loan from '../apps/Loan';
 import Map from '../apps/Map';
 import Products from '../content/Products';
 import Product from '../content/Product';
+import Spotify from '../apps/Spotify';
 import Stuffier from '../content/Stuffier';
 import SubcategoryPage from '../content/SubcategoryPage';
 import Support from '../apps/Support';
@@ -45,6 +46,7 @@ const MainRoutes = () => {
       <Route path="buy" element={<Buy />} />
       <Route path="map" element={<Map />} />
       <Route path="charts" element={<Charts />} />
+      <Route path="spotify" element={<Spotify />} />
       <Route path="support" element={<Support />} />
       <Route path="tickets" element={<Tickets />} />
       <Route path="test" element={<Test />} />
