@@ -1,20 +1,6 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { useCachedData } from './useCachedData';
 import * as cache from '../utils/cache';
-
-// Helper to wait for async updates
-const waitFor = async (callback: () => void, timeout = 3000) => {
-  const startTime = Date.now();
-  while (Date.now() - startTime < timeout) {
-    try {
-      callback();
-      return;
-    } catch (error) {
-      await new Promise(resolve => setTimeout(resolve, 50));
-    }
-  }
-  callback();
-};
 
 // Mock the cache module
 jest.mock('../utils/cache', () => ({
@@ -176,12 +162,27 @@ describe('useCachedData Hook', () => {
     // Clear the mock to count only refresh calls
     fetchFn.mockClear();
 
-    // Trigger manual refresh
-    result.current.refresh();
+    // Use a deferred promise to control when fetchFn resolves
+    let resolveFetch: (value: typeof freshData) => void;
+    const deferredFetch = new Promise<typeof freshData>((resolve) => {
+      resolveFetch = resolve;
+    });
+    fetchFn.mockReturnValue(deferredFetch);
 
-    // Should be refreshing
+    // Trigger manual refresh
+    act(() => {
+      result.current.refresh();
+    });
+
+    // Should be refreshing (fetch hasn't resolved yet)
     await waitFor(() => {
       expect(result.current.isRefreshing).toBe(true);
+    });
+
+    // Now resolve the fetch
+    await act(async () => {
+      resolveFetch!(freshData);
+      await deferredFetch;
     });
 
     // Wait for refresh to complete
@@ -195,6 +196,8 @@ describe('useCachedData Hook', () => {
 
   it('should not fetch when enabled is false', async () => {
     const fetchFn = jest.fn().mockResolvedValue({ id: 1 });
+
+    (cache.getCache as jest.Mock).mockReturnValue(null);
 
     const { result } = renderHook(() =>
       useCachedData({

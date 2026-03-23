@@ -9,7 +9,7 @@ import {
   CACHE_KEYS,
 } from './cache';
 
-// Mock localStorage
+// Mock localStorage with full interface
 const localStorageMock = (() => {
   let store: { [key: string]: string } = {};
 
@@ -23,6 +23,13 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {};
+    },
+    get length() {
+      return Object.keys(store).length;
+    },
+    key: (index: number) => {
+      const keys = Object.keys(store);
+      return keys[index] || null;
     },
   };
 })();

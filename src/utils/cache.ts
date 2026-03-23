@@ -59,9 +59,8 @@ export const getCache = <T>(key: string): T | null => {
     const now = Date.now();
     const age = now - entry.timestamp;
 
-    // Return null if cache is expired
+    // Return null if cache is expired (but don't delete - getStaleCache may need it)
     if (age > entry.expiresIn) {
-      clearCache(key);
       return null;
     }
 
@@ -132,7 +131,14 @@ export const clearCache = (key: string): void => {
  * @returns Array of keys to remove
  */
 const getKeysToRemove = (prefix?: string): string[] => {
-  const keys = Object.keys(localStorage);
+  // Use localStorage.key(i) for reliable enumeration in all environments
+  const keys: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key) {
+      keys.push(key);
+    }
+  }
   
   if (prefix) {
     return keys.filter(key => key.startsWith(prefix));

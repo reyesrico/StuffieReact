@@ -175,6 +175,9 @@ export const useCachedData = <T,>({
   useEffect(() => {
     if (enabled) {
       fetchAndCache();
+    } else {
+      // When disabled, ensure loading state is false
+      setIsLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
