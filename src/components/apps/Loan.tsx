@@ -17,29 +17,33 @@ const Loan = () => {
   const location = useLocation();
   const dispatch: any = useDispatch();
 
-  let [ friend, setFriend ] = useState({ first_name: ''});
-  let [ message, setMessage ] = useState('');
-  let [ type, setType ] = useState(WarningMessageType.EMPTY);
+  const [friend, setFriend] = useState({ first_name: '' });
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState(WarningMessageType.EMPTY);
 
-  let user = useSelector((state: State) => state.user);
-  const product = (location.state as any)["product"];
-
-  if (!product) {
-    navigate('/');
-  }
+  const user = useSelector((state: State) => state.user);
+  const product = (location.state as any)?.["product"];
+  const friendId = (location.state as any)?.["friend"];
 
   useEffect(() => {
-    if (!product || product === undefined) {
+    if (!product) {
       navigate('/');
+      return;
     }
 
-    getStuffiers([{ id: (location.state as any)["friend"] }])
-    .then((res: any) => setFriend(res.data[0]));
-  });
+    if (friendId) {
+      getStuffiers([{ id: friendId }])
+        .then((res: any) => setFriend(res.data[0]));
+    }
+  }, [product, friendId, navigate]);
 
   const requestLoan = () => {
-    const idOwner = (location.state as any)["friend"];
-    dispatch(loanRequestHook(idOwner, product.id, user.id, setMessage, setType));
+    if (!friendId || !product?.id || !user?.id) return;
+    dispatch(loanRequestHook(friendId, product.id, user.id, setMessage, setType));
+  };
+
+  if (!product) {
+    return null;
   }
 
   const match = { params: { id: product.id } };
@@ -55,6 +59,6 @@ const Loan = () => {
       <Button type="submit" onClick={requestLoan} text="Request To Borrow" />
     </div>
   );
-}
+};
 
 export default Loan;

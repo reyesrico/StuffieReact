@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, isEmpty } from 'lodash';
@@ -23,48 +23,52 @@ const Exchange = () => {
   const location = useLocation();
   const dispatch: any = useDispatch();
 
-  let categories = useSelector((state: State) => state.categories);
-  let products = useSelector((state: State) => state.products);
-  let subcategories = useSelector((state: State) => state.subcategories);
-  let user = useSelector((state: State) => state.user);
-  let [ userProducts, setUserProducts ] = useState<any>([]);
-  let [ selectedProduct, setSelectedProduct ] = useState<Product>({});
-  let [ message, setMessage ] = useState('');
-  let [ friend, setFriend ] = useState({ first_name: ''});
-  let [ type, setType ] = useState(WarningMessageType.EMPTY);
+  const categories = useSelector((state: State) => state.categories);
+  const products = useSelector((state: State) => state.products);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  const user = useSelector((state: State) => state.user);
+  
+  const [userProducts, setUserProducts] = useState<any>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product>({});
+  const [message, setMessage] = useState('');
+  const [friend, setFriend] = useState({ first_name: '' });
+  const [type, setType] = useState(WarningMessageType.EMPTY);
 
-  const product: Product = (location.state as any)["product"];
-
+  const product: Product = (location.state as any)?.["product"];
+  const friendId = (location.state as any)?.["friend"];
 
   useEffect(() => {
-    if (!product || product === undefined) {
+    if (!product) {
       navigate('/');
+      return;
     }
 
+    // Filter user's products by same category/subcategory
     const uProducts = getProductsList(products)
       .filter(p => p.category === product.category || p.subcategory === product.subcategory);
-
     setUserProducts(uProducts);
 
-    getStuffiers([{ id: (location.state as any)["friend"] }])
-    .then((res: any) => setFriend(res.data[0]));
-  }, [userProducts, location.state, navigate, product, products]);
+    // Fetch friend info
+    if (friendId) {
+      getStuffiers([{ id: friendId }])
+        .then((res: any) => setFriend(res.data[0]));
+    }
+  }, [product, friendId, products, navigate]);
 
-  const requestExchange = () => {
-    const idOwner = (location.state as any)["friend"];
-    console.log('This is to execute request exchange');
-
+  const requestExchange = useCallback(() => {
+    if (!friendId || !product?.id || !user?.id) return;
+    
     dispatch(
-      requestExchangeHook(idOwner, product.id, user.id, get(selectedProduct, 'id'),
+      requestExchangeHook(friendId, product.id, user.id, get(selectedProduct, 'id'),
                           setMessage, setType, navigate)
     );
-  }
+  }, [dispatch, friendId, product?.id, user?.id, selectedProduct, navigate]);
 
-  const selectProduct = (product: Product) => {
+  const selectProduct = useCallback((product: Product) => {
     setSelectedProduct(product);
-  }
+  }, []);
 
-  const renderProduct = (product: Product) => {
+  const renderProduct = useCallback((product: Product) => {
     const category: Category = categories.filter(c => c.id === product.category)[0];
     const subcategory: Subcategory = subcategories.filter(s => s.id === product.subcategory)[0];
 
@@ -86,12 +90,14 @@ const Exchange = () => {
         </div>
       </div>
     );
-  }
-
-  if (!userProducts.length) return <div>No products to exchange under same category</div>;
+  }, [categories, subcategories]);
 
   if (!product) {
-    navigate('/');
+    return null;
+  }
+
+  if (!userProducts.length) {
+    return <div className="exchange exchange--empty">No products to exchange under same category</div>;
   }
 
   return (

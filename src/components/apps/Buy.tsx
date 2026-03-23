@@ -12,28 +12,34 @@ import './Buy.scss';
 const Buy = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const product = (location.state as any)["product"];
-  const match = { params: { id: product.id } };
+  const product = (location.state as any)?.["product"];
+  const friendId = (location.state as any)?.["friend"];
+  const match = { params: { id: product?.id } };
 
-  let [friend, setFriend] = useState({ first_name: '' });
-  let [message, setMessage] = useState('');
-  let [type, setType] = useState(WarningMessageType.EMPTY);
+  const [friend, setFriend] = useState({ first_name: '' });
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState(WarningMessageType.EMPTY);
 
   useEffect(() => {
-    if (!product || product === undefined) {
+    if (!product) {
       navigate('/');
+      return;
     }
 
-    getStuffiers([{ id: (location.state as any)["friend"] }])
-      .then((res: any) => setFriend(res.data[0]));
-  });
+    if (friendId) {
+      getStuffiers([{ id: friendId }])
+        .then((res: any) => setFriend(res.data[0]));
+    }
+  }, [product, friendId, navigate]);
 
   const buy = () => {
     setMessage('Buy');
     setType(WarningMessageType.SUCCESSFUL);
-  }
+  };
 
-  if (!product) { navigate('/'); }
+  if (!product) {
+    return null;
+  }
 
   return (
     <div className="buy">
@@ -46,6 +52,6 @@ const Buy = () => {
       <Button type="submit" onClick={() => buy()} text="Request Buy" />
     </div>
   );
-}
+};
 
 export default Buy;
