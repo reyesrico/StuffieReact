@@ -65,7 +65,7 @@ const Products = () => {
   }, [exchangeRequests, loanRequests]);
 
   const generateReport = () => {
-    downloadExcel(products, `${user.first_name}_products`);
+    downloadExcel(products, `${user?.first_name || 'user'}_products`);
   }
 
   const executeDeleteExchange = (_id: number, isLoan = false) => {
@@ -105,7 +105,7 @@ const Products = () => {
                     Product: {get(ownerProduct, 'name')}
                   </div>
                   <div className="products__request-text">
-                    Requestor: {isUserRequestor ? 'Me' : `${requestor.first_name} ${requestor.last_name} (${requestor.email})`}
+                    Requestor: {isUserRequestor ? 'Me' : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : 'Unknown'}
                   </div>
                   <div className="products__request-text">
                     Product: {get(requestorProduct, 'name')}
@@ -153,7 +153,7 @@ const Products = () => {
                     Owner: {owner && isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
                   </div> */}
                   <div className="products__request-text">
-                    Requestor: {isUserRequestor ? 'Me' : `${requestor.first_name} ${requestor.last_name} (${requestor.email})`}
+                    Requestor: {isUserRequestor ? 'Me' : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : 'Unknown'}
                   </div>
                   <div className="products__request-text">
                     Product: {get(product, 'name')}
@@ -182,7 +182,7 @@ const Products = () => {
     <div className="products">
       <WarningMessage message={message} type={type} />
       <div className="products__title">
-        <h2>{user.first_name} Stuff</h2>
+        <h2>{user?.first_name || 'My'} Stuff</h2>
         <div className="products__add-product">
           <Button text="Add Product" onClick={() => navigate('/product/add')}></Button>
           <Button 
