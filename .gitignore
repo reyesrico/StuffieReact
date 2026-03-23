@@ -25,3 +25,6 @@ yarn-error.log*
 # dev
 .vscode
 .env
+
+# Internal AI documentation (not for public sharing)
+.github/copilot/
