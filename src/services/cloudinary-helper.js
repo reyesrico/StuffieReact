@@ -18,7 +18,6 @@ export const signature = (folder, userId, timestamp) => {
     `folder=${folder}&invalidate=true&public_id=${userId}&timestamp=${timestamp}&upload_preset=${config.cloudinary.uploadPreset}`;
   
   const data2 = `'invalidate=true&public_id=${userId}&timestamp=${timestamp}'`;
-  console.log(data2);
   return sha1(data2);
 }
 

@@ -23,14 +23,16 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
     };
 
     socket.current.onerror = (e: any) => {
-      console.log(`Error: ${e.message}`);
+      // Error logged for debugging WebSocket issues
+      if (process.env.NODE_ENV === 'development') {
+        console.error(`WebSocket Error: ${e.message}`);
+      }
 			setStatus("Error");
     };
 
     const wsCurrent = socket.current;
 
     return () => {
-      console.log('Unmounting...');
       wsCurrent.close();
     };
   }, []);
@@ -52,7 +54,6 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
 			setStatus("Sending");
     } else {
 			setStatus("Wait");
-      console.log(`Wait: ${socket.readyState} / ${socket.CONNECTING}`);
     }
   }
 

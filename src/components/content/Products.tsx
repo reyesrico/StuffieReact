@@ -113,7 +113,8 @@ const Products = () => {
                 </div>
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
-                    <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
+                    {/* TODO: Implement acceptExchange functionality */}
+                    <Button onClick={() => {}} text="Accept" disabled></Button>
                   </div>}
                   <div className="products__request-button">
                     <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText}></Button>
@@ -160,7 +161,8 @@ const Products = () => {
                 </div>
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
-                    <Button onClick={() => console.log("Accept Exchange")} text="Accept"></Button>
+                    {/* TODO: Implement acceptLoan functionality */}
+                    <Button onClick={() => {}} text="Accept" disabled></Button>
                   </div>}
                   <div className="products__request-button">
                     <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText}></Button>

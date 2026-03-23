@@ -10,9 +10,7 @@ export const generateFeed = friends => {
   friends.forEach(friend => {
     // f.forEach(friend => {
       if (friend.products) {
-        console.log(friend.products.length);
         friend.products.forEach(product => {
-          console.log({ product });
           feed.push({
             friend_id: friend.id,
             friend_firstName: friend.first_name || '',
@@ -25,7 +23,6 @@ export const generateFeed = friends => {
     // })
   });
 
-  console.log({ feed });
   return sortBy(feed, 'date');
 }
 
