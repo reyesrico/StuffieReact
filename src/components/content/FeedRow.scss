@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .feed-row {
   @include section-background;

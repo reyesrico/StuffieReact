@@ -1,3 +1,4 @@
+/* eslint-disable no-global-assign */
 // Review https://stackoverflow.com/questions/46577130/implementing-promise-class-in-javascript
 class PromiseT { 
 	constructor(f) {

@@ -19,7 +19,7 @@ const FeedRow = (props: FeedRowProps) => {
     existImage(feedPost.friend_id, "stuffiers/")
       .then(() => setPicture(userImageUrl(feedPost.friend_id)))
       .catch(() => console.log('No image found for user:', feedPost.friend_id)); // fallback to default if no image found
-  }, []);
+  }, [feedPost.friend_id]);
 
   const getProductType = () => {
     let subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
@@ -30,7 +30,7 @@ const FeedRow = (props: FeedRowProps) => {
     return (
     <div className="feed-row__description">
       {picture && (
-        <img src={picture} className="feed-row__photo" alt={`${feedPost.friend_firstName} photo`} />
+        <img src={picture} className="feed-row__photo" alt={feedPost.friend_firstName} />
       )}
       <div className="feed-row__added">
         <span>

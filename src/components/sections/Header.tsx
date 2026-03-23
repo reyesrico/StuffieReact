@@ -37,11 +37,10 @@ const Header = () => {
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
       .then(res => {
-        // console.log({ res });
         setPicture(userImageUrl(user.id));
       })
       .catch(() => setPicture(defaultImageUrl));
-  }, []);
+  }, [user.id]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
   const requests = exchangeRequests.length + loanRequests.length;

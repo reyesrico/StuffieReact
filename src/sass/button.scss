@@ -1,3 +1,6 @@
+@use "./colors" as *;
+@use "./display" as *;
+
 @mixin button() {
   @include border-radius;
   @include padding(4px, 'all');

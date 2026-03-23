@@ -1,6 +1,6 @@
 import { FRIENDS_FETCHED, FRIEND_PRODUCTS_FETCHED } from './constants';
 
-export default (state = [], action) => {
+const friendsReducer = (state = [], action) => {
   switch (action.type) {
     case FRIENDS_FETCHED:
       return action.payload;
@@ -10,3 +10,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default friendsReducer;

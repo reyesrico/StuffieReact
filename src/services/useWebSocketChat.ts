@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import User from "../components/types/User";
 
 export type Status = "Connected" | "Disconnected" | "Error" | "Sending" | "Receiving" | "Wait";
@@ -35,7 +35,7 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
     return () => {
       wsCurrent.close();
     };
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     if (!socket.current) return;

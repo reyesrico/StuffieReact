@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .buy__product {
   @include margin(8px, bottom);

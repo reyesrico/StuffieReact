@@ -1,6 +1,6 @@
 import { USER_REQUESTS_FETCHED, USER_REQUEST_DELETED } from './constants';
 
-export default (state = [], action) => {
+const userRequestsReducer = (state = [], action) => {
   switch (action.type) {
     case USER_REQUESTS_FETCHED:
       return action.payload;
@@ -11,3 +11,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default userRequestsReducer;

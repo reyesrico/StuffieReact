@@ -5,7 +5,7 @@ import {
   USER_UPDATED
 } from './constants';
 
-export default (state = [], action) => {
+const userReducer = (state = [], action) => {
   switch (action.type) {
     case LOGIN_USER_FETCHED:
       return action.payload;
@@ -20,3 +20,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default userReducer;

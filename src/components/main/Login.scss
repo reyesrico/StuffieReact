@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .login__form {
   @include flex(column, center, center);

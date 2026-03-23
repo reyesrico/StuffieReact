@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const usePrevious = (useEffect, useRef, value, initialValue) => {
   const ref = useRef(initialValue);
   useEffect(() => {
@@ -5,6 +6,8 @@ const usePrevious = (useEffect, useRef, value, initialValue) => {
   });
   return ref.current;
 };
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
 const useEffectDebugger = (useEffect, useRef, effectHook, dependencies, dependencyNames) => {
   const previousDeps = usePrevious(useEffect, useRef, dependencies, []);
   const changedDeps = dependencies.reduce((accum, dependency, index) => {
@@ -24,6 +27,7 @@ const useEffectDebugger = (useEffect, useRef, effectHook, dependencies, dependen
   if (Object.keys(changedDeps).length) {
     console.log('[use-effect-debugger] ', changedDeps);
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(effectHook, dependencies);
 };
 

@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .apps__title {
   @include section-title();

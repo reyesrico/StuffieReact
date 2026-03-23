@@ -34,7 +34,7 @@ const Stuffier = () => {
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
       .then(() => setPicture(userImageUrl(user.id)));
-  }, []);
+  }, [user.id]);
 
 
   // CAN'T UPDATE / REMOVE IMAGE FROM CLOUDINARY

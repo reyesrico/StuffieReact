@@ -5,8 +5,6 @@
 // The Products component is complex (uses Redux, Router, multiple contexts)
 // and requires proper test setup.
 
-import React from 'react';
-
 describe('Products', () => {
   it.todo('should render products list');
   it.todo('should handle exchange requests');

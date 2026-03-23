@@ -25,10 +25,9 @@ const CategoryPage = () => {
       <h3>{t('Category')} {name}</h3>
       <hr />
       {!products && <div>{t('NoProducts')}</div>}
-      {!stuff || !stuff.length && <div>{t('NoProducts')}</div>}
+      {(!stuff || !stuff.length) && <div>{t('NoProducts')}</div>}
       <ul>
         {map(stuff, (product: Stuff) => {
-          const match = { params: { id: product.id } };
           return (
             <Link
               key={product.id}

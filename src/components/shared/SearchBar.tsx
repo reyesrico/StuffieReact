@@ -71,10 +71,6 @@ const SearchBar = (props: any) => {
     }
   }
 
-  const getLinkTo = (result: any) => {
-    return { pathname: `/${result.type.toLowerCase()}/${result.id}`, [result.type.toLowerCase()]: result.name };
-  }
-
   const renderResults = () => {
     const { selectProduct } = props;
 

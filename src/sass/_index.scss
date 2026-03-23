@@ -1,0 +1,7 @@
+// Sass Index - Forwards all partials for use with @use
+// This file enables the modern @use syntax while maintaining global namespace
+
+@forward './colors';
+@forward './screen';
+@forward './display';
+@forward './button';

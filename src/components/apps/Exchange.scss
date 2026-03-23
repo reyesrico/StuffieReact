@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .exchange__header {
   @include padding(8px, bottom);

@@ -1,4 +1,4 @@
-@import '../../sass/main.scss';
+@use '../../sass/main' as *;
 
 .stuffier__header {
   @include flex(row, flex-start, center);

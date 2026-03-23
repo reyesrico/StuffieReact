@@ -1,6 +1,6 @@
 import { EXCHANGES_FETCHED, EXCHANGE_DELETED, EXCHANGE_REQUESTED } from './constants';
 
-export default (state = [], action) => {
+const exchangeRequestsReducer = (state = [], action) => {
   switch (action.type) {
     case EXCHANGE_REQUESTED:
       return [...state, action.payload];
@@ -13,3 +13,5 @@ export default (state = [], action) => {
       return state;
   }
 }
+
+export default exchangeRequestsReducer;

@@ -1,6 +1,6 @@
 import { PENDING_PRODUCTS_FETCHED } from './constants';
 
-export default (state = [], action) => {
+const pendingProductsReducer = (state = [], action) => {
   switch (action.type) {
     case PENDING_PRODUCTS_FETCHED:
       return action.payload;
@@ -8,3 +8,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default pendingProductsReducer;

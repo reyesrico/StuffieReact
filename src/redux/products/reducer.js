@@ -1,7 +1,7 @@
 import { PRODUCT_ADDED, PRODUCTS_FETCHED, PRODUCT_UPDATED } from './constants';
 import { findProduct } from '../../components/helpers/StuffHelper';
 
-export default (state = [], action) => {
+const productsReducer = (state = [], action) => {
   let product, products;
 
   switch (action.type) {
@@ -28,3 +28,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default productsReducer;

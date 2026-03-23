@@ -6,7 +6,7 @@ import Button from '../shared/Button';
 const Tickets = () => {
   let progressValue = 0;
   let [ file, setFile ] = useState<File>();
-  const [imageUrl, setImageUrl] = useState<string>("https://i0.wp.com/i.redd.it/a7hqgjbxn0v21.jpg");
+  const [imageUrl] = useState<string>("https://i0.wp.com/i.redd.it/a7hqgjbxn0v21.jpg");
   const [caption, setCaption] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

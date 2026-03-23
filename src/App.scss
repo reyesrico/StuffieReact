@@ -1,4 +1,4 @@
-@import './sass/main.scss';
+@use './sass/main' as *;
 
 .stuffie__app {
   @include flex(row, center);

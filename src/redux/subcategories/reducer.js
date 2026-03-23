@@ -1,6 +1,6 @@
 import { SUBCATEGORY_ADDED, SUBCATEGORIES_FETCHED, SUBCATEGORY_FETCHED } from './constants';
 
-export default (state = [], action) => {
+const subcategoriesReducer = (state = [], action) => {
   switch (action.type) {
     case SUBCATEGORY_ADDED:
       const subcategory = action.payload;
@@ -13,3 +13,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default subcategoriesReducer;

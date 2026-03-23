@@ -25,7 +25,7 @@ const FriendRow = ({ user }: FriendRowProps) => {
     existImage(user.id, "stuffiers/")
       .then(() => setPicture(userImageUrl(user.id)))
       .catch(() => console.log('No image found for user:', user.id)); // fallback to default if no image found
-  }, []);
+  }, [user.id]);
 
   return (
     <div className='friend-row'>
@@ -57,7 +57,7 @@ const Friends = () => {
       getStuffiers(mapIds(friendsRequests))
       .then((res: any) => setRequests(res.data));
     }
-  }, []);
+  }, [friendsRequests]);
 
   const executeRequest = (friend: User, isAccepted = false) => {
     let promises = [deleteRequest(user.email, friend.id)];

@@ -14,11 +14,8 @@ export const existImage = (publicId, folder = '') => {
 
 // Signature to Delete
 export const signature = (folder, userId, timestamp) => {  
-  const data =
-    `folder=${folder}&invalidate=true&public_id=${userId}&timestamp=${timestamp}&upload_preset=${config.cloudinary.uploadPreset}`;
-  
-  const data2 = `'invalidate=true&public_id=${userId}&timestamp=${timestamp}'`;
-  return sha1(data2);
+  const data = `'invalidate=true&public_id=${userId}&timestamp=${timestamp}'`;
+  return sha1(data);
 }
 
 export const apiKey = config.cloudinary.apiKey || '';

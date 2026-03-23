@@ -1,6 +1,6 @@
 import { FEED_FETCHED } from './constants';
 
-export default (state = [], action) => {
+const feedReducer = (state = [], action) => {
   switch (action.type) {
     case FEED_FETCHED:
       return action.payload;
@@ -8,3 +8,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default feedReducer;

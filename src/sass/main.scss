@@ -1,10 +1,13 @@
-/* CONSTANTS */
-@import './colors.scss';
-@import './screen.scss';
+// Sass Main Entry Point
+// Uses @forward for modern Sass module system (no deprecation warnings)
 
-/* FUNCTIONS */
-@import './display.scss';
-@import './button.scss';
+@forward './colors';
+@forward './screen';
+@forward './display';
+@forward './button';
+
+// Import display mixins for use in this file
+@use './display' as *;
 
 h1 {
   @include margin(20px, vertical);

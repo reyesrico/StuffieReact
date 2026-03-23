@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeType } from "../context/ThemeContext";
 
 export const useThemeDetector = () => {

@@ -1,6 +1,6 @@
 import { SPOTIFY_FETCHED } from './constants';
 
-export default (state = [], action) => {
+const spotifyReducer = (state = [], action) => {
   switch (action.type) {
     case SPOTIFY_FETCHED:
       console.log(action.payload);
@@ -9,3 +9,5 @@ export default (state = [], action) => {
       return state;
   }
 };
+
+export default spotifyReducer;

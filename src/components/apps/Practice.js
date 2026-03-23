@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * Practice JS
  * http://hangar.runway7.net/javascript/difference-call-apply
