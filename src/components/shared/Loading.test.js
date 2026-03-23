@@ -1,22 +1,22 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import Loading, { getSize }from './Loading';
+import { render, screen } from '@testing-library/react';
+import Loading, { getSize } from './Loading';
 
 describe('Loading', () => {
-  let wrapper;
-  // let instance;
-  const props = { size: 'md', message: 'message '};
-
-  beforeEach(() => {
-    wrapper = shallow(<Loading size={props.size} message={props.message} />);
-    // instance = wrapper.instance();
-  });
-
   it('renders without crashing', () => {
-    expect(wrapper.exists()).toEqual(true);
+    const { container } = render(<Loading size="md" message="Loading..." />);
+    expect(container.querySelector('.stuffie-loading')).toBeInTheDocument();
   });
 
-  it('getSize', () => {
+  it('displays the message when provided', () => {
+    render(<Loading size="md" message="Please wait" />);
+    expect(screen.getByText('Please wait')).toBeInTheDocument();
+  });
+
+  it('getSize returns correct sizes', () => {
+    expect(getSize('sm')).toEqual(8);
     expect(getSize('md')).toEqual(16);
+    expect(getSize('lg')).toEqual(32);
+    expect(getSize('xl')).toEqual(64);
   });
 });

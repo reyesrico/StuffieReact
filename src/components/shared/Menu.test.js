@@ -1,36 +1,27 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import Menu from './Menu';
 
 describe('Menu', () => {
-  let wrapper;
-  let instance;
-  const props = { label: () => {} };
-
-  beforeEach(() => {
-    wrapper = shallow(<Menu {...props} />);
-    instance = wrapper.instance();
-  });
+  const mockLabel = (isOpen) => <span data-testid="menu-label">{isOpen ? 'Open' : 'Closed'}</span>;
 
   it('renders without crashing', () => {
-    expect(wrapper.exists()).toEqual(true);
+    const { container } = render(<Menu label={mockLabel}><div>Menu content</div></Menu>);
+    expect(container.querySelector('.dropdown')).toBeInTheDocument();
   });
 
-  /*
-  it('should set state false when handleClickOutside', () => {
-    instance.handleClickOutside();
-    expect(instance.state.isOpen).toBeFalsy();
+  it('toggles open state when clicked', () => {
+    render(<Menu label={mockLabel}><div>Menu content</div></Menu>);
+    
+    // Initially closed
+    expect(screen.getByText('Closed')).toBeInTheDocument();
+    
+    // Click to open
+    fireEvent.click(screen.getByTestId('menu-label'));
+    expect(screen.getByText('Open')).toBeInTheDocument();
+    
+    // Click again to close
+    fireEvent.click(screen.getByTestId('menu-label'));
+    expect(screen.getByText('Closed')).toBeInTheDocument();
   });
-
-  it('should set state true when open', () => {
-    instance.open();
-    expect(instance.state.isOpen).toBeTruthy();
-  });
-
-  it('should toogle state when toggle', () => {
-    expect(instance.state.isOpen).toBeFalsy();
-    instance.toggle();
-    expect(instance.state.isOpen).toBeTruthy();
-  });
-  */
 });
