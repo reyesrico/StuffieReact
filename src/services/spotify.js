@@ -28,66 +28,62 @@ export const fetchSpotifyData = () => (
  * @param clientSecret - Spotify App Client Secret
  * @returns Promise with access_token and expires_in
  */
-export const getToken = (clientId, clientSecret) => {
-  // Use btoa() for Base64 encoding (browser-native, replaces deprecated Buffer)
-  const credentials = btoa(`${clientId}:${clientSecret}`);
-  
-  const headers = {
-    'Authorization': `Basic ${credentials}`,
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'Accept': 'application/json'
-  };
+export const getToken = async (clientId, clientSecret) => {
+  // Use body params instead of Basic Auth header (better CORS compatibility)
+  const body = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: clientId,
+    client_secret: clientSecret
+  });
 
-  // Use URLSearchParams instead of deprecated querystring module
-  const body = new URLSearchParams({ grant_type: 'client_credentials' });
+  try {
+    // Use fetch for better browser CORS handling
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body.toString()
+    });
 
-  return axios.post(
-    'https://accounts.spotify.com/api/token',
-    body.toString(),
-    { headers }
-  );
+    if (!response.ok) {
+      throw new Error(`Token request failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error('Spotify token error:', error);
+    throw error;
+  }
 };
 
 /**
- * Authenticates and gets user profile
+ * Search for tracks
  * @param token - Spotify access token
+ * @param query - Search query
+ * @param limit - Number of results
  */
-export const auth = (token) => {
-  const options = {
-    url: 'https://api.spotify.com/v1/users/jmperezperez',
-    headers: { 'Authorization': `Bearer ${token}` }
-  };
-  return axios.get(options.url, { headers: options.headers });
-};
+export const searchTracks = async (token, query, limit = 50) => {
+  try {
+    const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
 
-/**
- * Search for tracks by track name and artist
- * @param token - Spotify access token
- * @param track - Track name to search
- * @param artist - Artist name to search
- */
-export const search = (token, track, artist) => {
-  const query = encodeURIComponent(`track:${track} artist:${artist}`);
-  const options = {
-    url: `https://api.spotify.com/v1/search?q=${query}&type=track`,
-    headers: { 'Authorization': `Bearer ${token}` }
-  };
+    if (!response.ok) {
+      throw new Error(`Search failed: ${response.status}`);
+    }
 
-  return axios.get(options.url, { headers: options.headers });
-};
-
-/**
- * Get user's playlists
- * @param token - Spotify access token
- */
-export const getPlaylists = (token) => {
-  const userId = '1286537068';
-  const options = {
-    url: `https://api.spotify.com/v1/users/${userId}/playlists`,
-    headers: { 'Authorization': `Bearer ${token}` }
-  };
-
-  return axios.get(options.url, { headers: options.headers });
+    const data = await response.json();
+    return { data };
+  } catch (error) {
+    console.error('Spotify search error:', error);
+    throw error;
+  }
 };
 
 /**

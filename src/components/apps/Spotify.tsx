@@ -2,27 +2,22 @@
  * Spotify Component
  * 
  * Purpose: Social media personalization feature
- * - Displays user's Spotify playlists and tracks
+ * - Search and browse Spotify tracks
+ * - Play using Spotify's embed player
  * - Part of the personalized social experience
- * - Allows users to share music preferences with friends
+ * 
+ * Note: Spotify removed preview_url from their API in 2024.
+ * Using Spotify embed player for playback instead.
  */
 
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import State from '../../redux/State';
-import { getToken, getPlaylists, getTracksFromPlaylist } from '../../services/spotify';
+import { getToken, searchTracks } from '../../services/spotify';
 
 import './Spotify.scss';
-
-interface Playlist {
-  id: string;
-  name: string;
-  images: { url: string }[];
-  tracks: { total: number };
-}
 
 interface Track {
   id: string;
@@ -33,40 +28,26 @@ interface Track {
     images: { url: string }[];
   };
   external_urls: { spotify: string };
-  preview_url: string | null;
   duration_ms: number;
 }
 
 const Spotify = () => {
   const spotifyConf = useSelector((state: State) => state.spotifyConf);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   // Use backend config or fall back to environment variables
   const clientId = spotifyConf?.key || process.env.REACT_APP_SPOTIFY_CLIENT_ID;
   const clientSecret = spotifyConf?.secret || process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
 
   const [token, setToken] = useState<string | null>(null);
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingTracks, setIsLoadingTracks] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Player controls
-  const [shuffle, setShuffle] = useState(false);
-  const [repeat, setRepeat] = useState<'off' | 'all' | 'one'>('off');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTitle, setSearchTitle] = useState('');
 
-  // Get only tracks with preview URLs
-  const playableTracks = useMemo(() => 
-    tracks.filter(t => t.preview_url),
-  [tracks]);
-
-  const playableCount = playableTracks.length;
-
-  // Fetch token and playlists on mount
+  // Initialize - get token and load initial tracks
   useEffect(() => {
     if (!clientId || !clientSecret) {
       setIsLoading(false);
@@ -76,7 +57,7 @@ const Spotify = () => {
 
     let isMounted = true;
 
-    const fetchPlaylists = async () => {
+    const initialize = async () => {
       try {
         setIsLoading(true);
         setError(null);
@@ -87,13 +68,22 @@ const Spotify = () => {
         if (!isMounted) return;
         setToken(accessToken);
 
-        const playlistsRes = await getPlaylists(accessToken);
+        // Search for popular tracks on initial load
+        const searchRes = await searchTracks(accessToken, 'Bad Bunny', 20);
         
         if (!isMounted) return;
-        setPlaylists(playlistsRes.data.items || []);
+        const initialTracks = searchRes.data.tracks?.items || [];
+        setTracks(initialTracks);
+        setSearchTitle('Bad Bunny');
+        
+        // Auto-select first track
+        if (initialTracks.length > 0) {
+          setSelectedTrack(initialTracks[0]);
+        }
       } catch (err) {
+        console.error('Spotify error:', err);
         if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load Spotify playlists');
+          setError(err instanceof Error ? err.message : 'Failed to connect to Spotify');
         }
       } finally {
         if (isMounted) {
@@ -102,150 +92,40 @@ const Spotify = () => {
       }
     };
 
-    fetchPlaylists();
+    initialize();
 
     return () => {
       isMounted = false;
     };
   }, [clientId, clientSecret]);
+  
+  // Handle search
+  const handleSearch = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !searchQuery.trim()) return;
 
-  // Fetch tracks when a playlist is selected
-  const handleSelectPlaylist = useCallback(async (playlist: Playlist) => {
-    if (!token) return;
-
-    setSelectedPlaylist(playlist);
-    setTracks([]);
-    setCurrentTrackIndex(null);
-    setIsLoadingTracks(true);
+    setIsSearching(true);
+    setError(null);
 
     try {
-      const tracksRes = await getTracksFromPlaylist(token, playlist.id);
-      const trackItems = tracksRes.data.items
-        .filter((item: any) => item.track)
-        .map((item: any) => item.track);
-      setTracks(trackItems);
+      const res = await searchTracks(token, searchQuery);
+      const searchResults = res.data.tracks?.items || [];
+      setTracks(searchResults);
+      setSearchTitle(searchQuery);
+      
+      // Auto-select first result
+      if (searchResults.length > 0) {
+        setSelectedTrack(searchResults[0]);
+      }
     } catch (err) {
-      setError('Failed to load tracks');
+      setError('Search failed');
     } finally {
-      setIsLoadingTracks(false);
+      setIsSearching(false);
     }
-  }, [token]);
+  }, [token, searchQuery]);
 
-  // Find next playable track index
-  const findNextPlayableIndex = useCallback((fromIndex: number, direction: 1 | -1 = 1): number | null => {
-    if (playableTracks.length === 0) return null;
-    
-    // Find the playable track in the original tracks array
-    let searchIndex = fromIndex;
-    let attempts = 0;
-    
-    while (attempts < tracks.length) {
-      searchIndex = (searchIndex + direction + tracks.length) % tracks.length;
-      if (tracks[searchIndex]?.preview_url) {
-        return searchIndex;
-      }
-      attempts++;
-    }
-    return null;
-  }, [tracks, playableTracks.length]);
-
-  // Get random playable track
-  const getRandomPlayableIndex = useCallback((): number | null => {
-    if (playableTracks.length === 0) return null;
-    const randomPlayable = playableTracks[Math.floor(Math.random() * playableTracks.length)];
-    return tracks.findIndex(t => t.id === randomPlayable.id);
-  }, [tracks, playableTracks]);
-
-  const handlePlayTrack = useCallback((index: number) => {
-    if (!tracks[index]?.preview_url) return;
-    setCurrentTrackIndex(index);
-    setIsPlaying(true);
-  }, [tracks]);
-
-  const handlePlayPause = useCallback(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  }, [isPlaying]);
-
-  const handleNextTrack = useCallback(() => {
-    if (tracks.length === 0) return;
-    
-    if (repeat === 'one' && currentTrackIndex !== null) {
-      // Replay current track
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-      }
-      return;
-    }
-
-    let nextIndex: number | null;
-    
-    if (shuffle) {
-      nextIndex = getRandomPlayableIndex();
-    } else {
-      nextIndex = findNextPlayableIndex(currentTrackIndex ?? -1, 1);
-    }
-
-    if (nextIndex !== null) {
-      // Check if we've looped around
-      if (nextIndex <= (currentTrackIndex ?? 0) && repeat === 'off') {
-        // Stop playing if we've gone through all tracks and repeat is off
-        setIsPlaying(false);
-        return;
-      }
-      setCurrentTrackIndex(nextIndex);
-      setIsPlaying(true);
-    }
-  }, [currentTrackIndex, tracks.length, shuffle, repeat, findNextPlayableIndex, getRandomPlayableIndex]);
-
-  const handlePrevTrack = useCallback(() => {
-    if (tracks.length === 0 || currentTrackIndex === null) return;
-
-    // If more than 3 seconds in, restart current track
-    if (audioRef.current && audioRef.current.currentTime > 3) {
-      audioRef.current.currentTime = 0;
-      return;
-    }
-
-    const prevIndex = findNextPlayableIndex(currentTrackIndex, -1);
-    if (prevIndex !== null) {
-      setCurrentTrackIndex(prevIndex);
-      setIsPlaying(true);
-    }
-  }, [currentTrackIndex, tracks.length, findNextPlayableIndex]);
-
-  const handlePlayAll = useCallback(() => {
-    const firstPlayable = findNextPlayableIndex(-1, 1);
-    if (firstPlayable !== null) {
-      setCurrentTrackIndex(firstPlayable);
-      setIsPlaying(true);
-    }
-  }, [findNextPlayableIndex]);
-
-  const toggleShuffle = useCallback(() => {
-    setShuffle(prev => !prev);
-  }, []);
-
-  const toggleRepeat = useCallback(() => {
-    setRepeat(prev => {
-      if (prev === 'off') return 'all';
-      if (prev === 'all') return 'one';
-      return 'off';
-    });
-  }, []);
-
-  const handleBackToPlaylists = useCallback(() => {
-    setSelectedPlaylist(null);
-    setTracks([]);
-    setCurrentTrackIndex(null);
-    setIsPlaying(false);
+  const handleSelectTrack = useCallback((track: Track) => {
+    setSelectedTrack(track);
   }, []);
 
   const formatDuration = (ms: number) => {
@@ -257,12 +137,12 @@ const Spotify = () => {
   if (isLoading) {
     return (
       <div className="spotify spotify--loading">
-        <Loading size="lg" message="Loading Spotify..." />
+        <Loading size="lg" message="Connecting to Spotify..." />
       </div>
     );
   }
 
-  if (error) {
+  if (error && tracks.length === 0) {
     return (
       <div className="spotify spotify--error">
         <div className="spotify__error-icon">🎵</div>
@@ -272,165 +152,94 @@ const Spotify = () => {
     );
   }
 
-  // Show current playing track
-  const currentTrack = currentTrackIndex !== null ? tracks[currentTrackIndex] : null;
-
   return (
     <div className="spotify">
       <div className="spotify__header">
         <h2>🎵 Spotify</h2>
-        {selectedPlaylist && (
-          <Button text="← Back to Playlists" onClick={handleBackToPlaylists} />
-        )}
       </div>
 
-      {/* Now Playing Section */}
-      {currentTrack && currentTrack.preview_url && (
-        <div className="spotify__player">
-          <img 
-            src={currentTrack.album.images[0]?.url || ''} 
-            alt={currentTrack.album.name}
-            className="spotify__player-image"
-          />
-          <div className="spotify__player-info">
-            <div className="spotify__player-title">{currentTrack.name}</div>
-            <div className="spotify__player-artist">
-              {currentTrack.artists.map(a => a.name).join(', ')}
-            </div>
-            <div className="spotify__player-album">{currentTrack.album.name}</div>
-            <a 
-              href={currentTrack.external_urls?.spotify}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="spotify__player-open"
-            >
-              Open full song in Spotify ↗
-            </a>
-          </div>
-          <div className="spotify__player-controls">
-            <button 
-              className={`spotify__control-btn spotify__control-btn--small ${shuffle ? 'spotify__control-btn--active' : ''}`}
-              onClick={toggleShuffle}
-              title="Shuffle"
-            >
-              🔀
-            </button>
-            <button className="spotify__control-btn" onClick={handlePrevTrack} title="Previous">⏮</button>
-            <button className="spotify__control-btn spotify__control-btn--play" onClick={handlePlayPause}>
-              {isPlaying ? '⏸' : '▶'}
-            </button>
-            <button className="spotify__control-btn" onClick={handleNextTrack} title="Next">⏭</button>
-            <button 
-              className={`spotify__control-btn spotify__control-btn--small ${repeat !== 'off' ? 'spotify__control-btn--active' : ''}`}
-              onClick={toggleRepeat}
-              title={`Repeat: ${repeat}`}
-            >
-              {repeat === 'one' ? '🔂' : '🔁'}
-            </button>
-          </div>
-          <audio
-            ref={audioRef}
-            key={currentTrack.id}
-            autoPlay
-            className="spotify__audio"
-            src={currentTrack.preview_url}
-            onEnded={handleNextTrack}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-          />
-        </div>
-      )}
+      {/* Search Bar */}
+      <form className="spotify__search" onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder="Search for songs, artists..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="spotify__search-input"
+        />
+        <button type="submit" className="spotify__search-btn" disabled={!searchQuery.trim() || isSearching}>
+          {isSearching ? '...' : '🔍 Search'}
+        </button>
+      </form>
 
-      {/* Playlists Grid */}
-      {!selectedPlaylist && (
-        <div className="spotify__playlists">
-          <h3>Your Playlists ({playlists.length})</h3>
-          {playlists.length === 0 ? (
-            <p className="spotify__empty">No playlists found. Create some playlists on Spotify!</p>
-          ) : (
-            <div className="spotify__grid">
-              {playlists.map((playlist) => (
-                <div 
-                  key={playlist.id} 
-                  className="spotify__playlist-card"
-                  onClick={() => handleSelectPlaylist(playlist)}
-                >
-                  <img 
-                    src={playlist.images[0]?.url || 'https://via.placeholder.com/150?text=No+Image'} 
-                    alt={playlist.name}
-                    className="spotify__playlist-image"
-                  />
-                  <div className="spotify__playlist-info">
-                    <div className="spotify__playlist-name">{playlist.name}</div>
-                    <div className="spotify__playlist-count">{playlist.tracks.total} tracks</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+      {/* Spotify Embed Player */}
+      {selectedTrack && (
+        <div className="spotify__embed-container">
+          <iframe
+            title="Spotify Player"
+            src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
+            width="100%"
+            height="152"
+            frameBorder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className="spotify__embed"
+          />
         </div>
       )}
 
       {/* Tracks List */}
-      {selectedPlaylist && (
-        <div className="spotify__tracks">
-          <div className="spotify__tracks-header">
-            <h3>{selectedPlaylist.name}</h3>
-            {playableCount > 0 && (
-              <button className="spotify__play-all" onClick={handlePlayAll}>
-                ▶ Play All Previews ({playableCount})
-              </button>
-            )}
-          </div>
-          <p className="spotify__tracks-note">
-            🎧 {playableCount} of {tracks.length} tracks have 30-second previews available. 
-            Click ▶ to play or 🔗 to open full song in Spotify.
-          </p>
-          {isLoadingTracks ? (
-            <Loading size="md" message="Loading tracks..." />
-          ) : tracks.length === 0 ? (
-            <p className="spotify__empty">No tracks in this playlist.</p>
-          ) : (
-            <div className="spotify__track-list">
-              {tracks.map((track, index) => (
-                <div 
-                  key={track.id || index}
-                  className={`spotify__track ${currentTrackIndex === index ? 'spotify__track--playing' : ''} ${track.preview_url ? 'spotify__track--has-preview' : ''}`}
-                  onClick={() => track.preview_url && handlePlayTrack(index)}
-                >
-                  <div className="spotify__track-play">
-                    {track.preview_url ? (currentTrackIndex === index && isPlaying ? '⏸' : '▶') : '—'}
-                  </div>
-                  <img 
-                    src={track.album.images[2]?.url || track.album.images[0]?.url || ''} 
-                    alt={track.album.name}
-                    className="spotify__track-image"
-                  />
-                  <div className="spotify__track-info">
-                    <div className="spotify__track-name">{track.name}</div>
-                    <div className="spotify__track-artist">
-                      {track.artists.map(a => a.name).join(', ')}
-                    </div>
-                  </div>
-                  <div className="spotify__track-duration">
-                    {formatDuration(track.duration_ms)}
-                  </div>
-                  <a 
-                    href={track.external_urls?.spotify} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="spotify__track-link"
-                    onClick={(e) => e.stopPropagation()}
-                    title="Open in Spotify"
-                  >
-                    🔗
-                  </a>
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="spotify__tracks">
+        <div className="spotify__tracks-header">
+          <h3>{searchTitle ? `Results: "${searchTitle}"` : 'Tracks'}</h3>
         </div>
-      )}
+        <p className="spotify__tracks-note">
+          🎵 Click a track to play it using the Spotify player above.
+        </p>
+        {isSearching ? (
+          <Loading size="md" message="Searching..." />
+        ) : tracks.length === 0 ? (
+          <p className="spotify__empty">No results found. Try a different search.</p>
+        ) : (
+          <div className="spotify__track-list">
+            {tracks.map((track) => (
+              <div 
+                key={track.id}
+                className={`spotify__track spotify__track--clickable ${selectedTrack?.id === track.id ? 'spotify__track--selected' : ''}`}
+                onClick={() => handleSelectTrack(track)}
+              >
+                <div className="spotify__track-play">
+                  {selectedTrack?.id === track.id ? '🔊' : '▶'}
+                </div>
+                <img 
+                  src={track.album.images[2]?.url || track.album.images[0]?.url || ''} 
+                  alt={track.album.name}
+                  className="spotify__track-image"
+                />
+                <div className="spotify__track-info">
+                  <div className="spotify__track-name">{track.name}</div>
+                  <div className="spotify__track-artist">
+                    {track.artists.map(a => a.name).join(', ')}
+                  </div>
+                </div>
+                <div className="spotify__track-duration">
+                  {formatDuration(track.duration_ms)}
+                </div>
+                <a 
+                  href={track.external_urls?.spotify} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="spotify__track-link"
+                  onClick={(e) => e.stopPropagation()}
+                  title="Open in Spotify app"
+                >
+                  🔗
+                </a>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
