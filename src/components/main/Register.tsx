@@ -75,7 +75,7 @@ const Register = ({ setMessage, setIsLoading }: any) => {
           </div>
         </div>
         <div className="register__button">
-          <Button type="submit" text="Register" disabled={!enableButton()}></Button>
+          <Button type="submit" text="Register" disabled={!enableButton()} />
         </div>
       </form>
     </div>

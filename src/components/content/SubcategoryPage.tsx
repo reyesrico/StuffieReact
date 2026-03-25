@@ -13,16 +13,16 @@ import { useTranslation } from 'react-i18next';
 
 const SubcategoryPage = () => {
   const { t } = useTranslation();
-  let products = useSelector((state: State) => state.products);
-  let subcategories = useSelector((state: State) => state.subcategories);
-  let { id } = useParams();
-  let subcategoryId = id ? parseInt(id) : -1;
-  let subcategory: Subcategory | undefined = subcategories.find(c => c.id === subcategoryId);
+  const products = useSelector((state: State) => state.products);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  const { id } = useParams();
+  const subcategoryId = id ? parseInt(id) : -1;
+  const subcategory: Subcategory | undefined = subcategories.find(c => c.id === subcategoryId);
 
   const stuff = Object.keys(products)
       .filter((categoryId: string) => id?.startsWith(categoryId))
       .reduce((ps: any, categoryId: string) => {
-        let psBySub = products[parseInt(categoryId)].filter((p: any) => {
+        const psBySub = products[parseInt(categoryId)].filter((p: any) => {
           return p.subcategory === subcategoryId
         });
         return ps.concat(psBySub);

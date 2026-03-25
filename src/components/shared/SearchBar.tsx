@@ -14,10 +14,10 @@ const SearchBar = (props: any) => {
 
   const searchBarRef = useRef<HTMLDivElement>(null);
 
-  let [isLoading, setIsLoading] = useState(false);
-  let [isOpen, setIsOpen] = useState(false);
-  let [searchText, setSearchText] = useState('');;
-  let [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');;
+  const [results, setResults] = useState([]);
 
   useEffect(() => {
     // if (searchBarRef.current) {
@@ -77,6 +77,7 @@ const SearchBar = (props: any) => {
     if (results.length) {
       return (
         <div className="search__results">
+          {/* eslint-disable react/no-array-index-key */}
           {results.map((result: any, index: number) => {
             const linkTo = `/${result.type.toLowerCase()}/${result.id}`;
             return (
@@ -122,15 +123,14 @@ const SearchBar = (props: any) => {
           onChange={(e: any) => fetchResults(e.target.value)}
           value={searchText}
           containerStyle={{ width }}
-        >
-        </TextField>
+        />
         <div className="search-bar__button">
-          <i className="fas fa-search"></i>
+          <i className="fas fa-search" />
         </div>
       </div>
       <div className="search-bar__content-container">
         <div className={`search-bar__content ${isOpenCss}`}>
-          {isLoading && <Loading size="md"></Loading>}
+          {isLoading && <Loading size="md" />}
           {!isLoading && renderResults()}
         </div>
       </div>

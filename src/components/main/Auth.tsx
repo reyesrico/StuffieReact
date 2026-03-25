@@ -60,7 +60,7 @@ const Auth = () => {
   }, [userName, isFetchingUser]);
 
   const request = get(user, 'request');
-  let msg = request ? "User already registered, wait for authorization. Don't register again." : message;
+  const msg = request ? "User already registered, wait for authorization. Don't register again." : message;
 
   const renderPage = () => {
     if (isLoading) {
@@ -71,7 +71,7 @@ const Auth = () => {
           <Register
             setMessage={(message: string) => setMessage(message)}
             setIsLoading={(isLoading: boolean) => setIsLoading(isLoading)} />
-          <div className="auth__line"></div>
+          <div className="auth__line" />
           <Login
             setMessage={(message: string) => setMessage(message)}
             setIsLoading={(isLoading: boolean) => setIsLoading(isLoading)} />
@@ -90,7 +90,7 @@ const Auth = () => {
             <span className="auth__slogan">Connecting Life</span>
           </h1>
         </div>
-        <div className="auth__horizontal-line"></div>
+        <div className="auth__horizontal-line" />
         <WarningMessage message={msg} type={getMessageType(msg)} />
         {isLoading && (<div className="auth__loading"><Loading size="xl" message="Loading" /></div>)}
         {!userName && renderPage()}

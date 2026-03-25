@@ -90,7 +90,7 @@ export const useUserInfoWithCache = (email: string) => {
     },
     expiresIn: CACHE_DURATION.USER_INFO,
     enabled: !!email,
-    onSuccess: (userData) => {
+    onSuccess: (_userData) => {
       // You can dispatch user data to Redux if needed
     },
     onError: (error) => {

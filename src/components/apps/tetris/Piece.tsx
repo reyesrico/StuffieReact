@@ -63,6 +63,7 @@ export const Piece: React.FC<PieceProps> = ({ type, direction, position }) => {
   return (
     <>
       {shape.map((block, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <div
           key={index}
           className={`piece-${type}-${direction}`}

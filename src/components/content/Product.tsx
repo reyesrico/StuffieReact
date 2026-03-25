@@ -19,28 +19,28 @@ const Product = (props: any) => {
   const { hideOfferButton, product, showCost } = props;
   const { id } = useParams();
   const dispatch = useDispatch();
-  let categories = useSelector((state: State) => state.categories);
-  let subcategories = useSelector((state: State) => state.subcategories);
-  let products = useSelector((state: State) => state.products);
-  let user = useSelector((state: State) => state.user);
-  let [cost, setCost] = useState(0.0);
-  let [message, setMessage] = useState('');
-  let [type, setType] = useState(WarningMessageType.EMPTY);
-  let [category, setCategory] = useState<any>(null);
-  let [subcategory, setSubcategory] = useState<any>(null);
-  let [productRendered, setProductRendered] = useState<any>(null);
+  const categories = useSelector((state: State) => state.categories);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  const products = useSelector((state: State) => state.products);
+  const user = useSelector((state: State) => state.user);
+  const [cost, setCost] = useState(0.0);
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState(WarningMessageType.EMPTY);
+  const [category, setCategory] = useState<any>(null);
+  const [subcategory, setSubcategory] = useState<any>(null);
+  const [productRendered, setProductRendered] = useState<any>(null);
 
   useEffect(() => {
     if (!isEmpty(products) && !productRendered) {
-      let idP = id ? parseInt(id) : product ? product.id : NaN;
-      let pRendered = getProductFromProducts(idP, products);
+      const idP = id ? parseInt(id) : product ? product.id : NaN;
+      const pRendered = getProductFromProducts(idP, products);
       setProductRendered(pRendered);
     }
 
     if (!isEmpty(products) && productRendered) {
-      let cat = find(categories, c => c.id === productRendered.category);
+      const cat = find(categories, c => c.id === productRendered.category);
       setCategory(cat);
-      let subcat = find(subcategories, s => s.id === productRendered.subcategory);
+      const subcat = find(subcategories, s => s.id === productRendered.subcategory);
       setSubcategory(subcat);
     }
   }, [categories, subcategories, productRendered, products, product, id]);

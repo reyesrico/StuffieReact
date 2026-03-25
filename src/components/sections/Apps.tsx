@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import './Apps.scss';
 
-const Apps = (props: any) => {
+const Apps = (_props: any) => {
   const { t } = useTranslation();
 
   return (

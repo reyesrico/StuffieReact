@@ -23,6 +23,7 @@ const DropDown = (props: DropDownProps) => {
     <select onChange={updateChange} value={objectSelected}>
       {
         values && values.map((object: any, index: number) => {
+          // eslint-disable-next-line react/no-array-index-key
           return <option key={index} value={object.id}>{object.name}</option>;
         })
       }

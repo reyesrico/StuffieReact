@@ -29,7 +29,7 @@ const Chat = () => {
   // }, [messages]);
 
   const getChatBubble = (userName: string, message: any) => {
-    let chatMessage = 'chat__message';
+    const chatMessage = 'chat__message';
     if (userName === 'Stuffie') {
       return chatMessage + '-stuffie';
     }
@@ -47,6 +47,7 @@ const Chat = () => {
       <div className='chat__title'>{t('Chat')}</div>
       <div className="chat__messages" ref={messageEl}>
         {messages.map((message, index) => (
+          // eslint-disable-next-line react/no-array-index-key
           <div key={index} className={getChatBubble(user.id?.toString() || "", message)}>
             {message}
           </div>

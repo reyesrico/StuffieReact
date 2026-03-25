@@ -113,7 +113,7 @@ const Exchange = () => {
               <h4>My Product</h4>
               {renderProduct(selectedProduct)}
             </div>
-            <div className="exchange__line"></div>
+            <div className="exchange__line" />
             <div className="exchange__compare-info">
               <h4>{friend?.first_name} Product</h4>
               {renderProduct(product)}
@@ -122,8 +122,8 @@ const Exchange = () => {
           <Button
             type="submit"
             onClick={requestExchange}
-            text="Request Exchange">
-          </Button>
+            text="Request Exchange"
+          />
         </div>
       }
     </div>

@@ -258,6 +258,7 @@ const Tetris: React.FC = () => {
             pointerEvents: "none",
           }}
         >
+          {/* eslint-disable react/no-array-index-key */}
           {[...Array(BOARD_HEIGHT)].map((_, y) =>
             [...Array(BOARD_WIDTH)].map((_, x) => (
               <div

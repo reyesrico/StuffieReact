@@ -5,7 +5,7 @@ import { FEED_FETCHED } from './constants';
 // import { setFriendsProducts } from '../../services/feed';
 
 export const generateFeed = friends => {
-  let feed = [];
+  const feed = [];
 
   friends.forEach(friend => {
     // f.forEach(friend => {
@@ -28,13 +28,13 @@ export const generateFeed = friends => {
 
 const feedFetched = makeStandardActionCreator(FEED_FETCHED);
 export const fetchFeed = fullFriends => dispatch => {
-  let feed = generateFeed(fullFriends);
+  const feed = generateFeed(fullFriends);
   dispatch(feedFetched(feed));
   return feed;
 }
 
 export const fetchFeedHook = (friends, sessionStorage, dispatch) => {
-  let feed = generateFeed(friends);
+  const feed = generateFeed(friends);
   sessionStorage.setItem('feed', JSON.stringify(feed));
   dispatchFeedFetched(feed, dispatch);
 }

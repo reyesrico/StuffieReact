@@ -22,19 +22,19 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  let user = useSelector((state: State) => state.user);
-  let categories = useSelector((state: State) => state.categories);
-  let subcategories = useSelector((state: State) => state.subcategories);
-  let products = useSelector((state: State) => state.products);
+  const user = useSelector((state: State) => state.user);
+  const categories = useSelector((state: State) => state.categories);
+  const subcategories = useSelector((state: State) => state.subcategories);
+  const products = useSelector((state: State) => state.products);
 
-  let [status, setStatus] = useState(WarningMessageType.EMPTY);
-  let [name, setName] = useState('');
+  const [status, setStatus] = useState(WarningMessageType.EMPTY);
+  const [name, setName] = useState('');
   // let [file_name, setFileName] = useState(null);
-  let [category, setCategory] = useState(categories[0]);
-  let [product, setProduct] = useState<any>({ id: null, name: null });
-  let [subcategory, setSubcategory] = useState(subcategories[0]);
-  let [stuffStuffier, setStuffStuffier] = useState({});
-  let [productsByCategories, setProductsByCategories] = useState([]);
+  const [category, setCategory] = useState(categories[0]);
+  const [product, setProduct] = useState<any>({ id: null, name: null });
+  const [subcategory, setSubcategory] = useState(subcategories[0]);
+  const [stuffStuffier, setStuffStuffier] = useState({});
+  const [productsByCategories, setProductsByCategories] = useState([]);
 
   useEffect(() => {
     renderProducts(category, subcategory);
@@ -128,8 +128,8 @@ const AddProduct = () => {
         )}
         <hr />
         <Button text="Add Product" disabled={!(category && subcategory && product && product.name)}
-          onClick={() => registerProduct()}>
-        </Button>
+          onClick={() => registerProduct()}
+        />
         <hr />
         <div>Create New Product</div>
         <div className="add-product__row">
@@ -145,7 +145,7 @@ const AddProduct = () => {
           <Dropdown onChange={(subcategory: any) => setSubcategory(subcategory)} values={subcategories} />
         </div>
         <hr />
-        <Button onClick={() => createProduct()} text="Send"></Button>
+        <Button onClick={() => createProduct()} text="Send" />
       </form>
     </div>
   );

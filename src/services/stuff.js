@@ -94,7 +94,7 @@ export const updateStuff = (id_stuffier, id_stuff, cost) => {
 * This is to emulate ElasticSearch
 */
 export const getSearchResults = (searchText, products, token) => {
-  let results = [];
+  const results = [];
   const text = searchText.toLowerCase();
 
   return Promise.all([getCategories(token), getSubCategories(token)]).then(values => {

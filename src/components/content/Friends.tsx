@@ -30,7 +30,7 @@ const FriendRow = ({ user }: FriendRowProps) => {
   return (
     <div className='friend-row'>
       <div className='friend-row__description'>
-        {picture && (<img src={picture} className="friend-row__photo" alt="User Pic"></img>)}
+        {picture && (<img src={picture} className="friend-row__photo" alt="User Pic" />)}
         <div className='friend-row__info'>
           <span className='friend-row__name'>{user.first_name} {user.last_name}</span>
           <span className='friend-row__email'>{user.email}</span>
@@ -44,13 +44,13 @@ const Friends = () => {
   // let textFieldRef = React.createRef<typeof TextField>();
   const { t } = useTranslation();
 
-  let user = useSelector((state: State) => state.user);
-  let friends = useSelector((state: State) => state.friends);
-  let friendsRequests = useSelector((state: State) => state.friendsRequests);
-  let [requests, setRequests] = useState([]);
-  let [emailToRequest, setEmailToRequest] = useState('');
-  let [message, setMessage] = useState('');
-  let [executeStatus, setExecuteStatus] = useState(WarningMessageType.EMPTY);
+  const user = useSelector((state: State) => state.user);
+  const friends = useSelector((state: State) => state.friends);
+  const friendsRequests = useSelector((state: State) => state.friendsRequests);
+  const [requests, setRequests] = useState([]);
+  const [emailToRequest, setEmailToRequest] = useState('');
+  const [message, setMessage] = useState('');
+  const [executeStatus, setExecuteStatus] = useState(WarningMessageType.EMPTY);
 
   useEffect(() => {
     if (friendsRequests.length > 0) {
@@ -60,11 +60,11 @@ const Friends = () => {
   }, [friendsRequests]);
 
   const executeRequest = (friend: User, isAccepted = false) => {
-    let promises = [deleteRequest(user.email, friend.id)];
+    const promises = [deleteRequest(user.email, friend.id)];
     isAccepted && promises.push(addFriend(user.email, friend.id));
 
     Promise.all(promises)
-    .then((values: any) => {
+    .then((_values: any) => {
       !isAccepted && setExecuteStatus(WarningMessageType.WARNING);
       isAccepted && setExecuteStatus(WarningMessageType.SUCCESSFUL);
     })
@@ -82,15 +82,16 @@ const Friends = () => {
         <ul>
           {requests.map((friend: User, index: number) => {
             return (
+              // eslint-disable-next-line react/no-array-index-key
               <li className="friends__request" key={index}>
                 <div className="friends__request-text">
                 {friend.first_name} {friend.last_name} ({friend.email})
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend, true)} text="Accept"></Button>
+                  <Button onClick={() => executeRequest(friend, true)} text="Accept" />
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend)} text="Reject"></Button>
+                  <Button onClick={() => executeRequest(friend)} text="Reject" />
                 </div>
               </li>
             )}
@@ -145,7 +146,7 @@ const Friends = () => {
             onChange={(e: any) => setEmailToRequest(e.target.value)}
           />
           <div className="friends__button">
-            <Button text="Request" onClick={() => handleRequest()}></Button>
+            <Button text="Request" onClick={() => handleRequest()} />
           </div>
         </div>
         {message && (<div className="friends__message">{message}</div>)}

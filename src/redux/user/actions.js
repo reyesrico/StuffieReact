@@ -18,7 +18,7 @@ import {
 } from '../../services/stuffier';
 
 export const loginUserFetched = makeStandardActionCreator(LOGIN_USER_FETCHED);
-export const loginUser = (email, password) => dispatch => {
+export const loginUser = (email, password) => _dispatch => {
   return loginStuffier(email, password).then(data => {
     // dispatch(loginUserFetched(data, { email, password }));   // NOT NEEDED
     return Promise.resolve(data);

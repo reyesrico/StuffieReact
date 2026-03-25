@@ -53,12 +53,12 @@ export function getProductFromProducts(productId: number, products: ProductsMap)
 }
 
 export function getFriendProducts(friends: User[], products: Product[], stuffiers_stuff: StuffiersStuff[]) {
-  let friendsProducts: User[] = [];
+  const friendsProducts: User[] = [];
 
   forEach(friends, friend => {
     const values = stuffiers_stuff.filter((row: StuffiersStuff) => row.id_stuffier === friend.id)
     .map((row: StuffiersStuff) => {
-      let product = find(products, (p: Product) => p.id === row.id_stuff);
+      const product = find(products, (p: Product) => p.id === row.id_stuff);
       return row.cost !== undefined ? { ...product, cost: row.cost } : product ? product : {};
     });
 

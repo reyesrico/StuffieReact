@@ -14,7 +14,7 @@ import './Content.scss';
 
 const getFeed = (friends: any, dispatch: any, sessionStorage: Storage, setIsLoading: Function) => {
   if (sessionStorage.getItem('feed')) {
-    let feed = JSON.parse(sessionStorage.getItem('feed') || '');
+    const feed = JSON.parse(sessionStorage.getItem('feed') || '');
     dispatchFeedFetched(feed, dispatch);
   } else {
     fetchFriendsProductsHook(friends, dispatch)
@@ -28,12 +28,12 @@ const Content = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const feed = useSelector((state: State) => state.feed);
-  let [isLoading, setIsLoading] = useState(true);
-  let friends = useSelector((state: State) => state.friends);
+  const [isLoading, setIsLoading] = useState(true);
+  const friends = useSelector((state: State) => state.friends);
   const stableGetFeed = useCallback(getFeed, []);
 
   useEffect(() => {
-    let sessionStorage = window.sessionStorage;
+    const sessionStorage = window.sessionStorage;
 
     if (feed && feed.length) {
       setIsLoading(false);

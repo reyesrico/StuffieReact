@@ -20,8 +20,8 @@ export const getSize = (size: LoadingSize) => {
 }
 
 const Loading = (props: LoadingProps) => {
-  let [message] = useState(props.message);
-  let size = getSize(props.size || 'md');
+  const [message] = useState(props.message);
+  const size = getSize(props.size || 'md');
 
   return (
     <div className="stuffie-loading">

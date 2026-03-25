@@ -38,15 +38,15 @@ const Products = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  let user = useSelector((state: State) => state.user);
-  let categories = useSelector((state: State) => state.categories);
-  let friends = useSelector((state: State) => state.friends);
-  let exchangeRequests = useSelector((state: State) => state.exchangeRequests);
-  let loanRequests = useSelector((state: State) => state.loanRequests);
-  let products = useSelector((state: State) => state.products);
-  let [requestedProducts, setRequestProducts] = useState([]);
-  let [message, setMessage] = useState('');
-  let [type, setType] = useState(WarningMessageType.EMPTY);
+  const user = useSelector((state: State) => state.user);
+  const categories = useSelector((state: State) => state.categories);
+  const friends = useSelector((state: State) => state.friends);
+  const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
+  const loanRequests = useSelector((state: State) => state.loanRequests);
+  const products = useSelector((state: State) => state.products);
+  const [requestedProducts, setRequestProducts] = useState([]);
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState(WarningMessageType.EMPTY);
 
   // Use caching hook for products with manual refresh capability
   const { isRefreshing, refresh: refreshProducts } = useProductsWithCache();
@@ -95,6 +95,7 @@ const Products = () => {
 
             // console.log({ owner });
             return (
+              // eslint-disable-next-line react/no-array-index-key
               <li className="products__request" key={index}>
                 <div className="products__request-group">
                   {/* <div className="products__request-text">
@@ -113,10 +114,10 @@ const Products = () => {
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptExchange functionality */}
-                    <Button onClick={() => {}} text="Accept" disabled></Button>
+                    <Button onClick={() => {}} text="Accept" disabled />
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText}></Button>
+                    <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} />
                   </div>
                 </div>
               </li>
@@ -146,6 +147,7 @@ const Products = () => {
             const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
 
             return (
+              // eslint-disable-next-line react/no-array-index-key
               <li className="products__request" key={index}>
                 <div className="products__request-group">
                   {/* <div className="products__request-text">
@@ -161,10 +163,10 @@ const Products = () => {
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptLoan functionality */}
-                    <Button onClick={() => {}} text="Accept" disabled></Button>
+                    <Button onClick={() => {}} text="Accept" disabled />
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText}></Button>
+                    <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} />
                   </div>
                 </div>
               </li>
@@ -183,12 +185,12 @@ const Products = () => {
       <div className="products__title">
         <h2>{user?.first_name || 'My'} Stuff</h2>
         <div className="products__add-product">
-          <Button text="Add Product" onClick={() => navigate('/product/add')}></Button>
+          <Button text="Add Product" onClick={() => navigate('/product/add')} />
           <Button 
             text={isRefreshing ? "Refreshing..." : "Refresh Products"} 
             onClick={refreshProducts}
             disabled={isRefreshing}
-          ></Button>
+          />
         </div>
       </div>
       {exchangeRequests.length > 0 && renderRequests()}
@@ -198,7 +200,7 @@ const Products = () => {
       {!isProductsEmpty(products) &&
         (<div>
           {categories.map((category: Category, index: number) => {
-            if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`}></div>;
+            if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`} />;
 
             return (
               <div key={category.id}>
@@ -225,7 +227,7 @@ const Products = () => {
               </div>);
           })}
           <hr />
-          <Button onClick={() => generateReport()} text="Generate Report"></Button>
+          <Button onClick={() => generateReport()} text="Generate Report" />
         </div>)
       }
     </div>

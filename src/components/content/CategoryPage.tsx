@@ -12,11 +12,11 @@ import './CategoryPage.scss';
 
 const CategoryPage = () => {
   const { t } = useTranslation();
-  let products = useSelector((state: State) => state.products);
-  let categories = useSelector((state: State) => state.categories);
-  let { id } = useParams();
-  let categoryId = id ? parseInt(id) : -1;
-  let category: any = categories.find(c => c.id === categoryId);
+  const products = useSelector((state: State) => state.products);
+  const categories = useSelector((state: State) => state.categories);
+  const { id } = useParams();
+  const categoryId = id ? parseInt(id) : -1;
+  const category: any = categories.find(c => c.id === categoryId);
 
   const stuff: any = products[category.id];
   const name = category.name;

@@ -27,7 +27,7 @@ const Main = () => {
 
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
-      .then(res => {
+      .then(_res => {
         setPicture(userImageUrl(user.id));
       })
       .catch(() => setPicture(defaultImageUrl));

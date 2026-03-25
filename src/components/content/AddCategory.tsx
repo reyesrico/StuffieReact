@@ -21,19 +21,19 @@ const AddCategory = (props: AddCategoryProps) => {
   const dispatch = useDispatch();
   const { type } = props;
 
-  let categories = useSelector((state: State) => state.categories);
-  let subcategories = useSelector((state: State) => state.subcategories);
+  const categories = useSelector((state: State) => state.categories);
+  const subcategories = useSelector((state: State) => state.subcategories);
 
-  let [isLoading, setIsLoading] = useState(false);
-  let [id, setId] = useState('');
-  let [name, setName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [id, setId] = useState('');
+  const [name, setName] = useState('');
   // let [categoriesS, setCategories] = useState<any>([]);
   // let [subcategoriesS, setSubcategories] = useState<any>([]);
-  let [label, setLabel] = useState('');
+  const [label, setLabel] = useState('');
 
   useEffect(() => {
-    let label = type === 'category' ? 'Category' : 'SubCategory';
-    setLabel(label);
+    const labelText = type === 'category' ? 'Category' : 'SubCategory';
+    setLabel(labelText);
   }, [type]);
 
   const createValue = () => {
@@ -41,7 +41,7 @@ const AddCategory = (props: AddCategoryProps) => {
       setIsLoading(true);
 
       addCategoryHook({ name, id: Number(id) }, dispatch)
-        .then((res: any) => {
+        .then((_res: any) => {
           // const newCategory = { _id: res.data._id, id: res.data.id, name: res.data.name };
           // setCategories([...categories, newCategory]);
           setName('');
@@ -54,7 +54,7 @@ const AddCategory = (props: AddCategoryProps) => {
       setIsLoading(true);
 
       addSubCategoryHook({ name, id: Number(id) }, dispatch)
-        .then((res: any) => {
+        .then((_res: any) => {
           // const newSubCategory = { _id: res.data._id, id: res.data.id, name: res.data.name };
           // setSubcategories([...subcategories, newSubCategory]);
           setName('');

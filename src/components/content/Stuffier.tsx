@@ -58,7 +58,7 @@ const Stuffier = () => {
     formData.append("api_key", apiKey);
 
     existImage(user.id, "stuffiers/")
-      .then(async (res) => {
+      .then(async (_res) => {
         // Exist Image
         // THIS DOES NOT WORK
         const sign = await signature("stuffiers", user.id, timestamp);
@@ -70,7 +70,7 @@ const Stuffier = () => {
         axios.post("https://api.cloudinary.com/v1_1/reyesrico/image/destroy", formData)
           .catch(err => setError(err));
       })
-      .catch(err => setError(error))
+      .catch(_err => setError(error))
       .finally(() => {
         axios.post(
           `https://api.cloudinary.com/v1_1/reyesrico/image/upload`,
@@ -87,7 +87,7 @@ const Stuffier = () => {
       });
   }
 
-  const onClick = (e: any) => {
+  const onClick = (_e: any) => {
     if (file) {
       uploadImage();
     }

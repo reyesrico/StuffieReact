@@ -11,8 +11,8 @@ import './Admin.scss';
 
 const Admin = () => {
   const dispatch = useDispatch();
-  let userRequests = useSelector((state: State) => state.userRequests);
-  let pendingProducts = useSelector((state: State) => state.pendingProducts);
+  const userRequests = useSelector((state: State) => state.userRequests);
+  const pendingProducts = useSelector((state: State) => state.pendingProducts);
 
   const executeRequest = (user: User, isAccepted = false) => {
     if (isAccepted) {
@@ -31,12 +31,13 @@ const Admin = () => {
         <ul>
           {userRequests.map((user: User, index: number) => {
             return (
+              // eslint-disable-next-line react/no-array-index-key
               <li className="admin__request" key={index}>
                 <div className="admin__request-text">
                   {user.first_name} {user.last_name} ({user.email})
                 </div>
                 <div className="admin__request-button">
-                  <Button onClick={() => executeRequest(user, true)} text="Accept"></Button>
+                  <Button onClick={() => executeRequest(user, true)} text="Accept" />
                 </div>
               </li>
             )

@@ -10,7 +10,7 @@ import { unregister } from './serviceWorker';
 import './sass/main.scss';
 import './index.css';
 
-let middleware = [thunk];
+const middleware = [thunk];
 const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 middleware.push(require('redux-freeze'));
 const store = createStore(reducersApp, composeEnhancers(applyMiddleware(...middleware)));

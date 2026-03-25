@@ -11,8 +11,8 @@ import Subcategory from '../types/Subcategory';
 import { existImage, userImageUrl } from '../../services/cloudinary-helper';
 
 const FeedRow = (props: FeedRowProps) => {
-  let subcategories: Subcategory[] = useSelector((state: State) => state.subcategories);
-  let [picture, setPicture] = React.useState<string>();
+  const subcategories: Subcategory[] = useSelector((state: State) => state.subcategories);
+  const [picture, setPicture] = React.useState<string>();
   const { feedPost } = props;
 
   React.useEffect(() => {
@@ -22,7 +22,7 @@ const FeedRow = (props: FeedRowProps) => {
   }, [feedPost.friend_id]);
 
   const getProductType = () => {
-    let subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
+    const subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
     return subcategory ? subcategory.name : null;
   }
 

@@ -24,8 +24,9 @@ i18n
     react: {
       wait: true,
     },
-  }, (err, t) => {
+  }, (err, _t) => {
     if (err) {
+      // eslint-disable-next-line no-console
       console.info('i18n.language', i18n.language);
     }
   });

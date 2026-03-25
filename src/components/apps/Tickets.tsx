@@ -4,8 +4,8 @@ import Tesseract from 'tesseract.js';
 import Button from '../shared/Button';
 
 const Tickets = () => {
-  let progressValue = 0;
-  let [ file, setFile ] = useState<File>();
+  const progressValue = 0;
+  const [ file, setFile ] = useState<File>();
   const [imageUrl] = useState<string>("https://i0.wp.com/i.redd.it/a7hqgjbxn0v21.jpg");
   const [caption, setCaption] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -95,17 +95,17 @@ const Tickets = () => {
       </div>
       <hr />
       <div id="status" className="ticketsStatus">
-        <progress value={progressValue} max="100"></progress>
+        <progress value={progressValue} max="100" />
         <span id="statusInfo" className="statusInfo">
           Status: <span id="info" />
         </span>
       </div>
       <hr />
-      <div id="result"></div>
+      <div id="result" />
       <hr />
       <div>Trying with stuffie-api-server</div>
       <div>
-        <Button onClick={generateCaption} text="GenerateCaption"></Button>
+        <Button onClick={generateCaption} text="GenerateCaption" />
         <hr />
         {isLoading && <div>Loading...</div>}
         {caption && <div>{caption}</div>}

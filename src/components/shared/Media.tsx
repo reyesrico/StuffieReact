@@ -49,7 +49,7 @@ const Media = (props: any) => {
 
   const renderVideo = () => {
     const { fileName, format } = props;
-    return (<Video publicId={fileName} format={format}></Video>);
+    return (<Video publicId={fileName} format={format} />);
   }
 
   const isVideo = props.format === 'mp4';

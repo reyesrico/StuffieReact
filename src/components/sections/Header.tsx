@@ -22,12 +22,12 @@ const Header = () => {
   const { user, logoutUser } = React.useContext(UserContext);
   // let state = useSelector((state: State) => state);
   // let user = state.user;
-  let userRequests = useSelector((state: State) => state.userRequests);
-  let friendsRequests = useSelector((state: State) => state.friendsRequests);
-  let products = useSelector((state: State) => state.products);
-  let exchangeRequests = useSelector((state: State) => state.exchangeRequests);
-  let loanRequests = useSelector((state: State) => state.loanRequests);
-  let pendingProducts = useSelector((state: State) => state.pendingProducts);
+  const userRequests = useSelector((state: State) => state.userRequests);
+  const friendsRequests = useSelector((state: State) => state.friendsRequests);
+  const products = useSelector((state: State) => state.products);
+  const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
+  const loanRequests = useSelector((state: State) => state.loanRequests);
+  const pendingProducts = useSelector((state: State) => state.pendingProducts);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -36,7 +36,7 @@ const Header = () => {
 
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
-      .then(res => {
+      .then(_res => {
         setPicture(userImageUrl(user.id));
       })
       .catch(() => setPicture(defaultImageUrl));
@@ -54,7 +54,7 @@ const Header = () => {
 
   /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
   const toggleApps = () => {
-    let x: any = document.getElementById("apps");
+    const x: any = document.getElementById("apps");
     if (x.style.display === "block") {
       x.style.display = "none";
     } else {
@@ -72,7 +72,7 @@ const Header = () => {
   }
 
   const toggleMenu = () => {
-    let x: any = document.getElementById("menu");
+    const x: any = document.getElementById("menu");
     if (x.style.display === "block") {
       x.style.display = "none";
     } else {
@@ -149,11 +149,11 @@ const Header = () => {
             </div>
           </div>
           <button className="icon" onClick={event => event && toggleMenu()}>
-            <i className="fa fa-bars"></i>
+            <i className="fa fa-bars" />
           </button>
         </div>
 
-        <SearchBar products={products}></SearchBar>
+        <SearchBar products={products} />
 
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
         <div className="stuffie-header__apps">
@@ -162,7 +162,7 @@ const Header = () => {
             <div className="stuffie-header__apps-apps"><Apps /></div>
           </div>
           <button className="icon" onClick={event => event && toggleApps()}>
-            <i className="fa fa-bars"></i>
+            <i className="fa fa-bars" />
           </button>
         </div>
       </div>

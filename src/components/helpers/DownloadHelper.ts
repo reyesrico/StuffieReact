@@ -41,7 +41,7 @@ export function getDataToExport(products: any) {
         })];
       }
 
-      let arrayOfCategory = getArrayofArrays(products[key]);
+      const arrayOfCategory = getArrayofArrays(products[key]);
       data = [...data, ...arrayOfCategory];
     }
   });
@@ -54,7 +54,7 @@ export function getDataToExport(products: any) {
 *  https://github.com/SheetJS/sheetjs
 *  Example: https://sheetjs.com/demos/writexlsx.html 
 */
-export function downloadExcel(products: any, fileName: string) {
+export function downloadExcel(_products: any, _fileName: string) {
   // const data = getDataToExport(products);
 
   // let worsheet_name = "Products_Sheet";

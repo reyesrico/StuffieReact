@@ -9,8 +9,8 @@ import { CircleSmallFilled } from "@fluentui/react-icons";
 import './Menu.scss';
 
 const Menu = () => {
-  let categories = useSelector((state: State) => state.categories);
-  let products = useSelector((state: State) => state.products);
+  const categories = useSelector((state: State) => state.categories);
+  const products = useSelector((state: State) => state.products);
   const { t } = useTranslation();
 
   const renderCategories = () => {

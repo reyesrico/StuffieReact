@@ -5,7 +5,7 @@ import './WarningMessage.scss';
 const WarningMessage = (props: WarningMessageProps) => {
   const { message, type } = props;
 
-  if (!message) return <div></div>
+  if (!message) return <div />;
 
   return (
     <div className={`warning-message warning-message__${type}`}>
