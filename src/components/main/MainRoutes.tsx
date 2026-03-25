@@ -19,12 +19,7 @@ import Stuffier from '../content/Stuffier';
 import SubcategoryPage from '../content/SubcategoryPage';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
-import Test from '../../sandbox/Test';
 import Cards from '../apps/Cards';
-import Test4 from '../../sandbox/Test4';
-import Test5 from '../../sandbox/Test5';
-import Tetris from '../apps/tetris/Tetris';
-// import Test2 from '../../sandbox/Test2';
 
 const MainRoutes = () => {
   return (
@@ -49,12 +44,7 @@ const MainRoutes = () => {
       <Route path="spotify" element={<Spotify />} />
       <Route path="support" element={<Support />} />
       <Route path="tickets" element={<Tickets />} />
-      <Route path="test" element={<Test />} />
       <Route path="cards" element={<Cards />} />
-      <Route path="test4" element={<Test4 />} />
-      <Route path="test5" element={<Test5 />} />
-      <Route path="tetris" element={<Tetris />} />
-      {/* <Route path="/test2" element={<Test2 />} /> */}
     </Routes>
   );
 }

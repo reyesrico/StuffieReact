@@ -1,7 +1,9 @@
 import React from 'react';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import type { ThunkDispatch } from 'redux-thunk';
+import type { AnyAction } from 'redux';
 
 import {
   apiKey,
@@ -21,6 +23,7 @@ import { addUserPicture } from '../../redux/user/actions';
 
 const Stuffier = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch<ThunkDispatch<State, unknown, AnyAction>>();
 
   const user = useSelector((state: State) => state.user);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
