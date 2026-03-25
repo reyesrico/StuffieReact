@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Loading from '../shared/Loading';
+import Loading from '../components/shared/Loading';
 
 interface Movie { id: number, title: string };
 

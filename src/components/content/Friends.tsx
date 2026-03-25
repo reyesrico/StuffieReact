@@ -24,7 +24,7 @@ const FriendRow = ({ user }: FriendRowProps) => {
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
       .then(() => setPicture(userImageUrl(user.id)))
-      .catch(() => console.log('No image found for user:', user.id)); // fallback to default if no image found
+      .catch(() => {}); // fallback to default if no image found
   }, [user.id]);
 
   return (
@@ -66,9 +66,7 @@ const Friends = () => {
     Promise.all(promises)
     .then((values: any) => {
       !isAccepted && setExecuteStatus(WarningMessageType.WARNING);
-      console.log(values[0].data);
       isAccepted && setExecuteStatus(WarningMessageType.SUCCESSFUL);
-      isAccepted && console.log(values[1].data);
     })
     .catch(() => setExecuteStatus(WarningMessageType.ERROR));
   }

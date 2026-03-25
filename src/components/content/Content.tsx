@@ -19,7 +19,7 @@ const getFeed = (friends: any, dispatch: any, sessionStorage: Storage, setIsLoad
   } else {
     fetchFriendsProductsHook(friends, dispatch)
       .then((fullFriends: User[]) => fetchFeedHook(fullFriends, sessionStorage, dispatch))
-      .catch(() => console.log('Error Feed Fetched'))
+      .catch(() => {})
       .finally(() => setIsLoading(false));
   }
 }

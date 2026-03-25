@@ -28,7 +28,6 @@ const SubcategoryPage = () => {
         return ps.concat(psBySub);
       }, []);
 
-  console.log({ stuff });
   const name = subcategory?.name;
 
   return (

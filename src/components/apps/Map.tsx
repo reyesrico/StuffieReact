@@ -31,11 +31,11 @@ const GetMap = (atlas: any, container: HTMLDivElement | null) => {
 
     map.layers.add(resultLayer);
 
-    var query = 'gasoline-station';
-    var radius = 9000;
-    var lat = 47.64452336193245;
-    var lon = -122.13687658309935;
-    var url = `https://atlas.microsoft.com/search/poi/json?api-version=1.0&query=${query}&lat=${lat}&lon=${lon}&radius=${radius}`;
+    const query = 'gasoline-station';
+    const radius = 9000;
+    const lat = 47.64452336193245;
+    const lon = -122.13687658309935;
+    const url = `https://atlas.microsoft.com/search/poi/json?api-version=1.0&query=${query}&lat=${lat}&lon=${lon}&radius=${radius}`;
     
     fetch(url, {
         headers: {
@@ -44,17 +44,15 @@ const GetMap = (atlas: any, container: HTMLDivElement | null) => {
     })
     .then((response) => response.json())
     .then((response) => {
-        var bounds: any[] = [];
+        const bounds: any[] = [];
     
         //Extract GeoJSON feature collection from the response and add it to the datasource
-        var data = response.results.map((result: { position: { lon: any; lat: any; }; }) => {
-            var position = [result.position.lon, result.position.lat];
+        const data = response.results.map((result: { position: { lon: any; lat: any; }; }) => {
+            const position = [result.position.lon, result.position.lat];
             bounds.push(position);
             return new atlas.data.Feature(new atlas.data.Point(position), { ...result });
         });
         datasource.add(data);
-    
-        console.log({ data });
 
         //Set camera to bounds to show the results
         map.setCamera({

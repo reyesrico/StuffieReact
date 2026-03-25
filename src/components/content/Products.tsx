@@ -16,8 +16,7 @@ import { downloadExcel } from '../helpers/DownloadHelper';
 import { deleteRequestHook } from '../../redux/exchange-requests/actions';
 import { deleteRequestLoanHook } from '../../redux/loan-requests/actions';
 import { getProductsFromIds } from '../../services/stuff';
-import { isProductsEmpty } from '../helpers/StuffHelper';
-import { mapIds } from '../helpers/StuffHelper';
+import { isProductsEmpty, mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
 import { useProductsWithCache } from '../../hooks/useDataWithCache';
 

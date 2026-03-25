@@ -19,12 +19,12 @@ import Stuffier from '../content/Stuffier';
 import SubcategoryPage from '../content/SubcategoryPage';
 import Support from '../apps/Support';
 import Tickets from '../apps/Tickets';
-import Test from '../apps/Test';
+import Test from '../../sandbox/Test';
 import Cards from '../apps/Cards';
-import Test4 from '../apps/Test4';
-import Test5 from '../apps/Test5';
+import Test4 from '../../sandbox/Test4';
+import Test5 from '../../sandbox/Test5';
 import Tetris from '../apps/tetris/Tetris';
-// import Test2 from '../apps/Test2';
+// import Test2 from '../../sandbox/Test2';
 
 const MainRoutes = () => {
   return (

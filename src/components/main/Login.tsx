@@ -24,7 +24,6 @@ const Login = ({ setMessage, setIsLoading }: any) => {
           localStorage.setItem('username', response.data[0].email);
         })
         .catch((err: any) => {
-          console.log({ err });
           setMessage((err && err["message"]) || "Error: Couldn't login. Try again.");
         })
     }

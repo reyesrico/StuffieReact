@@ -22,17 +22,17 @@ const Tickets = () => {
     event.preventDefault();
 
     if (file) {
-      Tesseract.recognize(file, 'eng', { logger: m => console.log(m) })
+      Tesseract.recognize(file, 'eng', {})
         .then(result);
     }
   }
 
   const result = (res: any) => {
-    var log = document.getElementById('info') as HTMLElement;
-    var result = document.getElementById('result') as HTMLElement;
+    const log = document.getElementById('info') as HTMLElement;
+    const resultEl = document.getElementById('result') as HTMLElement;
 
     log.innerHTML = 'Finished!';
-    result.innerHTML = res ? res.text : '';
+    resultEl.innerHTML = res ? res.text : '';
   }
 
   /*
@@ -55,13 +55,11 @@ const Tickets = () => {
     })
     .then(res => res.json())
     .then(data => {
-      console.log(data);
-
       // TODO: Handle the response data
       const info = action === 'generate-caption' ? data.caption : data.message;
       setCaption(info);
     })
-    .catch(err => console.log(err))
+    .catch(() => {})
     .finally(() => setIsLoading(false));
   }
 
@@ -73,7 +71,6 @@ const Tickets = () => {
     const action = 'generate-caption'; // 'test' or 'test-post' or 'generate-caption'
 
     const url = useLocal ? 'http://localhost:8000' : 'https://stuffie-api-server-sg9r.onrender.com';
-    console.log({ url });
     const payload = {
       url: imageUrl,
     };

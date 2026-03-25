@@ -14,7 +14,6 @@ const userReducer = (state = [], action) => {
     case USER_PICTURE_ADDED:
       return action.payload;
     case USER_UPDATED:
-      console.log({ payload: action.payload });
       return action.payload;
     default:
       return state;

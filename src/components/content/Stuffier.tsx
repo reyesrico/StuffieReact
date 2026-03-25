@@ -23,12 +23,15 @@ const Stuffier = () => {
   const { t } = useTranslation();
 
   const user = useSelector((state: State) => state.user);
-  const [firstName, setFirstName] = React.useState(user.first_name);
-  const [lastName, setLastName] = React.useState(user.last_name);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_firstName, setFirstName] = React.useState(user.first_name);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_lastName, setLastName] = React.useState(user.last_name);
   const [file, setFile] = React.useState<any>();
   const [picture, setPicture] = React.useState<string>();
   const [password, setPassword] = React.useState();
-  const [password2, setPassword2] = React.useState();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_password2, setPassword2] = React.useState();
   const [error, setError] = React.useState<string>("");
 
   React.useEffect(() => {
@@ -58,9 +61,7 @@ const Stuffier = () => {
       .then(async (res) => {
         // Exist Image
         // THIS DOES NOT WORK
-        console.log({ res });
         const sign = await signature("stuffiers", user.id, timestamp);
-        console.log({ sign });
         const finalSign = sessionStorage.getItem("signature") || sign;
 
         formData.append("invalidate", "true");
@@ -88,7 +89,6 @@ const Stuffier = () => {
 
   const onClick = (e: any) => {
     if (file) {
-      console.log({ firstName, lastName, password2 });
       uploadImage();
     }
   }

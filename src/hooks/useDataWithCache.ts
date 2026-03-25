@@ -92,7 +92,6 @@ export const useUserInfoWithCache = (email: string) => {
     enabled: !!email,
     onSuccess: (userData) => {
       // You can dispatch user data to Redux if needed
-      console.log('User data fetched successfully:', userData.email);
     },
     onError: (error) => {
       console.error('Failed to fetch user info:', error);

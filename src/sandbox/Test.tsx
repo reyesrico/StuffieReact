@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Button from '../shared/Button';
+import Button from '../components/shared/Button';
 
 const Test = () => {
   const [t, setT] = React.useState('');

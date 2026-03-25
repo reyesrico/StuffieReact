@@ -90,7 +90,6 @@ export const updateUser = (user) => dispatch => {
   // setIsLoading(true);
   updateStuffier(user)
     .then(res => {
-      console.log({ userUpdated: res.data });
       dispatch(userUpdated(res.data));
     });
     // .catch(err => setMessage(`Error: Couldn't update user. ${err}`))

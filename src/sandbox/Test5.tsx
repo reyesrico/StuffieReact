@@ -3,17 +3,17 @@ import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 
-import Category from '../types/Category';
-import Loading from '../shared/Loading';
-import Product from '../types/Product';
-import State from '../../redux/State';
-import UserContext from '../../context/UserContext';
-import { fetchCategoriesHookWithCategories } from '../../redux/categories/actions';
-import { fetchSubCategoriesHookWithSubCategories } from '../../redux/subcategories/actions';
-import { fetchPendingProductsHookWithPendingProducts } from '../../redux/pending-products/actions';
-import { fetchUserRequestsHookWithUserRequests } from '../../redux/user-requests/actions';
-import { fetchProductsHookWithProducts } from '../../redux/products/actions';
-import { getProductsList, isProductsEmpty } from '../helpers/StuffHelper';
+import Category from '../components/types/Category';
+import Loading from '../components/shared/Loading';
+import Product from '../components/types/Product';
+import State from '../redux/State';
+import UserContext from '../context/UserContext';
+import { fetchCategoriesHookWithCategories } from '../redux/categories/actions';
+import { fetchSubCategoriesHookWithSubCategories } from '../redux/subcategories/actions';
+import { fetchPendingProductsHookWithPendingProducts } from '../redux/pending-products/actions';
+import { fetchUserRequestsHookWithUserRequests } from '../redux/user-requests/actions';
+import { fetchProductsHookWithProducts } from '../redux/products/actions';
+import { getProductsList, isProductsEmpty } from '../components/helpers/StuffHelper';
 
 const Test5 = () => {
   const { user } = useContext(UserContext);
