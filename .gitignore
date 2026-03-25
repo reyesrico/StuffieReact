@@ -27,4 +27,4 @@ yarn-error.log*
 .env
 
 # Internal AI documentation (not for public sharing)
-.github/copilot/
+.github/
