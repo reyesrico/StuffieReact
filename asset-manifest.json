@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/StuffieReact/static/css/main.16fa302a.css",
-    "main.js": "/StuffieReact/static/js/main.a8de9993.js",
+    "main.js": "/StuffieReact/static/js/main.25a64cbb.js",
     "static/media/fa-solid-900.ttf": "/StuffieReact/static/media/fa-solid-900.2582b0e4bcf85eceead0.ttf",
     "static/media/fa-brands-400.ttf": "/StuffieReact/static/media/fa-brands-400.1815e00441357e01619e.ttf",
     "static/media/fa-solid-900.woff2": "/StuffieReact/static/media/fa-solid-900.2463b90d9a316e4e5294.woff2",
@@ -12,10 +12,10 @@
     "static/media/fa-v4compatibility.woff2": "/StuffieReact/static/media/fa-v4compatibility.ea8f94e1d22e0d35ccd4.woff2",
     "index.html": "/StuffieReact/index.html",
     "main.16fa302a.css.map": "/StuffieReact/static/css/main.16fa302a.css.map",
-    "main.a8de9993.js.map": "/StuffieReact/static/js/main.a8de9993.js.map"
+    "main.25a64cbb.js.map": "/StuffieReact/static/js/main.25a64cbb.js.map"
   },
   "entrypoints": [
     "static/css/main.16fa302a.css",
-    "static/js/main.a8de9993.js"
+    "static/js/main.25a64cbb.js"
   ]
 }
