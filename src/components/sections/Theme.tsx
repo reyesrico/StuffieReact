@@ -11,8 +11,7 @@ import {
   webLightTheme,
 } from "@fluentui/react-components";
 import { WeatherMoon24Regular, WeatherSunny24Regular } from "@fluentui/react-icons";
-import ThemeContext, { ThemeType } from "../../context/ThemeContext";
-import { useThemeDetector } from "../../services/useThemeDetector";
+import ThemeContext, { ThemeSetting } from "../../context/ThemeContext";
 
 import "./Theme.scss";
 
@@ -36,26 +35,19 @@ const useStyles = makeStyles({
 });
 
 const Theme = () => {
-  const autoTheme = useThemeDetector();
-  const { theme, setTheme } = useContext(ThemeContext);
-
-  // This is for controlling <Button> styles
-  const [themeSelected, setThemeSelected] = React.useState<ThemeType | "auto">(theme);
+  const { theme, themeSetting, setTheme } = useContext(ThemeContext);
   const [open, setOpen] = React.useState(false);
   const styles = useStyles();
 
-  const typeValues: (ThemeType | "auto")[] = ["light", "dark", "auto"];
+  const typeValues: ThemeSetting[] = ["light", "dark", "auto"];
 
-  const onClick = (typeValue: ThemeType | "auto") => {
-    const themeChanged: ThemeType = typeValue === "auto" ? autoTheme : typeValue;
-    setTheme(themeChanged);
-    setThemeSelected(typeValue);
-    localStorage.setItem("theme", typeValue);
+  const onClick = (typeValue: ThemeSetting) => {
+    setTheme(typeValue);
     setOpen(false);
   };
 
-  const buttonStyle = (typeValue: ThemeType | "auto") => {
-    return themeSelected === typeValue ? styles.buttonSelected : styles.button;
+  const buttonStyle = (typeValue: ThemeSetting) => {
+    return themeSetting === typeValue ? styles.buttonSelected : styles.button;
   };
 
   const ThemeIcon = theme === "light" ? WeatherSunny24Regular : WeatherMoon24Regular;

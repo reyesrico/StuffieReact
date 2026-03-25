@@ -1,24 +1,18 @@
-import React, { createContext, useContext, useCallback } from 'react';
+import React, { createContext, useContext, useCallback, useEffect } from 'react';
 import { useThemeDetector } from '../services/useThemeDetector';
 
 export type ThemeType = 'light' | 'dark';
+export type ThemeSetting = ThemeType | 'auto';
 
 export type ThemeContextType = {
   theme: ThemeType;
-  setTheme: (theme: ThemeType) => void;
-};
-
-/**
- * Hook to get initial theme from localStorage or OS preference
- */
-const useInitTheme = (): ThemeType => {
-  const autoTheme = useThemeDetector();
-  const savedTheme = (localStorage.getItem('theme') as ThemeType | 'auto') || 'auto';
-  return savedTheme === 'auto' ? autoTheme : savedTheme;
+  themeSetting: ThemeSetting;
+  setTheme: (theme: ThemeSetting) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'light',
+  themeSetting: 'auto',
   setTheme: () => {}
 });
 
@@ -27,20 +21,38 @@ const ThemeContext = createContext<ThemeContextType>({
  * 
  * Features:
  * - Persists theme choice to localStorage
- * - Respects OS theme preference when set to 'auto'
+ * - Auto mode: switches based on time of day (6 AM - 6 PM light, 6 PM - 6 AM dark)
  * - Provides light/dark theme across all components
  */
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const initTheme = useInitTheme();
-  const [theme, setThemeType] = React.useState<ThemeType>(initTheme);
+  const autoTheme = useThemeDetector();
+  const savedSetting = (localStorage.getItem('theme') as ThemeSetting) || 'auto';
+  
+  const [themeSetting, setThemeSetting] = React.useState<ThemeSetting>(savedSetting);
+  const [theme, setThemeType] = React.useState<ThemeType>(
+    savedSetting === 'auto' ? autoTheme : savedSetting
+  );
 
-  const setTheme = useCallback((newTheme: ThemeType) => {
-    setThemeType(newTheme);
-    localStorage.setItem('theme', newTheme);
+  // Update theme when autoTheme changes (time-based) and we're in auto mode
+  useEffect(() => {
+    if (themeSetting === 'auto') {
+      setThemeType(autoTheme);
+    }
+  }, [autoTheme, themeSetting]);
+
+  const setTheme = useCallback((newSetting: ThemeSetting) => {
+    setThemeSetting(newSetting);
+    localStorage.setItem('theme', newSetting);
+    
+    if (newSetting === 'auto') {
+      // Will be handled by useEffect above
+    } else {
+      setThemeType(newSetting);
+    }
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, themeSetting, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -48,7 +60,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
 /**
  * Custom hook to access theme context
- * Usage: const { theme, setTheme } = useTheme();
+ * Usage: const { theme, themeSetting, setTheme } = useTheme();
  */
 export const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
