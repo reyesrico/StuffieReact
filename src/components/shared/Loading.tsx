@@ -1,34 +1,64 @@
-import React, { useState } from 'react';
-import ReactLoading from 'react-loading';
-import { LoadingProps, LoadingSize } from './types';
-
+import React from 'react';
 import './Loading.scss';
 
-export const getSize = (size: LoadingSize) => {
-  switch (size) {
-    case 'sm':
-      return 8;
-    case 'md':
-      return 16;
-    case 'lg':
-      return 32;
-    case 'xl':
-      return 64;
-    default:
-      return 16;
-  }
+export type LoadingSize = 'sm' | 'md' | 'lg' | 'xl';
+export type LoadingVariant = 'spinner' | 'skeleton';
+
+export interface LoadingProps {
+  size?: LoadingSize;
+  variant?: LoadingVariant;
+  message?: string;
+  className?: string;
+  // Skeleton-specific props
+  width?: string | number;
+  height?: string | number;
+  lines?: number;
 }
 
-const Loading = (props: LoadingProps) => {
-  const [message] = useState(props.message);
-  const size = getSize(props.size || 'md');
+const sizeMap: Record<LoadingSize, number> = {
+  sm: 16,
+  md: 24,
+  lg: 32,
+  xl: 48,
+};
+
+const Loading = ({
+  size = 'md',
+  variant = 'spinner',
+  message,
+  className = '',
+  width,
+  height,
+  lines = 1,
+}: LoadingProps) => {
+  const spinnerSize = sizeMap[size];
+
+  if (variant === 'skeleton') {
+    return (
+      <div className={`stuffie-loading stuffie-loading--skeleton ${className}`}>
+        {Array.from({ length: lines }).map((_, i) => (
+          <div
+            key={i}
+            className="stuffie-loading__skeleton-line"
+            style={{
+              width: typeof width === 'number' ? `${width}px` : width || '100%',
+              height: typeof height === 'number' ? `${height}px` : height || '16px',
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className="stuffie-loading">
-      <ReactLoading type="spin" color="#00f" height={size} width={size} />
-      {message && (<div className="stuffie-loading__message">{message}</div>)}
+    <div className={`stuffie-loading stuffie-loading--spinner ${className}`}>
+      <div
+        className="stuffie-loading__spinner"
+        style={{ width: spinnerSize, height: spinnerSize }}
+      />
+      {message && <div className="stuffie-loading__message">{message}</div>}
     </div>
   );
-}
+};
 
 export default Loading;

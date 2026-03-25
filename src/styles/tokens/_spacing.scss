@@ -1,0 +1,84 @@
+// Design Tokens: Spacing
+// 8px base grid system
+// Last updated: 2026-03-24
+
+// =============================================================================
+// SPACING SCALE
+// =============================================================================
+
+$spacing-0: 0;
+$spacing-px: 1px;
+$spacing-0-5: 0.125rem;  // 2px
+$spacing-1: 0.25rem;     // 4px
+$spacing-2: 0.5rem;      // 8px
+$spacing-3: 0.75rem;     // 12px
+$spacing-4: 1rem;        // 16px
+$spacing-5: 1.25rem;     // 20px
+$spacing-6: 1.5rem;      // 24px
+$spacing-8: 2rem;        // 32px
+$spacing-10: 2.5rem;     // 40px
+$spacing-12: 3rem;       // 48px
+$spacing-16: 4rem;       // 64px
+$spacing-20: 5rem;       // 80px
+$spacing-24: 6rem;       // 96px
+
+// =============================================================================
+// BORDER RADIUS
+// =============================================================================
+
+$radius-none: 0;
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-2xl: 24px;
+$radius-full: 9999px;
+
+// Default radius (used in components)
+$radius-default: $radius-md;
+
+// =============================================================================
+// COMPONENT-SPECIFIC SPACING
+// =============================================================================
+
+// Buttons
+$button-padding-sm: $spacing-1 $spacing-3;
+$button-padding-md: $spacing-2 $spacing-4;
+$button-padding-lg: $spacing-3 $spacing-6;
+
+// Cards
+$card-padding: $spacing-4;
+$card-gap: $spacing-4;
+
+// Form inputs
+$input-padding: $spacing-3 $spacing-4;
+
+// Containers
+$container-padding: $spacing-4;
+$section-gap: $spacing-6;
+
+// =============================================================================
+// Z-INDEX SCALE
+// =============================================================================
+
+$z-dropdown: 1000;
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal-backdrop: 1040;
+$z-modal: 1050;
+$z-popover: 1060;
+$z-tooltip: 1070;
+
+// =============================================================================
+// BREAKPOINTS
+// =============================================================================
+
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// Legacy breakpoints
+$small: 478px;
+$large: 900px;

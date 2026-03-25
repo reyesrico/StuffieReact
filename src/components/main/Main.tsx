@@ -58,7 +58,9 @@ const Main = () => {
           </div>
         </div>
         <div className="stuffie__content">
-          <MainRoutes />
+          <div className="stuffie__content-inner">
+            <MainRoutes />
+          </div>
         </div>
         <div className="stuffie__right">
           <div className="stuffie__right-section">

@@ -1,71 +1,105 @@
+// =============================================================================
+// FeedRow Component Styles
+// Modern feed card design
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .feed-row {
-  @include section-background;
-  @include flex(column);
-  @include border-radius;
-  @include padding(8px, 'all');
-  // background-color: $white;
-  box-shadow: 0px 2px $blue;
-  margin-bottom: 16px;
+  background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--spacing-4);
+  transition: all var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
 }
 
 .feed-row__photo {
-  @include border(all, $blue, 1px);
-  @include margin(4px, right);
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--border-color);
+  margin-right: var(--spacing-3);
+  object-fit: cover;
 }
 
 .feed-row__description {
-  @include flex(row, flex-start, center);
-  @include margin(12px, bottom);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: var(--spacing-3);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .feed-row__added {
-  @include flex(row, flex-start);
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--spacing-1);
 }
 
 .feed-row__name {
-  @include margin(4px, right);
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
 }
 
 .feed-row__product {
-  @include flex(column);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
 }
 
 .feed-row__image {
-  @include flex(row, center);
-  @include margin(8px, 'bottom');
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-3) 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 .feed-row__actions {
-  @include flex(row, center);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border-color);
 }
 
 .feed-row__action {
-  @include padding(12px, horizontal);
-  @include border('right');
+  padding: var(--spacing-2) var(--spacing-4);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-md);
 
-  &:first-of-type {
-    @include border-none;
-  }
-
-  &:last-of-type {
-    @include border-none;
+  &:hover {
+    background-color: var(--background-secondary);
+    color: var(--color-primary-500);
   }
 }
 
 .feed-row__link {
-  @include text-link;
-  color: $blue;
+  color: var(--color-primary-500);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+  }
 }
 
 .feed-row__text {
-  color: $darkgray;
-}
-
-.feed-row__name {
-  font-weight: bold;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }

@@ -1,0 +1,132 @@
+// =============================================================================
+// ErrorState Component Styles
+// Modern error/warning/info messages
+// =============================================================================
+
+.error-state {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid;
+
+  // =========================================================================
+  // SEVERITY VARIANTS
+  // =========================================================================
+
+  &--error {
+    background-color: #FEF2F2;
+    border-left-color: var(--color-error, #F44336);
+    
+    .error-state__icon {
+      color: var(--color-error, #F44336);
+    }
+
+    .error-state__title {
+      color: #991B1B;
+    }
+  }
+
+  &--warning {
+    background-color: #FFFBEB;
+    border-left-color: var(--color-warning, #FF9800);
+
+    .error-state__icon {
+      color: var(--color-warning, #FF9800);
+    }
+
+    .error-state__title {
+      color: #92400E;
+    }
+  }
+
+  &--info {
+    background-color: #EFF6FF;
+    border-left-color: var(--color-info, #2196F3);
+
+    .error-state__icon {
+      color: var(--color-info, #2196F3);
+    }
+
+    .error-state__title {
+      color: #1E40AF;
+    }
+  }
+
+  // =========================================================================
+  // ELEMENTS
+  // =========================================================================
+
+  &__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0 0 var(--spacing-1);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+  }
+
+  &__message {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  &__retry {
+    flex-shrink: 0;
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-color);
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background-color: var(--background-secondary);
+      border-color: var(--border-hover);
+    }
+  }
+}
+
+// Dark mode adjustments
+[data-theme="dark"] {
+  .error-state--error {
+    background-color: rgba(244, 67, 54, 0.1);
+    
+    .error-state__title {
+      color: #FCA5A5;
+    }
+  }
+
+  .error-state--warning {
+    background-color: rgba(255, 152, 0, 0.1);
+
+    .error-state__title {
+      color: #FCD34D;
+    }
+  }
+
+  .error-state--info {
+    background-color: rgba(33, 150, 243, 0.1);
+
+    .error-state__title {
+      color: #93C5FD;
+    }
+  }
+}

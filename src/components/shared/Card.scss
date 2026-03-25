@@ -1,0 +1,98 @@
+// =============================================================================
+// Card Component Styles
+// Modern card with variants and states
+// =============================================================================
+
+.stuffie-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+
+  // =========================================================================
+  // VARIANTS
+  // =========================================================================
+
+  &--elevated {
+    box-shadow: var(--shadow-card);
+  }
+
+  &--outlined {
+    border: 1px solid var(--border-color);
+  }
+
+  &--filled {
+    background-color: var(--background-secondary);
+  }
+
+  // =========================================================================
+  // PADDING
+  // =========================================================================
+
+  &--padding-none &__content {
+    padding: 0;
+  }
+
+  &--padding-sm &__content {
+    padding: var(--spacing-3);
+  }
+
+  &--padding-md &__content {
+    padding: var(--spacing-4);
+  }
+
+  &--padding-lg &__content {
+    padding: var(--spacing-6);
+  }
+
+  // =========================================================================
+  // STATES
+  // =========================================================================
+
+  &--hoverable {
+    &:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--clickable {
+    cursor: pointer;
+    
+    &:hover {
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+    }
+  }
+
+  // =========================================================================
+  // SECTIONS
+  // =========================================================================
+
+  &__header {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 500;
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__footer {
+    padding: var(--spacing-4);
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-secondary);
+  }
+}

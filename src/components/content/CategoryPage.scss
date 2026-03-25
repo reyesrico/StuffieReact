@@ -1,27 +1,64 @@
+// =============================================================================
+// CategoryPage Component Styles
+// Modern category listing
+// =============================================================================
+
 @use '../../sass/main' as *;
 
+.category-page {
+  padding: var(--spacing-4);
+}
+
 .category-page__row {
-  @include flex(row, space-between);
-  @include border-radius;
-  @include padding(8px, 'all');
-  @include margin(8px, vertical);
-  @include border(all, $lightergray);
-  background-color: $white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  margin: var(--spacing-3) 0;
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+  cursor: pointer;
 
   &:hover {
-    @include border(all, $gray);
+    border-color: var(--color-primary-300);
+    box-shadow: var(--shadow-card);
+    transform: translateX(4px);
   }
 }
 
 .category-page__header {
-  @include flex(row, flex-strt);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
 }
 
 .category-page__header-text {
-  @include margin(8px, left);
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 .category-page__icon {
-  align-self: center;
-  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+
+  .category-page__row:hover & {
+    color: var(--color-primary-500);
+  }
+}
+
+.category-page__count {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-full);
 }

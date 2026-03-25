@@ -1,74 +1,104 @@
+// =============================================================================
+// Header Component Styles
+// Modern header with clean navigation
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .stuffie-header {
-  @include flex(row, space-between, center);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: var(--spacing-2) var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .stuffie-header__left {
-  @include flex(row, flex-start, center);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-6);
 }
 
 .stuffie-header__info {
-  @include flex(row, flex-start, center);
-  width: 210px
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+  min-width: 150px;
 }
 
 .stuffie-header__user {
-  font-size: 20px;
-  font-weight: bold;
-  margin-left: 8px;
-  width: 150px;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-color);
+  letter-spacing: -0.01em;
 }
 
 .stuffie-header__logo {
-  width: 50px;
-  height: 50px;
-  padding-bottom: 4px;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
 }
 
 .stuffie-header__sections {
-  @include flex(row, flex-start);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2);
 }
 
 .stuffie-header__section-item {
-  @include flex(row, space-around, center);
-  @include padding(8px, all);
-  @include margin(8px, horizontal);
-  @include margin(18px, top);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
 
-  background-color: $blue;
-  border-radius: 4px 4px 0px 0px;
-  color: $white;
-  font-size: 16px;
-  height: 20px;
-  width: 80px;
-
-  &:first-of-type {
-    @include margin(0px, left);
+  &:hover {
+    background-color: var(--background-secondary);
+    color: var(--text-color);
   }
 
-  &:last-of-type {
-    background-color: $white;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  &--active {
+    background-color: var(--color-primary-500);
+    color: white;
+
+    &:hover {
+      background-color: var(--color-primary-600);
+      color: white;
+    }
+
+    a {
+      color: white;
+    }
   }
 }
 
 .stuffie-header__section-exchange {
-  width: 87px;
-}
-
-.stuffie-header__section-item a{
-  color: $white;
-  text-decoration: none;
-}
-
-.stuffie-header__section-item a:hover {
-  color: $white;
-  font-weight: bold;
+  // Keep width auto for modern design
 }
 
 .stuffie-header__search {
-  @include margin(18px, top);
-  width: 250px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
 }
 
 .stuffie-header__menu {
@@ -80,84 +110,85 @@
 }
 
 .stuffie-header__warning {
-  @include warning;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-error);
+  border-radius: var(--radius-full);
+  margin-left: var(--spacing-1);
 }
 
 .stuffie-header__button {
-  @include border-none();
-  display: contents;              // TEXT FIT TO BUTTON WITHOUT STUFF!
-  background-color: $white;
-  color: $blue;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--text-secondary);
   font-family: inherit;
-  font-size: 16px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border: none;
   cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    color: var(--text-color);
+  }
 }
 
-.stuffie-header__button:hover {
-  font-weight: bold;
-}
 
+// =============================================================================
+// RESPONSIVE - Tablet
+// =============================================================================
 
-// ---------
-// MEDIA
-// ---------
 @media screen and (max-width: $large) {
   .stuffie-header {
-    @include flex(column, center, center);
-    @include padding(14px, bottom);
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--spacing-3);
+    gap: var(--spacing-3);
   }
 
   .stuffie-header__left {
-    @include flex(row, space-between, center);
-    @include border('bottom', $blue, 2px);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
+    padding-bottom: var(--spacing-3);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .stuffie-header__sections {
-    @include flex(row, flex-end, center);
-    @include margin(-6px, bottom);
-    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--spacing-1);
   }
 
   .stuffie-header__section-item {
-    @include margin(4px, bottom);
-    margin-right: 4px;
-    margin-left: 0;
-    font-size: 12px;
-    width: auto;
-
-    &:last-of-type {
-      @include border(bottom, $blue, 2px);
-    }
-  }
-
-  .stuffie-header__button {
-    font-size: 12px;
-    padding: 0;
-    width: auto;
-  }
-
-  .stuffie-header__search {
-    @include margin(14px, top);
-    width: 48%;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
   }
 
   .stuffie-header__info {
-    @include flex(row, center, center);
+    min-width: auto;
   }
 
   .stuffie-header__user {
-    font-size: 14px;
-    width: 100%;
+    font-size: var(--font-size-base);
   }
 
   .stuffie-header__warning {
-    width: 8px;
-    height: 8px;
-    position: relative;
-    top: -16px;
-    left: 8px;
-    @include margin(-8px, left);
+    min-width: 16px;
+    height: 16px;
+    font-size: 10px;
+    padding: 0 4px;
   }
 
   .stuffie-header__warning-text {
@@ -165,42 +196,45 @@
   }
 
   .stuffie-header__search {
-    @include flex(row, space-between, center);
     width: 100%;
+    justify-content: space-between;
 
     .search-bar {
-      @include margin(8px, left);
-      width: calc(100% - 38px);
+      flex: 1;
+      margin-left: var(--spacing-2);
     }
   }
 
   .stuffie-header__apps {
-    @include flex(row, center, center);
-    @include margin(12px, right);
+    display: flex;
+    align-items: center;
     position: relative;
 
-    /* Hide the links inside the navigation menu (except for logo/home) */
     #apps {
       display: none;
     }
 
     .fa-bars {
-      font-size: 22px;
+      font-size: 20px;
+      color: var(--text-color);
     }
 
-    /* Style the hamburger menu */
     button.icon {
       background-color: transparent;
-      position: absolute;
-      right: 0;
-      border: 0;
+      border: none;
+      padding: var(--spacing-2);
+      cursor: pointer;
     }
   }
 
   .stuffie-header__menu-theme {
-    @include margin(4px, bottom);
+    margin-bottom: var(--spacing-2);
   }
 }
+
+// =============================================================================
+// RESPONSIVE - Mobile
+// =============================================================================
 
 @media screen and (max-width: $small) {
   .stuffie-header__user {
@@ -208,39 +242,40 @@
   }
 
   .stuffie-header__user-name {
-    @include flex(row, flex-start, center);
-    @include margin(16px, bottom);
-    align-self: center;
-    box-shadow: 2px 2px 1px 1px darkgrey;
-    border-radius: 8%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-4);
+    padding: var(--spacing-2);
+    background-color: var(--background-secondary);
+    border-radius: var(--radius-md);
   }
 
   .stuffie__welcome {
     overflow-wrap: anywhere;
+    font-weight: 500;
   }
 
   .stuffie-header__menu {
-    @include flex(row, center, center);
-    @include margin(12px, left);
-    @include margin(16px, right);
+    display: flex;
+    align-items: center;
     position: relative;
-    width: 20px;
 
-    /* Hide the links inside the navigation menu (except for logo/home) */
     #menu {
       display: none;
     }
 
     .fa-bars {
-      font-size: 22px;
+      font-size: 20px;
+      color: var(--text-color);
     }
 
-    /* Style the hamburger menu */
     button.icon {
       background-color: transparent;
-      position: absolute;
-      left: 0;
-      border: 0;
+      border: none;
+      padding: var(--spacing-2);
+      cursor: pointer;
     }
   }
 }

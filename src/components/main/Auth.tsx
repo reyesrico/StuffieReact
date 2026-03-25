@@ -6,9 +6,9 @@ import Loading from '../shared/Loading';
 import Login from './Login';
 import FetchData from './FetchData';
 import Main from './Main';
-import Media from '../shared/Media';
 import Register from './Register';
 import State from '../../redux/State';
+import ThemeContext from '../../context/ThemeContext';
 import UserContext from '../../context/UserContext';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
@@ -27,6 +27,7 @@ const getMessageType = (message: string) => {
 
 
 const Auth = () => {
+  const { theme } = useContext(ThemeContext);
   const { user, loginUser } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -80,11 +81,15 @@ const Auth = () => {
     }
   }
 
+  const logoSrc = theme === "light" 
+    ? "/StuffieReact/images/stuffie-logo-light.svg" 
+    : "/StuffieReact/images/stuffie-logo-dark.svg";
+
   if (isEmpty(user) || request) {
     return (
       <div className="auth">
         <div className="auth__header">
-          <Media fileName="logo_2020_2" format="jpg" height="50" width="50" />
+          <img src={logoSrc} alt="Stuffie Logo" width="60" height="60" className="auth__logo-img" />
           <h1 className="auth__title">
             <span className="auth__stuffie">Stuffie</span>
             <span className="auth__slogan">Connecting Life</span>

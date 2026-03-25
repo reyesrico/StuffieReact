@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import Apps from '../sections/Apps';
 import Chat from './Chat';
-import Media from '../shared/Media';
 import SearchBar from '../shared/SearchBar';
 // import Spotify from '../apps/Spotify';
 import State from '../../redux/State';
@@ -18,8 +17,16 @@ import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudi
 import './Header.scss';
 
 const Header = () => {
-  const  { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const { user, logoutUser } = React.useContext(UserContext);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === '/StuffieReact') {
+      return location.pathname === '/StuffieReact' || location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
   // let state = useSelector((state: State) => state);
   // let user = state.user;
   const userRequests = useSelector((state: State) => state.userRequests);
@@ -89,8 +96,10 @@ const Header = () => {
     }
   }
 
-  const logoFileName = React.useMemo(() => {
-    return theme === "light" ? "logo_2020" : "logo_2020_dark";
+  const logoSrc = React.useMemo(() => {
+    return theme === "light" 
+      ? "/StuffieReact/images/stuffie-logo-light.svg" 
+      : "/StuffieReact/images/stuffie-logo-dark.svg";
   }, [theme])
 
   return (
@@ -98,17 +107,19 @@ const Header = () => {
       <div className="stuffie-header__left">
         <div className="stuffie-header__info">
           <div className="stuffie-header__logo">
-            <Media fileName={logoFileName} format="jpg" height="50" width="50" />
+            <img src={logoSrc} alt="Stuffie Logo" width="42" height="42" />
           </div>
           <div className='stuffie-header__user'>Stuffie</div>
         </div>
         <div className='stuffie-header__sections'>
-          <div className='stuffie-header__section-item'><Link to='/StuffieReact'>{t('Feed')}</Link></div>
-          <div className='stuffie-header__section-item'>
+          <div className={`stuffie-header__section-item ${isActive('/StuffieReact') ? 'stuffie-header__section-item--active' : ''}`}>
+            <Link to='/StuffieReact'>{t('Feed')}</Link>
+          </div>
+          <div className={`stuffie-header__section-item ${isActive('/friends') ? 'stuffie-header__section-item--active' : ''}`}>
             <Link to='/friends'>{t('Friends')}</Link>
             {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
           </div>
-          <div className={`stuffie-header__section-item ${exchangeClass}`}>
+          <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
             <Link to='/products'>{window.outerWidth >= 1024 && !requests ? "Products" : "Prods"}</Link>
             {requests > 0 && (
               <div className="stuffie-header__warning">
@@ -116,7 +127,7 @@ const Header = () => {
               </div>)}
           </div>
           {user.admin && (
-            <div className='stuffie-header__section-item'>
+            <div className={`stuffie-header__section-item ${isActive('/admin') ? 'stuffie-header__section-item--active' : ''}`}>
               <Link to='/admin'>{t('Admin')}</Link>
               {(userRequests.length > 0 || pendingProducts.length > 0) && (
                 <div className="stuffie-header__warning">

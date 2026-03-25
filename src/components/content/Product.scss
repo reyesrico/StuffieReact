@@ -1,33 +1,57 @@
+// =============================================================================
+// Product Component Styles
+// Modern product card design
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .product {
-  @include padding(4px, horizontal);
+  padding: 0 var(--spacing-2);
 }
 
 .product__cost {
-  @include flex(row, space-between, center);
-  @include margin(4px, top);
-  @include border(top, $gray, 2px);
-  @include padding(4px, all);
-  background-color: $lightgray;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-3);
+  padding: var(--spacing-3);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
 }
 
 .product__cost-value {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  color: var(--color-primary-600);
 }
 
 .product__cost-text {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 .product__cost-elements {
-  @include flex(row, flex-end, center);
-  font-size: 14px;
-  font-weight: bolder;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
 
   input {
-    @include margin(8px, horizontal);
-    width: 100px;
+    width: 80px;
+    padding: var(--spacing-1) var(--spacing-2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+
+    &:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-focus);
+    }
   }
 }

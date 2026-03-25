@@ -1,0 +1,131 @@
+// Design Tokens: Colors
+// Modern color palette for Stuffie
+// Last updated: 2026-03-24
+
+// =============================================================================
+// NEUTRALS (Softer, modern grays)
+// =============================================================================
+
+$gray-50: #FAFAFA;
+$gray-100: #F5F5F5;
+$gray-200: #EEEEEE;
+$gray-300: #E0E0E0;
+$gray-400: #BDBDBD;
+$gray-500: #9E9E9E;
+$gray-600: #757575;
+$gray-700: #616161;
+$gray-800: #424242;
+$gray-900: #212121;
+
+// =============================================================================
+// PRIMARY (Blue - Brand Identity)
+// =============================================================================
+
+$primary-50: #E3F2FD;
+$primary-100: #BBDEFB;
+$primary-200: #90CAF9;
+$primary-300: #64B5F6;
+$primary-400: #42A5F5;
+$primary-500: #2196F3;      // Main brand color
+$primary-600: #1E88E5;
+$primary-700: #1976D2;
+$primary-800: #1565C0;
+$primary-900: #0D47A1;
+
+// =============================================================================
+// ACCENT (Original Stuffie blue for highlights)
+// =============================================================================
+
+$accent-400: #5C7CFC;
+$accent-500: #3D65FB;       // Original Stuffie blue
+$accent-600: #3050E0;
+
+// =============================================================================
+// SEMANTIC COLORS
+// =============================================================================
+
+$success-light: #E8F5E9;
+$success: #4CAF50;
+$success-dark: #388E3C;
+
+$warning-light: #FFF3E0;
+$warning: #FF9800;
+$warning-dark: #F57C00;
+
+$error-light: #FFEBEE;
+$error: #F44336;
+$error-dark: #D32F2F;
+
+$info-light: #E3F2FD;
+$info: #2196F3;
+$info-dark: #1976D2;
+
+// =============================================================================
+// BACKGROUND LAYERS (Light Theme)
+// =============================================================================
+
+$background-page: #F5F7FA;
+$background-primary: #FFFFFF;
+$background-secondary: #FAFAFA;
+$background-tertiary: #F5F5F5;
+$background-elevated: #FFFFFF;
+$background-overlay: rgba(0, 0, 0, 0.5);
+
+// =============================================================================
+// BACKGROUND LAYERS (Dark Theme)
+// =============================================================================
+
+$dark-background-page: #0D1117;
+$dark-background-primary: #161B22;
+$dark-background-secondary: #21262D;
+$dark-background-tertiary: #30363D;
+$dark-background-elevated: #21262D;
+$dark-background-overlay: rgba(0, 0, 0, 0.7);
+
+// =============================================================================
+// TEXT COLORS
+// =============================================================================
+
+$text-primary: $gray-900;
+$text-secondary: $gray-600;
+$text-tertiary: $gray-500;
+$text-disabled: $gray-400;
+$text-inverse: #FFFFFF;
+
+$dark-text-primary: #F0F6FC;
+$dark-text-secondary: #8B949E;
+$dark-text-tertiary: #6E7681;
+$dark-text-disabled: #484F58;
+
+// =============================================================================
+// BORDER COLORS
+// =============================================================================
+
+$border-default: $gray-200;
+$border-hover: $gray-300;
+$border-focus: $primary-500;
+$border-error: $error;
+
+$dark-border-default: #30363D;
+$dark-border-hover: #484F58;
+
+// =============================================================================
+// LEGACY COLORS (For backward compatibility during migration)
+// =============================================================================
+
+$black: #000000;
+$darkgray: $gray-600;
+$gray: $gray-500;
+$lightgray: $gray-200;
+$lightergray: $gray-100;
+$white: #FFFFFF;
+
+$blue: $accent-500;
+$darkblue: $primary-900;
+$normalblue: $primary-400;
+$lightblue: $primary-200;
+$lighterblue: $primary-50;
+
+$lightgreen: $success;
+$lightorange: $warning-dark;
+$lightyellow: #FADE85;

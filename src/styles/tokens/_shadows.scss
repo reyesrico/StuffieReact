@@ -1,0 +1,84 @@
+// Design Tokens: Shadows
+// Modern shadow system for depth and elevation
+// Last updated: 2026-03-24
+
+// =============================================================================
+// SHADOW SCALE
+// =============================================================================
+
+// Subtle shadows for slight elevation
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+// Small shadow for buttons, inputs
+$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 
+            0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+// Medium shadow for cards, dropdowns
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+            0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+// Large shadow for modals, popovers
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+            0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+// Extra large shadow for dialogs
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+            0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+// Heavy shadow
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+// Inner shadow
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+// =============================================================================
+// COMPONENT-SPECIFIC SHADOWS
+// =============================================================================
+
+// Card shadows
+$shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 
+              0 1px 2px rgba(0, 0, 0, 0.06);
+              
+$shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1), 
+                    0 2px 4px rgba(0, 0, 0, 0.08);
+
+// Button shadows
+$shadow-button: 0 1px 2px rgba(0, 0, 0, 0.08);
+$shadow-button-hover: 0 4px 8px rgba(0, 0, 0, 0.12);
+$shadow-button-active: 0 1px 1px rgba(0, 0, 0, 0.1);
+
+// Input focus shadow
+$shadow-focus: 0 0 0 3px rgba(33, 150, 243, 0.15);
+$shadow-focus-error: 0 0 0 3px rgba(244, 67, 54, 0.15);
+
+// Dropdown shadow
+$shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.15), 
+                  0 2px 10px rgba(0, 0, 0, 0.1);
+
+// Modal shadow
+$shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+               0 10px 20px rgba(0, 0, 0, 0.1);
+
+// =============================================================================
+// DARK MODE SHADOWS
+// =============================================================================
+
+$dark-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 
+                 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+
+$dark-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 
+                 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+
+$dark-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 
+                   0 1px 2px rgba(0, 0, 0, 0.2);
+
+$dark-shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4), 
+                         0 2px 4px rgba(0, 0, 0, 0.3);
+
+// =============================================================================
+// COLORED SHADOWS (for brand elements)
+// =============================================================================
+
+$shadow-primary: 0 4px 14px rgba(33, 150, 243, 0.25);
+$shadow-success: 0 4px 14px rgba(76, 175, 80, 0.25);
+$shadow-error: 0 4px 14px rgba(244, 67, 54, 0.25);

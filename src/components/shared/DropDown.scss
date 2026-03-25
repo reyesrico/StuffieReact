@@ -1,0 +1,124 @@
+// =============================================================================
+// DropDown Component Styles
+// Modern select dropdown
+// =============================================================================
+
+.stuffie-dropdown {
+  position: relative;
+  display: inline-flex;
+  width: auto;
+
+  // =========================================================================
+  // SELECT
+  // =========================================================================
+
+  &__select {
+    appearance: none;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    padding-right: 32px;
+
+    &:hover:not(:disabled) {
+      border-color: var(--border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+
+    &:disabled {
+      background-color: var(--background-tertiary);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    option {
+      padding: var(--spacing-2);
+    }
+  }
+
+  // =========================================================================
+  // ICON
+  // =========================================================================
+
+  &__icon {
+    position: absolute;
+    right: var(--spacing-3);
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // =========================================================================
+  // SIZES
+  // =========================================================================
+
+  &--sm &__select {
+    padding: var(--spacing-1) var(--spacing-3);
+    padding-right: 28px;
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+  }
+
+  &--md &__select {
+    padding: var(--spacing-2) var(--spacing-4);
+    padding-right: 36px;
+    font-size: var(--font-size-base);
+    min-height: 40px;
+  }
+
+  &--lg &__select {
+    padding: var(--spacing-3) var(--spacing-4);
+    padding-right: 40px;
+    font-size: var(--font-size-lg);
+    min-height: 48px;
+  }
+
+  // =========================================================================
+  // STATES
+  // =========================================================================
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// Legacy global select styles for backward compatibility
+select:not([class]) {
+  appearance: none;
+  padding: var(--spacing-2) var(--spacing-4);
+  padding-right: 36px;
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23757575' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+
+  &:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+  }
+}

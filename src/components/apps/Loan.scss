@@ -1,5 +1,42 @@
+// =============================================================================
+// Loan Component Styles
+// Modern loan form layout
+// =============================================================================
+
 @use '../../sass/main' as *;
 
+.loan {
+  padding: var(--spacing-4);
+}
+
+.loan__header {
+  margin-bottom: var(--spacing-6);
+
+  h2 {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+  }
+}
+
 .loan__product {
-  @include margin(16px, bottom);
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.loan__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.loan__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
 }

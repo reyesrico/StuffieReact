@@ -3,10 +3,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { FluentProvider, webLightTheme, webDarkTheme } from '@fluentui/react-components';
 
 import i18n from './config/i18n';
 import TopRoutes from './components/main/TopRoutes';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { UserProvider } from './context/UserContext';
 
 import './App.scss';
@@ -20,6 +21,20 @@ const queryClient = new QueryClient();
 
 initializeIcons();
 
+// Inner component that can use ThemeContext
+const AppContent = () => {
+	const { theme } = useTheme();
+	const fluentTheme = theme === 'dark' ? webDarkTheme : webLightTheme;
+
+	return (
+		<FluentProvider theme={fluentTheme}>
+			<BrowserRouter>
+				<TopRoutes />
+			</BrowserRouter>
+		</FluentProvider>
+	);
+};
+
 const App = (props: any) => {
 	const { store } = props;
 	return (
@@ -29,11 +44,7 @@ const App = (props: any) => {
 					<UserProvider>
 						<ThemeProvider>
 							<QueryClientProvider client={queryClient}>
-							{/* <FluentProvider> { /* theme={theme === "light" ? webLightTheme : webDarkTheme}> */ }
-								<BrowserRouter>
-									<TopRoutes />
-								</BrowserRouter>
-							{/* </FluentProvider> */}
+								<AppContent />
 							</QueryClientProvider>
 						</ThemeProvider>
 					</UserProvider>

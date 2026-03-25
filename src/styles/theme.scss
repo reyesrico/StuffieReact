@@ -1,29 +1,173 @@
-:root {
-  // SCSS Section Theme
-  --background-color: white;
-  --text-color: black;
+// =============================================================================
+// Theme Configuration
+// Modern CSS custom properties for dynamic theming
+// Last updated: 2026-03-24
+// =============================================================================
 
-  // Global HTML Theme
-  background-color: #e5eaed;
-  color: black;
+:root {
+  // =========================================================================
+  // COLOR PALETTE
+  // =========================================================================
+  
+  // Neutrals
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #F5F5F5;
+  --color-gray-200: #EEEEEE;
+  --color-gray-300: #E0E0E0;
+  --color-gray-400: #BDBDBD;
+  --color-gray-500: #9E9E9E;
+  --color-gray-600: #757575;
+  --color-gray-700: #616161;
+  --color-gray-800: #424242;
+  --color-gray-900: #212121;
+
+  // Primary (Brand Blue)
+  --color-primary-50: #E3F2FD;
+  --color-primary-100: #BBDEFB;
+  --color-primary-200: #90CAF9;
+  --color-primary-300: #64B5F6;
+  --color-primary-400: #42A5F5;
+  --color-primary-500: #2196F3;
+  --color-primary-600: #1E88E5;
+  --color-primary-700: #1976D2;
+  --color-primary-800: #1565C0;
+  --color-primary-900: #0D47A1;
+
+  // Accent (Stuffie Blue)
+  --color-accent-500: #3D65FB;
+  
+  // Semantic colors
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-error: #F44336;
+  --color-info: #2196F3;
+
+  // =========================================================================
+  // SEMANTIC TOKENS (Light Theme)
+  // =========================================================================
+  
+  // Backgrounds
+  --background-page: #F5F7FA;
+  --background-color: #FFFFFF;
+  --background-secondary: #FAFAFA;
+  --background-tertiary: #F5F5F5;
+  --background-elevated: #FFFFFF;
+  --background-overlay: rgba(0, 0, 0, 0.5);
+
+  // Text
+  --text-color: #212121;
+  --text-secondary: #757575;
+  --text-tertiary: #9E9E9E;
+  --text-disabled: #BDBDBD;
+  --text-inverse: #FFFFFF;
+
+  // Borders
+  --border-color: #EEEEEE;
+  --border-hover: #E0E0E0;
+  --border-focus: #2196F3;
+
+  // =========================================================================
+  // SHADOWS (Light Theme)
+  // =========================================================================
+  
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(33, 150, 243, 0.15);
+
+  // =========================================================================
+  // SPACING & SIZING
+  // =========================================================================
+  
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  // =========================================================================
+  // TYPOGRAPHY
+  // =========================================================================
+  
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+
+  // =========================================================================
+  // TRANSITIONS
+  // =========================================================================
+  
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 200ms ease-in-out;
+  --transition-slow: 300ms ease-in-out;
+
+  // Apply to root
+  background-color: var(--background-page);
+  color: var(--text-color);
+  font-family: var(--font-family);
 }
+
+// =============================================================================
+// DARK THEME
+// =============================================================================
 
 [data-theme="dark"] {
-  // SCSS Section Theme
-  --background-color: #b2b2b2;
-  --text-color: black;
+  // Backgrounds
+  --background-page: #0D1117;
+  --background-color: #161B22;
+  --background-secondary: #21262D;
+  --background-tertiary: #30363D;
+  --background-elevated: #21262D;
+  --background-overlay: rgba(0, 0, 0, 0.7);
 
-  // Global HTML Theme
-  background-color: #5b5d5e;
-  // color: #e5e5e5;
+  // Text
+  --text-color: #F0F6FC;
+  --text-secondary: #8B949E;
+  --text-tertiary: #6E7681;
+  --text-disabled: #484F58;
+  --text-inverse: #0D1117;
+
+  // Borders
+  --border-color: #30363D;
+  --border-hover: #484F58;
+
+  // Shadows
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-[data-theme="light"] {
-  // SCSS Section Theme
-  --background-color: white;
-  --text-color: black;
+// =============================================================================
+// LIGHT THEME (Explicit)
+// =============================================================================
 
-  // Global HTML Theme
-  background-color: #e5eaed;
-  color: black;
+[data-theme="light"] {
+  // Backgrounds
+  --background-page: #F5F7FA;
+  --background-color: #FFFFFF;
+  --background-secondary: #FAFAFA;
+  --background-tertiary: #F5F5F5;
+
+  // Text
+  --text-color: #212121;
+  --text-secondary: #757575;
+
+  // Borders
+  --border-color: #EEEEEE;
 }

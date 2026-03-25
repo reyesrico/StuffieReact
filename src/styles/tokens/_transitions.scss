@@ -1,0 +1,158 @@
+// Design Tokens: Transitions & Animations
+// Smooth motion system
+// Last updated: 2026-03-24
+
+// =============================================================================
+// TRANSITION DURATIONS
+// =============================================================================
+
+$duration-fastest: 50ms;
+$duration-faster: 100ms;
+$duration-fast: 150ms;
+$duration-normal: 200ms;
+$duration-slow: 300ms;
+$duration-slower: 400ms;
+$duration-slowest: 500ms;
+
+// =============================================================================
+// EASING FUNCTIONS
+// =============================================================================
+
+$ease-linear: linear;
+$ease-in: cubic-bezier(0.4, 0, 1, 1);
+$ease-out: cubic-bezier(0, 0, 0.2, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+// More expressive easings
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+$ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+// =============================================================================
+// COMMON TRANSITIONS
+// =============================================================================
+
+$transition-base: all $duration-normal $ease-in-out;
+$transition-fast: all $duration-fast $ease-in-out;
+$transition-slow: all $duration-slow $ease-in-out;
+
+// Property-specific transitions
+$transition-colors: color $duration-fast $ease-in-out, 
+                    background-color $duration-fast $ease-in-out,
+                    border-color $duration-fast $ease-in-out;
+
+$transition-shadow: box-shadow $duration-normal $ease-in-out;
+
+$transition-transform: transform $duration-normal $ease-in-out;
+
+$transition-opacity: opacity $duration-normal $ease-in-out;
+
+// =============================================================================
+// ANIMATION MIXINS
+// =============================================================================
+
+@mixin transition-base {
+  transition: $transition-base;
+}
+
+@mixin transition-fast {
+  transition: $transition-fast;
+}
+
+@mixin transition-colors {
+  transition: $transition-colors;
+}
+
+@mixin transition-shadow {
+  transition: $transition-shadow;
+}
+
+@mixin transition-transform {
+  transition: $transition-transform;
+}
+
+// Hover lift effect
+@mixin hover-lift {
+  transition: transform $duration-normal $ease-out, 
+              box-shadow $duration-normal $ease-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Scale on hover
+@mixin hover-scale($scale: 1.02) {
+  transition: transform $duration-fast $ease-out;
+  
+  &:hover {
+    transform: scale($scale);
+  }
+}
+
+// =============================================================================
+// KEYFRAME ANIMATIONS
+// =============================================================================
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from { 
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+// Animation classes
+.animate-fade-in {
+  animation: fadeIn $duration-normal $ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp $duration-normal $ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s $ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s $ease-linear infinite;
+}

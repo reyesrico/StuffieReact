@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Stuffie Logo - Light Mode -->
+  <!-- Modern open box with items representing "stuff" -->
+  
+  <!-- Background circle (optional, can be removed) -->
+  <circle cx="50" cy="50" r="48" fill="#FFFFFF" stroke="#E3F2FD" stroke-width="2"/>
+  
+  <!-- Box base (3D effect) -->
+  <path d="M15 55 L50 70 L85 55 L85 75 L50 90 L15 75 Z" fill="#1976D2"/>
+  
+  <!-- Box front face -->
+  <path d="M15 55 L50 70 L50 90 L15 75 Z" fill="#2196F3"/>
+  
+  <!-- Box right face -->
+  <path d="M50 70 L85 55 L85 75 L50 90 Z" fill="#1565C0"/>
+  
+  <!-- Box lid left (open) -->
+  <path d="M15 55 L50 40 L50 45 L20 58 Z" fill="#64B5F6" stroke="#1976D2" stroke-width="0.5"/>
+  
+  <!-- Box lid right (open) -->
+  <path d="M85 55 L50 40 L50 45 L80 58 Z" fill="#42A5F5" stroke="#1976D2" stroke-width="0.5"/>
+  
+  <!-- Items inside the box -->
+  
+  <!-- Book (rectangle with lines) -->
+  <rect x="28" y="48" width="12" height="16" rx="1" fill="#3D65FB" transform="rotate(-10, 34, 56)"/>
+  <line x1="30" y1="50" x2="30" y2="62" stroke="#FFFFFF" stroke-width="0.8" transform="rotate(-10, 34, 56)"/>
+  
+  <!-- Ball/Toy (circle) -->
+  <circle cx="50" cy="50" r="8" fill="#FF9800"/>
+  <path d="M44 50 Q50 44 56 50" stroke="#FFFFFF" stroke-width="1.5" fill="none"/>
+  <path d="M44 50 Q50 56 56 50" stroke="#FFFFFF" stroke-width="1.5" fill="none"/>
+  
+  <!-- Star/toy -->
+  <polygon points="68,45 70,51 76,51 71,55 73,61 68,57 63,61 65,55 60,51 66,51" fill="#4CAF50"/>
+  
+  <!-- Small heart (representing personal items) -->
+  <path d="M38 38 C38 35 42 35 42 38 C42 35 46 35 46 38 C46 42 42 46 42 46 C42 46 38 42 38 38" fill="#F44336"/>
+  
+  <!-- Sparkle effects -->
+  <circle cx="25" cy="35" r="2" fill="#FFC107"/>
+  <circle cx="75" cy="32" r="1.5" fill="#FFC107"/>
+  <circle cx="80" cy="42" r="1" fill="#FFC107"/>
+</svg>

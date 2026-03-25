@@ -1,0 +1,53 @@
+// =============================================================================
+// EmptyState Component Styles
+// Modern empty state placeholder
+// =============================================================================
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12) var(--spacing-6);
+  text-align: center;
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  border: 2px dashed var(--border-color);
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--spacing-4);
+    background-color: var(--background-tertiary);
+    border-radius: var(--radius-full);
+    color: var(--text-tertiary);
+    font-size: 28px;
+
+    svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  &__title {
+    margin: 0 0 var(--spacing-2);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-color);
+  }
+
+  &__description {
+    margin: 0 0 var(--spacing-6);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    max-width: 320px;
+  }
+
+  &__action {
+    display: flex;
+    gap: var(--spacing-3);
+  }
+}

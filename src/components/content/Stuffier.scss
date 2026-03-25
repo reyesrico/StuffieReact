@@ -1,36 +1,83 @@
+// =============================================================================
+// Stuffier (Profile) Component Styles
+// Modern profile page layout
+// =============================================================================
+
 @use '../../sass/main' as *;
 
+.stuffier {
+  padding: var(--spacing-4);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
 .stuffier__header {
-  @include flex(row, flex-start, center);
-  @include border(bottom, $black);
-  @include padding(8px, bottom);
-  @include margin(16px, bottom);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .stuffier__photo {
-  @include border(all, $blue, 2px);
-  @include margin(8px, right);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-primary-200);
+  object-fit: cover;
+  margin-right: var(--spacing-4);
+  box-shadow: var(--shadow-md);
+}
+
+.stuffier__info {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 var(--spacing-1);
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+  }
 }
 
 .stuffier__form {
-  @include flex(column, center, center);
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .stuffier__label {
-  width: 128px;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-1);
 }
 
 .stuffier__row {
-  @include flex(row, space-evenly, center);
-  @include margin(8px, bottom);
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
 }
 
 .stuffier__textfield {
-  max-width: 300;
+  width: 100%;
+}
+
+.stuffier__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border-color);
 }

@@ -1,30 +1,65 @@
+// =============================================================================
+// AddProduct Component Styles
+// Modern form layout
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .add-product {
-  @include content-detail-background;
-  padding: 0 8px;
+  padding: var(--spacing-4);
+  background-color: var(--background-page);
+  min-height: 100vh;
+}
+
+.add-product__form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-6);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .add-product__row {
-  @include flex(row, flex-start);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.add-product__row label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 label {
-  width: 110px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-1);
 }
 
 .add-product__message-success {
-  background-color: $lightgreen;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
-  width: 100%;
+  background-color: var(--color-success, #E8F5E9);
+  color: var(--color-success, #388E3C);
+  font-weight: 500;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }
 
 .add-product__message-error {
-  background-color: $lightorange;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
-  width: 100%;
+  background-color: var(--color-error, #FFEBEE);
+  color: var(--color-error, #D32F2F);
+  font-weight: 500;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
 }

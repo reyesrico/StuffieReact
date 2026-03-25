@@ -1,5 +1,61 @@
+// =============================================================================
+// App Root Styles
+// Global app container and base styles
+// =============================================================================
+
 @use './sass/main' as *;
+@use './styles/theme.scss';
+
+// Import design tokens
+@use './styles/tokens/colors' as *;
+@use './styles/tokens/spacing' as *;
+@use './styles/tokens/shadows' as *;
 
 .stuffie__app {
-  @include flex(row, center);
+  width: 100%;
+  min-width: 100%;
+  min-height: 100vh;
+  background-color: var(--background-page);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  line-height: 1.5;
+
+  // Ensure FluentProvider takes full width
+  > .fui-FluentProvider {
+    width: 100%;
+    min-width: 100%;
+  }
+}
+
+// =============================================================================
+// Global Utility Classes
+// =============================================================================
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Focus ring for accessibility
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Selection color
+::selection {
+  background-color: var(--color-primary-100);
+  color: var(--text-color);
 }

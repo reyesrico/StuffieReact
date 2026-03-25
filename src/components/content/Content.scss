@@ -1,17 +1,42 @@
-@use '../../sass/main' as *;
+// =============================================================================
+// Content Component Styles
+// Modern content layout
+// =============================================================================
 
 h3 {
-  @include margin(0, top);
+  margin-top: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .content__info {
-  @include padding(2px, all);
+  padding: var(--spacing-2);
 }
 
 .content__summary {
-  @include margin(8px, bottom);
+  margin-bottom: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
 .content__loading {
-  @include loading-fit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-8);
+}
+
+// =============================================================================
+// Content Container (for consistent height)
+// =============================================================================
+
+.content {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }

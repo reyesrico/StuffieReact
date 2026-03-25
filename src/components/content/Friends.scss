@@ -1,103 +1,160 @@
+// =============================================================================
+// Friends Component Styles
+// Modern friends list and cards
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .friends {
-  @include content-detail-background;
+  padding: var(--spacing-4);
+  background-color: transparent;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .friends__loading {
-  @include loading-fit();
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-8);
 }
 
 .friends__title {
-  @include flex(row, flex-start, center);
-  @include margin(8px, vertical);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: var(--spacing-4) 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .friends__warning {
-  @include warning;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-error);
+  border-radius: var(--radius-full);
+  margin-left: var(--spacing-2);
 }
 
 .friends__request {
-  @include flex(row, space-around, center);
-  @include margin(8px, vertical);
-  @include border(all, $blue);
-  @include padding(4px, all);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--spacing-3) 0;
+  padding: var(--spacing-4);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border-left: 4px solid var(--color-primary-500);
 }
 
 .friends__request-button {
-  @include margin(8px, left);
-  width: 80px;
+  margin-left: var(--spacing-2);
+  min-width: 80px;
 }
 
 .friends__form {
-  @include flex(row, space-between, center);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--spacing-4);
 }
 
 .friends__button {
-  @include margin(24px, left);
-  width: 100px;
+  min-width: 100px;
 }
 
 .friends__message-error {
-  background-color: $lightorange;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
+  background-color: var(--color-error, #FFEBEE);
+  color: var(--color-error, #D32F2F);
+  font-weight: 500;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
   width: 100%;
+  margin-bottom: var(--spacing-3);
 }
 
-.friends__message-accepted {
-  background-color: $lightgreen;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
-  width: 100%;
-}
-
+.friends__message-accepted,
 .friends__message-rejected {
-  background-color: $lightgreen;
-  color: $black;
-  font-weight: bold;
-  padding: 0 8px;
+  background-color: var(--color-success, #E8F5E9);
+  color: var(--color-success, #388E3C);
+  font-weight: 500;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
   width: 100%;
+  margin-bottom: var(--spacing-3);
 }
 
 .friends__list {
-  @include flex(column);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
 }
 
+// =============================================================================
+// Friend Row (Card)
+// =============================================================================
+
 .friend-row {
-  @include section-background;
-  @include flex(column);
-  @include border-radius;
-  @include padding(8px, 'all');
-  box-shadow: 0px 2px $blue;
-  margin-bottom: 16px;
-  width: 95%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-4);
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
 }
 
 .friend-row__photo {
-  @include border(all, $blue, 1px);
-  @include margin(4px, right);
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-primary-100);
+  object-fit: cover;
+  margin-right: var(--spacing-3);
 }
 
 .friend-row__description {
-  @include flex(row, flex-start, center);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .friend-row__info {
-  @include flex(column, flex-start, flex-start);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
 }
 
 .friend-row__name {
-  @include margin(4px, right);
-  font-weight: bold;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: var(--text-color);
 }
 
 .friend-row__email {
-  color: $darkgray;
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }

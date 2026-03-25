@@ -1,43 +1,81 @@
-@use '../../sass/main' as *;
+// =============================================================================
+// Apps Component Styles
+// Modern app links section
+// =============================================================================
+
+.apps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
 
 .apps__title {
-  @include section-title();
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: var(--spacing-2) var(--spacing-3);
+  margin-bottom: var(--spacing-1);
 }
 
 .apps__item {
-  @include section-button;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--background-secondary);
+  }
+
+  a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--color-primary-500);
+    }
+  }
 }
 
 .apps__language {
-  color: $black;
+  color: var(--text-secondary);
   cursor: pointer;
-  margin-right: 24px;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    color: var(--text-color);
+    background-color: var(--background-secondary);
+  }
 }
 
 .apps__language-open {
-  border-bottom: 2px solid black;
-  color: $black;
-  cursor: pointer;
-  font-weight: bold;
-  margin-right: 24px;
-}
-
-.apps__language:hover,
-.apps__language:focus {
-  color: $black;
-  font-weight: bold;
-  border-bottom: 2px solid black;
+  color: var(--text-color);
+  font-weight: 600;
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-1) var(--spacing-2);
 }
 
 .apps__option {
   cursor: pointer;
-  padding: 8px;
-  font-size: 14px;
-  border-bottom: 1px solid gray;  
-}
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
 
-.apps__option:hover {
-  color: $black;
-  font-weight: bold;
-  border-bottom: 2px solid black;
+  &:hover {
+    background-color: var(--background-secondary);
+    color: var(--color-primary-500);
+  }
 }

@@ -1,71 +1,135 @@
+// =============================================================================
+// Chat Component Styles
+// Modern chat interface
+// =============================================================================
+
 @use '../../sass/main' as *;
 
 .chat {
-  display: block;
+  display: flex;
+  flex-direction: column;
   max-height: 500px;
   width: 100%;
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .chat__title {
-  @include section-title();
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--background-secondary);
 }
 
 .chat__messages {
-  @include flex(column);
-  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  overflow-y: auto;
   height: 200px;
+  background-color: var(--background-secondary);
 }
 
 .chat__message-row-right {
-  @include flex(row, flex-end);
+  display: flex;
+  justify-content: flex-end;
   width: 100%;
 }
 
 .chat__message-row-left {
-  @include flex(row);
+  display: flex;
+  justify-content: flex-start;
   width: 100%;
 }
 
 .chat__message-stuffie {
-  @include chat-bubble(flex-start, $darkgray);
-  font-weight: bold;
+  max-width: 80%;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-primary-500);
+  color: white;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
+  font-weight: 500;
 }
 
 .chat__message-user {
-  @include chat-bubble(flex-end, $lightblue);
+  max-width: 80%;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-primary-100);
+  color: var(--text-color);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg);
 }
 
 .chat__message-other {
-  @include chat-bubble();
+  max-width: 80%;
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
 }
 
 .chat__message-text {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
 }
 
 .chat__message-name {
-  font-size: 8px;
+  font-size: 10px;
   font-style: italic;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-1);
 }
 
 .chat__form {
-  @include margin(4px, left);
-  @include margin(8px, top);
-  @include border(top);
-  @include padding(4px, top);
-  position: sticky;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--background-color);
 }
 
 .chat__form-bottom {
-  @include flex(row, space-between);
-  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  align-items: center;
+}
+
+.chat__input {
+  flex: 1;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  transition: border-color var(--transition-fast);
+
+  &:focus {
+    border-color: var(--color-primary-500);
+    outline: none;
+  }
+}
+
+.chat__send-button {
+  padding: var(--spacing-2);
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-500);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-primary-600);
+  }
 }
 
 .chat__status {
-  font-size: 8px;
-  height: 30px;
-  width: 70%;
+  font-size: 10px;
+  color: var(--text-tertiary);
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

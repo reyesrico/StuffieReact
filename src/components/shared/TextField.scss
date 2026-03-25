@@ -1,12 +1,140 @@
-@use '../../sass/main' as *;
+// =============================================================================
+// Updated TextField Styles
+// Modern input component with sizes and states
+// =============================================================================
 
-input {
-  @include padding(4px, all);
-  font-size: 16px;
+.stuffie-textfield {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
   width: 100%;
 
+  // =========================================================================
+  // LABEL
+  // =========================================================================
+
+  &__label {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-1);
+  }
+
+  // =========================================================================
+  // WRAPPER
+  // =========================================================================
+
+  &__wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  // =========================================================================
+  // INPUT
+  // =========================================================================
+
+  &__input {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    &:hover:not(:disabled) {
+      border-color: var(--border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+
+    &:disabled {
+      background-color: var(--background-tertiary);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  // =========================================================================
+  // HELPER TEXT
+  // =========================================================================
+
+  &__helper {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-top: var(--spacing-1);
+
+    &--error {
+      color: var(--color-error);
+    }
+  }
+
+  // =========================================================================
+  // SIZES
+  // =========================================================================
+
+  &--sm &__input {
+    padding: var(--spacing-1) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    min-height: 32px;
+  }
+
+  &--md &__input {
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: var(--font-size-base);
+    min-height: 40px;
+  }
+
+  &--lg &__input {
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-lg);
+    min-height: 48px;
+  }
+
+  // =========================================================================
+  // STATES
+  // =========================================================================
+
+  &--error &__input {
+    border-color: var(--color-error);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.15);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+}
+
+// Legacy global input styles for backward compatibility
+input:not([class]) {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  width: 100%;
+  box-sizing: border-box;
+
   &:focus {
-    border: solid 2px $blue;
-    outline: none;  
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    outline: none;
   }
 }
