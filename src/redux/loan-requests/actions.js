@@ -38,8 +38,9 @@ export const fetchLoanRequests = userId => dispatch => {
 }
 
 export const fetchLoanRequestsHook = (userId, dispatch) => {
-  getLoanRequests(userId).then(res => {
+  return getLoanRequests(userId).then(res => {
     dispatch(fetchLoans(res.data, userId));
+    return res.data;
   });
 }
 

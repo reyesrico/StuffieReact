@@ -35,8 +35,8 @@ const Spotify = () => {
   const spotifyConf = useSelector((state: State) => state.spotifyConf);
 
   // Use backend config or fall back to environment variables
-  const clientId = spotifyConf?.key || process.env.REACT_APP_SPOTIFY_CLIENT_ID;
-  const clientSecret = spotifyConf?.secret || process.env.REACT_APP_SPOTIFY_CLIENT_SECRET;
+  const clientId = spotifyConf?.key || import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const clientSecret = spotifyConf?.secret || import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 
   const [token, setToken] = useState<string | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -51,7 +51,7 @@ const Spotify = () => {
   useEffect(() => {
     if (!clientId || !clientSecret) {
       setIsLoading(false);
-      setError('Spotify credentials not configured. Add REACT_APP_SPOTIFY_CLIENT_ID and REACT_APP_SPOTIFY_CLIENT_SECRET to your .env file.');
+      setError('Spotify credentials not configured. Add VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET to your .env file.');
       return;
     }
 

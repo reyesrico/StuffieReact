@@ -53,9 +53,9 @@ const Products = () => {
 
 
   useEffect(() => {
-    const loanIds = loanRequests.map((req: any) => req.id_stuff);
-    const exchangeIds = exchangeRequests.map((req: any) => req.id_stuff);
-    const exchangeFriendIds = exchangeRequests.map((req: any) => req.id_friend_stuff);
+    const loanIds = Array.isArray(loanRequests) ? loanRequests.map((req: any) => req.id_stuff) : [];
+    const exchangeIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_stuff) : [];
+    const exchangeFriendIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_friend_stuff) : [];
 
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
 
@@ -76,15 +76,16 @@ const Products = () => {
   }
 
   const renderRequests = () => {
+    const requests = Array.isArray(exchangeRequests) ? exchangeRequests : [];
     return (
       <div className="products__requests">
         <hr />
         <h3 className="products__requests-title">
           <div>Exchange Requests</div>
-          <div className="products__warning">{exchangeRequests.length}</div>
+          <div className="products__warning">{requests.length}</div>
         </h3>
         <ul>
-          {exchangeRequests.map((request: ExchangeRequest, index: number) => {
+          {requests.map((request: ExchangeRequest, index: number) => {
             // const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
@@ -130,15 +131,16 @@ const Products = () => {
   }
 
   const renderLoans = () => {
+    const loans = Array.isArray(loanRequests) ? loanRequests : [];
     return (
       <div className="products__requests">
         <hr />
         <h3 className="products__requests-title">
           <div>Loan Requests</div>
-          <div className="products__warning">{loanRequests.length}</div>
+          <div className="products__warning">{loans.length}</div>
         </h3>
         <ul>
-          {loanRequests.map((request: LoanRequest, index: number) => {
+          {loans.map((request: LoanRequest, index: number) => {
             // const owner = request.id_stuffier === user.id ? user : friends.filter((f: User) => f.id === request.id_stuffier)[0];
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
@@ -193,8 +195,8 @@ const Products = () => {
           />
         </div>
       </div>
-      {exchangeRequests.length > 0 && renderRequests()}
-      {loanRequests.length > 0 && renderLoans()}
+      {Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && renderRequests()}
+      {Array.isArray(loanRequests) && loanRequests.length > 0 && renderLoans()}
       <hr />
       {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
       {!isProductsEmpty(products) &&

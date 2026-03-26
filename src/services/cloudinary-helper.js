@@ -1,6 +1,6 @@
 import config from './config';
 import axios from 'axios';
-import { sha1 } from 'crypto-hash';
+import CryptoJS from 'crypto-js';
 
 export const defaultImageUrl =
   `${config.cloudinary.urlSingle}/stuffiers/default`;
@@ -15,7 +15,7 @@ export const existImage = (publicId, folder = '') => {
 // Signature to Delete
 export const signature = (folder, userId, timestamp) => {  
   const data = `'invalidate=true&public_id=${userId}&timestamp=${timestamp}'`;
-  return sha1(data);
+  return CryptoJS.SHA1(data).toString(CryptoJS.enc.Hex);
 }
 
 export const apiKey = config.cloudinary.apiKey || '';

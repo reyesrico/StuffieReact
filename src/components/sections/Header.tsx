@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Icon } from '@fluentui/react';
 
 import Apps from '../sections/Apps';
 import Chat from './Chat';
@@ -22,8 +23,8 @@ const Header = () => {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path === '/StuffieReact') {
-      return location.pathname === '/StuffieReact' || location.pathname === '/';
+    if (path === '/') {
+      return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
   };
@@ -98,8 +99,8 @@ const Header = () => {
 
   const logoSrc = React.useMemo(() => {
     return theme === "light" 
-      ? "/StuffieReact/images/stuffie-logo-light.svg" 
-      : "/StuffieReact/images/stuffie-logo-dark.svg";
+      ? `${import.meta.env.BASE_URL}images/stuffie-logo-light.svg` 
+      : `${import.meta.env.BASE_URL}images/stuffie-logo-dark.svg`;
   }, [theme])
 
   return (
@@ -112,8 +113,8 @@ const Header = () => {
           <div className='stuffie-header__user'>Stuffie</div>
         </div>
         <div className='stuffie-header__sections'>
-          <div className={`stuffie-header__section-item ${isActive('/StuffieReact') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/StuffieReact'>{t('Feed')}</Link>
+          <div className={`stuffie-header__section-item ${isActive('/') ? 'stuffie-header__section-item--active' : ''}`}>
+            <Link to='/'>{t('Feed')}</Link>
           </div>
           <div className={`stuffie-header__section-item ${isActive('/friends') ? 'stuffie-header__section-item--active' : ''}`}>
             <Link to='/friends'>{t('Friends')}</Link>
@@ -160,7 +161,7 @@ const Header = () => {
             </div>
           </div>
           <button className="icon" onClick={event => event && toggleMenu()}>
-            <i className="fa fa-bars" />
+            <Icon iconName="GlobalNavButton" />
           </button>
         </div>
 
@@ -173,7 +174,7 @@ const Header = () => {
             <div className="stuffie-header__apps-apps"><Apps /></div>
           </div>
           <button className="icon" onClick={event => event && toggleApps()}>
-            <i className="fa fa-bars" />
+            <Icon iconName="GlobalNavButton" />
           </button>
         </div>
       </div>

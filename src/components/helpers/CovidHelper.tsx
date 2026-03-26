@@ -17,7 +17,7 @@ export const createMap = (country: CountryDataRow[]): any => {
     const City = row.City === '' ? 'Undefined' : row.City;
     const newRow = { ...row, Province, City };
 
-    let pKeys = Object.keys(provinces);
+    const pKeys = Object.keys(provinces);
 
     if (pKeys.includes(newRow.Province)) {
       // @ts-ignore
@@ -31,7 +31,7 @@ export const createMap = (country: CountryDataRow[]): any => {
 }
 
 export const getUniqueCities = (map: any, province: any) => {
-  let provinceData: any = map[province.label];
+  const provinceData: any = map[province.label];
 
   return provinceData.map((row: CountryDataRow) => row.City)
   .filter((value: any, index: number, self: any) => self.indexOf(value) === index)
@@ -42,7 +42,7 @@ export const getUniqueCities = (map: any, province: any) => {
 }
 
 export const getCityData = (map: any, province: any, city: any) => {
-  let provinceData: any = map[province.label];
+  const provinceData: any = map[province.label];
 
   return provinceData.filter((row: CountryDataRow) => row.City === city.label);
 }
@@ -52,18 +52,18 @@ export const manageCountryData = (country: CountryDataRow[]) => {
 
   let row: CountryDataRow = country[0];
 
-  let confirmedInc: number[] = [row.Confirmed];
-  let dates: string[] = [moment(row.Date).format("MMM Do")];
+  const confirmedInc: number[] = [row.Confirmed];
+  const dates: string[] = [moment(row.Date).format("MMM Do")];
 
   for(let i = 1; i < country.length; i++) {
     row = country[i];
-    let lastRow: CountryDataRow = country[i-1];
-    let increment = row.Confirmed - lastRow.Confirmed;
+    const lastRow: CountryDataRow = country[i-1];
+    const increment = row.Confirmed - lastRow.Confirmed;
     confirmedInc[i] = increment;
     dates.push(moment(row.Date).format("MMM Do"));
   }
 
-  let countryData = country.map((row: CountryDataRow, index: number) => {
+  const countryData = country.map((row: CountryDataRow, index: number) => {
     return { ...row, Confirmed: confirmedInc[index], Date: dates[index] }
   });
 

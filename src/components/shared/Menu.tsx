@@ -5,7 +5,7 @@ import './Menu.scss';
 
 const Menu = (props: MenuProps) => {
   const { label, children } = props;
-  let [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
 
   // const handleClickOutside = () => {

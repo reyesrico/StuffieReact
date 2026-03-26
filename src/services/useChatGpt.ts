@@ -3,7 +3,7 @@ import React from "react";
 import OpenAI from "openai";
 
 export const useChatGpt = () => {
-  const openai = new OpenAI({ apiKey: process.env.REACT_APP_OPENAI_API_KEY || '', dangerouslyAllowBrowser: true });
+  const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY || '', dangerouslyAllowBrowser: true });
   const [messages, setMessages] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 

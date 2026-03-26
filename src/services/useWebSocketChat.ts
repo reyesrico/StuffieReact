@@ -8,8 +8,8 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
   const socket: any = useRef(null);
 	const url = dev ? 'ws://localhost:8080/' : 'wss://stuffie-server.herokuapp.com';
 
-  let [messages, setMessages] = useState<any>([]);
-  let [status, setStatus] = useState<Status>("Wait");
+  const [messages, setMessages] = useState<any>([]);
+  const [status, setStatus] = useState<Status>("Wait");
 
   useEffect(() => {
     socket.current = new WebSocket(url);
@@ -24,7 +24,7 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
 
     socket.current.onerror = (e: any) => {
       // Error logged for debugging WebSocket issues
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         console.error(`WebSocket Error: ${e.message}`);
       }
 			setStatus("Error");
@@ -49,7 +49,7 @@ export const useWebSocketChat = ({ dev } : { dev: boolean }) => {
 
   const sendMessage = (user: User, messageText: string) => {
     if (socket.current.readyState === WebSocket.OPEN) {
-      let message = { id: user.id, user: `${user.first_name} ${user.last_name}`, text: messageText };
+      const message = { id: user.id, user: `${user.first_name} ${user.last_name}`, text: messageText };
       socket.current.send(JSON.stringify(message) as string);
 			setStatus("Sending");
     } else {

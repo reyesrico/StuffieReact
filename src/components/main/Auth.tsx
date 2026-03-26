@@ -82,8 +82,8 @@ const Auth = () => {
   }
 
   const logoSrc = theme === "light" 
-    ? "/StuffieReact/images/stuffie-logo-light.svg" 
-    : "/StuffieReact/images/stuffie-logo-dark.svg";
+    ? `${import.meta.env.BASE_URL}images/stuffie-logo-light.svg` 
+    : `${import.meta.env.BASE_URL}images/stuffie-logo-dark.svg`;
 
   if (isEmpty(user) || request) {
     return (

@@ -14,8 +14,8 @@ const Menu = () => {
   const { t } = useTranslation();
 
   const renderCategories = () => {
-    if (!categories) return;
-    if (!products) return;
+    if (!categories || !Array.isArray(categories)) return null;
+    if (!products) return null;
 
     return categories
       .filter((category: Category) => products[category.id] && products[category.id].length)

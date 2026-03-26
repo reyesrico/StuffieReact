@@ -11,7 +11,6 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { UserProvider } from './context/UserContext';
 
 import './App.scss';
-import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
 
 // https://developer.microsoft.com/en-us/fluentui#/styles/web/icons
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
@@ -25,10 +24,12 @@ initializeIcons();
 const AppContent = () => {
 	const { theme } = useTheme();
 	const fluentTheme = theme === 'dark' ? webDarkTheme : webLightTheme;
+	// Use basename only for production (GitHub Pages)
+	const basename = import.meta.env.MODE === 'production' ? '/StuffieReact' : '/';
 
 	return (
 		<FluentProvider theme={fluentTheme}>
-			<BrowserRouter>
+			<BrowserRouter basename={basename}>
 				<TopRoutes />
 			</BrowserRouter>
 		</FluentProvider>

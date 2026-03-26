@@ -35,12 +35,56 @@ Stuffie App: [https://reyesrico.github.io/StuffieReact/](https://reyesrico.githu
 ## Want to help?
 Clone the repo and set up your environment:
 
-### 🔧 Setup Instructions
-1. Clone the repository
-2. Copy `.env.example` to `.env`
-3. Fill in your API keys in `.env` (see [SECURITY_SETUP.md](./SECURITY_SETUP.md) for details)
-4. Run `npm install`
-5. Run `npm start`
+### 🔧 Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Node.js** | 20.12.1+ | Runtime |
+| **Vite** | 6.4.1 | Build tool & dev server |
+| **React** | 18.3.1 | UI framework |
+| **TypeScript** | 5.9.3 | Type safety |
+| **Redux** | 5.0.1 | State management |
+| **Fluent UI** | 8.x/9.x | UI components |
+| **Vitest** | 2.1.0 | Testing framework |
+
+### 🚀 Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/reyesrico/StuffieReact.git
+   cd StuffieReact
+   ```
+
+2. **Use correct Node version**
+   ```bash
+   nvm use    # Uses .nvmrc (Node 20.12.1)
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+4. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+5. **Start development server**
+   ```bash
+   npm run dev    # Starts at http://localhost:3000
+   ```
+
+### 📝 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server (fast HMR) |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run deploy` | Deploy to GitHub Pages |
+| `npm test` | Run tests with Vitest |
 
 **Required API Accounts:**
 - Cloudinary (for image uploads)

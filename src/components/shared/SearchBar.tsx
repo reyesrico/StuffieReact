@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { Icon } from '@fluentui/react';
 
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -125,7 +126,7 @@ const SearchBar = (props: any) => {
           containerStyle={{ width }}
         />
         <div className="search-bar__button">
-          <i className="fas fa-search" />
+          <Icon iconName="Search" />
         </div>
       </div>
       <div className="search-bar__content-container">

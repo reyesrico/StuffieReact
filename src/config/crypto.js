@@ -1,15 +1,12 @@
 import CryptoJS from 'crypto-js';
-import cryptoLib from 'crypto';
 
 const crypto = {
   encrypt: clear => CryptoJS.SHA256(clear).toString(CryptoJS.enc.Hex),
-  digest: clear => cryptoLib.createHash('sha256').update(clear).digest('hex'),
+  digest: clear => CryptoJS.SHA256(clear).toString(CryptoJS.enc.Hex),
   pbkdf2: (clear, salt) => {
-    return new Promise((resolve, reject) => {
-      cryptoLib.pbkdf2(clear, salt, 1000, 256, 'sha256',
-        (err, derivedKey) => err ? reject(err) : resolve(derivedKey.toString('hex'))
-      );
-    });
+    return Promise.resolve(
+      CryptoJS.PBKDF2(clear, salt, { keySize: 256 / 32, iterations: 1000 }).toString(CryptoJS.enc.Hex)
+    );
   }
 };
 
