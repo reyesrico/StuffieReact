@@ -20,6 +20,22 @@ export default defineConfig(function (_a) {
         build: {
             outDir: 'dist',
             sourcemap: true,
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        // Core React libraries
+                        'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                        // UI framework
+                        'vendor-fluent': ['@fluentui/react-components'],
+                        // Data fetching
+                        'vendor-query': ['@tanstack/react-query', '@tanstack/react-query-persist-client'],
+                        // Charting
+                        'vendor-charts': ['recharts'],
+                        // Utilities
+                        'vendor-utils': ['axios', 'lodash', 'moment'],
+                    },
+                },
+            },
         },
         server: {
             port: 3000,

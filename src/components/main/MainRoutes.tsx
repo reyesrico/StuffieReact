@@ -1,28 +1,33 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Loading from '../shared/Loading';
 
-import AddCategory from '../content/AddCategory';
-import AddProduct from '../content/AddProduct';
-import Admin from '../admin/Admin';
-import Buy from '../apps/Buy';
-import CategoryPage from '../content/CategoryPage';
+// Eagerly loaded (home page)
 import Content from '../content/Content';
-import Charts from '../apps/Charts';
-import Exchange from '../apps/Exchange';
-import Friends from '../content/Friends';
-import Loan from '../apps/Loan';
-import Map from '../apps/Map';
-import Products from '../content/Products';
-import Product from '../content/Product';
-import Spotify from '../apps/Spotify';
-import Stuffier from '../content/Stuffier';
-import SubcategoryPage from '../content/SubcategoryPage';
-import Support from '../apps/Support';
-import Tickets from '../apps/Tickets';
-import Cards from '../apps/Cards';
+
+// Lazy loaded routes - splits into separate chunks
+const AddCategory = lazy(() => import('../content/AddCategory'));
+const AddProduct = lazy(() => import('../content/AddProduct'));
+const Admin = lazy(() => import('../admin/Admin'));
+const Buy = lazy(() => import('../apps/Buy'));
+const CategoryPage = lazy(() => import('../content/CategoryPage'));
+const Charts = lazy(() => import('../apps/Charts'));
+const Exchange = lazy(() => import('../apps/Exchange'));
+const Friends = lazy(() => import('../content/Friends'));
+const Loan = lazy(() => import('../apps/Loan'));
+const Map = lazy(() => import('../apps/Map'));
+const Products = lazy(() => import('../content/Products'));
+const Product = lazy(() => import('../content/Product'));
+const Spotify = lazy(() => import('../apps/Spotify'));
+const Stuffier = lazy(() => import('../content/Stuffier'));
+const SubcategoryPage = lazy(() => import('../content/SubcategoryPage'));
+const Support = lazy(() => import('../apps/Support'));
+const Tickets = lazy(() => import('../apps/Tickets'));
+const Cards = lazy(() => import('../apps/Cards'));
 
 const MainRoutes = () => {
   return (
+    <Suspense fallback={<Loading />}>
     <Routes>
       <Route path="/" element={<Content />} />
       <Route path="StuffieReact" element={<Content />} />
@@ -46,6 +51,7 @@ const MainRoutes = () => {
       <Route path="tickets" element={<Tickets />} />
       <Route path="cards" element={<Cards />} />
     </Routes>
+    </Suspense>
   );
 }
 
