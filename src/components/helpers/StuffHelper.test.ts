@@ -92,11 +92,11 @@ describe('StuffHelper', () => {
   describe('getProductFromProducts', () => {
     const productsMap = {
       1: [
-        { id: 100, name: 'Laptop', category: 1 },
-        { id: 101, name: 'Phone', category: 1 },
+        { id: 100, name: 'Laptop', category: 1, subcategory: 1, fileName: 'laptop.png' },
+        { id: 101, name: 'Phone', category: 1, subcategory: 1, fileName: 'phone.png' },
       ],
       2: [
-        { id: 200, name: 'Novel', category: 2 },
+        { id: 200, name: 'Novel', category: 2, subcategory: 2, fileName: 'novel.png' },
       ],
       3: [],
     };
