@@ -104,13 +104,13 @@ describe('StuffHelper', () => {
     it('should find product by id', () => {
       const product = getProductFromProducts(100, productsMap);
       
-      expect(product).toEqual({ id: 100, name: 'Laptop', category: 1 });
+      expect(product).toEqual({ id: 100, name: 'Laptop', category: 1, subcategory: 1, fileName: 'laptop.png' });
     });
 
     it('should find product in different category', () => {
       const product = getProductFromProducts(200, productsMap);
       
-      expect(product).toEqual({ id: 200, name: 'Novel', category: 2 });
+      expect(product).toEqual({ id: 200, name: 'Novel', category: 2, subcategory: 2, fileName: 'novel.png' });
     });
 
     it('should return undefined for non-existent product', () => {
