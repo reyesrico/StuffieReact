@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Button from '../shared/Button';
 import Product from '../content/Product';
 import WarningMessage from '../shared/WarningMessage';
-import { getStuffiers } from '../../services/stuffier';
+import { getUsersByIds } from '../../api/users.api';
 import { WarningMessageType } from '../shared/types';
 
 import './Buy.scss';
@@ -27,8 +27,8 @@ const Buy = () => {
     }
 
     if (friendId) {
-      getStuffiers([{ id: friendId }])
-        .then((res: any) => setFriend(res.data[0]));
+      getUsersByIds([{ id: friendId }])
+        .then((users) => setFriend(users[0] as any));
     }
   }, [product, friendId, navigate]);
 

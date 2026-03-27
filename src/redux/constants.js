@@ -1,1 +1,0 @@
-export const REVOKE_USER = 'STUFFIE::REVOKE_USER';

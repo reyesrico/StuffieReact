@@ -1,48 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import FeedPost from '../types/FeedPost';
 import FeedRow from './FeedRow';
 import Loading from '../shared/Loading';
-import State from '../../redux/State';
-import User from '../types/User';
-import { fetchFriendsProductsHook } from '../../redux/friends/actions';
-import { dispatchFeedFetched, fetchFeedHook } from '../../redux/feed/actions';
+import { useFeed, useFriends } from '../../hooks/queries';
 import './Content.scss';
-
-const getFeed = (friends: any, dispatch: any, sessionStorage: Storage, setIsLoading: Function) => {
-  if (sessionStorage.getItem('feed')) {
-    const feed = JSON.parse(sessionStorage.getItem('feed') || '');
-    dispatchFeedFetched(feed, dispatch);
-  } else {
-    fetchFriendsProductsHook(friends, dispatch)
-      .then((fullFriends: User[]) => fetchFeedHook(fullFriends, sessionStorage, dispatch))
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }
-}
 
 const Content = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const feed = useSelector((state: State) => state.feed);
-  const [isLoading, setIsLoading] = useState(true);
-  const friends = useSelector((state: State) => state.friends);
-  const stableGetFeed = useCallback(getFeed, []);
-
-  useEffect(() => {
-    const sessionStorage = window.sessionStorage;
-
-    if (feed && feed.length) {
-      setIsLoading(false);
-    } else {
-      if (friends && friends.length) {
-        stableGetFeed(friends, dispatch, sessionStorage, setIsLoading);
-      }
-    }
-  }, [stableGetFeed, feed, friends, dispatch]);
+  const { data: feed = [], isLoading } = useFeed();
+  const { data: friends = [] } = useFriends();
 
   if (isLoading) return (
     <div className="content__loading">

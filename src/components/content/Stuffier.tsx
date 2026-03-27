@@ -1,46 +1,40 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { AnyAction } from 'redux';
 
 import {
   apiKey,
   existImage,
   signature,
   userImageUrl
-} from '../../services/cloudinary-helper';
+} from '../../lib/cloudinary';
 import Button from '../shared/Button';
-import State from '../../redux/State';
 import TextField from '../shared/TextField';
-
-// import { updateUser, userUpdated } from '../../redux/user/actions';
-// import { updateStuffier } from '../../services/stuffier';
+import UserContext from '../../context/UserContext';
 
 import './Stuffier.scss';
-import { addUserPicture } from '../../redux/user/actions';
 
 const Stuffier = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<ThunkDispatch<State, unknown, AnyAction>>();
+  const { user, setUser } = useContext(UserContext);
 
-  const user = useSelector((state: State) => state.user);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_firstName, setFirstName] = React.useState(user.first_name);
+  const [_firstName, setFirstName] = useState(user?.first_name || '');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_lastName, setLastName] = React.useState(user.last_name);
-  const [file, setFile] = React.useState<any>();
-  const [picture, setPicture] = React.useState<string>();
-  const [password, setPassword] = React.useState();
+  const [_lastName, setLastName] = useState(user?.last_name || '');
+  const [file, setFile] = useState<any>();
+  const [picture, setPicture] = useState<string>();
+  const [password, setPassword] = useState<string>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_password2, setPassword2] = React.useState();
-  const [error, setError] = React.useState<string>("");
+  const [_password2, setPassword2] = useState<string>();
+  const [error, setError] = useState<string>("");
 
-  React.useEffect(() => {
-    existImage(user.id, "stuffiers/")
-      .then(() => setPicture(userImageUrl(user.id)));
-  }, [user.id]);
+  useEffect(() => {
+    if (user?.id) {
+      existImage(user.id, "stuffiers/")
+        .then(() => setPicture(userImageUrl(user.id)));
+    }
+  }, [user?.id]);
 
 
   // CAN'T UPDATE / REMOVE IMAGE FROM CLOUDINARY
@@ -84,7 +78,10 @@ const Stuffier = () => {
             const data = res.data;
             sessionStorage.setItem("signature", data.signature);
             setPicture(res.url);
-            dispatch(addUserPicture(user, picture));
+            // Update user context with new picture
+            if (user && setUser) {
+              setUser({ ...user, picture: res.url });
+            }
           })
           .catch((err) => setError(err));
       });

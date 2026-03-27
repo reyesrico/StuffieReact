@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useCallback, useEffect } from 'react';
-import { useThemeDetector } from '../services/useThemeDetector';
+import { useThemeDetector } from '../hooks/useThemeDetector';
 
 export type ThemeType = 'light' | 'dark';
 export type ThemeSetting = ThemeType | 'auto';

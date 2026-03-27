@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { get, map, uniq } from 'lodash';
 
@@ -8,17 +7,15 @@ import Category from '../types/Category';
 import ExchangeRequest from '../types/ExchangeRequest';
 import LoanRequest from '../types/LoanRequest';
 import Product from './Product';
-import State from '../../redux/State';
 import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { downloadExcel } from '../helpers/DownloadHelper';
-import { deleteRequestHook } from '../../redux/exchange-requests/actions';
-import { deleteRequestLoanHook } from '../../redux/loan-requests/actions';
-import { getProductsFromIds } from '../../services/stuff';
+import { getProductsByIds } from '../../api/products.api';
 import { isProductsEmpty, mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
-import { useProductsWithCache } from '../../hooks/useDataWithCache';
+import UserContext from '../../context/UserContext';
+import { useCategories, useProducts, useFriends, useExchangeRequests, useLoanRequests, useDeleteExchange, useDeleteLoan } from '../../hooks/queries';
 
 // import Swiper core and required modules
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
@@ -36,20 +33,26 @@ import './Products.scss';
 
 const Products = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const user = useSelector((state: State) => state.user);
-  const categories = useSelector((state: State) => state.categories);
-  const friends = useSelector((state: State) => state.friends);
-  const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
-  const loanRequests = useSelector((state: State) => state.loanRequests);
-  const products = useSelector((state: State) => state.products);
+  const { user } = useContext(UserContext);
+  
+  // React Query hooks
+  const { data: categories = [] } = useCategories();
+  const { data: friends = [] } = useFriends();
+  const { data: exchangeRequests = [] } = useExchangeRequests();
+  const { data: loanRequests = [] } = useLoanRequests();
+  const { data: products = {}, refetch: refreshProductsQuery, isFetching: isRefreshing } = useProducts();
+  
+  // Mutations
+  const deleteExchangeMutation = useDeleteExchange();
+  const deleteLoanMutation = useDeleteLoan();
+  
   const [requestedProducts, setRequestProducts] = useState([]);
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
 
-  // Use caching hook for products with manual refresh capability
-  const { isRefreshing, refresh: refreshProducts } = useProductsWithCache();
+  const refreshProducts = () => {
+    refreshProductsQuery();
+  };
 
 
   useEffect(() => {
@@ -59,19 +62,37 @@ const Products = () => {
 
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
 
-    getProductsFromIds(mapIds(ids))
-      .then(res => setRequestProducts(res.data));
+    getProductsByIds(mapIds(ids))
+      .then(prods => setRequestProducts(prods as any));
   }, [exchangeRequests, loanRequests]);
 
   const generateReport = () => {
     downloadExcel(products, `${user?.first_name || 'user'}_products`);
   }
 
-  const executeDeleteExchange = (_id: number, isLoan = false) => {
+  const executeDeleteExchange = (_id: string, isLoan = false) => {
     if (isLoan) {
-      deleteRequestLoanHook(_id, dispatch, setMessage, setType);
+      deleteLoanMutation.mutate(_id, {
+        onSuccess: () => {
+          setMessage('Loan request deleted successfully');
+          setType(WarningMessageType.SUCCESSFUL);
+        },
+        onError: () => {
+          setMessage('Failed to delete loan request');
+          setType(WarningMessageType.ERROR);
+        }
+      });
     } else {
-      deleteRequestHook(_id, dispatch, setMessage, setType);
+      deleteExchangeMutation.mutate(_id, {
+        onSuccess: () => {
+          setMessage('Exchange request deleted successfully');
+          setType(WarningMessageType.SUCCESSFUL);
+        },
+        onError: () => {
+          setMessage('Failed to delete exchange request');
+          setType(WarningMessageType.ERROR);
+        }
+      });
     }
   }
 

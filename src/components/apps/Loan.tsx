@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
-import State from '../../redux/State';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
-import { getStuffiers } from '../../services/stuffier';
-import { loanRequestHook } from '../../redux/loan-requests/actions';
+import { getUsersByIds } from '../../api/users.api';
+import UserContext from '../../context/UserContext';
+import { useCreateLoan } from '../../hooks/queries';
 
 import './Loan.scss';
 
 const Loan = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch: any = useDispatch();
+  const { user } = useContext(UserContext);
+  const createLoanMutation = useCreateLoan();
 
   const [friend, setFriend] = useState({ first_name: '' });
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
 
-  const user = useSelector((state: State) => state.user);
   const product = (location.state as any)?.["product"];
   const friendId = (location.state as any)?.["friend"];
 
@@ -32,14 +31,31 @@ const Loan = () => {
     }
 
     if (friendId) {
-      getStuffiers([{ id: friendId }])
-        .then((res: any) => setFriend(res.data[0]));
+      getUsersByIds([{ id: friendId }])
+        .then((users) => setFriend(users[0] as any));
     }
   }, [product, friendId, navigate]);
 
   const requestLoan = () => {
     if (!friendId || !product?.id || !user?.id) return;
-    dispatch(loanRequestHook(friendId, product.id, user.id, setMessage, setType));
+    
+    createLoanMutation.mutate(
+      {
+        id_stuffier: friendId,
+        id_stuff: product.id,
+        id_friend: user.id,
+      },
+      {
+        onSuccess: () => {
+          setMessage('Loan request sent successfully!');
+          setType(WarningMessageType.SUCCESSFUL);
+        },
+        onError: () => {
+          setMessage('Failed to send loan request');
+          setType(WarningMessageType.ERROR);
+        },
+      }
+    );
   };
 
   if (!product) {

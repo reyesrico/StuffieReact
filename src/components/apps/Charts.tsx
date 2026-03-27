@@ -4,7 +4,7 @@ import {
   AreaChart, Area, Treemap, PieChart, Pie, ScatterChart, Scatter,
   RadialBarChart, RadialBar
 } from 'recharts';
-import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../../services/charts';
+import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../../config/constants/charts';
 
 const Charts = () => {
   return (

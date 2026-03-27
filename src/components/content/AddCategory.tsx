@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
-import State from '../../redux/State';
 import TextField from '../shared/TextField';
-import { addCategoryHook } from '../../redux/categories/actions';
-import { addSubCategoryHook } from '../../redux/subcategories/actions';
+import { useCategories, useSubcategories, useAddCategory, useAddSubcategory } from '../../hooks/queries';
 
 import { AddCategoryProps } from './types';
 import './AddCategory.scss';
@@ -18,11 +15,13 @@ const TYPE = {
 };
 
 const AddCategory = (props: AddCategoryProps) => {
-  const dispatch = useDispatch();
   const { type } = props;
 
-  const categories = useSelector((state: State) => state.categories);
-  const subcategories = useSelector((state: State) => state.subcategories);
+  // React Query hooks
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+  const addCategoryMutation = useAddCategory();
+  const addSubcategoryMutation = useAddSubcategory();
 
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState('');
@@ -40,27 +39,31 @@ const AddCategory = (props: AddCategoryProps) => {
     if (type === TYPE.CATEGORY) {
       setIsLoading(true);
 
-      addCategoryHook({ name, id: Number(id) }, dispatch)
-        .then((_res: any) => {
-          // const newCategory = { _id: res.data._id, id: res.data.id, name: res.data.name };
-          // setCategories([...categories, newCategory]);
-          setName('');
-          setId('');
-        })
-        .finally(() => setIsLoading(false));
+      addCategoryMutation.mutate(
+        { name, id: Number(id) },
+        {
+          onSuccess: () => {
+            setName('');
+            setId('');
+          },
+          onSettled: () => setIsLoading(false),
+        }
+      );
     }
 
     if (type === TYPE.SUBCATEGORY) {
       setIsLoading(true);
 
-      addSubCategoryHook({ name, id: Number(id) }, dispatch)
-        .then((_res: any) => {
-          // const newSubCategory = { _id: res.data._id, id: res.data.id, name: res.data.name };
-          // setSubcategories([...subcategories, newSubCategory]);
-          setName('');
-          setId('');
-        })
-        .finally(() => setIsLoading(false));
+      addSubcategoryMutation.mutate(
+        { name, id: Number(id) },
+        {
+          onSuccess: () => {
+            setName('');
+            setId('');
+          },
+          onSettled: () => setIsLoading(false),
+        }
+      );
     }
   }
 

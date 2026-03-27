@@ -1,25 +1,32 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
 
 import Apps from '../sections/Apps';
 import Chat from './Chat';
 import SearchBar from '../shared/SearchBar';
-// import Spotify from '../apps/Spotify';
-import State from '../../redux/State';
 import Theme from './Theme';
 import ThemeContext from '../../context/ThemeContext';
 import UserContext from '../../context/UserContext';
-import { logout } from '../../redux/user/actions';
-import { defaultImageUrl, existImage, userImageUrl } from '../../services/cloudinary-helper';
+import { 
+  useUserRequests, 
+  useFriendRequests, 
+  useProducts, 
+  useExchangeRequests, 
+  useLoanRequests,
+  usePendingProducts 
+} from '../../hooks/queries';
+import { clearAllCache } from '../../utils/cache';
+import { defaultImageUrl, existImage, userImageUrl } from '../../lib/cloudinary';
 
 import './Header.scss';
 
 const Header = () => {
   const { theme } = useContext(ThemeContext);
   const { user, logoutUser } = React.useContext(UserContext);
+  const queryClient = useQueryClient();
   const location = useLocation();
 
   const isActive = (path: string) => {
@@ -28,36 +35,51 @@ const Header = () => {
     }
     return location.pathname.startsWith(path);
   };
-  // let state = useSelector((state: State) => state);
-  // let user = state.user;
-  const userRequests = useSelector((state: State) => state.userRequests);
-  const friendsRequests = useSelector((state: State) => state.friendsRequests);
-  const products = useSelector((state: State) => state.products);
-  const exchangeRequests = useSelector((state: State) => state.exchangeRequests);
-  const loanRequests = useSelector((state: State) => state.loanRequests);
-  const pendingProducts = useSelector((state: State) => state.pendingProducts);
-  const dispatch = useDispatch();
+
+  // React Query hooks replace Redux selectors
+  const { data: userRequests = [] } = useUserRequests();
+  const { data: friendsRequests = [] } = useFriendRequests();
+  const { data: products = {} } = useProducts();
+  const { data: exchangeRequests = [] } = useExchangeRequests();
+  const { data: loanRequests = [] } = useLoanRequests();
+  const { data: pendingProducts = [] } = usePendingProducts();
+  
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const [picture, setPicture] = React.useState<string>();
 
   React.useEffect(() => {
-    existImage(user.id, "stuffiers/")
-      .then(_res => {
-        setPicture(userImageUrl(user.id));
-      })
-      .catch(() => setPicture(defaultImageUrl));
-  }, [user.id]);
+    if (user?.id) {
+      existImage(user.id, "stuffiers/")
+        .then(_res => {
+          setPicture(userImageUrl(user.id));
+        })
+        .catch(() => setPicture(defaultImageUrl));
+    }
+  }, [user?.id]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
   const requests = exchangeRequests.length + loanRequests.length;
 
   const handleLogout = (event: any) => {
     event.preventDefault();
+    
+    // Clear React Query cache
+    queryClient.clear();
+    
+    // Clear localStorage cache  
+    clearAllCache('cache_');
+    localStorage.removeItem('stuffie-cache');
+    localStorage.removeItem('picture');
+    localStorage.removeItem('username');
+    sessionStorage.clear();
+    
+    // Update UserContext
     logoutUser();
-    dispatch(logout());
-    navigate('/');
+    
+    // Navigate to login
+    navigate('/login');
   }
 
   /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */

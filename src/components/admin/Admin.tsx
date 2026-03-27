@@ -1,22 +1,20 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../shared/Button';
 import Product from '../types/Product';
-import State from '../../redux/State';
 import User from '../types/User';
 import { Link } from 'react-router-dom';
-import { deleteRequestHook } from '../../redux/user-requests/actions';
+import { useUserRequests, usePendingProducts, useApproveUser } from '../../hooks/queries';
 import './Admin.scss';
 
 const Admin = () => {
-  const dispatch = useDispatch();
-  const userRequests = useSelector((state: State) => state.userRequests);
-  const pendingProducts = useSelector((state: State) => state.pendingProducts);
+  const { data: userRequests = [] } = useUserRequests();
+  const { data: pendingProducts = [] } = usePendingProducts();
+  const approveUserMutation = useApproveUser();
 
   const executeRequest = (user: User, isAccepted = false) => {
     if (isAccepted) {
-      deleteRequestHook(user, dispatch);
+      approveUserMutation.mutate(user);
     }
   }
 

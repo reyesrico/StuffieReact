@@ -1,16 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import Category from '../types/Category';
-import State from '../../redux/State';
+import { useCategories, useProducts } from '../../hooks/queries';
 import { CircleSmallFilled } from "@fluentui/react-icons"; 
 import './Menu.scss';
 
 const Menu = () => {
-  const categories = useSelector((state: State) => state.categories);
-  const products = useSelector((state: State) => state.products);
+  const { data: categories } = useCategories();
+  const { data: products } = useProducts();
   const { t } = useTranslation();
 
   const renderCategories = () => {

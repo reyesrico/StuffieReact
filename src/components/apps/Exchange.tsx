@@ -1,32 +1,32 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
 import Media from '../shared/Media';
 import Product from '../types/Product';
-import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import SearchBar from '../shared/SearchBar';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
-import { requestExchangeHook } from '../../redux/exchange-requests/actions';
 import { getProductsList } from '../helpers/StuffHelper';
-import { getStuffiers } from '../../services/stuffier';
+import { getUsersByIds } from '../../api/users.api';
+import UserContext from '../../context/UserContext';
+import { useCategories, useSubcategories, useProducts, useCreateExchange } from '../../hooks/queries';
 
 import './Exchange.scss';
 
 const Exchange = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch: any = useDispatch();
+  const { user } = useContext(UserContext);
 
-  const categories = useSelector((state: State) => state.categories);
-  const products = useSelector((state: State) => state.products);
-  const subcategories = useSelector((state: State) => state.subcategories);
-  const user = useSelector((state: State) => state.user);
+  // React Query hooks
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+  const { data: products = {} } = useProducts();
+  const createExchangeMutation = useCreateExchange();
   
   const [userProducts, setUserProducts] = useState<any>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product>({});
@@ -50,19 +50,34 @@ const Exchange = () => {
 
     // Fetch friend info
     if (friendId) {
-      getStuffiers([{ id: friendId }])
-        .then((res: any) => setFriend(res.data[0]));
+      getUsersByIds([{ id: friendId }])
+        .then((users) => setFriend(users[0] as any));
     }
   }, [product, friendId, products, navigate]);
 
   const requestExchange = useCallback(() => {
-    if (!friendId || !product?.id || !user?.id) return;
+    if (!friendId || !product?.id || !user?.id || !selectedProduct?.id) return;
     
-    dispatch(
-      requestExchangeHook(friendId, product.id, user.id, get(selectedProduct, 'id'),
-                          setMessage, setType, navigate)
+    createExchangeMutation.mutate(
+      {
+        id_stuffier: friendId,
+        id_stuff: product.id,
+        id_friend: user.id,
+        id_friend_stuff: selectedProduct.id,
+      },
+      {
+        onSuccess: () => {
+          setMessage('Exchange request sent successfully!');
+          setType(WarningMessageType.SUCCESSFUL);
+          navigate('/products');
+        },
+        onError: () => {
+          setMessage('Failed to send exchange request');
+          setType(WarningMessageType.ERROR);
+        },
+      }
     );
-  }, [dispatch, friendId, product?.id, user?.id, selectedProduct, navigate]);
+  }, [createExchangeMutation, friendId, product?.id, user?.id, selectedProduct, navigate]);
 
   const selectProduct = useCallback((product: Product) => {
     setSelectedProduct(product);

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Image, Video, Transformation, CloudinaryContext } from 'cloudinary-react';
 
-import config from '../../services/config';
-import { existImage } from '../../services/cloudinary-helper';
+import config from '../../config/api';
+import { existImage } from '../../lib/cloudinary';
 import './Media.scss';
 
 const Media = (props: any) => {

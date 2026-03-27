@@ -39,13 +39,13 @@ Clone the repo and set up your environment:
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Node.js** | 20.12.1+ | Runtime |
+| **Node.js** | 22.x | Runtime |
 | **Vite** | 6.4.1 | Build tool & dev server |
 | **React** | 18.3.1 | UI framework |
 | **TypeScript** | 5.9.3 | Type safety |
-| **Redux** | 5.0.1 | State management |
+| **React Query** | 5.71.10 | Data fetching & caching |
 | **Fluent UI** | 8.x/9.x | UI components |
-| **Vitest** | 2.1.0 | Testing framework |
+| **Vitest** | 4.1.2 | Testing framework |
 
 ### 🚀 Setup Instructions
 

@@ -11,11 +11,9 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
 
 import Loading from '../shared/Loading';
-import State from '../../redux/State';
-import { getToken, searchTracks } from '../../services/spotify';
+import { getToken, searchTracks } from '../../api/external/spotify';
 
 import './Spotify.scss';
 
@@ -32,11 +30,9 @@ interface Track {
 }
 
 const Spotify = () => {
-  const spotifyConf = useSelector((state: State) => state.spotifyConf);
-
-  // Use backend config or fall back to environment variables
-  const clientId = spotifyConf?.key || import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const clientSecret = spotifyConf?.secret || import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+  // Use environment variables for Spotify credentials
+  const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+  const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 
   const [token, setToken] = useState<string | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);

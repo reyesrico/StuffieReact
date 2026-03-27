@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 
 import Media from '../shared/Media';
-import State from '../../redux/State';
+import { useProducts, useSubcategories } from '../../hooks/queries';
 import Stuff from '../types/Stuff';
 import Subcategory from '../types/Subcategory';
 import { Icon } from '@fluentui/react/lib/Icon';
@@ -13,8 +12,8 @@ import { useTranslation } from 'react-i18next';
 
 const SubcategoryPage = () => {
   const { t } = useTranslation();
-  const products = useSelector((state: State) => state.products);
-  const subcategories = useSelector((state: State) => state.subcategories);
+  const { data: products = {} } = useProducts();
+  const { data: subcategories = [] } = useSubcategories();
   const { id } = useParams();
   const subcategoryId = id ? parseInt(id) : -1;
   const subcategory: Subcategory | undefined = subcategories.find(c => c.id === subcategoryId);

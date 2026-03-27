@@ -1,17 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 import Media from '../shared/Media';
-import State from '../../redux/State';
 import { FeedRowProps } from './types';
+import { useSubcategories } from '../../hooks/queries';
 
 import './FeedRow.scss';
 import Subcategory from '../types/Subcategory';
-import { existImage, userImageUrl } from '../../services/cloudinary-helper';
+import { existImage, userImageUrl } from '../../lib/cloudinary';
 
 const FeedRow = (props: FeedRowProps) => {
-  const subcategories: Subcategory[] = useSelector((state: State) => state.subcategories);
+  const { data: subcategories = [] } = useSubcategories();
   const [picture, setPicture] = React.useState<string>();
   const { feedPost } = props;
 

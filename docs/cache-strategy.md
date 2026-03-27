@@ -1,152 +1,171 @@
-# Cache Strategy Documentation
+# Data Fetching & Cache Strategy
 
 ## Overview
 
-This document describes the client-side caching solution implemented for the Stuffie React application. The caching system provides a robust, performant data layer that minimizes API calls while ensuring users always see the most up-to-date information.
+Stuffie uses **React Query** (@tanstack/react-query) with **localStorage persistence** for a "fetch once, cache forever" strategy. This ensures instant app loads and minimal API calls.
 
 ## Architecture
 
-The caching solution consists of two main components:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     React Components                         │
+│  (useProducts, useFriends, useCategories, etc.)             │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    React Query Layer                         │
+│  src/hooks/queries/*.ts                                      │
+│  - useProducts, useFriends, useCategories                   │
+│  - staleTime: Infinity (never refetch automatically)        │
+│  - gcTime: 7 days (keep in memory)                          │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   localStorage Persister                     │
+│  Key: "stuffie-cache"                                        │
+│  TTL: 7 days (maxAge: 1000 * 60 * 60 * 24 * 7)             │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      API Layer                               │
+│  src/api/*.api.ts                                            │
+│  - Typed CRUD functions                                      │
+│  - Axios client with interceptors                           │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### 1. Cache Utility (`src/utils/cache.ts`)
+## localStorage Keys
 
-A generic localStorage-based caching utility that provides:
+| Key | Purpose | TTL |
+|-----|---------|-----|
+| `stuffie-cache` | React Query persisted cache (all API data) | 7 days |
+| `stuffie-user` | Current user object for instant auto-login | Permanent |
+| `username` | User email (legacy compatibility) | Permanent |
+| `theme` | Dark/light theme preference | Permanent |
 
-- **Key-value storage** with automatic expiration
-- **Type-safe API** using TypeScript generics
-- **Configurable expiration times** per cache entry
-- **Stale cache fallback** for resilience
-- **Cache management** (set, get, clear operations)
-
-#### Cache Durations
-
-| Data Type | Duration | Reason |
-|-----------|----------|--------|
-| Products | 30 minutes | Products change moderately; balance freshness vs performance |
-| User Info | 2 hours | User data rarely changes; longer cache reduces load |
-| Categories | 1 hour | Relatively static data |
-| Friends | 30 minutes | Social data that may change moderately |
-
-### 2. Custom Hook (`src/hooks/useCachedData.ts`)
-
-A React hook that implements the cache-first strategy with background refresh:
+## Query Configuration
 
 ```typescript
-const { data, isLoading, isRefreshing, refresh } = useCachedData({
-  cacheKey: CACHE_KEYS.PRODUCTS(user.email),
-  fetchFn: () => fetchProductsFromAPI(user),
-  expiresIn: CACHE_DURATION.PRODUCTS,
-  onSuccess: (products) => dispatch(updateProducts(products))
+// src/context/QueryProvider.tsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,        // Never mark as stale
+      gcTime: 1000 * 60 * 60 * 24 * 7,  // 7 days in memory
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      retry: 1,
+    },
+  },
+});
+
+// Persist to localStorage
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: 'stuffie-cache',
 });
 ```
 
-## Caching Strategy
+## Data Flow
 
-### Cache-First with Background Refresh
+### First Visit (Cold Start)
+1. Check localStorage for `stuffie-cache`
+2. If empty → API calls → cache results
+3. Store in React Query + localStorage
 
-The implementation follows this sequence:
+### Return Visit (Warm Start)
+1. Hydrate from `stuffie-cache` (instant)
+2. **Zero API calls** - data already cached
+3. User sees data immediately
 
-1. **Check cache first**: If fresh cache exists, display it immediately
-2. **Background API refresh**: Always attempt to fetch fresh data from API
-3. **Fallback to stale cache**: If API fails, use stale (expired) cache if available
-4. **Error only on total failure**: Only show error if both API and cache fail
-
-This ensures:
-- ✅ **Instant UI updates** from cache
-- ✅ **Always fresh data** via background refresh
-- ✅ **Resilience** to API failures
-- ✅ **Better UX** with minimal loading states
-
-### Flow Diagram
-
-```
-User Request
-    ↓
-Check Cache
-    ↓
-Fresh? ──Yes→ Display Cache ──┐
-    ↓                          ↓
-   No                    Background API Call
-    ↓                          ↓
- Show Loading           Success? ──Yes→ Update Cache & UI
-    ↓                          ↓
-API Call                      No
-    ↓                          ↓
-Success? ──Yes→ Update Cache & UI
-    ↓
-   No
-    ↓
-Check Stale Cache
-    ↓
-Exists? ──Yes→ Display Stale Cache (with warning)
-    ↓
-   No
-    ↓
-Show Error
-```
-
-## Usage Examples
-
-### Basic Usage with Products
-
+### Manual Refresh
 ```typescript
-import { useCachedData } from '../hooks/useCachedData';
-import { CACHE_KEYS, CACHE_DURATION } from '../utils/cache';
+const { refetch } = useProducts();
+// User clicks refresh button
+await refetch();  // Forces API call, updates cache
+```
 
-const ProductsComponent = () => {
-  const { user } = useContext(UserContext);
-  const dispatch = useDispatch();
+## Hook Examples
+
+### Using Cached Data
+```typescript
+import { useProducts, useCategories } from '../hooks/queries';
+
+const MyComponent = () => {
+  // Data loads instantly from cache (0ms)
+  const { data: products, isLoading } = useProducts();
+  const { data: categories } = useCategories();
   
-  const { 
-    data: products, 
-    isLoading, 
-    isRefreshing,
-    error,
-    refresh 
-  } = useCachedData({
-    cacheKey: CACHE_KEYS.PRODUCTS(user.email),
-    fetchFn: async () => {
-      const stuffList = await getStuffList(user.id);
-      const productsList = await getListStuff(mapStuff(stuffList.data));
-      return getProductsMap(categories, mapCostToProducts(productsList.data, stuffList.data));
-    },
-    expiresIn: CACHE_DURATION.PRODUCTS,
-    onSuccess: (products) => {
-      // Update Redux store
-      dispatch(productsFetched(products, user.email));
-    },
-    onError: (error) => {
-      console.error('Failed to fetch products:', error);
-    }
-  });
-
-  return (
-    <div>
-      {isLoading && <Loading />}
-      {products && <ProductList items={products} />}
-      <button onClick={refresh} disabled={isRefreshing}>
-        {isRefreshing ? 'Refreshing...' : 'Refresh'}
-      </button>
-      {error && <ErrorMessage error={error} />}
-    </div>
-  );
+  if (isLoading) return <Loading />;  // Only on first load
+  
+  return <ProductList items={products} />;
 };
 ```
 
-### User Info with Caching
-
+### Mutations (Create/Update/Delete)
 ```typescript
-const { data: user, refresh: refreshUser } = useCachedData({
-  cacheKey: CACHE_KEYS.USER_INFO(email),
-  fetchFn: () => getStuffier(email),
-  expiresIn: CACHE_DURATION.USER_INFO,
-  onSuccess: (userData) => {
-    dispatch(userFetched(userData, email));
-  }
-});
+import { useCreateProduct, useDeleteProduct } from '../hooks/queries';
+
+const AddProductButton = () => {
+  const createMutation = useCreateProduct();
+  
+  const handleAdd = () => {
+    createMutation.mutate(productData, {
+      onSuccess: () => {
+        // Cache automatically invalidated and refetched
+      }
+    });
+  };
+};
 ```
 
-### Manual Refresh (Bypass Cache)
+## Cache Invalidation
+
+Mutations automatically invalidate related queries:
+
+| Mutation | Invalidates |
+|----------|-------------|
+| `useCreateProduct` | `['products']` |
+| `useAddFriend` | `['friends']`, `['friend-requests']` |
+| `useCreateExchange` | `['exchange-requests']` |
+| `useCreateLoan` | `['loan-requests']` |
+
+## Migration from Redux
+
+The app migrated from Redux to React Query:
+
+| Before (Redux) | After (React Query) |
+|----------------|---------------------|
+| `useSelector(state => state.products)` | `useProducts()` |
+| `dispatch(productsFetched(data))` | Handled automatically |
+| `mapStateToProps` | Custom hooks |
+| `redux/products/actions.js` | `hooks/queries/products.ts` |
+
+## Files Structure
+
+```
+src/
+├── hooks/
+│   └── queries/
+│       ├── index.ts           # Exports all hooks
+│       ├── products.ts        # useProducts, useCreateProduct
+│       ├── categories.ts      # useCategories, useSubcategories
+│       ├── friends.ts         # useFriends, useFriendRequests
+│       ├── exchanges.ts       # useExchangeRequests
+│       └── loans.ts           # useLoanRequests
+├── api/
+│   ├── client.ts              # Axios instance
+│   ├── endpoints.ts           # URL builders
+│   ├── products.api.ts        # CRUD functions
+│   ├── friends.api.ts
+│   ├── users.api.ts
+│   └── ...
+└── context/
+    └── QueryProvider.tsx      # React Query + Persister setup
+```
 
 ```typescript
 const handleRefreshClick = async () => {

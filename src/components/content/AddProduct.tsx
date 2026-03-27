@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
@@ -7,66 +6,83 @@ import Button from '../shared/Button';
 import Category from '../types/Category';
 import Dropdown from '../shared/DropDown';
 import Product from '../types/Product';
-import State from '../../redux/State';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
-import { getStuffFromCategories } from '../../services/stuff';
-import { addProductHook, addRegisteredProductHook } from '../../redux/products/actions';
+import { getProductsByCategory } from '../../api/products.api';
+import UserContext from '../../context/UserContext';
+import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct } from '../../hooks/queries';
 
 import './AddProduct.scss';
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // User context needed for AddProduct mutation
+  useContext(UserContext);
 
-  const user = useSelector((state: State) => state.user);
-  const categories = useSelector((state: State) => state.categories);
-  const subcategories = useSelector((state: State) => state.subcategories);
-  const products = useSelector((state: State) => state.products);
+  // React Query hooks
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+  const { data: products = {} } = useProducts();
+  const addProductMutation = useAddProduct();
+  const addExistingProductMutation = useAddExistingProduct();
 
   const [status, setStatus] = useState(WarningMessageType.EMPTY);
   const [name, setName] = useState('');
   // let [file_name, setFileName] = useState(null);
-  const [category, setCategory] = useState(categories[0]);
+  const [category, setCategory] = useState<Category | null>(null);
   const [product, setProduct] = useState<any>({ id: null, name: null });
-  const [subcategory, setSubcategory] = useState(subcategories[0]);
+  const [subcategory, setSubcategory] = useState<Subcategory | null>(null);
   const [stuffStuffier, setStuffStuffier] = useState({});
   const [productsByCategories, setProductsByCategories] = useState([]);
 
+  // Set initial category and subcategory when loaded
   useEffect(() => {
-    renderProducts(category, subcategory);
-  });
+    if (categories.length > 0 && !category) {
+      setCategory(categories[0]);
+    }
+    if (subcategories.length > 0 && !subcategory) {
+      setSubcategory(subcategories[0]);
+    }
+  }, [categories, subcategories, category, subcategory]);
 
-  // useEffect(() => {
-  //   renderProducts(category, subcategory);
-  // }, [subcategory]);
+  useEffect(() => {
+    if (category && subcategory) {
+      renderProducts(category, subcategory);
+    }
+  }, [category, subcategory]);
 
 
   const createProduct = () => {
     if (!name || !category || !subcategory) return;
 
-    addProductHook({ name, category: category.id, subcategory: subcategory.id }, user)
-      .then((product: Product) => {
-        setProduct(product);
-        setStuffStuffier(product);
-        setStatus(WarningMessageType.SUCCESSFUL);
-      })
-      .catch(() => {
-        const product = { name, category: category.id, subcategory: subcategory.id };
-        setProduct(product);
-        setStuffStuffier(product);
-        setStatus(WarningMessageType.ERROR);
-      });
+    addProductMutation.mutate(
+      { name, category: category.id, subcategory: subcategory.id },
+      {
+        onSuccess: (newProduct: Product) => {
+          setProduct(newProduct);
+          setStuffStuffier(newProduct);
+          setStatus(WarningMessageType.SUCCESSFUL);
+        },
+        onError: () => {
+          const failedProduct = { name, category: category.id, subcategory: subcategory.id };
+          setProduct(failedProduct);
+          setStuffStuffier(failedProduct);
+          setStatus(WarningMessageType.ERROR);
+        },
+      }
+    );
   }
 
   const registerProduct = () => {
-    addRegisteredProductHook(user, product, dispatch).then((p: Product) => {
-      setStuffStuffier(p);
-      setStatus(WarningMessageType.SUCCESSFUL);
-      navigate('/products');
+    addExistingProductMutation.mutate(product, {
+      onSuccess: (p: Product) => {
+        setStuffStuffier(p);
+        setStatus(WarningMessageType.SUCCESSFUL);
+        navigate('/products');
+      },
     });
   }
 
@@ -86,22 +102,26 @@ const AddProduct = () => {
   }
 
   const renderProducts = (category: Category, subcategory: Subcategory) => {
-    getStuffFromCategories(category.id, subcategory.id).then(res => {
-      const product = res.data[0];
-      const productsByCategories = res.data.filter((p: Product) => p.id && !getProductFromProducts(p.id, products));
-      setProductsByCategories(productsByCategories);
+    getProductsByCategory(category.id, subcategory.id).then(prods => {
+      const product = prods[0];
+      const productsByCategories = prods.filter((p: Product) => p.id && !getProductFromProducts(p.id, products));
+      setProductsByCategories(productsByCategories as any);
       setProduct(product);
     });
   }
 
-  const updateCategory = (category: Category) => {
-    renderProducts(category, subcategory);
-    setCategory(category);
+  const updateCategory = (cat: Category) => {
+    if (subcategory) {
+      renderProducts(cat, subcategory);
+    }
+    setCategory(cat);
   }
 
-  const updateSubcategory = (subcategory: Subcategory) => {
-    renderProducts(category, subcategory);
-    setSubcategory(subcategory);
+  const updateSubcategory = (subcat: Subcategory) => {
+    if (category) {
+      renderProducts(category, subcat);
+    }
+    setSubcategory(subcat);
   }
 
   return (

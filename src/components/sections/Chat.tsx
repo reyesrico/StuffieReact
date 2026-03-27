@@ -1,16 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
-import State from '../../redux/State';
+import UserContext from '../../context/UserContext';
 import TextField from '../shared/TextField';
 
 import './Chat.scss';
-import { useChatGpt } from '../../services/useChatGpt';
+import { useChatGpt } from '../../hooks/useChatGpt';
 
 const Chat = () => {
-  const user = useSelector((state: State) => state.user);
+  const { user } = useContext(UserContext);
   const { messages, sendMessage, isLoading } = useChatGpt();
   const { t } = useTranslation();
   const messageEl = useRef(null);

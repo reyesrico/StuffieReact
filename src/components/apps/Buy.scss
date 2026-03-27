@@ -1,4 +1,4 @@
-@use '../../sass/main' as *;
+@use '../../styles/base/main' as *;
 
 .buy__product {
   @include margin(8px, bottom);

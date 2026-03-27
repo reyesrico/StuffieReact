@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import State from '../../redux/State';
+import { useProducts, useCategories } from '../../hooks/queries';
 import Stuff from '../types/Stuff';
 import Media from '../shared/Media';
 import { Icon } from '@fluentui/react/lib/Icon';
@@ -12,8 +11,8 @@ import './CategoryPage.scss';
 
 const CategoryPage = () => {
   const { t } = useTranslation();
-  const products = useSelector((state: State) => state.products);
-  const categories = useSelector((state: State) => state.categories);
+  const { data: products = {} } = useProducts();
+  const { data: categories = [] } = useCategories();
   const { id } = useParams();
   const categoryId = id ? parseInt(id) : -1;
   const category: any = categories.find(c => c.id === categoryId);

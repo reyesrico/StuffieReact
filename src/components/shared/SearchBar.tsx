@@ -2,22 +2,24 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Icon } from '@fluentui/react';
 
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
-import { getSearchResults, getProductResults } from '../../services/stuff';
+import { searchProductsAndCategories, filterProductsByText } from '../../api/products.api';
+import { useCategories, useSubcategories } from '../../hooks/queries';
 import './SearchBar.scss';
 
 const SearchBar = (props: any) => {
-  let source: any = null;
-
   const searchBarRef = useRef<HTMLDivElement>(null);
+
+  // React Query hooks for categories/subcategories (used in full search mode)
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [searchText, setSearchText] = useState('');;
+  const [searchText, setSearchText] = useState('');
   const [results, setResults] = useState([]);
 
   useEffect(() => {
@@ -40,31 +42,35 @@ const SearchBar = (props: any) => {
     }
   }
 
-  const fetchResults = (searchText: string) => {
+  const fetchResults = async (searchText: string) => {
     const { products, selectProduct } = props;
 
-    source && source.cancel('Cancel pending requests.');
-    source = axios.CancelToken.source();
     setSearchText(searchText);
     setIsOpen(true);
     setIsLoading(true);
 
     if (searchText) {
       if (selectProduct) {
-        setResults(getProductResults(searchText, products));
+        // Simple product filter for Exchange mode
+        setResults(filterProductsByText(searchText, products) as any);
         setIsOpen(true);
         setIsLoading(false);
       } else {
-        getSearchResults(searchText, products, source.token).then((results: any) => {
-          if (results.length) {
-            setResults(results);
-            setIsOpen(true);
-            setIsLoading(false);
-          } else {
-            setIsOpen(false);
-            setIsLoading(false);
-          }
-        });
+        // Full search including categories and subcategories
+        const searchResults = await searchProductsAndCategories(
+          searchText, 
+          products, 
+          categories, 
+          subcategories
+        );
+        if (searchResults.length) {
+          setResults(searchResults as any);
+          setIsOpen(true);
+          setIsLoading(false);
+        } else {
+          setIsOpen(false);
+          setIsLoading(false);
+        }
       }
     } else {
       setIsOpen(false);

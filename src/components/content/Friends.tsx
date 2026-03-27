@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
-import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import User from '../types/User';
+import UserContext from '../../context/UserContext';
 import WarningMessage from '../shared/WarningMessage';
-import { addFriend, deleteRequest, getStuffiers, requestToBeFriend } from '../../services/stuffier';
+import { useFriends, useFriendRequests } from '../../hooks/queries';
+import { addFriend, rejectFriendRequest, sendFriendRequest } from '../../api/friends.api';
+import { getUsersByIds } from '../../api/users.api';
 import { mapIds } from '../helpers/UserHelper';
 import { WarningMessageType } from '../shared/types';
 
 import './Friends.scss';
-import { useSelector } from 'react-redux';
-import { existImage, userImageUrl } from '../../services/cloudinary-helper';
+import { existImage, userImageUrl } from '../../lib/cloudinary';
 
 type FriendRowProps = {
   user: User
@@ -44,9 +45,9 @@ const Friends = () => {
   // let textFieldRef = React.createRef<typeof TextField>();
   const { t } = useTranslation();
 
-  const user = useSelector((state: State) => state.user);
-  const friends = useSelector((state: State) => state.friends);
-  const friendsRequests = useSelector((state: State) => state.friendsRequests);
+  const { user } = useContext(UserContext);
+  const { data: friends = [] } = useFriends();
+  const { data: friendsRequests = [] } = useFriendRequests();
   const [requests, setRequests] = useState([]);
   const [emailToRequest, setEmailToRequest] = useState('');
   const [message, setMessage] = useState('');
@@ -54,14 +55,18 @@ const Friends = () => {
 
   useEffect(() => {
     if (friendsRequests.length > 0) {
-      getStuffiers(mapIds(friendsRequests))
-      .then((res: any) => setRequests(res.data));
+      getUsersByIds(mapIds(friendsRequests))
+      .then((users) => setRequests(users as any));
     }
   }, [friendsRequests]);
 
   const executeRequest = (friend: User, isAccepted = false) => {
-    const promises = [deleteRequest(user.email, friend.id)];
-    isAccepted && promises.push(addFriend(user.email, friend.id));
+    if (!friend.id || !user.email) return;
+    
+    const promises: Promise<unknown>[] = [rejectFriendRequest(user.email, friend.id)];
+    if (isAccepted) {
+      promises.push(addFriend(user.email, friend.id));
+    }
 
     Promise.all(promises)
     .then((_values: any) => {
@@ -103,7 +108,7 @@ const Friends = () => {
   }
 
   const handleRequest = () => {
-    requestToBeFriend(emailToRequest, user.id)
+    sendFriendRequest(emailToRequest, user.id)
     .then(() => {
       setMessage('Request sent succesfully');
       setEmailToRequest('');

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import Auth from './Auth';
-import Login from './Login';
-import Register from './Register';
+import Main from './Main';
+import { RequireAuth, LoginPage, RegisterPage } from '../auth';
+import { MainSkeleton } from '../skeletons';
 import ThemeContext from '../../context/ThemeContext';
 
-import "../../styles/theme.scss"; // Import the SCSS file
+import "../../styles/theme.scss";
 
 const TopRoutes = () => {
   const { theme } = React.useContext(ThemeContext);
@@ -17,9 +17,21 @@ const TopRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/*" element={<Auth />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
+      {/* Public routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      
+      {/* Protected routes - wrapped in RequireAuth */}
+      <Route 
+        path="/*" 
+        element={
+          <RequireAuth>
+            <Suspense fallback={<MainSkeleton />}>
+              <Main />
+            </Suspense>
+          </RequireAuth>
+        } 
+      />
     </Routes>
   );
 }

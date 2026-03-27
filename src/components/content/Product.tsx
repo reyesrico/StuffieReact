@@ -1,28 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { find, isEmpty } from 'lodash';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import Media from '../shared/Media';
-import State from '../../redux/State';
 import TextField from '../shared/TextField';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
-import { updateProductHook } from '../../redux/products/actions';
+import UserContext from '../../context/UserContext';
+import { useCategories, useSubcategories, useProducts, useUpdateProductCost } from '../../hooks/queries';
 
 import './Product.scss';
 
 const Product = (props: any) => {
   const { hideOfferButton, product, showCost } = props;
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const categories = useSelector((state: State) => state.categories);
-  const subcategories = useSelector((state: State) => state.subcategories);
-  const products = useSelector((state: State) => state.products);
-  const user = useSelector((state: State) => state.user);
+  // User context needed for updateProductCost mutation
+  useContext(UserContext);
+  
+  // React Query hooks
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+  const { data: products = {} } = useProducts();
+  const updateProductCostMutation = useUpdateProductCost();
+  
   const [cost, setCost] = useState(0.0);
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
@@ -47,7 +50,19 @@ const Product = (props: any) => {
 
   const updateCost = (clear: boolean = false) => {
     const updatedCost = clear ? 0 : cost;
-    updateProductHook(user.id, productRendered?.id, updatedCost, dispatch, setMessage, setType)
+    updateProductCostMutation.mutate(
+      { productId: productRendered?.id, cost: updatedCost },
+      {
+        onSuccess: () => {
+          setMessage(clear ? 'Offer stopped' : 'Cost updated successfully');
+          setType(WarningMessageType.SUCCESSFUL);
+        },
+        onError: () => {
+          setMessage('Failed to update cost');
+          setType(WarningMessageType.ERROR);
+        }
+      }
+    );
   }
 
   const renderCost = () => {
