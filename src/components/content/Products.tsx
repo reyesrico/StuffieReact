@@ -7,6 +7,7 @@ import Button from '../shared/Button';
 import Category from '../types/Category';
 import ExchangeRequest from '../types/ExchangeRequest';
 import LoanRequest from '../types/LoanRequest';
+import PurchaseRequest from '../types/PurchaseRequest';
 import Product from './Product';
 import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
@@ -16,7 +17,7 @@ import { getProductsByIds } from '../../api/products.api';
 import { isProductsEmpty, mapIds } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { useCategories, useProducts, useFriends, useExchangeRequests, useLoanRequests, useDeleteExchange, useDeleteLoan } from '../../hooks/queries';
+import { useCategories, useProducts, useFriends, useExchangeRequests, useLoanRequests, usePurchaseRequests, useDeleteExchange, useDeleteLoan, useDeletePurchase } from '../../hooks/queries';
 
 // import Swiper core and required modules
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
@@ -42,11 +43,13 @@ const Products = () => {
   const { data: friends = [] } = useFriends();
   const { data: exchangeRequests = [] } = useExchangeRequests();
   const { data: loanRequests = [] } = useLoanRequests();
+  const { data: purchaseRequests = [] } = usePurchaseRequests();
   const { data: products = {}, refetch: refreshProductsQuery, isFetching: isRefreshing } = useProducts();
   
   // Mutations
   const deleteExchangeMutation = useDeleteExchange();
   const deleteLoanMutation = useDeleteLoan();
+  const deletePurchaseMutation = useDeletePurchase();
   
   const [requestedProducts, setRequestProducts] = useState([]);
   const [message, setMessage] = useState('');
@@ -62,11 +65,12 @@ const Products = () => {
     const exchangeIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_stuff) : [];
     const exchangeFriendIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_friend_stuff) : [];
 
-    const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds]);
+    const purchaseIds = Array.isArray(purchaseRequests) ? purchaseRequests.map((req: any) => req.id_stuff) : [];
+    const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds, ...purchaseIds]);
 
     getProductsByIds(mapIds(ids))
       .then(prods => setRequestProducts(prods as any));
-  }, [exchangeRequests, loanRequests]);
+  }, [exchangeRequests, loanRequests, purchaseRequests]);
 
   const generateReport = () => {
     downloadExcel(products, `${user?.first_name || 'user'}_products`);
@@ -198,6 +202,55 @@ const Products = () => {
   }
 
 
+  const renderPurchases = () => {
+    const purchases = Array.isArray(purchaseRequests) ? purchaseRequests : [];
+    return (
+      <div className="products__requests">
+        <hr />
+        <h3 className="products__requests-title">
+          <div>{t('products.purchaseRequests')}</div>
+          <div className="products__warning">{purchases.length}</div>
+        </h3>
+        <ul>
+          {purchases.map((request: PurchaseRequest, index: number) => {
+            const requestor = request.id_friend === user?.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
+            const isUserRequestor = user?.id === request.id_friend;
+            const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
+            const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+
+            return (
+              // eslint-disable-next-line react/no-array-index-key
+              <li className="products__request" key={index}>
+                <div className="products__request-group">
+                  <div className="products__request-text">
+                    {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
+                  </div>
+                  <div className="products__request-text">
+                    {t('products.productLabel')}{get(product, 'name')}
+                  </div>
+                  <div className="products__request-text">
+                    {t('products.costLabel')}{request.cost}
+                  </div>
+                </div>
+                <div className="products__request-buttons">
+                  <div className="products__request-button">
+                    <Button
+                      onClick={() => deletePurchaseMutation.mutate(request._id, {
+                        onSuccess: () => { setMessage(t('products.purchaseDeleted')); setType(WarningMessageType.SUCCESSFUL); },
+                        onError: () => { setMessage(t('products.purchaseDeleteFailed')); setType(WarningMessageType.ERROR); },
+                      })}
+                      text={rejectText}
+                    />
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className="products">
       <WarningMessage message={message} type={type} />
@@ -214,6 +267,7 @@ const Products = () => {
       </div>
       {Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && renderRequests()}
       {Array.isArray(loanRequests) && loanRequests.length > 0 && renderLoans()}
+      {Array.isArray(purchaseRequests) && purchaseRequests.length > 0 && renderPurchases()}
       <hr />
       {isProductsEmpty(products) && (<div>{t('products.noStuff')}</div>)}
       {!isProductsEmpty(products) &&

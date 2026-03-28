@@ -1,8 +1,8 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import en from '../locale/en';
-import es from '../locale/es';
+import en from '../locale/en.json';
+import es from '../locale/es.json';
 
 i18n
   .use(initReactI18next)
@@ -20,9 +20,6 @@ i18n
     interpolation: {
       escapeValue: false,
       formatSeparator: ',',
-    },
-    react: {
-      wait: true,
     },
   }, (err, _t) => {
     if (err) {

@@ -81,6 +81,10 @@
     "products.loanDeleteFailed": "Error al eliminar solicitud de préstamo",
     "products.exchangeDeleted": "Solicitud de intercambio eliminada exitosamente",
     "products.exchangeDeleteFailed": "Error al eliminar solicitud de intercambio",
+    "products.purchaseRequests": "Solicitudes de Compra",
+    "products.purchaseDeleted": "Solicitud de compra eliminada exitosamente",
+    "products.purchaseDeleteFailed": "Error al eliminar solicitud de compra",
+    "products.costLabel": "Costo: ",
 
     "feedRow.added": "agregó",
     "feedRow.askFor": "Pedir:",
@@ -123,7 +127,8 @@
 
     "buy.friendProduct": "Producto de {{ name }}",
     "buy.requestBuy": "Solicitar Compra",
-    "buy.successMessage": "Compra",
+    "buy.successMessage": "¡Solicitud de compra enviada exitosamente!",
+    "buy.errorMessage": "Error al enviar solicitud de compra",
 
     "apps.title": "Apps y extras",
     "apps.map": "Mapa",

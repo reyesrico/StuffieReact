@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -7,6 +7,8 @@ import Product from '../content/Product';
 import WarningMessage from '../shared/WarningMessage';
 import { getUsersByIds } from '../../api/users.api';
 import { WarningMessageType } from '../shared/types';
+import { useCreatePurchase } from '../../hooks/queries';
+import UserContext from '../../context/UserContext';
 
 import './Buy.scss';
 
@@ -21,6 +23,8 @@ const Buy = () => {
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
   const { t } = useTranslation();
+  const { user } = useContext(UserContext);
+  const createPurchaseMutation = useCreatePurchase();
 
   useEffect(() => {
     if (!product) {
@@ -34,9 +38,27 @@ const Buy = () => {
     }
   }, [product, friendId, navigate]);
 
-  const buy = () => {
-    setMessage(t('buy.successMessage'));
-    setType(WarningMessageType.SUCCESSFUL);
+  const handleBuy = () => {
+    if (!friendId || !product?.id || !user?.id || product?.cost == null) {
+      setMessage(t('buy.errorMessage'));
+      setType(WarningMessageType.ERROR);
+      return;
+    }
+
+    createPurchaseMutation.mutate(
+      { id_stuffier: friendId, id_stuff: product.id, id_friend: user.id, cost: product.cost },
+      {
+        onSuccess: () => {
+          setMessage(t('buy.successMessage'));
+          setType(WarningMessageType.SUCCESSFUL);
+          setTimeout(() => navigate('/products'), 1500);
+        },
+        onError: () => {
+          setMessage(t('buy.errorMessage'));
+          setType(WarningMessageType.ERROR);
+        },
+      }
+    );
   };
 
   if (!product) {
@@ -51,7 +73,12 @@ const Buy = () => {
         <hr />
         <Product match={match} key={product.id} product={product} showCost={true} hideOfferButton={true} />
       </div>
-      <Button type="submit" onClick={() => buy()} text={t('buy.requestBuy')} />
+      <Button
+        type="submit"
+        onClick={handleBuy}
+        text={t('buy.requestBuy')}
+        disabled={createPurchaseMutation.isPending}
+      />
     </div>
   );
 };

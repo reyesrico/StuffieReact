@@ -48,7 +48,12 @@ export const queryKeys = {
   loans: {
     all: (userId: number) => ['loans', userId] as const,
   },
-  
+
+  // Purchases
+  purchases: {
+    all: (userId: number) => ['purchases', userId] as const,
+  },
+
   // Feed (computed from friends' products)
   feed: {
     all: (userId: number) => ['feed', userId] as const,

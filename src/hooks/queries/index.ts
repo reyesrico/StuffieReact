@@ -58,6 +58,11 @@ export {
   useInvalidateLoanRequests,
 } from './useLoans';
 
+// Purchases
+export {
+  usePurchaseRequests,
+} from './usePurchases';
+
 // User
 export {
   useUserByEmail,
@@ -98,6 +103,9 @@ export {
   // Loans
   useCreateLoan,
   useDeleteLoan,
+  // Purchases
+  useCreatePurchase,
+  useDeletePurchase,
 } from './mutations';
 
 // Suspense-enabled hooks (for use with React Suspense boundaries)

@@ -17,6 +17,7 @@ const collections = {
   friendRequests: useCodehooks ? 'friendrequests' : 'friend-requests',
   exchangeRequests: useCodehooks ? 'exchangerequests' : 'exchange-requests',
   loanRequests: useCodehooks ? 'loanrequests' : 'loan-requests',
+  purchaseRequests: useCodehooks ? 'purchaserequests' : 'purchase-requests',
   conf: 'conf',
 };
 
@@ -213,6 +214,21 @@ export const loanEndpoints = {
 };
 
 /**
+ * Purchase Request endpoints
+ */
+export const purchaseEndpoints = {
+  /** GET purchases for a user (both sent and received) */
+  listByUser: (userId: number) =>
+    `${collections.purchaseRequests}?q={ "$or": [{ "id_stuffier": ${userId} } ,{ "id_friend": ${userId} }] }`,
+
+  /** POST create purchase request */
+  create: () => collections.purchaseRequests,
+
+  /** DELETE purchase request */
+  delete: (_id: string) => `${collections.purchaseRequests}/${_id}`,
+};
+
+/**
  * Config endpoints (for Spotify, etc.)
  */
 export const configEndpoints = {
@@ -232,6 +248,7 @@ export const endpoints = {
   friendRequests: friendRequestEndpoints,
   exchanges: exchangeEndpoints,
   loans: loanEndpoints,
+  purchases: purchaseEndpoints,
   config: configEndpoints,
 };
 

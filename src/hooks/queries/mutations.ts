@@ -44,6 +44,11 @@ import {
   deleteLoanRequest,
   type CreateLoanInput,
 } from '../../api/loans.api';
+import {
+  createPurchaseRequest,
+  deletePurchaseRequest,
+  type CreatePurchaseInput,
+} from '../../api/purchases.api';
 
 import type User from '../../components/types/User';
 import type Product from '../../components/types/Product';
@@ -357,6 +362,46 @@ export const useDeleteLoan = () => {
       if (user?.id) {
         queryClient.invalidateQueries({ 
           queryKey: queryKeys.loans.all(user.id) 
+        });
+      }
+    },
+  });
+};
+
+// ============ PURCHASE MUTATIONS ============
+
+/**
+ * Create a buy/purchase request
+ */
+export const useCreatePurchase = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (data: CreatePurchaseInput) => createPurchaseRequest(data),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.purchases.all(user.id),
+        });
+      }
+    },
+  });
+};
+
+/**
+ * Delete/Accept/Reject purchase request
+ */
+export const useDeletePurchase = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => deletePurchaseRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.purchases.all(user.id),
         });
       }
     },

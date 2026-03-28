@@ -81,6 +81,10 @@
     "products.loanDeleteFailed": "Failed to delete loan request",
     "products.exchangeDeleted": "Exchange request deleted successfully",
     "products.exchangeDeleteFailed": "Failed to delete exchange request",
+    "products.purchaseRequests": "Purchase Requests",
+    "products.purchaseDeleted": "Purchase request deleted successfully",
+    "products.purchaseDeleteFailed": "Failed to delete purchase request",
+    "products.costLabel": "Cost: ",
 
     "feedRow.added": "added",
     "feedRow.askFor": "Ask for:",
@@ -123,7 +127,8 @@
 
     "buy.friendProduct": "{{ name }} Product",
     "buy.requestBuy": "Request Buy",
-    "buy.successMessage": "Buy",
+    "buy.successMessage": "Buy request sent successfully!",
+    "buy.errorMessage": "Failed to send buy request",
 
     "apps.title": "Apps & extras",
     "apps.map": "Map",
