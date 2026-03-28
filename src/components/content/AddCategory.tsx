@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { map } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
@@ -22,6 +23,7 @@ const AddCategory = (props: AddCategoryProps) => {
   const { data: subcategories = [] } = useSubcategories();
   const addCategoryMutation = useAddCategory();
   const addSubcategoryMutation = useAddSubcategory();
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [id, setId] = useState('');
@@ -31,9 +33,9 @@ const AddCategory = (props: AddCategoryProps) => {
   const [label, setLabel] = useState('');
 
   useEffect(() => {
-    const labelText = type === 'category' ? 'Category' : 'SubCategory';
+    const labelText = type === 'category' ? t('addCategory.categoryLabel') : t('addCategory.subcategoryLabel');
     setLabel(labelText);
-  }, [type]);
+  }, [type, t]);
 
   const createValue = () => {
     if (type === TYPE.CATEGORY) {
@@ -81,7 +83,7 @@ const AddCategory = (props: AddCategoryProps) => {
 
   if (isLoading) return <Loading size="md" />
 
-  const otherLabel = type !== TYPE.CATEGORY ? 'Category' : 'SubCategory';
+  const otherLabel = type !== TYPE.CATEGORY ? t('addCategory.categoryLabel') : t('addCategory.subcategoryLabel');
   const otherType = type === TYPE.CATEGORY ? TYPE.SUBCATEGORY : TYPE.CATEGORY;
 
   return (
@@ -103,7 +105,7 @@ const AddCategory = (props: AddCategoryProps) => {
         </div>
         <hr />
         <div className="add-category__row">
-          <label>Id</label>
+          <label>{t('addCategory.idLabel')}</label>
           <TextField name="id" type="text" onChange={(e: any) => setId(e.target.value)} />
         </div>
         <div className="add-category__row">
@@ -111,7 +113,7 @@ const AddCategory = (props: AddCategoryProps) => {
           <TextField name="name" type="text" onChange={(e: any) => setName(e.target.value)} />
         </div>
         <hr />
-        <Button onClick={() => createValue()} text={"Send"} />
+        <Button onClick={() => createValue()} text={t('addCategory.send')} />
       </form>
     </div>
   );

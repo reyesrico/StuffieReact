@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './ErrorState.scss';
 
 export type ErrorSeverity = 'error' | 'warning' | 'info';
@@ -18,11 +19,12 @@ const ErrorState = ({
   onRetry,
   className = '',
 }: ErrorStateProps) => {
+  const { t } = useTranslation();
   const defaultTitle = severity === 'error' 
-    ? 'Something went wrong' 
+    ? t('errorState.somethingWentWrong') 
     : severity === 'warning' 
-      ? 'Warning' 
-      : 'Information';
+      ? t('errorState.warning') 
+      : t('errorState.information');
 
   return (
     <div className={`error-state error-state--${severity} ${className}`}>
@@ -51,7 +53,7 @@ const ErrorState = ({
       </div>
       {onRetry && (
         <button className="error-state__retry" onClick={onRetry}>
-          Try again
+          {t('common.tryAgain')}
         </button>
       )}
     </div>

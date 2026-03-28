@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Media from '../shared/Media';
 import { FeedRowProps } from './types';
@@ -13,6 +14,7 @@ const FeedRow = (props: FeedRowProps) => {
   const { data: subcategories = [] } = useSubcategories();
   const [picture, setPicture] = React.useState<string>();
   const { feedPost } = props;
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     existImage(feedPost.friend_id, "stuffiers/")
@@ -34,7 +36,7 @@ const FeedRow = (props: FeedRowProps) => {
       <div className="feed-row__added">
         <span>
           <span className="feed-row__name">{feedPost.friend_firstName}</span>
-          <span>added <b>{feedPost.product.name}</b> in {getProductType()}</span>
+          <span>{t('feedRow.added')} <b>{feedPost.product.name}</b> in {getProductType()}</span>
         </span>
       </div>
     </div>
@@ -60,16 +62,16 @@ const FeedRow = (props: FeedRowProps) => {
         />
       </div>
       <div className="feed-row__actions">
-        <div className="feed-row__action feed-row__text">Ask for:</div>
+        <div className="feed-row__action feed-row__text">{t('feedRow.askFor')}</div>
         <div className="feed-row__action feed-row__link">
-          <Link to={loanTo}>Borrow</Link>
+          <Link to={loanTo}>{t('feedRow.borrow')}</Link>
         </div>
         <div className="feed-row__action feed-row__link">
-          <Link to={exchangeTo}>Trade</Link>
+          <Link to={exchangeTo}>{t('feedRow.trade')}</Link>
         </div>
         {feedPost.product.cost &&
           (<div className="feed-row__action feed-row__link">
-            <Link to={buyTo}>Buy</Link>
+            <Link to={buyTo}>{t('feedRow.buy')}</Link>
           </div>)}
       </div>
     </div>

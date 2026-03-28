@@ -9,14 +9,14 @@ const Apps = (_props: any) => {
 
   return (
     <div className="apps">
-      <div className="apps__title">Apps &amp; extras</div>
-      <div className="apps__item"><Link to='/map'>Map</Link></div>
-      <div className="apps__item"><Link to='/tickets'>Tickets</Link></div>
+      <div className="apps__title">{t('apps.title')}</div>
+      <div className="apps__item"><Link to='/map'>{t('apps.map')}</Link></div>
+      <div className="apps__item"><Link to='/tickets'>{t('apps.tickets')}</Link></div>
       <div className="apps__item"><Link to='/support'>{t('Support')}</Link></div>
-      <div className="apps__item"><Link to='/charts'>Charts</Link></div>
-      <div className="apps__item"><Link to='/spotify'>Spotify</Link></div>
-      <div className="apps__item"><a href='https://reyesrico.github.io/CovidCharts'>Covid Charts</a></div>
-      <div className="apps__item"><Link to='/cards'>Cards</Link></div>
+      <div className="apps__item"><Link to='/charts'>{t('apps.charts')}</Link></div>
+      <div className="apps__item"><Link to='/spotify'>{t('apps.spotify')}</Link></div>
+      <div className="apps__item"><a href='https://reyesrico.github.io/CovidCharts'>{t('apps.covidCharts')}</a></div>
+      <div className="apps__item"><Link to='/cards'>{t('apps.cards')}</Link></div>
     </div>
   );
 }

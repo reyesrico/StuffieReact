@@ -26,11 +26,12 @@ import './Main.scss';
 
 // Error fallback component
 function ErrorFallback({ error, resetErrorBoundary }: any) {
+  const { t } = useTranslation();
   return (
     <div className="error-fallback">
-      <p>Something went wrong:</p>
+      <p>{t('main.errorBoundaryTitle')}</p>
       <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try again</button>
+      <button onClick={resetErrorBoundary}>{t('common.tryAgain')}</button>
     </div>
   );
 }
@@ -69,7 +70,7 @@ const Main = () => {
               <div className="stuffie__user">
                 {picture && (
                   <Link to="/stuffier">
-                    <img src={picture} className="stuffie__picture" alt="User Pic"/>
+                    <img src={picture} className="stuffie__picture" alt={t('common.userPicAlt')}/>
                   </Link>
                 )}
                 <div className="stuffie__welcome">

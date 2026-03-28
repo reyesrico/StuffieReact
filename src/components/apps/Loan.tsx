@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
@@ -20,6 +21,7 @@ const Loan = () => {
   const [friend, setFriend] = useState({ first_name: '' });
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
+  const { t } = useTranslation();
 
   const product = (location.state as any)?.["product"];
   const friendId = (location.state as any)?.["friend"];
@@ -47,11 +49,11 @@ const Loan = () => {
       },
       {
         onSuccess: () => {
-          setMessage('Loan request sent successfully!');
+          setMessage(t('loan.successMessage'));
           setType(WarningMessageType.SUCCESSFUL);
         },
         onError: () => {
-          setMessage('Failed to send loan request');
+          setMessage(t('loan.errorMessage'));
           setType(WarningMessageType.ERROR);
         },
       }
@@ -68,11 +70,11 @@ const Loan = () => {
     <div className="loan">
       <WarningMessage message={message} type={type} />
       <div className="loan__product">
-        <h2>{friend?.first_name} Product</h2>
+        <h2>{t('loan.friendProduct', { name: friend?.first_name })}</h2>
         <hr />
         <Product match={match} key={product.id} product={product} />
       </div>
-      <Button type="submit" onClick={requestLoan} text="Request To Borrow" />
+      <Button type="submit" onClick={requestLoan} text={t('loan.requestButton')} />
     </div>
   );
 };

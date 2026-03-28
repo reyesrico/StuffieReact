@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -33,6 +34,7 @@ const Exchange = () => {
   const [message, setMessage] = useState('');
   const [friend, setFriend] = useState({ first_name: '' });
   const [type, setType] = useState(WarningMessageType.EMPTY);
+  const { t } = useTranslation();
 
   const product: Product = (location.state as any)?.["product"];
   const friendId = (location.state as any)?.["friend"];
@@ -67,12 +69,12 @@ const Exchange = () => {
       },
       {
         onSuccess: () => {
-          setMessage('Exchange request sent successfully!');
+          setMessage(t('exchange.successMessage'));
           setType(WarningMessageType.SUCCESSFUL);
           navigate('/products');
         },
         onError: () => {
-          setMessage('Failed to send exchange request');
+          setMessage(t('exchange.errorMessage'));
           setType(WarningMessageType.ERROR);
         },
       }
@@ -112,7 +114,7 @@ const Exchange = () => {
   }
 
   if (!userProducts.length) {
-    return <div className="exchange exchange--empty">No products to exchange under same category</div>;
+    return <div className="exchange exchange--empty">{t('exchange.noProducts')}</div>;
   }
 
   return (
@@ -125,19 +127,19 @@ const Exchange = () => {
         <div className="exchange__content">
           <div className="exchange__compare">
             <div className="exchange__compare-info">
-              <h4>My Product</h4>
+              <h4>{t('exchange.myProduct')}</h4>
               {renderProduct(selectedProduct)}
             </div>
             <div className="exchange__line" />
             <div className="exchange__compare-info">
-              <h4>{friend?.first_name} Product</h4>
+              <h4>{t('exchange.friendProduct', { name: friend?.first_name })}</h4>
               {renderProduct(product)}
             </div>
           </div>
           <Button
             type="submit"
             onClick={requestExchange}
-            text="Request Exchange"
+            text={t('exchange.requestButton')}
           />
         </div>
       }

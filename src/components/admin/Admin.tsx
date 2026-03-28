@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Product from '../types/Product';
@@ -11,6 +12,7 @@ const Admin = () => {
   const { data: userRequests = [] } = useUserRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   const approveUserMutation = useApproveUser();
+  const { t } = useTranslation();
 
   const executeRequest = (user: User, isAccepted = false) => {
     if (isAccepted) {
@@ -23,7 +25,7 @@ const Admin = () => {
       <div className="admin__requests">
         <hr />
         <h3 className="admin__title">
-          <div>User Requests</div>
+          <div>{t('admin.userRequests')}</div>
           <div className="admin__warning">{userRequests.length}</div>
         </h3>
         <ul>
@@ -35,7 +37,7 @@ const Admin = () => {
                   {user.first_name} {user.last_name} ({user.email})
                 </div>
                 <div className="admin__request-button">
-                  <Button onClick={() => executeRequest(user, true)} text="Accept" />
+                  <Button onClick={() => executeRequest(user, true)} text={t('common.accept')} />
                 </div>
               </li>
             )
@@ -51,14 +53,14 @@ const Admin = () => {
       <div className="admin__requests">
         <hr />
         <h3 className="admin__title">
-          <div>Products Pending of Pics</div>
+          <div>{t('admin.pendingProducts')}</div>
           <div className="admin__warning">{pendingProducts.length}</div>
         </h3>
         <ul>
           {pendingProducts.map((product: Product) => {
             return (<li key={product.id} className="admin__request">
-              <div>Product: {product.name}</div>
-              <div>Id: {product.id} / Category: {product.category} / Subcategory: {product.subcategory}</div>
+              <div>{t('admin.productLabel')}{product.name}</div>
+              <div>{t('admin.productDetails', { id: product.id, category: product.category, subcategory: product.subcategory })}</div>
             </li>)
           })}
         </ul>
@@ -70,9 +72,9 @@ const Admin = () => {
     <div className="admin">
       {pendingProducts.length > 0 && renderPendingProducts()}
       {userRequests.length > 0 && renderRequests()}
-      <div className="admin__link"><Link to={`/category/add`}>Add Category</Link></div>
+      <div className="admin__link"><Link to={`/category/add`}>{t('admin.addCategory')}</Link></div>
       <hr />
-      <div className="admin__link"><Link to={`/subcategory/add`}>Add SubCategory</Link></div>
+      <div className="admin__link"><Link to={`/subcategory/add`}>{t('admin.addSubcategory')}</Link></div>
       <hr />
     </div>
   );

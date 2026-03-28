@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { find, isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
@@ -19,6 +20,7 @@ const Product = (props: any) => {
   const { id } = useParams();
   // User context needed for updateProductCost mutation
   useContext(UserContext);
+  const { t } = useTranslation();
   
   // React Query hooks
   const { data: categories = [] } = useCategories();
@@ -54,11 +56,11 @@ const Product = (props: any) => {
       { productId: productRendered?.id, cost: updatedCost },
       {
         onSuccess: () => {
-          setMessage(clear ? 'Offer stopped' : 'Cost updated successfully');
+          setMessage(clear ? t('product.offerStopped') : t('product.costUpdated'));
           setType(WarningMessageType.SUCCESSFUL);
         },
         onError: () => {
-          setMessage('Failed to update cost');
+          setMessage(t('product.costUpdateFailed'));
           setType(WarningMessageType.ERROR);
         }
       }
@@ -69,25 +71,25 @@ const Product = (props: any) => {
     if (product?.cost)
       return (
       <div className="product__cost">
-        <div className="product__cost-value">Cost ${productRendered?.cost}</div>
+        <div className="product__cost-value">{t('product.cost', { amount: productRendered?.cost })}</div>
         {!hideOfferButton && (<div className="product__cost-button">
-            <Button text="Stop Offer" onClick={() => updateCost(true)} />
+            <Button text={t('product.stopOffer')} onClick={() => updateCost(true)} />
         </div>)}
       </div>);
     else {
     return (
       <div className="product__cost">
-        <div className="product__cost-text">Want to sell it? Just set a cost! (MAX $100)</div>
+        <div className="product__cost-text">{t('product.sellPrompt')}</div>
         <div className="product__cost-elements">
           $<TextField type="number" name="costTF" value={cost.toString()}
             min={0} max={100} onChange={(e: any) => setCost(e.target.value)} />
-          <Button text="Sell" onClick={() => updateCost()}/>
+          <Button text={t('product.sell')} onClick={() => updateCost()}/>
         </div>
       </div>);
     }
   }
 
-  if (!productRendered) return <Loading size="lg" message="Loading product..." />;
+  if (!productRendered) return <Loading size="lg" message={t('product.loading')} />;
 
   return (
     <div className="product">
@@ -102,8 +104,8 @@ const Product = (props: any) => {
           height="200"
           width="100" />
       <hr />
-      <div>Category: { category && category.name }</div>
-      <div>Subcategory: { subcategory && subcategory.name }</div>
+      <div>{t('product.categoryLabel')}{ category && category.name }</div>
+      <div>{t('product.subcategoryLabel')}{ subcategory && subcategory.name }</div>
       {showCost && renderCost()}
     </div>
   );

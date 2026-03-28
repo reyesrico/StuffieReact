@@ -21,6 +21,7 @@ type FriendRowProps = {
 
 const FriendRow = ({ user }: FriendRowProps) => {
   const [picture, setPicture] = React.useState<string>();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     existImage(user.id, "stuffiers/")
@@ -31,7 +32,7 @@ const FriendRow = ({ user }: FriendRowProps) => {
   return (
     <div className='friend-row'>
       <div className='friend-row__description'>
-        {picture && (<img src={picture} className="friend-row__photo" alt="User Pic" />)}
+        {picture && (<img src={picture} className="friend-row__photo" alt={t('common.userPicAlt')} />)}
         <div className='friend-row__info'>
           <span className='friend-row__name'>{user.first_name} {user.last_name}</span>
           <span className='friend-row__email'>{user.email}</span>
@@ -81,7 +82,7 @@ const Friends = () => {
       <div className="friends__requests">
         <hr />
         <h3 className="friends__title">
-          <div>Requests</div>
+          <div>{t('friends.requests')}</div>
           <div className="friends__warning">{requests.length}</div>
         </h3>
         <ul>
@@ -93,10 +94,10 @@ const Friends = () => {
                 {friend.first_name} {friend.last_name} ({friend.email})
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend, true)} text="Accept" />
+                  <Button onClick={() => executeRequest(friend, true)} text={t('common.accept')} />
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend)} text="Reject" />
+                  <Button onClick={() => executeRequest(friend)} text={t('common.reject')} />
                 </div>
               </li>
             )}
@@ -110,24 +111,24 @@ const Friends = () => {
   const handleRequest = () => {
     sendFriendRequest(emailToRequest, user.id)
     .then(() => {
-      setMessage('Request sent succesfully');
+      setMessage(t('friends.requestSent'));
       setEmailToRequest('');
     })
     .catch(() => {
-      setMessage('Request couldnt be sent');
+      setMessage(t('friends.requestFailed'));
       setEmailToRequest('');
     });
   }
 
   const getMessage = () => {
-    const message =
-      executeStatus === WarningMessageType.ERROR ? 'was not added' :
-      executeStatus === WarningMessageType.WARNING ? 'was rejected!' :
-      executeStatus === WarningMessageType.SUCCESSFUL ? 'was accepted!' : null;
+    const status =
+      executeStatus === WarningMessageType.ERROR ? t('friends.notAdded') :
+      executeStatus === WarningMessageType.WARNING ? t('friends.rejected') :
+      executeStatus === WarningMessageType.SUCCESSFUL ? t('friends.accepted') : null;
 
-    if (!message) return '';
+    if (!status) return '';
 
-    return `Friend ${emailToRequest} ${message}`;
+    return t('friends.statusMessage', { email: emailToRequest, status });
   }
 
   return (
@@ -144,14 +145,14 @@ const Friends = () => {
         <h3 className="friends__title">{t('Add-Friend')}</h3>
         <div className="friends__form">
           <TextField
-            placeholder="Friend Email"
+            placeholder={t('friends.emailPlaceholder')}
             type="text"
             name="friend_email"
             value={emailToRequest}
             onChange={(e: any) => setEmailToRequest(e.target.value)}
           />
           <div className="friends__button">
-            <Button text="Request" onClick={() => handleRequest()} />
+            <Button text={t('friends.requestButton')} onClick={() => handleRequest()} />
           </div>
         </div>
         {message && (<div className="friends__message">{message}</div>)}

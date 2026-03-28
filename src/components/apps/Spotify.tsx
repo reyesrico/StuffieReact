@@ -11,6 +11,7 @@
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
 import { getToken, searchTracks } from '../../api/external/spotify';
@@ -33,6 +34,7 @@ const Spotify = () => {
   // Use environment variables for Spotify credentials
   const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
   const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+  const { t } = useTranslation();
 
   const [token, setToken] = useState<string | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -47,7 +49,7 @@ const Spotify = () => {
   useEffect(() => {
     if (!clientId || !clientSecret) {
       setIsLoading(false);
-      setError('Spotify credentials not configured. Add VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET to your .env file.');
+      setError(t('spotify.credentialsError'));
       return;
     }
 
@@ -79,7 +81,7 @@ const Spotify = () => {
       } catch (err) {
         console.error('Spotify error:', err);
         if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to connect to Spotify');
+          setError(err instanceof Error ? err.message : t('spotify.connectionFailed'));
         }
       } finally {
         if (isMounted) {
@@ -114,7 +116,7 @@ const Spotify = () => {
         setSelectedTrack(searchResults[0]);
       }
     } catch (err) {
-      setError('Search failed');
+      setError(t('spotify.searchFailed'));
     } finally {
       setIsSearching(false);
     }
@@ -133,7 +135,7 @@ const Spotify = () => {
   if (isLoading) {
     return (
       <div className="spotify spotify--loading">
-        <Loading size="lg" message="Connecting to Spotify..." />
+        <Loading size="lg" message={t('spotify.connecting')} />
       </div>
     );
   }
@@ -142,7 +144,7 @@ const Spotify = () => {
     return (
       <div className="spotify spotify--error">
         <div className="spotify__error-icon">🎵</div>
-        <h3>Spotify Error</h3>
+        <h3>{t('spotify.errorTitle')}</h3>
         <p>{error}</p>
       </div>
     );
@@ -151,20 +153,20 @@ const Spotify = () => {
   return (
     <div className="spotify">
       <div className="spotify__header">
-        <h2>🎵 Spotify</h2>
+        <h2>{t('spotify.title')}</h2>
       </div>
 
       {/* Search Bar */}
       <form className="spotify__search" onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Search for songs, artists..."
+          placeholder={t('spotify.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="spotify__search-input"
         />
         <button type="submit" className="spotify__search-btn" disabled={!searchQuery.trim() || isSearching}>
-          {isSearching ? '...' : '🔍 Search'}
+          {isSearching ? '...' : t('spotify.searchButton')}
         </button>
       </form>
 
@@ -172,7 +174,7 @@ const Spotify = () => {
       {selectedTrack && (
         <div className="spotify__embed-container">
           <iframe
-            title="Spotify Player"
+            title={t('spotify.playerTitle')}
             src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
             width="100%"
             height="152"
@@ -187,15 +189,15 @@ const Spotify = () => {
       {/* Tracks List */}
       <div className="spotify__tracks">
         <div className="spotify__tracks-header">
-          <h3>{searchTitle ? `Results: "${searchTitle}"` : 'Tracks'}</h3>
+          <h3>{searchTitle ? t('spotify.results', { query: searchTitle }) : t('spotify.tracks')}</h3>
         </div>
         <p className="spotify__tracks-note">
-          🎵 Click a track to play it using the Spotify player above.
+          {t('spotify.playInstruction')}
         </p>
         {isSearching ? (
-          <Loading size="md" message="Searching..." />
+          <Loading size="md" message={t('spotify.searching')} />
         ) : tracks.length === 0 ? (
-          <p className="spotify__empty">No results found. Try a different search.</p>
+          <p className="spotify__empty">{t('spotify.noResults')}</p>
         ) : (
           <div className="spotify__track-list">
             {tracks.map((track) => (
@@ -227,7 +229,7 @@ const Spotify = () => {
                   rel="noopener noreferrer"
                   className="spotify__track-link"
                   onClick={(e) => e.stopPropagation()}
-                  title="Open in Spotify app"
+                  title={t('spotify.openInApp')}
                 >
                   🔗
                 </a>

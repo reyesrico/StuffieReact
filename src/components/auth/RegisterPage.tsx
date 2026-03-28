@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import TextField from '../shared/TextField';
@@ -22,6 +23,7 @@ import './RegisterPage.scss';
 export function RegisterPage() {
   const navigate = useNavigate();
   const { theme } = useContext(ThemeContext);
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -43,15 +45,15 @@ export function RegisterPage() {
 
     // Validation
     if (!firstName || !lastName || !email || !password) {
-      setMessage('Please fill in all fields');
+      setMessage(t('register.fillAllFields'));
       return;
     }
     if (password !== confirmPassword) {
-      setMessage('Passwords do not match');
+      setMessage(t('register.passwordMismatch'));
       return;
     }
     if (password.length < 6) {
-      setMessage('Password must be at least 6 characters');
+      setMessage(t('register.passwordTooShort'));
       return;
     }
 
@@ -67,14 +69,14 @@ export function RegisterPage() {
       });
       
       setIsSuccess(true);
-      setMessage('Registration successful! Please wait for admin approval, then login.');
+      setMessage(t('register.successMessage'));
       
       // Redirect to login after 3 seconds
       setTimeout(() => {
         navigate('/login');
       }, 3000);
     } catch (err: any) {
-      setMessage(err?.message || "Error: Couldn't register. Try again.");
+      setMessage(err?.message || t('register.registerError'));
     } finally {
       setIsLoading(false);
     }
@@ -99,10 +101,10 @@ export function RegisterPage() {
   return (
     <div className="login-page">
       <div className="login-page__header">
-        <img src={logoSrc} alt="Stuffie Logo" width="60" height="60" className="login-page__logo" />
+        <img src={logoSrc} alt={t('common.logoAlt')} width="60" height="60" className="login-page__logo" />
         <h1 className="login-page__title">
           <span className="login-page__stuffie">Stuffie</span>
-          <span className="login-page__slogan">Connecting Life</span>
+          <span className="login-page__slogan">{t('common.slogan')}</span>
         </h1>
       </div>
 
@@ -112,65 +114,65 @@ export function RegisterPage() {
 
       {isLoading ? (
         <div className="login-page__loading">
-          <Loading size="xl" message="Registering..." />
+          <Loading size="xl" message={t('register.registering')} />
         </div>
       ) : isSuccess ? (
         <div className="login-page__success">
-          <p>Redirecting to login...</p>
+          <p>{t('register.redirecting')}</p>
         </div>
       ) : (
         <div className="login-page__content">
           <div className="login">
-            <h2>Register</h2>
+            <h2>{t('register.title')}</h2>
             <form className="login__form" onSubmit={(e) => e.preventDefault()}>
               <TextField
                 type="text"
                 name="firstName"
-                placeholder="First Name"
+                placeholder={t('register.firstNamePlaceholder')}
                 value={formData.firstName}
                 onChange={updateField('firstName')}
               />
               <TextField
                 type="text"
                 name="lastName"
-                placeholder="Last Name"
+                placeholder={t('register.lastNamePlaceholder')}
                 value={formData.lastName}
                 onChange={updateField('lastName')}
               />
               <TextField
                 type="email"
                 name="email"
-                placeholder="Email"
+                placeholder={t('register.emailPlaceholder')}
                 value={formData.email}
                 onChange={updateField('email')}
               />
               <TextField
                 type="password"
                 name="password"
-                placeholder="Password"
+                placeholder={t('register.passwordPlaceholder')}
                 value={formData.password}
                 onChange={updateField('password')}
               />
               <TextField
                 type="password"
                 name="confirmPassword"
-                placeholder="Confirm Password"
+                placeholder={t('register.confirmPasswordPlaceholder')}
                 value={formData.confirmPassword}
                 onKeyPress={handleKeyPress}
                 onChange={updateField('confirmPassword')}
               />
-              <Button onClick={handleRegister} text="Register" />
+              <Button onClick={handleRegister} text={t('register.button')} />
             </form>
           </div>
 
           <div className="login-page__separator">
-            <span>OR</span>
+            <span>{t('common.or')}</span>
           </div>
 
           <div className="login-page__register-link">
-            <p>Already have an account?</p>
+            <p>{t('register.hasAccount')}</p>
             <Link to="/login" className="login-page__link">
-              Login here
+              {t('register.loginLink')}
             </Link>
           </div>
         </div>

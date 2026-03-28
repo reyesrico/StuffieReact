@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Product from '../content/Product';
@@ -19,6 +20,7 @@ const Buy = () => {
   const [friend, setFriend] = useState({ first_name: '' });
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!product) {
@@ -33,7 +35,7 @@ const Buy = () => {
   }, [product, friendId, navigate]);
 
   const buy = () => {
-    setMessage('Buy');
+    setMessage(t('buy.successMessage'));
     setType(WarningMessageType.SUCCESSFUL);
   };
 
@@ -45,11 +47,11 @@ const Buy = () => {
     <div className="buy">
       <WarningMessage message={message} type={type} />
       <div className="buy__product">
-        <h2>{friend?.first_name} Product</h2>
+        <h2>{t('buy.friendProduct', { name: friend?.first_name })}</h2>
         <hr />
         <Product match={match} key={product.id} product={product} showCost={true} hideOfferButton={true} />
       </div>
-      <Button type="submit" onClick={() => buy()} text="Request Buy" />
+      <Button type="submit" onClick={() => buy()} text={t('buy.requestBuy')} />
     </div>
   );
 };

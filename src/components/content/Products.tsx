@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { get, map, uniq } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -34,6 +35,7 @@ import './Products.scss';
 const Products = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  const { t } = useTranslation();
   
   // React Query hooks
   const { data: categories = [] } = useCategories();
@@ -74,22 +76,22 @@ const Products = () => {
     if (isLoan) {
       deleteLoanMutation.mutate(_id, {
         onSuccess: () => {
-          setMessage('Loan request deleted successfully');
+          setMessage(t('products.loanDeleted'));
           setType(WarningMessageType.SUCCESSFUL);
         },
         onError: () => {
-          setMessage('Failed to delete loan request');
+          setMessage(t('products.loanDeleteFailed'));
           setType(WarningMessageType.ERROR);
         }
       });
     } else {
       deleteExchangeMutation.mutate(_id, {
         onSuccess: () => {
-          setMessage('Exchange request deleted successfully');
+          setMessage(t('products.exchangeDeleted'));
           setType(WarningMessageType.SUCCESSFUL);
         },
         onError: () => {
-          setMessage('Failed to delete exchange request');
+          setMessage(t('products.exchangeDeleteFailed'));
           setType(WarningMessageType.ERROR);
         }
       });
@@ -102,7 +104,7 @@ const Products = () => {
       <div className="products__requests">
         <hr />
         <h3 className="products__requests-title">
-          <div>Exchange Requests</div>
+          <div>{t('products.exchangeRequests')}</div>
           <div className="products__warning">{requests.length}</div>
         </h3>
         <ul>
@@ -111,7 +113,7 @@ const Products = () => {
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
             // const isUserOwner = user === owner;
-            const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
+            const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
             const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
             const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
 
@@ -120,23 +122,20 @@ const Products = () => {
               // eslint-disable-next-line react/no-array-index-key
               <li className="products__request" key={index}>
                 <div className="products__request-group">
-                  {/* <div className="products__request-text">
-                    Owner: {owner && isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
-                  </div> */}
                   <div className="products__request-text">
-                    Product: {get(ownerProduct, 'name')}
+                    {t('products.productLabel')}{get(ownerProduct, 'name')}
                   </div>
                   <div className="products__request-text">
-                    Requestor: {isUserRequestor ? 'Me' : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : 'Unknown'}
+                    {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
                   </div>
                   <div className="products__request-text">
-                    Product: {get(requestorProduct, 'name')}
+                    {t('products.productLabel')}{get(requestorProduct, 'name')}
                   </div>
                 </div>
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptExchange functionality */}
-                    <Button onClick={() => {}} text="Accept" disabled />
+                    <Button onClick={() => {}} text={t('common.accept')} disabled />
                   </div>}
                   <div className="products__request-button">
                     <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} />
@@ -157,7 +156,7 @@ const Products = () => {
       <div className="products__requests">
         <hr />
         <h3 className="products__requests-title">
-          <div>Loan Requests</div>
+          <div>{t('products.loanRequests')}</div>
           <div className="products__warning">{loans.length}</div>
         </h3>
         <ul>
@@ -166,27 +165,24 @@ const Products = () => {
             const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
             const isUserRequestor = user === requestor;
             // const isUserOwner = user === owner;
-            const rejectText = isUserRequestor ? 'Cancel' : 'Reject';
+            const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
             const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
 
             return (
               // eslint-disable-next-line react/no-array-index-key
               <li className="products__request" key={index}>
                 <div className="products__request-group">
-                  {/* <div className="products__request-text">
-                    Owner: {owner && isUserOwner ? 'Me' : `${owner.first_name} ${owner.last_name} (${owner.email})`}
-                  </div> */}
                   <div className="products__request-text">
-                    Requestor: {isUserRequestor ? 'Me' : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : 'Unknown'}
+                    {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
                   </div>
                   <div className="products__request-text">
-                    Product: {get(product, 'name')}
+                    {t('products.productLabel')}{get(product, 'name')}
                   </div>
                 </div>
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptLoan functionality */}
-                    <Button onClick={() => {}} text="Accept" disabled />
+                    <Button onClick={() => {}} text={t('common.accept')} disabled />
                   </div>}
                   <div className="products__request-button">
                     <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} />
@@ -206,11 +202,11 @@ const Products = () => {
     <div className="products">
       <WarningMessage message={message} type={type} />
       <div className="products__title">
-        <h2>{user?.first_name || 'My'} Stuff</h2>
+        <h2>{user?.first_name || t('products.myStuff')} Stuff</h2>
         <div className="products__add-product">
-          <Button text="Add Product" onClick={() => navigate('/product/add')} />
+          <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} />
           <Button 
-            text={isRefreshing ? "Refreshing..." : "Refresh Products"} 
+            text={isRefreshing ? t('products.refreshing') : t('products.refresh')} 
             onClick={refreshProducts}
             disabled={isRefreshing}
           />
@@ -219,7 +215,7 @@ const Products = () => {
       {Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && renderRequests()}
       {Array.isArray(loanRequests) && loanRequests.length > 0 && renderLoans()}
       <hr />
-      {isProductsEmpty(products) && (<div>No Stuff! Add Products!</div>)}
+      {isProductsEmpty(products) && (<div>{t('products.noStuff')}</div>)}
       {!isProductsEmpty(products) &&
         (<div>
           {categories.map((category: Category, index: number) => {
@@ -250,7 +246,7 @@ const Products = () => {
               </div>);
           })}
           <hr />
-          <Button onClick={() => generateReport()} text="Generate Report" />
+          <Button onClick={() => generateReport()} text={t('products.generateReport')} />
         </div>)
       }
     </div>

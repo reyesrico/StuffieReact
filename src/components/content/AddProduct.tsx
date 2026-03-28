@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -21,6 +22,7 @@ const AddProduct = () => {
   const navigate = useNavigate();
   // User context needed for AddProduct mutation
   useContext(UserContext);
+  const { t } = useTranslation();
 
   // React Query hooks
   const { data: categories = [] } = useCategories();
@@ -97,8 +99,8 @@ const AddProduct = () => {
   // }
 
   const getMessage = () => {
-    const message = status === WarningMessageType.ERROR ? 'was not added' : 'was added successfully!';
-    return (product && !isEmpty(stuffStuffier)) ? `Stuff ${product.name} ${message}` : "";
+    const statusMsg = status === WarningMessageType.ERROR ? t('addProduct.notAdded') : t('addProduct.addedSuccess');
+    return (product && !isEmpty(stuffStuffier)) ? t('addProduct.statusMessage', { name: product.name, status: statusMsg }) : "";
   }
 
   const renderProducts = (category: Category, subcategory: Subcategory) => {
@@ -126,46 +128,46 @@ const AddProduct = () => {
 
   return (
     <div className="add-product">
-      <h3>Add Stuff</h3>
+      <h3>{t('addProduct.title')}</h3>
       <WarningMessage message={getMessage()} type={status} />
       <hr />
       <form>
-        <div>Select Product</div>
+        <div>{t('addProduct.selectProduct')}</div>
         <div className="add-product__row">
-          <label>Category</label>
+          <label>{t('addProduct.categoryLabel')}</label>
           <Dropdown onChange={(category: any) => updateCategory(category)} values={categories} />
         </div>
         <div className="add-product__row">
-          <label>SubCategory</label>
+          <label>{t('addProduct.subcategoryLabel')}</label>
           <Dropdown onChange={(subcategory: any) => updateSubcategory(subcategory)} values={subcategories} />
         </div>
-        {!productsByCategories.length && <div>There are no products</div>}
+        {!productsByCategories.length && <div>{t('addProduct.noProducts')}</div>}
         {productsByCategories.length > 0 && (
           <div className="add-product__row">
-            <label>Product</label>
+            <label>{t('addProduct.productLabel')}</label>
             <Dropdown onChange={(product: Product) => setProduct(product)} values={productsByCategories} />
           </div>
         )}
         <hr />
-        <Button text="Add Product" disabled={!(category && subcategory && product && product.name)}
+        <Button text={t('addProduct.addButton')} disabled={!(category && subcategory && product && product.name)}
           onClick={() => registerProduct()}
         />
         <hr />
-        <div>Create New Product</div>
+        <div>{t('addProduct.createNew')}</div>
         <div className="add-product__row">
-          <label>Name</label>
+          <label>{t('addProduct.nameLabel')}</label>
           <TextField name="name" type="text" onChange={(e: any) => setName(e.target.value)} />
         </div>
         <div className="add-product__row">
-          <label>Category</label>
+          <label>{t('addProduct.categoryLabel')}</label>
           <Dropdown onChange={(category: any) => setCategory(category)} values={categories} />
         </div>
         <div className="add-product__row">
-          <label>SubCategory</label>
+          <label>{t('addProduct.subcategoryLabel')}</label>
           <Dropdown onChange={(subcategory: any) => setSubcategory(subcategory)} values={subcategories} />
         </div>
         <hr />
-        <Button onClick={() => createProduct()} text="Send" />
+        <Button onClick={() => createProduct()} text={t('addProduct.send')} />
       </form>
     </div>
   );

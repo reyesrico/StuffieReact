@@ -130,7 +130,7 @@ const Header = () => {
       <div className="stuffie-header__left">
         <div className="stuffie-header__info">
           <div className="stuffie-header__logo">
-            <img src={logoSrc} alt="Stuffie Logo" width="42" height="42" />
+            <img src={logoSrc} alt={t('common.logoAlt')} width="42" height="42" />
           </div>
           <div className='stuffie-header__user'>Stuffie</div>
         </div>
@@ -143,7 +143,7 @@ const Header = () => {
             {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
           </div>
           <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/products'>{window.outerWidth >= 1024 && !requests ? "Products" : "Prods"}</Link>
+            <Link to='/products'>{window.outerWidth >= 1024 && !requests ? t('header.products') : t('header.prodsShort')}</Link>
             {requests > 0 && (
               <div className="stuffie-header__warning">
                 <span className="stuffie-header__warning-text">{requests}</span>
