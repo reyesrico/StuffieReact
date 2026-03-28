@@ -1,0 +1,66 @@
+// =============================================================================
+// Page Layout Mixins
+// Defines the standard template for all content pages in the app.
+//
+// Structure:
+//   .page-root      — full-width page wrapper (padding + transparency)
+//   .page-header    — flex row: title left, actions right
+//   .page-title     — h2 / h3 page heading
+//   .page-section   — card-style content block
+//   .page-divider   — <hr> separator
+// =============================================================================
+
+// Page wrapper — transparent (inherits content panel bg + shadow)
+@mixin page-root() {
+  padding: var(--spacing-6);
+  background-color: transparent;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Header row: title on the left, action buttons on the right
+@mixin page-header() {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+  gap: var(--spacing-4);
+}
+
+// Page title (h2 level)
+@mixin page-title() {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.2;
+}
+
+// Page subtitle / section heading (h3 level)
+@mixin page-subtitle() {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-4);
+}
+
+// A card-style content block
+@mixin page-section() {
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+// Grouped action buttons (sm size, right-aligned)
+@mixin page-actions() {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+}

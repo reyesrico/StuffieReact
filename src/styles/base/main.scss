@@ -5,6 +5,7 @@
 @forward './screen';
 @forward './display';
 @forward './button';
+@forward './_page';
 
 // Import display mixins for use in this file
 @use './display' as *;

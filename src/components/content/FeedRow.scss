@@ -69,34 +69,17 @@
 .feed-row__actions {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  gap: var(--spacing-2);
+  align-items: center;
+  gap: var(--spacing-1);
   padding-top: var(--spacing-3);
   border-top: 1px solid var(--border-color);
 }
 
-.feed-row__action {
-  padding: var(--spacing-2) var(--spacing-4);
+.feed-row__ask {
+  font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  transition: all var(--transition-fast);
-  border-radius: var(--radius-md);
-
-  &:hover {
-    background-color: var(--background-secondary);
-    color: var(--color-primary-500);
-  }
-}
-
-.feed-row__link {
-  color: var(--color-primary-500);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-fast);
-
-  &:hover {
-    color: var(--color-primary-700);
-    text-decoration: underline;
-  }
+  margin-right: var(--spacing-1);
+  white-space: nowrap;
 }
 
 .feed-row__text {

@@ -67,17 +67,17 @@
   }
 
   &--secondary {
-    background-color: var(--color-gray-100);
+    background-color: var(--background-tertiary);
     color: var(--text-color);
     box-shadow: var(--shadow-button);
 
     &:hover:not(:disabled) {
-      background-color: var(--color-gray-200);
+      background-color: var(--background-secondary);
       box-shadow: var(--shadow-sm);
     }
 
     &:active:not(:disabled) {
-      background-color: var(--color-gray-300);
+      background-color: var(--border-color);
     }
   }
 
@@ -100,11 +100,11 @@
     color: var(--color-primary-500);
 
     &:hover:not(:disabled) {
-      background-color: var(--color-gray-100);
+      background-color: var(--background-tertiary);
     }
 
     &:active:not(:disabled) {
-      background-color: var(--color-gray-200);
+      background-color: var(--background-secondary);
     }
   }
 

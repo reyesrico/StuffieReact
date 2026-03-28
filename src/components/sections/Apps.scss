@@ -22,11 +22,11 @@
 .apps__item {
   padding: var(--spacing-2) var(--spacing-3);
   border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast);
   cursor: pointer;
 
   &:hover {
-    background-color: var(--background-secondary);
+    background-color: var(--background-tertiary);
   }
 
   a {
@@ -37,7 +37,6 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
-    transition: color var(--transition-fast);
 
     &:hover {
       color: var(--color-primary-500);
@@ -55,9 +54,10 @@
 
   &:hover {
     color: var(--text-color);
-    background-color: var(--background-secondary);
+    background-color: var(--background-tertiary);
   }
 }
+
 
 .apps__language-open {
   color: var(--text-color);

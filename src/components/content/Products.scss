@@ -1,50 +1,30 @@
 // =============================================================================
 // Products Component Styles
-// Modern products grid layout
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .products {
-  padding: var(--spacing-4);
-  background-color: transparent;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
+  @include page-root;
   overflow-x: hidden;
 
-  // Ensure Swiper doesn't overflow
   .swiper {
     width: 100%;
     max-width: 100%;
     overflow: hidden;
   }
-
-  .warning-message {
-    width: 100%;
-    padding: var(--spacing-3);
-    background-color: var(--color-warning, #FFF3E0);
-    border-radius: var(--radius-md);
-    color: var(--text-color);
-    margin-bottom: var(--spacing-4);
-  }
 }
 
 .products__title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-3) 0;
-  margin-bottom: var(--spacing-4);
+  @include page-header;
 
   h2 {
-    font-size: var(--font-size-2xl);
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
+    @include page-title;
   }
+}
+
+.products__add-product {
+  @include page-actions;
 }
 
 .products__subheader {
@@ -56,19 +36,21 @@
   font-weight: 500;
   font-size: var(--font-size-sm);
   border-radius: var(--radius-full);
+  margin-bottom: var(--spacing-3);
 }
 
-.products__request {
+.products__requests {
+  margin-bottom: var(--spacing-4);
+}
+
+.products__requests-title {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  margin: var(--spacing-3) 0;
-  padding: var(--spacing-4);
-  background-color: var(--background-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  border-left: 4px solid var(--color-primary-500);
+  margin: var(--spacing-2) 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .products__warning {
@@ -86,14 +68,16 @@
   margin-left: var(--spacing-2);
 }
 
-.products__requests-title {
+.products__request {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  margin: var(--spacing-4) 0;
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-color);
+  margin: var(--spacing-2) 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary-500);
 }
 
 .products__request-group {
@@ -107,6 +91,7 @@
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-2);
+  flex-shrink: 0;
 }
 
 .products__request-text {
@@ -115,7 +100,7 @@
 }
 
 .products__request-button {
-  padding: var(--spacing-1) var(--spacing-3);
+  // wrapper kept for layout; sizing comes from Button component
 }
 
 .products__list {

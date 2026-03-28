@@ -40,6 +40,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [autoTheme, themeSetting]);
 
+  // Sync theme to DOM so [data-theme="dark"] CSS rules activate
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
+
   const setTheme = useCallback((newSetting: ThemeSetting) => {
     setThemeSetting(newSetting);
     localStorage.setItem('theme', newSetting);

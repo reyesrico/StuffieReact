@@ -1,24 +1,21 @@
 // =============================================================================
 // Exchange Component Styles
-// Modern exchange comparison layout
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .exchange {
-  padding: var(--spacing-4);
+  @include page-root;
 }
 
 .exchange__header {
+  @include page-header;
+  margin-bottom: var(--spacing-4);
   padding-bottom: var(--spacing-4);
-  margin-bottom: var(--spacing-6);
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 
   h2 {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
+    @include page-title;
   }
 }
 
@@ -34,14 +31,16 @@
 .exchange__side {
   flex: 1;
   padding: var(--spacing-4);
-  background-color: var(--background-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+
+  h2 {
+    @include page-subtitle;
+  }
 }
 
 .exchange__line {
-  width: 2px;
+  width: 1px;
   background-color: var(--border-color);
   border-radius: var(--radius-full);
-  margin: 0 var(--spacing-4);
 }

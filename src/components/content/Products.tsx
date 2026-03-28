@@ -139,10 +139,10 @@ const Products = () => {
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptExchange functionality */}
-                    <Button onClick={() => {}} text={t('common.accept')} disabled />
+                    <Button onClick={() => {}} text={t('common.accept')} disabled size="sm" variant="outline" />
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} />
+                    <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" />
                   </div>
                 </div>
               </li>
@@ -186,10 +186,10 @@ const Products = () => {
                 <div className="products__request-buttons">
                   {!isUserRequestor && <div className="products__request-button">
                     {/* TODO: Implement acceptLoan functionality */}
-                    <Button onClick={() => {}} text={t('common.accept')} disabled />
+                    <Button onClick={() => {}} text={t('common.accept')} disabled size="sm" variant="outline" />
                   </div>}
                   <div className="products__request-button">
-                    <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} />
+                    <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" />
                   </div>
                 </div>
               </li>
@@ -240,6 +240,8 @@ const Products = () => {
                         onError: () => { setMessage(t('products.purchaseDeleteFailed')); setType(WarningMessageType.ERROR); },
                       })}
                       text={rejectText}
+                      size="sm"
+                      variant="secondary"
                     />
                   </div>
                 </div>
@@ -257,11 +259,13 @@ const Products = () => {
       <div className="products__title">
         <h2>{user?.first_name || t('products.myStuff')} Stuff</h2>
         <div className="products__add-product">
-          <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} />
+          <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
           <Button 
             text={isRefreshing ? t('products.refreshing') : t('products.refresh')} 
             onClick={refreshProducts}
             disabled={isRefreshing}
+            size="sm"
+            variant="secondary"
           />
         </div>
       </div>
@@ -300,7 +304,7 @@ const Products = () => {
               </div>);
           })}
           <hr />
-          <Button onClick={() => generateReport()} text={t('products.generateReport')} />
+          <Button onClick={() => generateReport()} text={t('products.generateReport')} size="sm" variant="secondary" />
         </div>)
       }
     </div>

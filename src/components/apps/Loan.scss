@@ -1,31 +1,27 @@
 // =============================================================================
 // Loan Component Styles
-// Modern loan form layout
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .loan {
-  padding: var(--spacing-4);
+  @include page-root;
 }
 
 .loan__header {
-  margin-bottom: var(--spacing-6);
+  @include page-header;
+  margin-bottom: var(--spacing-4);
 
   h2 {
-    font-size: var(--font-size-xl);
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
+    @include page-title;
   }
 }
 
 .loan__product {
   margin-bottom: var(--spacing-4);
   padding: var(--spacing-4);
-  background-color: var(--background-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
 }
 
 .loan__form {

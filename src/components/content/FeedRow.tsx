@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+import Button from '../shared/Button';
 import Media from '../shared/Media';
 import { FeedRowProps } from './types';
 import { useSubcategories } from '../../hooks/queries';
@@ -15,6 +16,7 @@ const FeedRow = (props: FeedRowProps) => {
   const [picture, setPicture] = React.useState<string>();
   const { feedPost } = props;
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     existImage(feedPost.friend_id, "stuffiers/")
@@ -43,9 +45,9 @@ const FeedRow = (props: FeedRowProps) => {
     );
   }
 
-  const exchangeTo = { pathname: `/exchange`, state: { product: feedPost.product, friend: feedPost.friend_id } };
-  const loanTo = { pathname: `/loan`, state: { product: feedPost.product, friend: feedPost.friend_id } };
-  const buyTo = { pathname: `/buy`, state: { product: feedPost.product, friend: feedPost.friend_id } };
+  const exchangeState = { product: feedPost.product, friend: feedPost.friend_id };
+  const loanState = { product: feedPost.product, friend: feedPost.friend_id };
+  const buyState = { product: feedPost.product, friend: feedPost.friend_id };
 
   return (
     <div className="feed-row">
@@ -62,17 +64,27 @@ const FeedRow = (props: FeedRowProps) => {
         />
       </div>
       <div className="feed-row__actions">
-        <div className="feed-row__action feed-row__text">{t('feedRow.askFor')}</div>
-        <div className="feed-row__action feed-row__link">
-          <Link to={loanTo}>{t('feedRow.borrow')}</Link>
-        </div>
-        <div className="feed-row__action feed-row__link">
-          <Link to={exchangeTo}>{t('feedRow.trade')}</Link>
-        </div>
-        {feedPost.product.cost &&
-          (<div className="feed-row__action feed-row__link">
-            <Link to={buyTo}>{t('feedRow.buy')}</Link>
-          </div>)}
+        <span className="feed-row__ask">{t('feedRow.askFor')}</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          text={t('feedRow.borrow')}
+          onClick={() => navigate('/loan', { state: loanState })}
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          text={t('feedRow.trade')}
+          onClick={() => navigate('/exchange', { state: exchangeState })}
+        />
+        {feedPost.product.cost && (
+          <Button
+            variant="ghost"
+            size="sm"
+            text={t('feedRow.buy')}
+            onClick={() => navigate('/buy', { state: buyState })}
+          />
+        )}
       </div>
     </div>
   );

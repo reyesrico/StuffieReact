@@ -94,10 +94,10 @@ const Friends = () => {
                 {friend.first_name} {friend.last_name} ({friend.email})
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend, true)} text={t('common.accept')} />
+                  <Button onClick={() => executeRequest(friend, true)} text={t('common.accept')} size="sm" variant="outline" />
                 </div>
                 <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend)} text={t('common.reject')} />
+                  <Button onClick={() => executeRequest(friend)} text={t('common.reject')} size="sm" variant="secondary" />
                 </div>
               </li>
             )}
@@ -152,7 +152,7 @@ const Friends = () => {
             onChange={(e: any) => setEmailToRequest(e.target.value)}
           />
           <div className="friends__button">
-            <Button text={t('friends.requestButton')} onClick={() => handleRequest()} />
+            <Button text={t('friends.requestButton')} onClick={() => handleRequest()} size="sm" />
           </div>
         </div>
         {message && (<div className="friends__message">{message}</div>)}
