@@ -1,12 +1,22 @@
 // =============================================================================
 // CategoryPage Component Styles
-// Modern category listing
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .category-page {
-  padding: var(--spacing-4);
+  @include page-root;
+
+  h3 {
+    @include page-title;
+    margin-bottom: var(--spacing-4);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-4);
+  }
 }
 
 .category-page__row {
@@ -14,18 +24,17 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-4);
-  margin: var(--spacing-3) 0;
-  background-color: var(--background-color);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  transition: all var(--transition-fast);
+  padding: var(--spacing-3) var(--spacing-4);
+  margin: var(--spacing-2) 0;
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid transparent;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
   cursor: pointer;
 
   &:hover {
-    border-color: var(--color-primary-300);
-    box-shadow: var(--shadow-card);
-    transform: translateX(4px);
+    border-left-color: var(--color-primary-500);
+    background-color: var(--background-tertiary);
   }
 }
 
@@ -39,6 +48,17 @@
 .category-page__header-text {
   font-weight: 500;
   color: var(--text-color);
+
+  h3 {
+    font-size: var(--font-size-base) !important;
+    font-weight: 600;
+    margin: 0 0 var(--spacing-1);
+  }
+
+  > div {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
 }
 
 .category-page__icon {
@@ -58,7 +78,5 @@
 .category-page__count {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  padding: var(--spacing-1) var(--spacing-3);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-full);
 }
+

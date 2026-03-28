@@ -1,12 +1,28 @@
 // =============================================================================
 // Product Component Styles
-// Modern product card design
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .product {
-  padding: 0 var(--spacing-2);
+  @include page-root;
+
+  h3 {
+    @include page-title;
+    margin-bottom: var(--spacing-3);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: var(--spacing-3) 0;
+  }
+
+  > div {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-1);
+  }
 }
 
 .product__cost {
@@ -14,8 +30,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: var(--spacing-3);
-  padding: var(--spacing-3);
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-4);
   background-color: var(--background-secondary);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
@@ -47,6 +63,8 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-sm);
+    background-color: var(--background-color);
+    color: var(--text-color);
 
     &:focus {
       outline: none;
@@ -54,4 +72,8 @@
       box-shadow: var(--shadow-focus);
     }
   }
+}
+
+.product__cost-button {
+  flex-shrink: 0;
 }

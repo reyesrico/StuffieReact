@@ -26,7 +26,7 @@ const Content = () => {
     <div className="content">
       <div className="content__info">
         <div className="content__rows">
-          {map(feed, (feedPost: FeedPost, index) => (<FeedRow key={index} feedPost={feedPost} />))}
+          {map(feed, (feedPost: FeedPost, index: number) => (<FeedRow key={index} feedPost={feedPost} />))}
         </div>
       </div>
     </div>

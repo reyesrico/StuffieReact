@@ -1,25 +1,50 @@
+// =============================================================================
+// AddCategory Component Styles
+// =============================================================================
+
 @use '../../styles/base/main' as *;
 
 .add-category {
-  @include content-detail-background;
+  @include page-root;
+}
+
+.add-category__title {
+  @include page-title;
+  margin-bottom: var(--spacing-6);
 }
 
 .add-category__row {
-  @include flex(row, flex-start);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
 }
 
 label {
-  width: 110px;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
+  min-width: 110px;
 }
 
 .add-category__values {
-  @include flex(row, space-around);
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
 }
 
 .add-category__item {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
 }
 
 .add-category__id {
-  font-weight: bold;
+  font-weight: 700;
+  color: var(--text-color);
 }

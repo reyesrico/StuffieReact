@@ -1,23 +1,24 @@
 // =============================================================================
 // AddProduct Component Styles
-// Modern form layout
 // =============================================================================
 
 @use '../../styles/base/main' as *;
 
 .add-product {
-  padding: var(--spacing-4);
-  background-color: var(--background-page);
-  min-height: 100vh;
+  @include page-root;
+}
+
+.add-product__title {
+  @include page-title;
+  margin-bottom: var(--spacing-6);
 }
 
 .add-product__form {
   max-width: 600px;
-  margin: 0 auto;
   padding: var(--spacing-6);
-  background-color: var(--background-color);
+  background-color: var(--background-secondary);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  margin-bottom: var(--spacing-4);
 }
 
 .add-product__row {
@@ -27,12 +28,7 @@
   margin-bottom: var(--spacing-4);
 }
 
-.add-product__row label {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-color);
-}
-
+.add-product__row label,
 label {
   font-size: var(--font-size-sm);
   font-weight: 500;
@@ -41,8 +37,8 @@ label {
 }
 
 .add-product__message-success {
-  background-color: var(--color-success, #E8F5E9);
-  color: var(--color-success, #388E3C);
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--color-success);
   font-weight: 500;
   padding: var(--spacing-3) var(--spacing-4);
   border-radius: var(--radius-md);
@@ -53,8 +49,8 @@ label {
 }
 
 .add-product__message-error {
-  background-color: var(--color-error, #FFEBEE);
-  color: var(--color-error, #D32F2F);
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--color-error);
   font-weight: 500;
   padding: var(--spacing-3) var(--spacing-4);
   border-radius: var(--radius-md);

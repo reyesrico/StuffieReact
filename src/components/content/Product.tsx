@@ -73,7 +73,7 @@ const Product = (props: any) => {
       <div className="product__cost">
         <div className="product__cost-value">{t('product.cost', { amount: productRendered?.cost })}</div>
         {!hideOfferButton && (<div className="product__cost-button">
-            <Button text={t('product.stopOffer')} onClick={() => updateCost(true)} />
+            <Button text={t('product.stopOffer')} onClick={() => updateCost(true)} size="sm" variant="secondary" />
         </div>)}
       </div>);
     else {
@@ -83,7 +83,7 @@ const Product = (props: any) => {
         <div className="product__cost-elements">
           $<TextField type="number" name="costTF" value={cost.toString()}
             min={0} max={100} onChange={(e: any) => setCost(e.target.value)} />
-          <Button text={t('product.sell')} onClick={() => updateCost()}/>
+          <Button text={t('product.sell')} onClick={() => updateCost()} size="sm" />
         </div>
       </div>);
     }
