@@ -6,13 +6,6 @@
 
 .products {
   @include page-root;
-  overflow-x: hidden;
-
-  .swiper {
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-  }
 }
 
 .products__title {
@@ -39,85 +32,9 @@
   margin-bottom: var(--spacing-3);
 }
 
-.products__requests {
-  margin-bottom: var(--spacing-4);
-}
-
-.products__requests-title {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: var(--spacing-2) 0 var(--spacing-3);
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.products__warning {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: white;
-  background-color: var(--color-error);
-  border-radius: var(--radius-full);
-  margin-left: var(--spacing-2);
-}
-
-.products__request {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin: var(--spacing-2) 0;
-  padding: var(--spacing-3) var(--spacing-4);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-primary-500);
-}
-
-.products__request-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-}
-
-.products__request-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-2);
-  flex-shrink: 0;
-}
-
-.products__request-text {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.products__request-button {
-  // wrapper kept for layout; sizing comes from Button component
-}
-
-.products__list {
+.products__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: var(--spacing-4);
-
-  .product {
-    background-color: var(--background-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-    transition: all var(--transition-base);
-
-    &:hover {
-      box-shadow: var(--shadow-card-hover);
-      transform: translateY(-2px);
-    }
-  }
+  margin-bottom: var(--spacing-6);
 }

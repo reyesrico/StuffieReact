@@ -145,6 +145,10 @@
 
     "header.products": "Products",
     "header.prodsShort": "Prods",
+    "header.notifications": "Notifications",
+
+    "notifications.title": "Notifications",
+    "notifications.empty": "You have no pending notifications.",
 
     "main.errorBoundaryTitle": "Something went wrong:",
 

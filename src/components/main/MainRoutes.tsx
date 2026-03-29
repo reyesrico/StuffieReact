@@ -24,6 +24,7 @@ const SubcategoryPage = lazy(() => import('../content/SubcategoryPage'));
 const Support = lazy(() => import('../apps/Support'));
 const Tickets = lazy(() => import('../apps/Tickets'));
 const Cards = lazy(() => import('../apps/Cards'));
+const Notifications = lazy(() => import('../content/Notifications'));
 
 const MainRoutes = () => {
   return (
@@ -50,6 +51,7 @@ const MainRoutes = () => {
       <Route path="support" element={<Support />} />
       <Route path="tickets" element={<Tickets />} />
       <Route path="cards" element={<Cards />} />
+      <Route path="notifications" element={<Notifications />} />
     </Routes>
     </Suspense>
   );

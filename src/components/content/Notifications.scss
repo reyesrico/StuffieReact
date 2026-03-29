@@ -1,0 +1,88 @@
+// =============================================================================
+// Notifications Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.notifications {
+  @include page-root;
+}
+
+.notifications__header {
+  @include page-header;
+}
+
+.notifications__title {
+  @include page-title;
+}
+
+.notifications__empty {
+  padding: var(--spacing-8) var(--spacing-4);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}
+
+.notifications__section {
+  margin-bottom: var(--spacing-4);
+}
+
+.notifications__section-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: var(--spacing-2) 0 var(--spacing-3);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.notifications__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  background-color: var(--color-error);
+  border-radius: var(--radius-full);
+  margin-left: var(--spacing-2);
+}
+
+.notifications__request {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--spacing-2) 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary-500);
+}
+
+.notifications__request-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.notifications__request-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+}
+
+.notifications__request-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.notifications__request-button {
+  // wrapper kept for layout; sizing comes from Button component
+}

@@ -16,6 +16,7 @@ import {
   useProducts, 
   useExchangeRequests, 
   useLoanRequests,
+  usePurchaseRequests,
   usePendingProducts 
 } from '../../hooks/queries';
 import { clearAllCache } from '../../utils/cache';
@@ -42,6 +43,7 @@ const Header = () => {
   const { data: products = {} } = useProducts();
   const { data: exchangeRequests = [] } = useExchangeRequests();
   const { data: loanRequests = [] } = useLoanRequests();
+  const { data: purchaseRequests = [] } = usePurchaseRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ const Header = () => {
   }, [user?.id]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
-  const requests = exchangeRequests.length + loanRequests.length;
+  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length;
 
   const handleLogout = (event: any) => {
     event.preventDefault();
@@ -142,8 +144,11 @@ const Header = () => {
             <Link to='/friends'>{t('Friends')}</Link>
             {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
           </div>
-          <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/products'>{window.outerWidth >= 1024 && !requests ? t('header.products') : t('header.prodsShort')}</Link>
+          <div className={`stuffie-header__section-item ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
+            <Link to='/products'>{window.outerWidth >= 1024 ? t('header.products') : t('header.prodsShort')}</Link>
+          </div>
+          <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/notifications') ? 'stuffie-header__section-item--active' : ''}`}>
+            <Link to='/notifications'>{t('header.notifications')}</Link>
             {requests > 0 && (
               <div className="stuffie-header__warning">
                 <span className="stuffie-header__warning-text">{requests}</span>
