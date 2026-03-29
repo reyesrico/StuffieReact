@@ -65,6 +65,9 @@
     "register.passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
     "register.successMessage": "¡Registro exitoso! Por favor espera la aprobación del administrador y luego inicia sesión.",
     "register.registerError": "Error: No se pudo registrar. Intenta de nuevo.",
+    "register.addPhoto": "Agregar foto de perfil",
+    "register.changePhoto": "Cambiar foto",
+    "register.photoLabel": "Foto de perfil",
 
     "products.exchangeRequests": "Solicitudes de Intercambio",
     "products.loanRequests": "Solicitudes de Préstamo",

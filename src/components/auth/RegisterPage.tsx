@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 import Button from '../shared/Button';
 import TextField from '../shared/TextField';
@@ -9,6 +10,7 @@ import WarningMessage from '../shared/WarningMessage';
 import ThemeContext from '../../context/ThemeContext';
 import { WarningMessageType } from '../shared/types';
 import { registerUser } from '../../api/users.api';
+import config from '../../config/api';
 
 import './RegisterPage.scss';
 
@@ -35,6 +37,35 @@ export function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] ?? null;
+    setFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target?.result as string);
+      reader.readAsDataURL(selected);
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const uploadToCloudinary = async (userId: number) => {
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'stuffiers');
+    formData.append('public_id', String(userId));
+    formData.append('upload_preset', config.cloudinary.uploadPreset);
+    await axios.post(
+      `https://api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/image/upload`,
+      formData,
+      { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+    );
+  };
 
   const updateField = (field: string) => (e: any) => {
     setFormData(prev => ({ ...prev, [field]: e.target.value }));
@@ -61,12 +92,21 @@ export function RegisterPage() {
     setMessage('');
 
     try {
-      await registerUser({
+      const user = await registerUser({
         first_name: firstName,
         last_name: lastName,
         email,
         password,
       });
+
+      // Upload profile photo to Cloudinary if one was selected
+      if (file && user?.id) {
+        try {
+          await uploadToCloudinary(user.id);
+        } catch {
+          // Photo upload failure is non-fatal — registration already succeeded
+        }
+      }
       
       setIsSuccess(true);
       setMessage(t('register.successMessage'));
@@ -125,6 +165,33 @@ export function RegisterPage() {
           <div className="login">
             <h2>{t('register.title')}</h2>
             <form className="login__form" onSubmit={(e) => e.preventDefault()}>
+              {/* Avatar upload */}
+              <div className="register__avatar">
+                <div
+                  className="register__avatar-circle"
+                  onClick={() => fileInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+                  aria-label={t('register.photoLabel')}
+                >
+                  {preview
+                    ? <img src={preview} alt="preview" className="register__avatar-img" />
+                    : <span className="register__avatar-placeholder">&#128100;</span>
+                  }
+                </div>
+                <label className="register__avatar-label" htmlFor="register-photo">
+                  {preview ? t('register.changePhoto') : t('register.addPhoto')}
+                </label>
+                <input
+                  id="register-photo"
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="register__avatar-input"
+                  onChange={handleFileChange}
+                />
+              </div>
               <TextField
                 type="text"
                 name="firstName"

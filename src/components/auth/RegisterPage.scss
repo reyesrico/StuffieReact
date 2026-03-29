@@ -162,7 +162,6 @@
   }
 }
 
-// Dark theme support
 [data-theme="dark"] {
   .login-page {
     background: var(--bg-primary, #1a1a1a);
@@ -190,4 +189,66 @@
       }
     }
   }
+}
+
+// Avatar upload section
+.register__avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.register__avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--background-secondary, #f0f0f0);
+  border: 2px dashed var(--border-color, #ccc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: var(--color-primary-500, #0078d4);
+    background: var(--background-tertiary, #e8ecf0);
+  }
+}
+
+.register__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.register__avatar-placeholder {
+  font-size: 2rem;
+  line-height: 1;
+  opacity: 0.4;
+}
+
+.register__avatar-label {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--color-primary-500, #0078d4);
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.register__avatar-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }

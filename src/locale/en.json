@@ -65,6 +65,9 @@
     "register.passwordTooShort": "Password must be at least 6 characters",
     "register.successMessage": "Registration successful! Please wait for admin approval, then login.",
     "register.registerError": "Error: Couldn't register. Try again.",
+    "register.addPhoto": "Add profile photo",
+    "register.changePhoto": "Change photo",
+    "register.photoLabel": "Profile photo",
 
     "products.exchangeRequests": "Exchange Requests",
     "products.loanRequests": "Loan Requests",
