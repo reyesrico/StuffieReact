@@ -24,9 +24,6 @@ const Content = () => {
 
   return (
     <div className="content">
-      <div className="content__header">
-        <h2 className="content__title">{t('Feed')}</h2>
-      </div>
       <div className="content__info">
         <div className="content__rows">
           {map(feed, (feedPost: FeedPost, index: number) => (<FeedRow key={index} feedPost={feedPost} />))}

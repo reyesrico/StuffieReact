@@ -36,10 +36,8 @@ const FeedRow = (props: FeedRowProps) => {
         <img src={picture} className="feed-row__photo" alt={feedPost.friend_firstName} />
       )}
       <div className="feed-row__added">
-        <span>
-          <span className="feed-row__name">{feedPost.friend_firstName}</span>
-          <span>{t('feedRow.added')} <b>{feedPost.product.name}</b> in {getProductType()}</span>
-        </span>
+        <span className="feed-row__name">{feedPost.friend_firstName}</span>
+        <span>{t('feedRow.added')} <b>{feedPost.product.name}</b> {t('feedRow.in')} {getProductType()}</span>
       </div>
     </div>
     );

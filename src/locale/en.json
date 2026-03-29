@@ -87,6 +87,7 @@
     "products.costLabel": "Cost: ",
 
     "feedRow.added": "added",
+    "feedRow.in": "in",
     "feedRow.askFor": "Ask for:",
     "feedRow.borrow": "Borrow",
     "feedRow.trade": "Trade",
