@@ -1,0 +1,43 @@
+// =============================================================================
+// Breadcrumb Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.breadcrumb {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: var(--spacing-2) var(--spacing-6);
+  background-color: var(--background-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-sm);
+  min-height: 36px;
+  gap: 0; // gaps are handled by margin on separator
+}
+
+.breadcrumb__separator {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  margin: 0 var(--spacing-2);
+  user-select: none;
+}
+
+.breadcrumb__link {
+  color: var(--color-primary-500);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-base);
+
+  &:hover {
+    color: var(--color-primary-600);
+    text-decoration: underline;
+  }
+}
+
+.breadcrumb__current {
+  color: var(--text-color);
+  font-weight: 600;
+}

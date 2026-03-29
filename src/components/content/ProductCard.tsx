@@ -7,20 +7,23 @@ import Media from '../shared/Media';
 import { useCategories } from '../../hooks/queries';
 import { default as ProductType } from '../types/Product';
 
+import { BreadcrumbItem } from '../shared/Breadcrumb';
+
 import './ProductCard.scss';
 
 interface ProductCardProps {
   product: ProductType;
+  navigationState?: { breadcrumb: BreadcrumbItem[] };
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, navigationState }: ProductCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: categories = [] } = useCategories();
 
   const category = find(categories, (c: any) => c.id === product.category);
 
-  const handleClick = () => navigate(`/product/${product.id}`);
+  const handleClick = () => navigate(`/product/${product.id}`, { state: navigationState });
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') handleClick();
   };

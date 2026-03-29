@@ -150,6 +150,13 @@
     "notifications.title": "Notifications",
     "notifications.empty": "You have no pending notifications.",
 
+    "friendPage.productsTitle": "{{ name }}'s Stuff",
+    "friendPage.noProducts": "This friend has no products yet.",
+
+    "breadcrumb.profile": "My Profile",
+
+    "common.loading": "Loading...",
+
     "main.errorBoundaryTitle": "Something went wrong:",
 
     "admin.userRequests": "User Requests",

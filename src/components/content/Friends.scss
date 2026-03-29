@@ -9,9 +9,16 @@
   overflow-x: hidden;
 }
 
-.friends__title {
+.friends__header {
+  @include page-header;
+}
+
+.friends__page-title {
   @include page-title;
-  margin-bottom: var(--spacing-4);
+}
+
+.friends__header-actions {
+  @include page-actions;
 }
 
 .friends__warning {
@@ -36,15 +43,28 @@
   padding: var(--spacing-8);
 }
 
-.friends__form {
+.friends__add-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-4);
+}
+
+.friends__add-panel-form {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-4);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-4);
+}
+
+.friends__add-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-500);
+  font-weight: 500;
 }
 
 .friends__button {
@@ -101,16 +121,27 @@
 
 .friend-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   padding: var(--spacing-4);
   background-color: var(--background-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   transition: all var(--transition-base);
+}
+
+.friend-row--clickable {
+  cursor: pointer;
 
   &:hover {
     box-shadow: var(--shadow-card-hover);
     transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
   }
 }
 
@@ -144,4 +175,12 @@
 .friend-row__email {
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
+}
+
+.friend-row__chevron {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xl);
+  font-weight: 300;
+  flex-shrink: 0;
+  margin-left: var(--spacing-3);
 }

@@ -1,0 +1,64 @@
+// =============================================================================
+// FriendPage Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.friend-page {
+  @include page-root;
+}
+
+.friend-page__header {
+  @include page-header;
+}
+
+.friend-page__identity {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.friend-page__photo {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--color-primary-200);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.friend-page__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.friend-page__name {
+  @include page-title;
+}
+
+.friend-page__email {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.friend-page__products-section {
+  margin-top: var(--spacing-2);
+}
+
+.friend-page__section-title {
+  @include page-subtitle;
+}
+
+.friend-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.friend-page__empty {
+  padding: var(--spacing-8) var(--spacing-4);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+}

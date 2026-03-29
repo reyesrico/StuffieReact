@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import Apps from '../sections/Apps';
+import Breadcrumb from '../shared/Breadcrumb';
 import Chat from '../sections/Chat';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
@@ -91,6 +92,7 @@ const Main = () => {
         <ErrorBoundary FallbackComponent={ErrorFallback}>
           <Suspense fallback={<ProductGridSkeleton count={6} />}>
             <div className="stuffie__content">
+              <Breadcrumb />
               <div className="stuffie__content-inner">
                 <MainRoutes />
               </div>

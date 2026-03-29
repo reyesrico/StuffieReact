@@ -150,6 +150,13 @@
     "notifications.title": "Notificaciones",
     "notifications.empty": "No tienes notificaciones pendientes.",
 
+    "friendPage.productsTitle": "Cosas de {{ name }}",
+    "friendPage.noProducts": "Este amigo aún no tiene productos.",
+
+    "breadcrumb.profile": "Mi Perfil",
+
+    "common.loading": "Cargando...",
+
     "main.errorBoundaryTitle": "Algo salió mal:",
 
     "admin.userRequests": "Solicitudes de Usuarios",

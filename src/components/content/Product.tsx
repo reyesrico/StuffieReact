@@ -96,6 +96,7 @@ const Product = (props: any) => {
       <WarningMessage message={message} type={type} />
       <h3>{ productRendered.name }</h3>
       <hr />
+      <div className="product__media">
         <Media
           fileName={productRendered.id}
           category={productRendered.category}
@@ -103,6 +104,7 @@ const Product = (props: any) => {
           isProduct="true"
           height="200"
           width="100" />
+      </div>
       <hr />
       <div>{t('product.categoryLabel')}{ category && category.name }</div>
       <div>{t('product.subcategoryLabel')}{ subcategory && subcategory.name }</div>

@@ -14,6 +14,7 @@ const CategoryPage = lazy(() => import('../content/CategoryPage'));
 const Charts = lazy(() => import('../apps/Charts'));
 const Exchange = lazy(() => import('../apps/Exchange'));
 const Friends = lazy(() => import('../content/Friends'));
+const FriendPage = lazy(() => import('../content/FriendPage'));
 const Loan = lazy(() => import('../apps/Loan'));
 const Map = lazy(() => import('../apps/Map'));
 const Products = lazy(() => import('../content/Products'));
@@ -35,6 +36,7 @@ const MainRoutes = () => {
       <Route path="stuffier" element={<Stuffier />} />
       <Route path="admin" element={<Admin />} />
       <Route path="friends" element={<Friends />} />
+      <Route path="friends/:id" element={<FriendPage />} />
       <Route path="products" element={<Products />} />
       <Route path="product/add" element={<AddProduct />} />
       <Route path="product/:id" element={<Product />} />
