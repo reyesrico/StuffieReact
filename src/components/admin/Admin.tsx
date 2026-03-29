@@ -181,16 +181,27 @@ const Admin = () => {
               <span className="admin__badge admin__badge--sm">{pendingProducts.length}</span>
             </h4>
             <ul className="admin__list">
-              {pendingProducts.map((product: Product) => (
-                <li key={product.id} className="admin__request admin__request--product">
-                  <div className="admin__request-info">
-                    <span className="admin__request-name">{product.name}</span>
-                    <span className="admin__request-meta">
-                      ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory}
-                    </span>
-                  </div>
-                </li>
-              ))}
+              {pendingProducts.map((product: Product) => {
+                const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category}/${product.subcategory}/${product.id}`;
+                return (
+                  <li key={product.id}>
+                    <a
+                      href={cloudinaryUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="admin__request admin__request--product admin__request--clickable"
+                    >
+                      <div className="admin__request-info">
+                        <span className="admin__request-name">{product.name}</span>
+                        <span className="admin__request-meta">
+                          ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory}
+                        </span>
+                      </div>
+                      <span className="admin__request-arrow">↗</span>
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}

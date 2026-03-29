@@ -147,6 +147,31 @@
   &--product {
     border-left-color: var(--color-warning, #f59e0b);
   }
+
+  &--clickable {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+
+    &:hover {
+      background-color: var(--background-tertiary, var(--background-secondary));
+      transform: translateX(2px);
+    }
+  }
+}
+
+.admin__request-arrow {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  margin-left: var(--spacing-4);
+  opacity: 0.6;
+
+  .admin__request--clickable:hover & {
+    opacity: 1;
+    color: var(--color-primary-500);
+  }
 }
 
 .admin__request-info {
