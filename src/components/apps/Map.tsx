@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import './Map.scss';
 
 const GetMap = (atlas: any, container: HTMLDivElement | null) => {
   if (!container) return;
@@ -66,6 +68,7 @@ const GetMap = (atlas: any, container: HTMLDivElement | null) => {
 
 const Map = () => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if the script was already added.
@@ -87,20 +90,16 @@ const Map = () => {
   }, []);
 
   return (
-    <div style={{ width: '100%', height: '100%' }}>
-      <h1>Map</h1>
-      <hr />
-      <div
-        ref={mapContainerRef}
-        style={{
-          width: '400px',
-          height: '200px',
-          display: "flex",
-          flexDirection: "row",
-          alignSelf: "center"
-        }}
-      />
-      <hr />
+    <div className="map">
+      <div className="map__header">
+        <h2 className="map__title">{t('apps.map')}</h2>
+      </div>
+      <div className="map__container">
+        <div
+          ref={mapContainerRef}
+          style={{ width: '100%', height: '400px' }}
+        />
+      </div>
     </div>
   );
 };

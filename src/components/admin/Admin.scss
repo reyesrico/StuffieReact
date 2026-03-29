@@ -6,23 +6,15 @@
 @use '../../styles/base/main' as *;
 
 .admin {
-  padding: var(--spacing-4);
-  background-color: transparent;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
+  @include page-root;
   overflow-x: hidden;
 }
 
 .admin__header {
-  margin-bottom: var(--spacing-6);
+  @include page-header;
 
   h2 {
-    font-size: var(--font-size-2xl);
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
+    @include page-title;
   }
 }
 
@@ -80,13 +72,11 @@
 }
 
 .admin__title {
+  @include page-subtitle;
   display: flex;
   flex-direction: row;
   align-items: center;
   margin: var(--spacing-4) 0;
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-color);
 }
 
 .admin__request {

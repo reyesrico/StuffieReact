@@ -68,13 +68,16 @@ const Loan = () => {
 
   return (
     <div className="loan">
+      <div className="loan__header">
+        <h2>{t('loan.friendProduct', { name: friend?.first_name })}</h2>
+      </div>
       <WarningMessage message={message} type={type} />
       <div className="loan__product">
-        <h2>{t('loan.friendProduct', { name: friend?.first_name })}</h2>
-        <hr />
         <Product match={match} key={product.id} product={product} />
       </div>
-      <Button type="submit" onClick={requestLoan} text={t('loan.requestButton')} />
+      <div className="loan__actions">
+        <Button type="submit" onClick={requestLoan} text={t('loan.requestButton')} />
+      </div>
     </div>
   );
 };

@@ -8,15 +8,19 @@
   @include page-root;
 }
 
-.exchange__header {
+.exchange__page-header {
   @include page-header;
   margin-bottom: var(--spacing-4);
-  padding-bottom: var(--spacing-4);
-  border-bottom: 1px solid var(--border-color);
 
   h2 {
     @include page-title;
   }
+}
+
+.exchange__search-header {
+  margin-bottom: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .exchange__compare {

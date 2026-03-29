@@ -70,6 +70,9 @@ const Admin = () => {
 
   return (
     <div className="admin">
+      <div className="admin__header">
+        <h2>{t('Admin')}</h2>
+      </div>
       {pendingProducts.length > 0 && renderPendingProducts()}
       {userRequests.length > 0 && renderRequests()}
       <div className="admin__link"><Link to={`/category/add`}>{t('admin.addCategory')}</Link></div>

@@ -1,0 +1,29 @@
+// =============================================================================
+// Charts Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.charts {
+  @include page-root;
+}
+
+.charts__header {
+  @include page-header;
+}
+
+.charts__title {
+  @include page-title;
+}
+
+.charts__section {
+  @include page-section;
+  overflow-x: auto;
+
+  h3 {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 var(--spacing-4);
+  }
+}

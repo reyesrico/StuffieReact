@@ -18,10 +18,7 @@
 }
 
 .loan__product {
-  margin-bottom: var(--spacing-4);
-  padding: var(--spacing-4);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-md);
+  @include page-section;
 }
 
 .loan__form {

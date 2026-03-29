@@ -10,10 +10,8 @@
 }
 
 .friends__title {
-  @include page-header;
-  font-size: var(--font-size-xl);
-  font-weight: 600;
-  color: var(--text-color);
+  @include page-title;
+  margin-bottom: var(--spacing-4);
 }
 
 .friends__warning {

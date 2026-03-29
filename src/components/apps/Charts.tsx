@@ -1,14 +1,21 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line,
   AreaChart, Area, Treemap, PieChart, Pie, ScatterChart, Scatter,
   RadialBarChart, RadialBar
 } from 'recharts';
 import { barChartData, treemapChartData, pieChartData01, pieChartData02, radialChartData } from '../../config/constants/charts';
+import './Charts.scss';
 
 const Charts = () => {
+  const { t } = useTranslation();
   return (
-    <div>
+    <div className="charts">
+      <div className="charts__header">
+        <h2 className="charts__title">{t('apps.charts')}</h2>
+      </div>
+      <div className="charts__section">
       <BarChart width={600} height={300} data={barChartData}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
         <XAxis dataKey="name" />
@@ -81,6 +88,7 @@ const Charts = () => {
         <Legend iconSize={10} width={120} height={140} layout='vertical' verticalAlign='middle' align="right" />
         <Tooltip />
       </RadialBarChart>
+      </div>
     </div>
   );
 }

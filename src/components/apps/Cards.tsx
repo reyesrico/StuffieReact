@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import './Cards.scss';
 
 interface CardItem {
   id: string;
@@ -38,35 +40,26 @@ const sampleCards: CardItem[] = [
 ];
 
 const CardSlide = ({ card }: { card: CardItem }) => (
-  <div style={{
-    background: 'var(--colorNeutralBackground1)',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-  }}>
-    <img
-      src={card.image}
-      alt={card.title}
-      style={{ width: '100%', height: '200px', objectFit: 'cover' }}
-    />
-    <div style={{ padding: '16px' }}>
-      <h3 style={{ margin: '0 0 8px', color: 'var(--colorNeutralForeground1)' }}>
-        {card.title}
-      </h3>
+  <div className="cards__card">
+    <img src={card.image} alt={card.title} />
+    <div className="cards__card-body">
+      <h3 className="cards__card-title">{card.title}</h3>
       {card.description && (
-        <p style={{ margin: 0, color: 'var(--colorNeutralForeground2)' }}>
-          {card.description}
-        </p>
+        <p className="cards__card-description">{card.description}</p>
       )}
     </div>
   </div>
 );
 
 const Cards = () => {
+  const { t } = useTranslation();
   return (
-    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '20px' }}>Cards Carousel</h2>
-      <Swiper
+    <div className="cards">
+      <div className="cards__header">
+        <h2 className="cards__title">{t('apps.cards')}</h2>
+      </div>
+      <div className="cards__carousel">
+        <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         spaceBetween={20}
         slidesPerView={1}
@@ -83,7 +76,8 @@ const Cards = () => {
             <CardSlide card={card} />
           </SwiperSlide>
         ))}
-      </Swiper>
+        </Swiper>
+      </div>
     </div>
   );
 };

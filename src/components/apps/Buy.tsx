@@ -67,10 +67,11 @@ const Buy = () => {
 
   return (
     <div className="buy">
+      <div className="buy__header">
+        <h2 className="buy__title">{t('buy.friendProduct', { name: friend?.first_name })}</h2>
+      </div>
       <WarningMessage message={message} type={type} />
       <div className="buy__product">
-        <h2>{t('buy.friendProduct', { name: friend?.first_name })}</h2>
-        <hr />
         <Product match={match} key={product.id} product={product} showCost={true} hideOfferButton={true} />
       </div>
       <Button

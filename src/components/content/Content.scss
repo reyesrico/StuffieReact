@@ -9,6 +9,14 @@
   overflow-x: hidden;
 }
 
+.content__header {
+  @include page-header;
+}
+
+.content__title {
+  @include page-title;
+}
+
 .content__info {
   padding: 0;
 }

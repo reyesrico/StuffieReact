@@ -119,8 +119,11 @@ const Exchange = () => {
 
   return (
     <div className="exchange">
+      <div className="exchange__page-header">
+        <h2>{t('exchange.friendProduct', { name: friend?.first_name })}</h2>
+      </div>
       <WarningMessage message={message} type={type} />
-      <div className="exchange__header">
+      <div className="exchange__search-header">
         <SearchBar products={userProducts} selectProduct={(p: Product) => selectProduct(p)} />
       </div>
       { !isEmpty(selectedProduct) &&

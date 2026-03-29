@@ -1,0 +1,60 @@
+// =============================================================================
+// Tickets Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.tickets {
+  @include page-root;
+}
+
+.tickets__header {
+  @include page-header;
+}
+
+.tickets__title {
+  @include page-title;
+}
+
+.tickets__section {
+  @include page-section;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.tickets__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+
+  input[type='file'] {
+    font-size: var(--font-size-sm);
+    color: var(--text-color);
+  }
+
+  input[type='submit'] {
+    align-self: flex-start;
+  }
+}
+
+.tickets__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.tickets__result {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  padding: var(--spacing-3);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-md);
+  white-space: pre-wrap;
+}
+
+.tickets__ai-section {
+  @include page-section;
+}

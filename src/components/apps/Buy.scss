@@ -8,9 +8,13 @@
   @include page-root;
 }
 
+.buy__header {
+  @include page-header;
+  margin-bottom: var(--spacing-4);
+}
+
 .buy__title {
   @include page-title;
-  margin-bottom: var(--spacing-6);
 }
 
 .buy__product {

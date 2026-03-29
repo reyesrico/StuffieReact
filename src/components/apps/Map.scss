@@ -1,0 +1,25 @@
+// =============================================================================
+// Map Component Styles
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.map {
+  @include page-root;
+}
+
+.map__header {
+  @include page-header;
+}
+
+.map__title {
+  @include page-title;
+}
+
+.map__container {
+  @include page-section;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 300px;
+}

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Tesseract from 'tesseract.js';
+import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
+import './Tickets.scss';
 
 const Tickets = () => {
   const progressValue = 0;
@@ -9,6 +11,7 @@ const Tickets = () => {
   const [imageUrl] = useState<string>("https://i0.wp.com/i.redd.it/a7hqgjbxn0v21.jpg");
   const [caption, setCaption] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { t } = useTranslation();
 
   const handleChange = (event: any) => {
     if (event && event.target && event.target.files) {
@@ -84,31 +87,28 @@ const Tickets = () => {
 
   return (
     <div className="tickets">
-      <h3>Tickets</h3>
-      <div className="ticketsForm">
-        <form onSubmit={event => handleSubmit(event)}>
-          <input type='file' id='fileId' name='fileName'
-            onChange={event => handleChange(event)} />
-          <hr />
-          <input type="submit" value="Analyze" disabled={!file} />
-        </form>
+      <div className="tickets__header">
+        <h2 className="tickets__title">{t('apps.tickets')}</h2>
       </div>
-      <hr />
-      <div id="status" className="ticketsStatus">
-        <progress value={progressValue} max="100" />
-        <span id="statusInfo" className="statusInfo">
-          Status: <span id="info" />
-        </span>
+      <div className="tickets__section">
+        <div className="tickets__form">
+          <form onSubmit={event => handleSubmit(event)}>
+            <input type='file' id='fileId' name='fileName'
+              onChange={event => handleChange(event)} />
+            <hr />
+            <input type="submit" value="Analyze" disabled={!file} />
+          </form>
+        </div>
+        <div className="tickets__status">
+          <progress value={progressValue} max="100" />
+          <span id="statusInfo">Status: <span id="info" /></span>
+        </div>
+        <div id="result" className="tickets__result" />
       </div>
-      <hr />
-      <div id="result" />
-      <hr />
-      <div>Trying with stuffie-api-server</div>
-      <div>
-        <Button onClick={generateCaption} text="GenerateCaption" />
-        <hr />
-        {isLoading && <div>Loading...</div>}
-        {caption && <div>{caption}</div>}
+      <div className="tickets__ai-section">
+        <Button onClick={generateCaption} text="Generate Caption" />
+        {isLoading && <div>{t('chat.loading')}</div>}
+        {caption && <div className="tickets__result">{caption}</div>}
       </div>
     </div>
   );
