@@ -9,7 +9,9 @@ export const userImageUrl = (userId: number | string | undefined): string =>
   `${config.cloudinary.urlSingle}/stuffiers/${userId ?? 'default'}`;
 
 export const existImage = (publicId: string | number | undefined, folder = ''): Promise<any> => {
-  return axios.get(`${config.cloudinary.urlSingle}/${folder}${publicId ?? 'default'}`)
+  // Cache-bust with a daily timestamp so browsers don't cache 404s across renames
+  const bust = Math.floor(Date.now() / 86400000);
+  return axios.get(`${config.cloudinary.urlSingle}/${folder}${publicId ?? 'default'}?v=${bust}`)
 };
 
 // Signature to Delete
