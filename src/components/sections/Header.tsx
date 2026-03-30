@@ -95,7 +95,7 @@ const Header = () => {
         float: right;
         top: 28px; right: 0px;
         position: absolute;
-        background-color: var(--background-primary);
+        background-color: var(--background-elevated);
         color: var(--text-color);
         width: 146px;
         padding: 8px;
@@ -115,7 +115,7 @@ const Header = () => {
         float: left;
         top: 28px; left: 0px;
         position: absolute;
-        background-color: var(--background-primary);
+        background-color: var(--background-elevated);
         color: var(--text-color);
         width: 146px;
         padding: 8px;
