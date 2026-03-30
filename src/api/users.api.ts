@@ -56,12 +56,29 @@ export const getLastUserId = async (): Promise<number> => {
  * Password is encrypted before sending
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
-  // Must match the hash used at registration: PBKDF2 with email as salt
-  const encryptedPassword = await crypto.pbkdf2(password, email);
+  // Try PBKDF2 first (current algorithm)
+  const pbkdf2Hash = await crypto.pbkdf2(password, email);
   const response = await apiClient.get<User[]>(
-    userEndpoints.login(email, encryptedPassword)
+    userEndpoints.login(email, pbkdf2Hash)
   );
-  return response.data[0] || null;
+
+  if (response.data[0]) return response.data[0];
+
+  // Fallback: user was registered with legacy SHA256 (no salt) — auto-migrate on match
+  const sha256Hash = crypto.encrypt(password);
+  const legacyResponse = await apiClient.get<User[]>(
+    userEndpoints.login(email, sha256Hash)
+  );
+  const legacyUser = legacyResponse.data[0];
+
+  if (legacyUser?._id) {
+    // Silently upgrade password to PBKDF2 so next login uses the secure hash
+    await apiClient.put(userEndpoints.update(String(legacyUser._id)), {
+      password: pbkdf2Hash,
+    });
+  }
+
+  return legacyUser || null;
 };
 
 export interface RegisterUserInput {
