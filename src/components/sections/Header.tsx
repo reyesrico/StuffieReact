@@ -62,7 +62,7 @@ const Header = () => {
   }, [user?.id]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
-  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length;
+  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length + friendsRequests.length;
 
   const handleLogout = (event: any) => {
     event.preventDefault();
@@ -142,7 +142,6 @@ const Header = () => {
           </div>
           <div className={`stuffie-header__section-item ${isActive('/friends') ? 'stuffie-header__section-item--active' : ''}`}>
             <Link to='/friends'>{t('Friends')}</Link>
-            {friendsRequests.length > 0 && (<div className="stuffie-header__warning">{friendsRequests.length}</div>)}
           </div>
           <div className={`stuffie-header__section-item ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
             <Link to='/products'>{window.outerWidth >= 1024 ? t('header.products') : t('header.prodsShort')}</Link>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -7,10 +7,8 @@ import TextField from '../shared/TextField';
 import User from '../types/User';
 import UserContext from '../../context/UserContext';
 import WarningMessage from '../shared/WarningMessage';
-import { useFriends, useFriendRequests } from '../../hooks/queries';
-import { addFriend, rejectFriendRequest, sendFriendRequest } from '../../api/friends.api';
-import { getUsersByIds } from '../../api/users.api';
-import { mapIds } from '../helpers/UserHelper';
+import { useFriends } from '../../hooks/queries';
+import { sendFriendRequest } from '../../api/friends.api';
 import { WarningMessageType } from '../shared/types';
 
 import './Friends.scss';
@@ -58,66 +56,9 @@ const Friends = () => {
 
   const { user } = useContext(UserContext);
   const { data: friends = [] } = useFriends();
-  const { data: friendsRequests = [] } = useFriendRequests();
-  const [requests, setRequests] = useState([]);
   const [emailToRequest, setEmailToRequest] = useState('');
   const [message, setMessage] = useState('');
-  const [executeStatus, setExecuteStatus] = useState(WarningMessageType.EMPTY);
   const [showAddPanel, setShowAddPanel] = useState(false);
-
-  useEffect(() => {
-    if (friendsRequests.length > 0) {
-      getUsersByIds(mapIds(friendsRequests))
-      .then((users) => setRequests(users as any));
-    }
-  }, [friendsRequests]);
-
-  const executeRequest = (friend: User, isAccepted = false) => {
-    if (!friend.id || !user.email) return;
-    
-    const promises: Promise<unknown>[] = [rejectFriendRequest(user.email, friend.id)];
-    if (isAccepted) {
-      promises.push(addFriend(user.email, friend.id));
-    }
-
-    Promise.all(promises)
-    .then((_values: any) => {
-      !isAccepted && setExecuteStatus(WarningMessageType.WARNING);
-      isAccepted && setExecuteStatus(WarningMessageType.SUCCESSFUL);
-    })
-    .catch(() => setExecuteStatus(WarningMessageType.ERROR));
-  }
-
-  const renderRequests = () => {
-    return (
-      <div className="friends__requests">
-        <hr />
-        <h3 className="friends__title">
-          <div>{t('friends.requests')}</div>
-          <div className="friends__warning">{requests.length}</div>
-        </h3>
-        <ul>
-          {requests.map((friend: User, index: number) => {
-            return (
-              // eslint-disable-next-line react/no-array-index-key
-              <li className="friends__request" key={index}>
-                <div className="friends__request-text">
-                {friend.first_name} {friend.last_name} ({friend.email})
-                </div>
-                <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend, true)} text={t('common.accept')} size="sm" variant="outline" />
-                </div>
-                <div className="friends__request-button">
-                  <Button onClick={() => executeRequest(friend)} text={t('common.reject')} size="sm" variant="secondary" />
-                </div>
-              </li>
-            )}
-          )}
-        </ul>
-        <hr />
-      </div>
-    )
-  }
 
   const handleRequest = () => {
     sendFriendRequest(emailToRequest, user.id)
@@ -132,14 +73,7 @@ const Friends = () => {
   }
 
   const getMessage = () => {
-    const status =
-      executeStatus === WarningMessageType.ERROR ? t('friends.notAdded') :
-      executeStatus === WarningMessageType.WARNING ? t('friends.rejected') :
-      executeStatus === WarningMessageType.SUCCESSFUL ? t('friends.accepted') : null;
-
-    if (!status) return '';
-
-    return t('friends.statusMessage', { email: emailToRequest, status });
+    return message || '';
   }
 
   return (
@@ -174,7 +108,7 @@ const Friends = () => {
         </div>
       )}
 
-      <WarningMessage message={getMessage()} type={executeStatus} />
+      <WarningMessage message={getMessage()} type={WarningMessageType.EMPTY} />
 
       <div className="friends__list">
         {friends.map((friend: any) => (
@@ -185,8 +119,6 @@ const Friends = () => {
           />
         ))}
       </div>
-
-      {requests.length > 0 && renderRequests()}
     </div>
   );
 };

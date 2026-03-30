@@ -10,9 +10,12 @@ import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { getProductsByIds } from '../../api/products.api';
-import { mapIds } from '../helpers/StuffHelper';
+import { mapIds as mapStuffIds } from '../helpers/StuffHelper';
+import { mapIds as mapUserIds } from '../helpers/UserHelper';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
+import { addFriend, rejectFriendRequest } from '../../api/friends.api';
+import { getUsersByIds } from '../../api/users.api';
 import {
   useFriends,
   useExchangeRequests,
@@ -21,6 +24,7 @@ import {
   useDeleteExchange,
   useDeleteLoan,
   useDeletePurchase,
+  useFriendRequests,
 } from '../../hooks/queries';
 
 import './Notifications.scss';
@@ -41,6 +45,18 @@ const Notifications = () => {
   const [requestedProducts, setRequestedProducts] = useState<ProductType[]>([]);
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
+  const [friendRequests, setFriendRequests] = useState<User[]>([]);
+
+  const { data: rawFriendRequests = [] } = useFriendRequests();
+
+  useEffect(() => {
+    if (rawFriendRequests.length > 0) {
+      getUsersByIds(mapUserIds(rawFriendRequests))
+        .then((users) => setFriendRequests(users as User[]));
+    } else {
+      setFriendRequests([]);
+    }
+  }, [rawFriendRequests]);
 
   useEffect(() => {
     const loanIds = Array.isArray(loanRequests) ? loanRequests.map((req: any) => req.id_stuff) : [];
@@ -50,7 +66,7 @@ const Notifications = () => {
     const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds, ...purchaseIds]);
 
     if (ids.length > 0) {
-      getProductsByIds(mapIds(ids))
+      getProductsByIds(mapStuffIds(ids))
         .then(prods => setRequestedProducts(prods as any));
     }
   }, [exchangeRequests, loanRequests, purchaseRequests]);
@@ -84,7 +100,21 @@ const Notifications = () => {
   const totalRequests =
     (Array.isArray(exchangeRequests) ? exchangeRequests.length : 0) +
     (Array.isArray(loanRequests) ? loanRequests.length : 0) +
-    (Array.isArray(purchaseRequests) ? purchaseRequests.length : 0);
+    (Array.isArray(purchaseRequests) ? purchaseRequests.length : 0) +
+    friendRequests.length;
+
+  const executeFriendRequest = (friend: User, isAccepted: boolean) => {
+    if (!friend.id || !user.email) return;
+    const promises: Promise<unknown>[] = [rejectFriendRequest(user.email, friend.id)];
+    if (isAccepted) promises.push(addFriend(user.email, friend.id));
+    Promise.all(promises)
+      .then(() => {
+        setFriendRequests(prev => prev.filter(f => f.id !== friend.id));
+        setMessage(isAccepted ? t('friends.accepted') : t('friends.rejected'));
+        setType(isAccepted ? WarningMessageType.SUCCESSFUL : WarningMessageType.WARNING);
+      })
+      .catch(() => setType(WarningMessageType.ERROR));
+  };
 
   return (
     <div className="notifications">
@@ -237,6 +267,31 @@ const Notifications = () => {
                 </li>
               );
             })}
+          </ul>
+        </div>
+      )}
+      {friendRequests.length > 0 && (
+        <div className="notifications__section">
+          <hr />
+          <h3 className="notifications__section-title">
+            <span>{t('friends.requests')}</span>
+            <span className="notifications__badge">{friendRequests.length}</span>
+          </h3>
+          <ul>
+            {friendRequests.map((friend: User) => (
+              <li className="notifications__request" key={friend.id}>
+                <div className="notifications__request-group">
+                  <div className="notifications__request-text">
+                    {friend.first_name} {friend.last_name}
+                  </div>
+                  <div className="notifications__request-text">{friend.email}</div>
+                </div>
+                <div className="notifications__request-buttons">
+                  <Button onClick={() => executeFriendRequest(friend, true)} text={t('common.accept')} size="sm" variant="outline" />
+                  <Button onClick={() => executeFriendRequest(friend, false)} text={t('common.reject')} size="sm" variant="secondary" />
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       )}
