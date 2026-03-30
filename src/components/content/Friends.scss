@@ -44,31 +44,77 @@
 }
 
 .friends__add-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3);
-  padding: var(--spacing-4);
   background-color: var(--background-secondary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
+  padding: var(--spacing-5);
   margin-bottom: var(--spacing-4);
 }
 
-.friends__add-panel-form {
+.friends__empty {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.friends__empty-form {
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-5) var(--spacing-6);
+}
+
+// Shared add-friend form internals
+.friends__add-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-3);
+
+  @media (max-width: 480px) {
+    padding: var(--spacing-2);
+  }
+}
+
+.friends__add-form-label {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.friends__add-form-row {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-3);
+
+  // Input takes full width naturally in a column layout
+  .stuffie-textfield {
+    width: 100%;
+  }
+
+  // Button centered, auto width — not full-width
+  .stuffie-button {
+    align-self: center;
+    min-width: 160px;
+  }
 }
 
-.friends__add-message {
+.friends__add-form-message {
+  margin: 0;
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
-  color: var(--color-primary-500);
   font-weight: 500;
-}
 
-.friends__button {
-  flex-shrink: 0;
+  &--success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--color-success);
+  }
+  &--error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--color-error);
+  }
 }
 
 .friends__request {
