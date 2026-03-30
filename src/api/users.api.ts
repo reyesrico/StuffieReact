@@ -126,6 +126,7 @@ export interface UpdateUserInput {
   picture?: string;
   admin?: boolean;
   request?: boolean;
+  password?: string;
 }
 
 /**

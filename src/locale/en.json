@@ -160,6 +160,8 @@
     "breadcrumb.profile": "My Profile",
 
     "common.loading": "Loading...",
+    "stuffier.saveSuccess": "Profile updated successfully!",
+    "stuffier.saveError": "Error saving profile. Please try again.",
 
     "main.errorBoundaryTitle": "Something went wrong:",
 

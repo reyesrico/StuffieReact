@@ -160,6 +160,8 @@
     "breadcrumb.profile": "Mi Perfil",
 
     "common.loading": "Cargando...",
+    "stuffier.saveSuccess": "¡Perfil actualizado correctamente!",
+    "stuffier.saveError": "Error al guardar el perfil. Intenta de nuevo.",
 
     "main.errorBoundaryTitle": "Algo salió mal:",
 
