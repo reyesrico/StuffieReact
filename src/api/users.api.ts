@@ -56,29 +56,35 @@ export const getLastUserId = async (): Promise<number> => {
  * Password is encrypted before sending
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
-  // Try PBKDF2 first (current algorithm)
   const pbkdf2Hash = await crypto.pbkdf2(password, email);
-  const response = await apiClient.get<User[]>(
-    userEndpoints.login(email, pbkdf2Hash)
-  );
 
+  // 1. Try current PBKDF2 (new registrations)
+  const response = await apiClient.get<User[]>(userEndpoints.login(email, pbkdf2Hash));
   if (response.data[0]) return response.data[0];
 
-  // Fallback: user was registered with legacy SHA256 (no salt) — auto-migrate on match
+  // Helper: migrate a legacy user to the current PBKDF2 hash (non-destructive)
+  const migrate = async (user: User) => {
+    if (user._id) {
+      await apiClient.put(userEndpoints.update(String(user._id)), {
+        ...user,
+        password: pbkdf2Hash,
+      });
+    }
+    return user;
+  };
+
+  // 2. Fallback: SHA256 — users who registered between Sept 2022 and today
   const sha256Hash = crypto.encrypt(password);
-  const legacyResponse = await apiClient.get<User[]>(
-    userEndpoints.login(email, sha256Hash)
-  );
-  const legacyUser = legacyResponse.data[0];
+  const sha256Response = await apiClient.get<User[]>(userEndpoints.login(email, sha256Hash));
+  if (sha256Response.data[0]) return migrate(sha256Response.data[0]);
 
-  if (legacyUser?._id) {
-    // Silently upgrade password to PBKDF2 so next login uses the secure hash
-    await apiClient.put(userEndpoints.update(String(legacyUser._id)), {
-      password: pbkdf2Hash,
-    });
-  }
+  // 3. Fallback: legacy PBKDF2 — users who registered before Sept 2022
+  //    (Node crypto.pbkdf2, 100 iterations, 256 bytes → 512 hex chars)
+  const legacyHash = await crypto.legacyPbkdf2(password, email);
+  const legacyResponse = await apiClient.get<User[]>(userEndpoints.login(email, legacyHash));
+  if (legacyResponse.data[0]) return migrate(legacyResponse.data[0]);
 
-  return legacyUser || null;
+  return null;
 };
 
 export interface RegisterUserInput {
