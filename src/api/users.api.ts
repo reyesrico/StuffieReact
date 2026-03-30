@@ -45,8 +45,11 @@ export const getPendingUserRequests = async (): Promise<User[]> => {
  * Get the last user id (for registration)
  */
 export const getLastUserId = async (): Promise<number> => {
-  const response = await apiClient.get<Record<string, number>>(userEndpoints.getLastId());
-  return Object.values(response.data)[0] || 0;
+  const response = await apiClient.get<Record<string, any>[]>(userEndpoints.getLastId());
+  const ids = response.data
+    .map((row: Record<string, any>) => Number(row.id))
+    .filter((n: number) => Number.isFinite(n) && n > 0);
+  return ids.length > 0 ? Math.max(...ids) : 0;
 };
 
 // ============ AUTH ============

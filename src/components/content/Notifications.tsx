@@ -1,31 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { get, uniq } from 'lodash';
+import React, { useContext, useState } from 'react';
+import { get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
+import Loading from '../shared/Loading';
 import ExchangeRequest from '../types/ExchangeRequest';
 import LoanRequest from '../types/LoanRequest';
 import PurchaseRequest from '../types/PurchaseRequest';
 import User from '../types/User';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
-import { getProductsByIds } from '../../api/products.api';
-import { mapIds as mapStuffIds } from '../helpers/StuffHelper';
-import { mapIds as mapUserIds } from '../helpers/UserHelper';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
 import { addFriend, rejectFriendRequest } from '../../api/friends.api';
-import { getUsersByIds } from '../../api/users.api';
-import {
-  useFriends,
-  useExchangeRequests,
-  useLoanRequests,
-  usePurchaseRequests,
-  useDeleteExchange,
-  useDeleteLoan,
-  useDeletePurchase,
-  useFriendRequests,
-} from '../../hooks/queries';
+import { useDeleteExchange, useDeleteLoan, useDeletePurchase } from '../../hooks/queries';
+import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import './Notifications.scss';
 
@@ -33,43 +22,24 @@ const Notifications = () => {
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
 
-  const { data: friends = [] } = useFriends();
-  const { data: exchangeRequests = [] } = useExchangeRequests();
-  const { data: loanRequests = [] } = useLoanRequests();
-  const { data: purchaseRequests = [] } = usePurchaseRequests();
+  const {
+    isLoading,
+    friends,
+    exchangeRequests,
+    loanRequests,
+    purchaseRequests,
+    friendRequests,
+    requestedProducts,
+    totalRequests,
+    removeFriendRequest,
+  } = useNotifications();
 
   const deleteExchangeMutation = useDeleteExchange();
   const deleteLoanMutation = useDeleteLoan();
   const deletePurchaseMutation = useDeletePurchase();
 
-  const [requestedProducts, setRequestedProducts] = useState<ProductType[]>([]);
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
-  const [friendRequests, setFriendRequests] = useState<User[]>([]);
-
-  const { data: rawFriendRequests = [] } = useFriendRequests();
-
-  useEffect(() => {
-    if (rawFriendRequests.length > 0) {
-      getUsersByIds(mapUserIds(rawFriendRequests))
-        .then((users) => setFriendRequests(users as User[]));
-    } else {
-      setFriendRequests([]);
-    }
-  }, [rawFriendRequests]);
-
-  useEffect(() => {
-    const loanIds = Array.isArray(loanRequests) ? loanRequests.map((req: any) => req.id_stuff) : [];
-    const exchangeIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_stuff) : [];
-    const exchangeFriendIds = Array.isArray(exchangeRequests) ? exchangeRequests.map((req: any) => req.id_friend_stuff) : [];
-    const purchaseIds = Array.isArray(purchaseRequests) ? purchaseRequests.map((req: any) => req.id_stuff) : [];
-    const ids = uniq([...loanIds, ...exchangeIds, ...exchangeFriendIds, ...purchaseIds]);
-
-    if (ids.length > 0) {
-      getProductsByIds(mapStuffIds(ids))
-        .then(prods => setRequestedProducts(prods as any));
-    }
-  }, [exchangeRequests, loanRequests, purchaseRequests]);
 
   const executeDeleteExchange = (_id: string, isLoan = false) => {
     if (isLoan) {
@@ -97,24 +67,22 @@ const Notifications = () => {
     }
   };
 
-  const totalRequests =
-    (Array.isArray(exchangeRequests) ? exchangeRequests.length : 0) +
-    (Array.isArray(loanRequests) ? loanRequests.length : 0) +
-    (Array.isArray(purchaseRequests) ? purchaseRequests.length : 0) +
-    friendRequests.length;
-
   const executeFriendRequest = (friend: User, isAccepted: boolean) => {
     if (!friend.id || !user.email) return;
     const promises: Promise<unknown>[] = [rejectFriendRequest(user.email, friend.id)];
     if (isAccepted) promises.push(addFriend(user.email, friend.id));
     Promise.all(promises)
       .then(() => {
-        setFriendRequests(prev => prev.filter(f => f.id !== friend.id));
+        removeFriendRequest(friend.id!);
         setMessage(isAccepted ? t('friends.accepted') : t('friends.rejected'));
         setType(isAccepted ? WarningMessageType.SUCCESSFUL : WarningMessageType.WARNING);
       })
       .catch(() => setType(WarningMessageType.ERROR));
   };
+
+  if (isLoading) {
+    return <Loading size="xl" message={t('common.loading')} />;
+  }
 
   return (
     <div className="notifications">
