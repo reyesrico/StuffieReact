@@ -1,10 +1,23 @@
 /**
  * Users API - CRUD operations for users (stuffiers)
  */
+import axios from 'axios';
 import { apiClient } from './client';
 import { userEndpoints } from './endpoints';
 import crypto from '../lib/crypto';
 import type User from '../components/types/User';
+
+// Dedicated clients for each backend — used during registration to write to both
+const codehooksClient = axios.create({
+  baseURL: import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/',
+  headers: { 'x-apikey': import.meta.env.VITE_CODEHOOKS_API_KEY || '', 'Content-Type': 'application/json' },
+  timeout: 30000,
+});
+const restdbClient = axios.create({
+  baseURL: import.meta.env.VITE_RESTDB_SERVER_URL || 'https://stuffie-98b2.restdb.io/rest/',
+  headers: { 'cache-control': 'no-cache', 'x-apikey': import.meta.env.VITE_RESTDB_API_KEY || '' },
+  timeout: 30000,
+});
 
 // ============ READ ============
 
@@ -42,10 +55,11 @@ export const getPendingUserRequests = async (): Promise<User[]> => {
 };
 
 /**
- * Get the last user id (for registration)
+ * Get the highest 'id' value from Codehooks (our source of truth).
+ * Always queries Codehooks directly — independent of the useCodehooks toggle.
  */
 export const getLastUserId = async (): Promise<number> => {
-  const response = await apiClient.get<Record<string, any>[]>(userEndpoints.getLastId());
+  const response = await codehooksClient.get<Record<string, any>[]>(userEndpoints.getLastId());
   const ids = response.data
     .map((row: Record<string, any>) => Number(row.id))
     .filter((n: number) => Number.isFinite(n) && n > 0);
@@ -103,22 +117,43 @@ export interface RegisterUserInput {
  * - Encrypts password with PBKDF2
  * - Sets request: true for admin approval
  */
+/**
+ * Register a new user
+ *
+ * Steps (in order):
+ * 1. Get the current max 'id' from Codehooks (our sequential id, not the DB's _id)
+ * 2. Compute newId = max + 1
+ * 3. Hash password with PBKDF2 (email as salt)
+ * 4. Write to Codehooks AND RestDB with the same newId
+ * 5. Return user with guaranteed 'id' field (used by caller for Cloudinary upload)
+ */
 export const registerUser = async (userData: RegisterUserInput): Promise<User> => {
-  // Get last id and encrypt password in parallel
   const [lastId, encryptedPassword] = await Promise.all([
     getLastUserId(),
     crypto.pbkdf2(userData.password, userData.email),
   ]);
-  
+
+  const newId = lastId + 1;
+
   const newUser = {
     ...userData,
     password: encryptedPassword,
-    id: lastId + 1,
+    id: newId,
+    admin: false,
     request: true, // Requires admin approval
   };
-  
-  const response = await apiClient.post<User>(userEndpoints.create(), newUser);
-  return response.data;
+
+  // Write to both databases — Codehooks is primary, RestDB is secondary
+  const [codehooksRes] = await Promise.all([
+    codehooksClient.post<User>(userEndpoints.create(), newUser),
+    restdbClient.post<User>(userEndpoints.create(), newUser).catch((err) => {
+      // RestDB failure is non-fatal — Codehooks is source of truth
+      console.warn('[Register] RestDB write failed:', err?.message);
+    }),
+  ]);
+
+  // Guarantee the id is present — some backends don't echo custom fields back
+  return { ...codehooksRes.data, id: newId };
 };
 
 // ============ UPDATE ============
