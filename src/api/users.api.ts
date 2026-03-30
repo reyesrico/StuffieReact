@@ -155,34 +155,65 @@ export interface UpdateUserInput {
   admin?: boolean;
   request?: boolean;
   password?: string;
+  // email is used to locate the matching record in RestDB for dual-write sync
+  email?: string;
 }
 
 /**
- * Update user by _id
+ * Find a user in RestDB by email and apply a PATCH — keeps RestDB in sync with Codehooks.
+ * Non-fatal: a RestDB failure is warned but never throws.
+ */
+const syncRestDB = async (email: string, data: Record<string, any>): Promise<void> => {
+  try {
+    const search = await restdbClient.get<User[]>(userEndpoints.getByEmail(email));
+    const rbUser = search.data[0];
+    if (rbUser?._id) {
+      await restdbClient.put(userEndpoints.update(String(rbUser._id)), data);
+    }
+  } catch (err: any) {
+    console.warn('[RestDB] sync failed for', email, err?.message);
+  }
+};
+
+/**
+ * Update user by _id — writes to Codehooks, then syncs RestDB via email lookup.
  */
 export const updateUser = async (_id: string, data: UpdateUserInput): Promise<User> => {
   const response = await apiClient.put<User>(userEndpoints.update(_id), data);
+  if (data.email) {
+    await syncRestDB(data.email, data);
+  }
   return response.data;
 };
 
 /**
- * Approve a user request (removes request flag)
+ * Approve a user request (removes request flag) — dual-write to both DBs.
  */
 export const approveUserRequest = async (user: User): Promise<User> => {
-  const response = await apiClient.put<User>(
-    userEndpoints.update(String(user._id)), 
-    { ...user, request: false }
-  );
+  const payload = { ...user, request: false };
+  const response = await apiClient.put<User>(userEndpoints.update(String(user._id)), payload);
+  if (user.email) {
+    await syncRestDB(user.email, payload);
+  }
   return response.data;
 };
 
 // ============ DELETE ============
 
 /**
- * Delete user by _id
+ * Delete user by _id from Codehooks, and by email lookup from RestDB.
  */
-export const deleteUser = async (_id: string): Promise<void> => {
+export const deleteUser = async (_id: string, email: string): Promise<void> => {
   await apiClient.delete(userEndpoints.delete(_id));
+  try {
+    const search = await restdbClient.get<User[]>(userEndpoints.getByEmail(email));
+    const rbUser = search.data[0];
+    if (rbUser?._id) {
+      await restdbClient.delete(userEndpoints.delete(String(rbUser._id)));
+    }
+  } catch (err: any) {
+    console.warn('[RestDB] delete sync failed for', email, err?.message);
+  }
 };
 
 // Export all functions
