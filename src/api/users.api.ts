@@ -56,7 +56,8 @@ export const getLastUserId = async (): Promise<number> => {
  * Password is encrypted before sending
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
-  const encryptedPassword = crypto.encrypt(password);
+  // Must match the hash used at registration: PBKDF2 with email as salt
+  const encryptedPassword = await crypto.pbkdf2(password, email);
   const response = await apiClient.get<User[]>(
     userEndpoints.login(email, encryptedPassword)
   );
