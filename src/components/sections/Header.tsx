@@ -94,7 +94,9 @@ const Header = () => {
         display: block;
         float: right;
         top: 28px; right: 0px;
-        position: absolute; background-color: white;
+        position: absolute;
+        background-color: var(--background-primary);
+        color: var(--text-color);
         width: 146px;
         padding: 8px;
         box-shadow: 5px 5px #888888;
@@ -112,7 +114,9 @@ const Header = () => {
         display: block;
         float: left;
         top: 28px; left: 0px;
-        position: absolute; background-color: white;
+        position: absolute;
+        background-color: var(--background-primary);
+        color: var(--text-color);
         width: 146px;
         padding: 8px;
         box-shadow: 5px 5px #888888;
