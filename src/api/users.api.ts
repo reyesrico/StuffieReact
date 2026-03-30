@@ -79,27 +79,17 @@ export const loginUser = async (email: string, password: string): Promise<User |
   const response = await apiClient.get<User[]>(userEndpoints.login(email, pbkdf2Hash));
   if (response.data[0]) return response.data[0];
 
-  // Helper: migrate a legacy user to the current PBKDF2 hash (non-destructive)
-  const migrate = async (user: User) => {
-    if (user._id) {
-      await apiClient.put(userEndpoints.update(String(user._id)), {
-        ...user,
-        password: pbkdf2Hash,
-      });
-    }
-    return user;
-  };
-
-  // 2. Fallback: SHA256 — users who registered between Sept 2022 and today
+  // Fallback: SHA256 — users who registered before the PBKDF2 migration
   const sha256Hash = crypto.encrypt(password);
   const sha256Response = await apiClient.get<User[]>(userEndpoints.login(email, sha256Hash));
-  if (sha256Response.data[0]) return migrate(sha256Response.data[0]);
-
-  // 3. Fallback: legacy PBKDF2 — users who registered before Sept 2022
-  //    (Node crypto.pbkdf2, 100 iterations, 256 bytes → 512 hex chars)
-  const legacyHash = await crypto.legacyPbkdf2(password, email);
-  const legacyResponse = await apiClient.get<User[]>(userEndpoints.login(email, legacyHash));
-  if (legacyResponse.data[0]) return migrate(legacyResponse.data[0]);
+  if (sha256Response.data[0]) {
+    // Migrate to PBKDF2 on the way through
+    const user = sha256Response.data[0];
+    if (user._id) {
+      await apiClient.put(userEndpoints.update(String(user._id)), { ...user, password: pbkdf2Hash });
+    }
+    return user;
+  }
 
   return null;
 };
