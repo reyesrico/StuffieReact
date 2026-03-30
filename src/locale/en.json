@@ -20,6 +20,12 @@
     "Products": "Products",
     "Spanish": "Spanish",
     "Subcategory": "Subcategory",
+
+    "feed.noFriendsTitle": "No friends yet",
+    "feed.noFriendsSub": "Add friends to see what they\u2019re collecting!",
+    "feed.noFriendsAction": "Go to Friends \u2192",
+    "feed.emptyTitle": "Your feed is empty",
+    "feed.emptySub": "Your friends haven\u2019t added anything yet. Check back soon!",
     "Submit": "Submit",
     "Summary": "Summary",
     "Support": "Support",

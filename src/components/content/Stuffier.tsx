@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
@@ -22,17 +22,32 @@ const Stuffier = () => {
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | undefined>();
   const [picture, setPicture] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user?.id) {
       existImage(user.id, 'stuffiers/')
-        .then(() => setPicture(userImageUrl(user.id)));
+        .then(() => setPicture(userImageUrl(user.id)))
+        .catch(() => setPicture(undefined));
     }
   }, [user?.id]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] ?? null;
+    setFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target?.result as string);
+      reader.readAsDataURL(selected);
+    } else {
+      setPreview(undefined);
+    }
+  };
 
   const uploadPhoto = async (): Promise<string | undefined> => {
     if (!file) return undefined;
@@ -78,11 +93,11 @@ const Stuffier = () => {
       if (photoUrl) {
         updates.picture = photoUrl;
         setPicture(photoUrl);
+        setPreview(undefined);
+        setFile(null);
       }
 
       const updated = await updateUser(String(user._id), updates);
-
-      // Sync UserContext + localStorage
       const merged = { ...user, ...updated };
       setUser(merged);
       loginCtx(merged);
@@ -90,58 +105,85 @@ const Stuffier = () => {
       setMessage(t('stuffier.saveSuccess'));
       setPassword('');
       setPassword2('');
-      setFile(null);
-    } catch (err: any) {
+    } catch {
       setError(t('stuffier.saveError'));
     } finally {
       setIsLoading(false);
     }
   };
 
+  // The image to show in the avatar circle: new preview > saved cloudinary > initials placeholder
+  const avatarSrc = preview || picture;
+
   if (isLoading) return <Loading size="xl" message={t('common.loading')} />;
 
   return (
-    <div className='stuffier'>
+    <div className="stuffier">
+      {/* ── Avatar + name header ── */}
       <div className="stuffier__header">
-        {picture && <img src={picture} className="stuffier__photo" alt="User Pic" />}
-        <h2>{user.first_name} {user.last_name}</h2>
-      </div>
-      <form className="stuffier__form" onSubmit={(e) => e.preventDefault()}>
-        <div>
-          <input type="file" accept="image/*" onChange={(e: any) => setFile(e.target.files[0])} />
+        <div
+          className="stuffier__avatar"
+          onClick={() => fileInputRef.current?.click()}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
+          aria-label={t('register.photoLabel')}
+        >
+          {avatarSrc
+            ? <img src={avatarSrc} className="stuffier__avatar-img" alt="Profile" />
+            : <span className="stuffier__avatar-initials">
+                {(user?.first_name?.[0] || '').toUpperCase()}{(user?.last_name?.[0] || '').toUpperCase()}
+              </span>
+          }
+          <div className="stuffier__avatar-overlay">&#9998;</div>
         </div>
+        <div className="stuffier__header-info">
+          <h2 className="stuffier__name">{user.first_name} {user.last_name}</h2>
+          <p className="stuffier__email">{user.email}</p>
+          <label className="stuffier__avatar-label" htmlFor="stuffier-photo">
+            {preview ? t('register.changePhoto') : picture ? t('register.changePhoto') : t('register.addPhoto')}
+          </label>
+        </div>
+        <input
+          id="stuffier-photo"
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="stuffier__file-input"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      {/* ── Form ── */}
+      <form className="stuffier__form" onSubmit={(e) => e.preventDefault()}>
         <div className="stuffier__row">
           <label className="stuffier__label">{t('FirstName')}</label>
-          <TextField containerStyle={styles.tfield} name="firstName" type="text"
+          <TextField name="firstName" type="text"
             value={firstName} onChange={(e: any) => setFirstName(e.target.value)} />
         </div>
         <div className="stuffier__row">
           <label className="stuffier__label">{t('LastName')}</label>
-          <TextField containerStyle={styles.tfield} name="lastName" type="text"
+          <TextField name="lastName" type="text"
             value={lastName} onChange={(e: any) => setLastName(e.target.value)} />
         </div>
         <div className="stuffier__row">
           <label className="stuffier__label">{t('Change Password')}</label>
-          <TextField containerStyle={styles.tfield} name="password" type="password"
+          <TextField name="password" type="password"
             value={password} onChange={(e: any) => setPassword(e.target.value)} />
         </div>
         {password && (
           <div className="stuffier__row">
             <label className="stuffier__label">{t('Confirm Password')}</label>
-            <TextField containerStyle={styles.tfield} name="password2" type="password"
+            <TextField name="password2" type="password"
               value={password2} onChange={(e: any) => setPassword2(e.target.value)} />
           </div>
         )}
-        {error && <div style={{ color: 'var(--color-error, red)' }}>{error}</div>}
-        {message && <div style={{ color: 'var(--color-success, green)' }}>{message}</div>}
+        {error && <p className="stuffier__error">{error}</p>}
+        {message && <p className="stuffier__success">{message}</p>}
         <Button text={t('Submit')} onClick={onSubmit} />
       </form>
     </div>
   );
-};
-
-const styles = {
-  tfield: { maxWidth: 300 },
 };
 
 export default Stuffier;

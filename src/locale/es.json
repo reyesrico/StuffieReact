@@ -20,6 +20,12 @@
     "Products": "Productos",
     "Spanish": "Español",
     "Subcategory": "Subcategoría",
+
+    "feed.noFriendsTitle": "Aún no tienes amigos",
+    "feed.noFriendsSub": "¡Agrega amigos para ver qué están coleccionando!",
+    "feed.noFriendsAction": "Ir a Amigos →",
+    "feed.emptyTitle": "Tu feed está vacío",
+    "feed.emptySub": "Tus amigos aún no han agregado nada. ¡Vuelve pronto!",
     "Submit": "Enviar",
     "Summary": "Inventario",
     "Support": "Soporte",

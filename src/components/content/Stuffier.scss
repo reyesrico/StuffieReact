@@ -1,9 +1,152 @@
 // =============================================================================
 // Stuffier (Profile) Component Styles
-// Modern profile page layout
 // =============================================================================
 
 @use '../../styles/base/main' as *;
+
+.stuffier {
+  @include page-root;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+// ── Header / Avatar ───────────────────────────────────────────────────────────
+
+.stuffier__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-5);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+  background: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.stuffier__avatar {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border: 3px solid var(--color-primary-200);
+  box-shadow: var(--shadow-md);
+
+  &:hover .stuffier__avatar-overlay {
+    opacity: 1;
+  }
+}
+
+.stuffier__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stuffier__avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-primary-500);
+  background: var(--background-secondary);
+}
+
+.stuffier__avatar-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  border-radius: var(--radius-full);
+}
+
+.stuffier__header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin-left: var(--spacing-4);
+}
+
+.stuffier__name {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.stuffier__email {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.stuffier__avatar-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-500);
+  cursor: pointer;
+  font-weight: 500;
+
+  &:hover { text-decoration: underline; }
+}
+
+.stuffier__file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+// ── Form ─────────────────────────────────────────────────────────────────────
+
+.stuffier__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  background: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.stuffier__label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-1);
+}
+
+.stuffier__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.stuffier__error {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-error, #dc2626);
+}
+
+.stuffier__success {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-success, #16a34a);
+}
 
 .stuffier {
   padding: var(--spacing-4);

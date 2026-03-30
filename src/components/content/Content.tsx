@@ -1,5 +1,6 @@
 import React from 'react';
 import { map } from 'lodash';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import FeedPost from '../types/FeedPost';
@@ -19,8 +20,21 @@ const Content = () => {
     </div>
   );
 
-  if (!friends.length) return <div>{t('No Friends')}</div>
-  if (!feed || !feed.length) return <div>{t('No Feed')}</div>
+  if (!friends.length) return (
+    <div className="content__empty">
+      <span className="content__empty-icon">&#128101;</span>
+      <p className="content__empty-title">{t('feed.noFriendsTitle')}</p>
+      <p className="content__empty-sub">{t('feed.noFriendsSub')}</p>
+      <Link to="/friends" className="content__empty-link">{t('feed.noFriendsAction')}</Link>
+    </div>
+  );
+  if (!feed || !feed.length) return (
+    <div className="content__empty">
+      <span className="content__empty-icon">&#128218;</span>
+      <p className="content__empty-title">{t('feed.emptyTitle')}</p>
+      <p className="content__empty-sub">{t('feed.emptySub')}</p>
+    </div>
+  );
 
   return (
     <div className="content">
