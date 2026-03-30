@@ -10,10 +10,10 @@ import './Content.scss';
 
 const Content = () => {
   const { t } = useTranslation();
-  const { data: feed = [], isLoading } = useFeed();
-  const { data: friends = [] } = useFriends();
+  const { data: feed = [], isLoading: feedLoading } = useFeed();
+  const { data: friends = [], isLoading: friendsLoading } = useFriends();
 
-  if (isLoading) return (
+  if (feedLoading || friendsLoading) return (
     <div className="content__loading">
       <Loading size="xl" message={t("Loading-Feed")} />
     </div>
