@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
+import EmptyState from '../shared/EmptyState';
 import ProductCard from './ProductCard';
 import { downloadExcel } from '../helpers/DownloadHelper';
 import { isProductsEmpty } from '../helpers/StuffHelper';
@@ -35,18 +36,34 @@ const Products = () => {
     <div className="products">
       <div className="products__title">
         <h2>{user?.first_name || t('products.myStuff')} Stuff</h2>
-        <div className="products__add-product">
-          <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
-          <Button
-            text={isRefreshing ? t('products.refreshing') : t('products.refresh')}
-            onClick={refreshProducts}
-            disabled={isRefreshing}
-            size="sm"
-            variant="secondary"
+        {!isProductsEmpty(products) && (
+          <div className="products__add-product">
+            <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
+            <Button
+              text={isRefreshing ? t('products.refreshing') : t('products.refresh')}
+              onClick={refreshProducts}
+              disabled={isRefreshing}
+              size="sm"
+              variant="secondary"
+            />
+          </div>
+        )}
+      </div>
+      {isProductsEmpty(products) && (
+        <div className="products__empty">
+          <EmptyState
+            icon={<span>📦</span>}
+            title={t('products.noStuffTitle')}
+            description={t('products.noStuffDesc')}
+            action={
+              <Button
+                text={t('products.addProduct')}
+                onClick={() => navigate('/product/add')}
+              />
+            }
           />
         </div>
-      </div>
-      {isProductsEmpty(products) && (<div>{t('products.noStuff')}</div>)}
+      )}
       {!isProductsEmpty(products) && (
         <div>
           {categories.map((category: Category, index: number) => {

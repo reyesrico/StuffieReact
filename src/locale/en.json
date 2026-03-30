@@ -86,6 +86,8 @@
     "products.refreshing": "Refreshing...",
     "products.refresh": "Refresh Products",
     "products.noStuff": "No Stuff! Add Products!",
+    "products.noStuffTitle": "No stuff yet!",
+    "products.noStuffDesc": "Start building your collection — add your first product.",
     "products.generateReport": "Generate Report",
     "products.loanDeleted": "Loan request deleted successfully",
     "products.loanDeleteFailed": "Failed to delete loan request",

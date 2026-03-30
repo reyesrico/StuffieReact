@@ -86,6 +86,8 @@
     "products.refreshing": "Actualizando...",
     "products.refresh": "Actualizar Productos",
     "products.noStuff": "¡Sin artículos! ¡Agrega productos!",
+    "products.noStuffTitle": "¡Aún no tienes artículos!",
+    "products.noStuffDesc": "Empieza tu colección — agrega tu primer producto.",
     "products.generateReport": "Generar Reporte",
     "products.loanDeleted": "Solicitud de préstamo eliminada exitosamente",
     "products.loanDeleteFailed": "Error al eliminar solicitud de préstamo",
