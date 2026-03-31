@@ -6,9 +6,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   // Use base path only for production (GitHub Pages)
   base: mode === 'production' ? '/StuffieReact/' : '/',
-  // Proxy OpenAI API requests in dev to avoid CORS from localhost
   server: {
     port: 3000,
+    open: true,
   },
   define: {
     'global': 'globalThis',
@@ -39,10 +39,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-  },
-  server: {
-    port: 3000,
-    open: true,
   },
   test: {
     globals: true,
