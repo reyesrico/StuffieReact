@@ -10,7 +10,7 @@ import { useChatGpt } from '../../hooks/useChatGpt';
 
 const Chat = () => {
   const { user } = useContext(UserContext);
-  const { messages, sendMessage, isLoading } = useChatGpt();
+  const { conversation, sendMessage, isLoading } = useChatGpt();
   const { t } = useTranslation();
   const messageEl = useRef(null);
   const [newMessage, setNewMessage] = useState("");
@@ -44,10 +44,10 @@ const Chat = () => {
     <div className="chat">
       <div className='chat__title'>{t('Chat')}</div>
       <div className="chat__messages" ref={messageEl}>
-        {messages.map((message, index) => (
+        {conversation.map((msg, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <div key={index} className={getChatBubble(user.id?.toString() || "", message)}>
-            {message}
+          <div key={index} className={`chat__message-${msg.role === 'user' ? 'user' : 'stuffie'}`}>
+            {msg.content}
           </div>
         ))}
       </div>

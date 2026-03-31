@@ -5,7 +5,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import Apps from '../sections/Apps';
 import Breadcrumb from '../shared/Breadcrumb';
-import Chat from '../sections/Chat';
+import FloatingChat from '../sections/FloatingChat';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import MainRoutes from './MainRoutes';
@@ -82,7 +82,7 @@ const Main = () => {
                 <Menu />
               </div>
               <div className="stuffie__left-section">
-                <Chat />
+                <Apps />
               </div>
             </div>
           </Suspense>
@@ -100,11 +100,8 @@ const Main = () => {
           </Suspense>
         </ErrorBoundary>
 
-        {/* Right sidebar - no data fetching, renders immediately */}
+        {/* Right sidebar */}
         <div className="stuffie__right">
-          <div className="stuffie__right-section">
-            <Apps />
-          </div>
           <div className="stuffie__right-section">
             <Settings />
           </div>
@@ -115,6 +112,9 @@ const Main = () => {
       <div className="stuffie_footer">
         <Footer />
       </div>
+
+      {/* Floating AI chat — fixed bottom-right, available on all pages */}
+      <FloatingChat />
     </div>
   );
 }

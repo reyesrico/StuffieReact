@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
 
 import Apps from '../sections/Apps';
-import Chat from './Chat';
 import SearchBar from '../shared/SearchBar';
 import Theme from './Theme';
 import ThemeContext from '../../context/ThemeContext';
@@ -187,7 +186,7 @@ const Header = () => {
               </div>
             </div>
             <div className="stuffie-header__menu-apps">
-              <Chat />
+              <Apps />
             </div>
           </div>
           <button className="icon" onClick={event => event && toggleMenu()}>
@@ -201,7 +200,6 @@ const Header = () => {
         <div className="stuffie-header__apps">
           <div id="apps">
             <div className="stuffie-header__menu-theme"><Theme /></div>
-            <div className="stuffie-header__apps-apps"><Apps /></div>
           </div>
           <button className="icon" onClick={event => event && toggleApps()}>
             <Icon iconName="GlobalNavButton" />

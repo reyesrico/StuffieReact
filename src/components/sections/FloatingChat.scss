@@ -1,0 +1,336 @@
+// =============================================================================
+// FloatingChat — fixed bottom-right AI support bubble
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+// ---------------------------------------------------------------------------
+// Root container (fixed anchor)
+// ---------------------------------------------------------------------------
+.floating-chat {
+  position: fixed;
+  bottom: var(--spacing-6);
+  right: var(--spacing-6);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-3);
+
+  @media (max-width: 480px) {
+    bottom: var(--spacing-4);
+    right: var(--spacing-3);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Trigger bubble button
+// ---------------------------------------------------------------------------
+.floating-chat__trigger {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-500);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--color-primary-600);
+    transform: scale(1.06);
+  }
+
+  &--open {
+    background-color: var(--color-primary-700);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Chat panel
+// ---------------------------------------------------------------------------
+.floating-chat__panel {
+  width: 340px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+
+  @media (max-width: 480px) {
+    width: calc(100vw - var(--spacing-6));
+    max-height: 420px;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Panel header
+// ---------------------------------------------------------------------------
+.floating-chat__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-primary-500);
+  color: white;
+  flex-shrink: 0;
+}
+
+.floating-chat__header-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.floating-chat__header-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.floating-chat__title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.floating-chat__subtitle {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.floating-chat__close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  line-height: 1;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Model selector bar
+// ---------------------------------------------------------------------------
+.floating-chat__model-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--background-tertiary);
+  flex-shrink: 0;
+}
+
+.floating-chat__model-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.floating-chat__model-select {
+  flex: 1;
+  font-size: 11px;
+  padding: 2px var(--spacing-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background-color: var(--background-elevated);
+  color: var(--text-color);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Messages area
+// ---------------------------------------------------------------------------
+.floating-chat__messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  background-color: var(--background-secondary);
+  min-height: 0;
+}
+
+.floating-chat__welcome {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  text-align: center;
+  padding: var(--spacing-4) var(--spacing-2);
+  line-height: 1.5;
+}
+
+// ---------------------------------------------------------------------------
+// Chat bubbles
+// ---------------------------------------------------------------------------
+.floating-chat__bubble {
+  max-width: 85%;
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  word-break: break-word;
+
+  &--user {
+    align-self: flex-end;
+    background-color: var(--color-primary-500);
+    color: white;
+    border-bottom-right-radius: var(--radius-sm);
+  }
+
+  &--assistant {
+    align-self: flex-start;
+    background-color: var(--background-elevated);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: var(--radius-sm);
+  }
+
+  // Animated typing indicator (three dots)
+  &--typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: var(--spacing-2) var(--spacing-3);
+
+    span {
+      width: 7px;
+      height: 7px;
+      background-color: var(--text-secondary);
+      border-radius: var(--radius-full);
+      animation: stuffie-typing 1.3s infinite ease-in-out;
+
+      &:nth-child(2) { animation-delay: 0.2s; }
+      &:nth-child(3) { animation-delay: 0.4s; }
+    }
+  }
+
+  // Markdown: bullet list from AI responses
+  ul {
+    margin: 0;
+    padding-left: var(--spacing-4);
+    list-style: disc;
+
+    li {
+      margin-bottom: 2px;
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  // Markdown: short paragraph (plain answer)
+  p {
+    margin: 0;
+  }
+}
+
+@keyframes stuffie-typing {
+  0%, 80%, 100% { transform: scale(0.75); opacity: 0.4; }
+  40%           { transform: scale(1);    opacity: 1; }
+}
+
+// Breadcrumb-style path badge (e.g. "Products > Add Product")
+.floating-chat__path {
+  display: inline-block;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  background-color: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 2px var(--spacing-2);
+}
+
+// ---------------------------------------------------------------------------
+// Footer — usage info + input
+// ---------------------------------------------------------------------------
+.floating-chat__footer {
+  padding: var(--spacing-2) var(--spacing-3);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--background-elevated);
+  flex-shrink: 0;
+}
+
+.floating-chat__limit {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2);
+  text-align: right;
+
+  &--exceeded {
+    color: var(--color-danger, #e53935);
+    font-weight: 600;
+  }
+}
+
+.floating-chat__input-row {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.floating-chat__input {
+  flex: 1;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--background-secondary);
+  color: var(--text-color);
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-primary-500);
+  }
+
+  &::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.floating-chat__send {
+  padding: var(--spacing-2) var(--spacing-3);
+  background-color: var(--color-primary-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-600);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
