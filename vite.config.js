@@ -7,6 +7,10 @@ export default defineConfig(function (_a) {
         plugins: [react()],
         // Use base path only for production (GitHub Pages)
         base: mode === 'production' ? '/StuffieReact/' : '/',
+        server: {
+            port: 3000,
+            open: true,
+        },
         define: {
             'global': 'globalThis',
         },
@@ -36,10 +40,6 @@ export default defineConfig(function (_a) {
                     },
                 },
             },
-        },
-        server: {
-            port: 3000,
-            open: true,
         },
         test: {
             globals: true,
