@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
 import ProductCard from './ProductCard';
+import MapView from '../shared/MapView';
 import { useFriends, useFriendsWithProducts } from '../../hooks/queries';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
 import type User from '../types/User';
@@ -35,6 +36,8 @@ const FriendPage = () => {
 
   if (loadingFriends) return <Loading size="lg" message={t('common.loading')} />;
 
+  const hasLocation = typeof friend?.lat === 'number' && typeof friend?.lng === 'number';
+
   return (
     <div className="friend-page">
       <div className="friend-page__header">
@@ -48,6 +51,10 @@ const FriendPage = () => {
           </div>
         </div>
       </div>
+
+      {hasLocation && (
+        <MapView lat={friend!.lat!} lng={friend!.lng!} />
+      )}
 
       <div className="friend-page__products-section">
         <h3 className="friend-page__section-title">

@@ -1,0 +1,10 @@
+// =============================================================================
+// MapView Shared Component Styles
+// =============================================================================
+
+.map-view {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: var(--spacing-4);
+}

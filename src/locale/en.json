@@ -147,7 +147,6 @@
     "buy.errorMessage": "Failed to send buy request",
 
     "apps.title": "Apps & extras",
-    "apps.map": "Map",
     "apps.tickets": "Tickets",
     "apps.charts": "Charts",
     "apps.spotify": "Spotify",
@@ -185,6 +184,8 @@
     "common.loading": "Loading...",
     "stuffier.saveSuccess": "Profile updated successfully!",
     "stuffier.saveError": "Error saving profile. Please try again.",
+    "stuffier.zipCode": "Zip Code",
+    "stuffier.zipCodePlaceholder": "Enter your zip code",
 
     "main.errorBoundaryTitle": "Something went wrong:",
 

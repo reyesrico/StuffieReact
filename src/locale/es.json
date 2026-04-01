@@ -147,7 +147,6 @@
     "buy.errorMessage": "Error al enviar solicitud de compra",
 
     "apps.title": "Apps y extras",
-    "apps.map": "Mapa",
     "apps.tickets": "Tiquetes",
     "apps.charts": "Gráficas",
     "apps.spotify": "Spotify",
@@ -185,6 +184,8 @@
     "common.loading": "Cargando...",
     "stuffier.saveSuccess": "¡Perfil actualizado correctamente!",
     "stuffier.saveError": "Error al guardar el perfil. Intenta de nuevo.",
+    "stuffier.zipCode": "Código Postal",
+    "stuffier.zipCodePlaceholder": "Ingresa tu código postal",
 
     "main.errorBoundaryTitle": "Algo salió mal:",
 

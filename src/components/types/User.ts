@@ -10,4 +10,7 @@ export default interface User {
   admin?: boolean,
   products?: Product[]
   picture?: string;
+  zip_code?: string;
+  lat?: number;
+  lng?: number;
 }

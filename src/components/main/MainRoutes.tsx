@@ -16,7 +16,6 @@ const Exchange = lazy(() => import('../apps/Exchange'));
 const Friends = lazy(() => import('../content/Friends'));
 const FriendPage = lazy(() => import('../content/FriendPage'));
 const Loan = lazy(() => import('../apps/Loan'));
-const Map = lazy(() => import('../apps/Map'));
 const Products = lazy(() => import('../content/Products'));
 const Product = lazy(() => import('../content/Product'));
 const Spotify = lazy(() => import('../apps/Spotify'));
@@ -46,7 +45,6 @@ const MainRoutes = () => {
       <Route path="exchange" element={<Exchange />} />
       <Route path="loan" element={<Loan />} />
       <Route path="buy" element={<Buy />} />
-      <Route path="map" element={<Map />} />
       <Route path="charts" element={<Charts />} />
       <Route path="spotify" element={<Spotify />} />
       <Route path="tickets" element={<Tickets />} />

@@ -159,6 +159,9 @@ export interface UpdateUserInput {
   password?: string;
   // email is used to locate the matching record in RestDB for dual-write sync
   email?: string;
+  zip_code?: string;
+  lat?: number;
+  lng?: number;
 }
 
 /**

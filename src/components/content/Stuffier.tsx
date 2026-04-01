@@ -8,10 +8,26 @@ import { updateUser } from '../../api/users.api';
 import Button from '../shared/Button';
 import TextField from '../shared/TextField';
 import Loading from '../shared/Loading';
+import MapView from '../shared/MapView';
 import UserContext from '../../context/UserContext';
 import config from '../../config/api';
 
 import './Stuffier.scss';
+
+const geocodeZip = async (zip: string): Promise<{ lat: number; lng: number } | null> => {
+  const key = import.meta.env.VITE_AZURE_MAPS_KEY;
+  if (!key) return null;
+  try {
+    const url = `https://atlas.microsoft.com/search/address/json?api-version=1.0&query=${encodeURIComponent(zip)}&countrySet=US&subscription-key=${key}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const first = data?.results?.[0];
+    if (!first) return null;
+    return { lat: first.position.lat, lng: first.position.lon };
+  } catch {
+    return null;
+  }
+};
 
 const Stuffier = () => {
   const { t } = useTranslation();
@@ -19,6 +35,7 @@ const Stuffier = () => {
 
   const [firstName, setFirstName] = useState(user?.first_name || '');
   const [lastName, setLastName] = useState(user?.last_name || '');
+  const [zipCode, setZipCode] = useState(user?.zip_code || '');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -85,6 +102,25 @@ const Stuffier = () => {
         last_name: lastName || user?.last_name,
       };
 
+      if (zipCode !== (user?.zip_code || '')) {
+        if (zipCode.trim()) {
+          const coords = await geocodeZip(zipCode.trim());
+          if (coords) {
+            updates.zip_code = zipCode.trim();
+            updates.lat = coords.lat;
+            updates.lng = coords.lng;
+          } else {
+            updates.zip_code = zipCode.trim();
+            updates.lat = undefined;
+            updates.lng = undefined;
+          }
+        } else {
+          updates.zip_code = '';
+          updates.lat = undefined;
+          updates.lng = undefined;
+        }
+      }
+
       if (password) {
         updates.password = await crypto.pbkdf2(password, user.email);
       }
@@ -116,6 +152,8 @@ const Stuffier = () => {
   const avatarSrc = preview || picture;
 
   if (isLoading) return <Loading size="xl" message={t('common.loading')} />;
+
+  const hasLocation = typeof user?.lat === 'number' && typeof user?.lng === 'number';
 
   return (
     <div className="stuffier">
@@ -167,6 +205,11 @@ const Stuffier = () => {
             value={lastName} onChange={(e: any) => setLastName(e.target.value)} />
         </div>
         <div className="stuffier__row">
+          <label className="stuffier__label">{t('stuffier.zipCode')}</label>
+          <TextField name="zipCode" type="text"
+            value={zipCode} onChange={(e: any) => setZipCode(e.target.value)} />
+        </div>
+        <div className="stuffier__row">
           <label className="stuffier__label">{t('Change Password')}</label>
           <TextField name="password" type="password"
             value={password} onChange={(e: any) => setPassword(e.target.value)} />
@@ -182,6 +225,10 @@ const Stuffier = () => {
         {message && <p className="stuffier__success">{message}</p>}
         <Button text={t('Submit')} onClick={onSubmit} />
       </form>
+
+      {hasLocation && (
+        <MapView lat={user.lat!} lng={user.lng!} />
+      )}
     </div>
   );
 };
