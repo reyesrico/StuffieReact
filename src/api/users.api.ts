@@ -73,18 +73,20 @@ export const getLastUserId = async (): Promise<number> => {
  * Password is encrypted before sending
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
+  // Fetch by email only — compare hash client-side.
+  // Avoids sending the password hash in a URL query string (shows up in server logs).
+  const response = await apiClient.get<User[]>(userEndpoints.getByEmail(email));
+  const user = response.data[0];
+  if (!user) return null;
+
   const pbkdf2Hash = await crypto.pbkdf2(password, email);
 
-  // 1. Try current PBKDF2 (new registrations)
-  const response = await apiClient.get<User[]>(userEndpoints.login(email, pbkdf2Hash));
-  if (response.data[0]) return response.data[0];
+  // 1. Match current PBKDF2 hash
+  if (user.password === pbkdf2Hash) return user;
 
-  // Fallback: SHA256 — users who registered before the PBKDF2 migration
+  // 2. Fallback: SHA256 — migrate to PBKDF2 on success
   const sha256Hash = crypto.encrypt(password);
-  const sha256Response = await apiClient.get<User[]>(userEndpoints.login(email, sha256Hash));
-  if (sha256Response.data[0]) {
-    // Migrate to PBKDF2 on the way through
-    const user = sha256Response.data[0];
+  if (user.password === sha256Hash) {
     if (user._id) {
       await apiClient.put(userEndpoints.update(String(user._id)), { ...user, password: pbkdf2Hash });
     }

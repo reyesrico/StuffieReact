@@ -52,4 +52,9 @@ app.post('/ai-chat', async (req, res) => {
   });
 });
 
+// Re-enable Codehooks auto-REST API for all collections.
+// Without this line, deploying a codehooks-js function disables the built-in
+// CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
+app.crudlify();
+
 export default app.init();
