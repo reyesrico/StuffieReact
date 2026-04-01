@@ -72,7 +72,7 @@ ${userName}
 - /notifications  → Pending requests
 - /stuffier  → Profile (name, photo, password)
 - /product/add  → Add product
-- Apps menu: Map, Tickets, Support, Charts, Spotify, Cards
+- Apps menu: Map, Tickets, Charts, Spotify, Cards
 
 ## ${userName}'s Products
 ${productsContext || 'None yet.'}

@@ -22,7 +22,6 @@ const Product = lazy(() => import('../content/Product'));
 const Spotify = lazy(() => import('../apps/Spotify'));
 const Stuffier = lazy(() => import('../content/Stuffier'));
 const SubcategoryPage = lazy(() => import('../content/SubcategoryPage'));
-const Support = lazy(() => import('../apps/Support'));
 const Tickets = lazy(() => import('../apps/Tickets'));
 const Cards = lazy(() => import('../apps/Cards'));
 const Notifications = lazy(() => import('../content/Notifications'));
@@ -50,7 +49,6 @@ const MainRoutes = () => {
       <Route path="map" element={<Map />} />
       <Route path="charts" element={<Charts />} />
       <Route path="spotify" element={<Spotify />} />
-      <Route path="support" element={<Support />} />
       <Route path="tickets" element={<Tickets />} />
       <Route path="cards" element={<Cards />} />
       <Route path="notifications" element={<Notifications />} />

@@ -12,7 +12,6 @@ const Apps = (_props: any) => {
       <div className="apps__title">{t('apps.title')}</div>
       <div className="apps__item"><Link to='/map'>{t('apps.map')}</Link></div>
       <div className="apps__item"><Link to='/tickets'>{t('apps.tickets')}</Link></div>
-      <div className="apps__item"><Link to='/support'>{t('Support')}</Link></div>
       <div className="apps__item"><Link to='/charts'>{t('apps.charts')}</Link></div>
       <div className="apps__item"><Link to='/spotify'>{t('apps.spotify')}</Link></div>
       <div className="apps__item"><a href='https://reyesrico.github.io/CovidCharts'>{t('apps.covidCharts')}</a></div>
