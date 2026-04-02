@@ -136,6 +136,15 @@
   gap: var(--spacing-1);
 }
 
+.stuffier__zip-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+
+  // TextField stretches, button stays compact
+  > *:first-child { flex: 1; }
+}
+
 .stuffier__error {
   margin: 0;
   font-size: var(--font-size-sm);

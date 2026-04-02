@@ -36,6 +36,9 @@ const Stuffier = () => {
   const [firstName, setFirstName] = useState(user?.first_name || '');
   const [lastName, setLastName] = useState(user?.last_name || '');
   const [zipCode, setZipCode] = useState(user?.zip_code || '');
+  const [zipLoading, setZipLoading] = useState(false);
+  const [mapLat, setMapLat] = useState<number | undefined>(user?.lat);
+  const [mapLng, setMapLng] = useState<number | undefined>(user?.lng);
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -63,6 +66,26 @@ const Stuffier = () => {
       reader.readAsDataURL(selected);
     } else {
       setPreview(undefined);
+    }
+  };
+
+  const onRefreshZip = async () => {
+    if (!zipCode.trim()) return;
+    setZipLoading(true);
+    try {
+      const coords = await geocodeZip(zipCode.trim());
+      if (coords) {
+        setMapLat(coords.lat);
+        setMapLng(coords.lng);
+        // persist to DB immediately
+        const updates = { ...user, zip_code: zipCode.trim(), lat: coords.lat, lng: coords.lng };
+        const updated = await updateUser(String(user._id), updates);
+        const merged = { ...user, ...updated };
+        setUser(merged);
+        loginCtx(merged);
+      }
+    } finally {
+      setZipLoading(false);
     }
   };
 
@@ -153,7 +176,7 @@ const Stuffier = () => {
 
   if (isLoading) return <Loading size="xl" message={t('common.loading')} />;
 
-  const hasLocation = typeof user?.lat === 'number' && typeof user?.lng === 'number';
+  const hasLocation = typeof mapLat === 'number' && typeof mapLng === 'number';
 
   return (
     <div className="stuffier">
@@ -205,11 +228,6 @@ const Stuffier = () => {
             value={lastName} onChange={(e: any) => setLastName(e.target.value)} />
         </div>
         <div className="stuffier__row">
-          <label className="stuffier__label">{t('stuffier.zipCode')}</label>
-          <TextField name="zipCode" type="text"
-            value={zipCode} onChange={(e: any) => setZipCode(e.target.value)} />
-        </div>
-        <div className="stuffier__row">
           <label className="stuffier__label">{t('Change Password')}</label>
           <TextField name="password" type="password"
             value={password} onChange={(e: any) => setPassword(e.target.value)} />
@@ -221,13 +239,26 @@ const Stuffier = () => {
               value={password2} onChange={(e: any) => setPassword2(e.target.value)} />
           </div>
         )}
+        <div className="stuffier__row">
+          <label className="stuffier__label">{t('stuffier.zipCode')}</label>
+          <div className="stuffier__zip-row">
+            <TextField name="zipCode" type="text"
+              value={zipCode} onChange={(e: any) => setZipCode(e.target.value)} />
+            <Button
+              text={zipLoading ? '…' : '↻'}
+              onClick={onRefreshZip}
+              size="sm"
+              disabled={zipLoading || !zipCode.trim()}
+            />
+          </div>
+        </div>
         {error && <p className="stuffier__error">{error}</p>}
         {message && <p className="stuffier__success">{message}</p>}
         <Button text={t('Submit')} onClick={onSubmit} />
       </form>
 
       {hasLocation && (
-        <MapView lat={user.lat!} lng={user.lng!} />
+        <MapView lat={mapLat!} lng={mapLng!} />
       )}
     </div>
   );
