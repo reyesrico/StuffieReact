@@ -8,10 +8,12 @@ export const defaultImageUrl =
 export const userImageUrl = (userId: number | string | undefined): string =>
   `${config.cloudinary.urlSingle}/stuffiers/${userId ?? 'default'}`;
 
-export const existImage = (publicId: string | number | undefined, folder = ''): Promise<any> => {
-  // Cache-bust with a daily timestamp so browsers don't cache 404s across renames
+export const existImage = (publicId: string | number | undefined, folder = ''): Promise<void> => {
   const bust = Math.floor(Date.now() / 86400000);
-  return axios.get(`${config.cloudinary.urlSingle}/${folder}${publicId ?? 'default'}?v=${bust}`)
+  const url = `${config.cloudinary.urlSingle}/${folder}${publicId ?? 'default'}?v=${bust}`;
+  return fetch(url, { method: 'HEAD' }).then((res) => {
+    if (!res.ok) return Promise.reject(new Error('not found'));
+  });
 };
 
 // Signature to Delete
