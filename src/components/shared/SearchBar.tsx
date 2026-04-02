@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { Icon } from '@fluentui/react';
 
 import { Link } from 'react-router-dom';
@@ -34,9 +33,7 @@ const SearchBar = (props: any) => {
 
 
   const handleClickOutside = (event: any) => {
-    const domNode = ReactDOM.findDOMNode(searchBarRef.current);
-
-    if (!domNode || !domNode.contains(event.target)) {
+    if (!searchBarRef.current || !searchBarRef.current.contains(event.target)) {
       setSearchText('');
       setIsOpen(false);
     }
