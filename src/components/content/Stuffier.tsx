@@ -154,6 +154,7 @@ const Stuffier = () => {
   if (isLoading) return <Loading size="xl" message={t('common.loading')} />;
 
   const hasLocation = typeof user?.lat === 'number' && typeof user?.lng === 'number';
+  console.log('[Stuffier] user lat:', user?.lat, 'lng:', user?.lng, '| hasLocation:', hasLocation);
 
   return (
     <div className="stuffier">

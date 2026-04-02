@@ -36,7 +36,10 @@ const FriendPage = () => {
 
   if (loadingFriends) return <Loading size="lg" message={t('common.loading')} />;
 
-  const hasLocation = typeof friend?.lat === 'number' && typeof friend?.lng === 'number';
+  const lat = Number(friend?.lat);
+  const lng = Number(friend?.lng);
+  const hasLocation = !!friend && !isNaN(lat) && !isNaN(lng) && lat !== 0;
+  console.log('[FriendPage] friend:', friend?.email, '| lat:', friend?.lat, 'lng:', friend?.lng, '| hasLocation:', hasLocation);
 
   return (
     <div className="friend-page">
@@ -53,7 +56,7 @@ const FriendPage = () => {
       </div>
 
       {hasLocation && (
-        <MapView lat={friend!.lat!} lng={friend!.lng!} />
+        <MapView lat={lat} lng={lng} />
       )}
 
       <div className="friend-page__products-section">
