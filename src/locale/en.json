@@ -178,6 +178,9 @@
 
     "friendPage.productsTitle": "{{ name }}'s Stuff",
     "friendPage.noProducts": "This friend has no products yet.",
+    "friendPage.tabLocation": "Location",
+    "friendPage.tabProducts": "Products",
+    "friendPage.locationZip": "Zip code:",
 
     "breadcrumb.profile": "My Profile",
 

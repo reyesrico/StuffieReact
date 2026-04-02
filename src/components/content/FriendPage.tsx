@@ -12,6 +12,8 @@ import type Product from '../types/Product';
 
 import './FriendPage.scss';
 
+type Tab = 'location' | 'products';
+
 const FriendPage = () => {
   const { id } = useParams();
   const { t } = useTranslation();
@@ -20,11 +22,16 @@ const FriendPage = () => {
   const { data: friends = [], isLoading: loadingFriends } = useFriends();
   const { data: friendsWithProducts = [], isLoading: loadingProducts } = useFriendsWithProducts();
   const [picture, setPicture] = React.useState<string>();
+  const [activeTab, setActiveTab] = React.useState<Tab>('location');
 
   const friend = (friends as User[]).find(f => f.id === friendId);
   const friendWithProds = (friendsWithProducts as User[]).find(f => f.id === friendId);
   const friendName = `${friend?.first_name ?? ''} ${friend?.last_name ?? ''}`.trim();
   const products: Product[] = (friendWithProds?.products as Product[]) ?? [];
+
+  const lat = Number(friend?.lat);
+  const lng = Number(friend?.lng);
+  const hasLocation = !!friend && !isNaN(lat) && !isNaN(lng) && lat !== 0;
 
   React.useEffect(() => {
     if (friend?.id) {
@@ -34,12 +41,12 @@ const FriendPage = () => {
     }
   }, [friend?.id]);
 
-  if (loadingFriends) return <Loading size="lg" message={t('common.loading')} />;
+  // Default to products tab if friend has no location
+  React.useEffect(() => {
+    if (!hasLocation) setActiveTab('products');
+  }, [hasLocation]);
 
-  const lat = Number(friend?.lat);
-  const lng = Number(friend?.lng);
-  const hasLocation = !!friend && !isNaN(lat) && !isNaN(lng) && lat !== 0;
-  console.log('[FriendPage] friend:', friend?.email, '| lat:', friend?.lat, 'lng:', friend?.lng, '| hasLocation:', hasLocation);
+  if (loadingFriends) return <Loading size="lg" message={t('common.loading')} />;
 
   return (
     <div className="friend-page">
@@ -55,39 +62,59 @@ const FriendPage = () => {
         </div>
       </div>
 
-      {hasLocation && (
-        <MapView lat={lat} lng={lng} />
+      <div className="friend-page__tabs">
+        {hasLocation && (
+          <button
+            className={`friend-page__tab${activeTab === 'location' ? ' friend-page__tab--active' : ''}`}
+            onClick={() => setActiveTab('location')}
+          >
+            {t('friendPage.tabLocation')}
+          </button>
+        )}
+        <button
+          className={`friend-page__tab${activeTab === 'products' ? ' friend-page__tab--active' : ''}`}
+          onClick={() => setActiveTab('products')}
+        >
+          {t('friendPage.tabProducts')}
+        </button>
+      </div>
+
+      {activeTab === 'location' && hasLocation && (
+        <div className="friend-page__section">
+          <MapView lat={lat} lng={lng} />
+          {friend?.zip_code && (
+            <p className="friend-page__zip">{t('friendPage.locationZip')} {friend.zip_code}</p>
+          )}
+        </div>
       )}
 
-      <div className="friend-page__products-section">
-        <h3 className="friend-page__section-title">
-          {t('friendPage.productsTitle', { name: friend?.first_name })}
-        </h3>
+      {activeTab === 'products' && (
+        <div className="friend-page__section">
+          {loadingProducts && <Loading size="md" message={t('common.loading')} />}
 
-        {loadingProducts && <Loading size="md" message={t('common.loading')} />}
+          {!loadingProducts && products.length === 0 && (
+            <div className="friend-page__empty">{t('friendPage.noProducts')}</div>
+          )}
 
-        {!loadingProducts && products.length === 0 && (
-          <div className="friend-page__empty">{t('friendPage.noProducts')}</div>
-        )}
-
-        {!loadingProducts && products.length > 0 && (
-          <div className="friend-page__grid">
-            {products.map((product: Product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                navigationState={{
-                  breadcrumb: [
-                    { label: t('Friends'), path: '/friends' },
-                    { label: friendName, path: `/friends/${friendId}` },
-                    { label: product.name ?? product.id?.toString() ?? '', path: `/product/${product.id}` },
-                  ],
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+          {!loadingProducts && products.length > 0 && (
+            <div className="friend-page__grid">
+              {products.map((product: Product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  navigationState={{
+                    breadcrumb: [
+                      { label: t('Friends'), path: '/friends' },
+                      { label: friendName, path: `/friends/${friendId}` },
+                      { label: product.name ?? product.id?.toString() ?? '', path: `/product/${product.id}` },
+                    ],
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

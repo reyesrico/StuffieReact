@@ -42,12 +42,49 @@
   font-size: var(--font-size-sm);
 }
 
-.friend-page__products-section {
+// ── Tab bar ───────────────────────────────────────────────────────────────────
+
+.friend-page__tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border-color);
   margin-top: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
 }
 
-.friend-page__section-title {
-  @include page-subtitle;
+.friend-page__tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;       // Overlap the container border
+  padding: var(--spacing-3) var(--spacing-6);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  letter-spacing: 0.01em;
+
+  &:hover {
+    color: var(--text-color);
+  }
+
+  &--active {
+    color: var(--color-primary-500);
+    border-bottom-color: var(--color-primary-500);
+  }
+}
+
+// ── Section content ───────────────────────────────────────────────────────────
+
+.friend-page__section {
+  // intentionally bare — MapView and grid handle their own spacing
+}
+
+.friend-page__zip {
+  margin-top: var(--spacing-3);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
 }
 
 .friend-page__grid {

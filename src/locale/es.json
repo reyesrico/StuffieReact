@@ -178,6 +178,9 @@
 
     "friendPage.productsTitle": "Cosas de {{ name }}",
     "friendPage.noProducts": "Este amigo aún no tiene productos.",
+    "friendPage.tabLocation": "Ubicación",
+    "friendPage.tabProducts": "Productos",
+    "friendPage.locationZip": "Código postal:",
 
     "breadcrumb.profile": "Mi Perfil",
 
