@@ -50,20 +50,39 @@ export function getDataToExport(products: any) {
 }
 
 /*
-*  XLSX GitHub project
-*  https://github.com/SheetJS/sheetjs
-*  Example: https://sheetjs.com/demos/writexlsx.html 
-*/
-export function downloadExcel(_products: any, _fileName: string) {
-  // const data = getDataToExport(products);
+ * Generates and downloads a CSV inventory file from the user's products map.
+ * products: { [categoryId: number]: Product[] }
+ * categories: Category[] — used to resolve category names
+ */
+export function downloadCSV(products: any, categories: Array<{ id: number; name: string }>, fileName: string) {
+  const rows: string[][] = [['Name', 'Category', 'Subcategory', 'Cost']];
 
-  // let worsheet_name = "Products_Sheet";
-  // let worksheet_book = XLSX.utils.book_new();
+  Object.keys(products).forEach(categoryId => {
+    const categoryProducts: Array<Product> = products[categoryId];
+    const category = categories.find(c => c.id === Number(categoryId));
+    const categoryName = category?.name ?? categoryId;
 
-  // /* convert from array of arrays to workbook */
-  // let worksheet = XLSX.utils.aoa_to_sheet(data);
+    categoryProducts.forEach(product => {
+      rows.push([
+        product.name ?? '',
+        String(categoryName),
+        product.subcategory != null ? String(product.subcategory) : '',
+        product.cost != null ? String(product.cost) : '',
+      ]);
+    });
+  });
 
-  // /* add worksheet to workbook */
-  // XLSX.utils.book_append_sheet(worksheet_book, worksheet, worsheet_name);
-  // XLSX.writeFile(worksheet_book, `${fileName}${excelfileExtension}`);
+  const csv = rows
+    .map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${fileName}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

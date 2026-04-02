@@ -42,3 +42,22 @@
 .products__empty {
   margin-top: var(--spacing-4);
 }
+
+.products__refresh-spinner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-3);
+  animation: products-spinner-in 0.15s ease;
+}
+
+.products__refresh-spinner-icon {
+  .stuffie-loading__spinner {
+    border-color: var(--border-color);
+    border-top-color: var(--text-secondary);
+  }
+}
+
+@keyframes products-spinner-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
