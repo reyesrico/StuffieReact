@@ -25,6 +25,7 @@ export const useFriends = () => {
     queryKey: queryKeys.friends.all(user?.email || ''),
     queryFn: () => getFriends(user!.email!),
     enabled: !!user?.email,
+    staleTime: 1000 * 60 * 5, // 5 min — friend profiles can update (location, name, etc.)
   });
 };
 
