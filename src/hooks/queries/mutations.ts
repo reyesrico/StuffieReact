@@ -107,6 +107,7 @@ export const useAddProduct = () => {
         await addProductToUser({
           id_stuffier: user.id,
           id_stuff: product.id,
+          cost: productData.cost,
         });
       }
       

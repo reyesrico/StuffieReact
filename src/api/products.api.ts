@@ -65,19 +65,37 @@ export interface CreateProductInput {
   category: number;
   subcategory: number;
   fileName?: string;
+  cost?: number;
 }
+
+/**
+ * Get the highest 'id' value from the stuff collection.
+ * Codehooks does not auto-generate numeric ids, so we manage them ourselves.
+ */
+export const getLastProductId = async (): Promise<number> => {
+  const response = await apiClient.get<Record<string, any>[]>(productEndpoints.getLastId());
+  const ids = response.data
+    .map((row: Record<string, any>) => Number(row.id))
+    .filter((n: number) => Number.isFinite(n) && n > 0);
+  return ids.length > 0 ? Math.max(...ids) : 0;
+};
 
 /**
  * Create a new product
  */
 export const createProduct = async (product: CreateProductInput): Promise<Product> => {
+  const lastId = await getLastProductId();
+  const newId = lastId + 1;
+
   const response = await apiClient.post<Product>(productEndpoints.create(), {
     name: product.name,
     category: product.category,
     subcategory: product.subcategory,
     file_name: product.fileName,
+    id: newId,
   });
-  return response.data;
+  // Guarantee id is present — Codehooks does not always echo custom fields back
+  return { ...response.data, id: newId };
 };
 
 // ============ UPDATE - Products ============

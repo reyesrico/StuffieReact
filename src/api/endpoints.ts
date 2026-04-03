@@ -83,6 +83,9 @@ export const productEndpoints = {
   /** POST create product */
   create: () => collections.stuff,
   
+  /** GET all product ids (for computing next sequential id) */
+  getLastId: () => `${collections.stuff}?q={}&h={"$fields": {"id":1}}`,
+  
   /** PUT update product by _id (not used directly - see stuffiersStuff) */
   update: (_id: string) => `${collections.stuff}/${_id}`,
   

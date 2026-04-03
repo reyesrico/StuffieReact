@@ -25,6 +25,13 @@ const DownloadIcon = () => (
   </svg>
 );
 
+const RefreshIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="23 4 23 10 17 10" />
+    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+  </svg>
+);
+
 const Products = () => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -57,6 +64,13 @@ const Products = () => {
               onClick={generateReport}
               size="sm"
               variant="secondary"
+            />
+            <Button
+              icon={<RefreshIcon />}
+              onClick={() => refreshProductsQuery()}
+              size="sm"
+              variant="secondary"
+              aria-label={t('products.refresh')}
             />
           </div>
         )}
