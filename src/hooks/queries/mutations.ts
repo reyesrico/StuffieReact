@@ -119,6 +119,10 @@ export const useAddProduct = () => {
           queryKey: queryKeys.products.all(user.id) 
         });
       }
+      // Invalidate pending products so Admin page reflects the new product immediately
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.products.pending(),
+      });
     },
   });
 };
