@@ -11,7 +11,9 @@ import Header from '../sections/Header';
 import MainRoutes from './MainRoutes';
 import Menu from '../sections/Menu';
 import Settings from '../sections/Settings';
+import SpotifyPlayer from '../sections/SpotifyPlayer';
 import UserContext from '../../context/UserContext';
+import { SpotifyProvider } from '../../context/SpotifyContext';
 import { 
   HeaderSkeleton, 
   SidebarSkeleton, 
@@ -53,6 +55,7 @@ const Main = () => {
   }, [user?.id]);
 
   return (
+    <SpotifyProvider>
     <div className="stuffie">
       {/* Header with error boundary */}
       <ErrorBoundary FallbackComponent={ErrorFallback}>
@@ -79,10 +82,10 @@ const Main = () => {
                 </div>
               </div>
               <div className="stuffie__left-section">
-                <Menu />
+                <Apps />
               </div>
               <div className="stuffie__left-section">
-                <Apps />
+                <Settings />
               </div>
             </div>
           </Suspense>
@@ -102,10 +105,18 @@ const Main = () => {
 
         {/* Right sidebar */}
         <div className="stuffie__right">
+          <div className="stuffie__right-section stuffie__right-section--spotify">
+            <SpotifyPlayer />
+          </div>
           <div className="stuffie__right-section">
-            <Settings />
+            <Menu />
           </div>
         </div>
+      </div>
+
+      {/* Mobile-only fixed Spotify bar — shown when sidebars collapse */}
+      <div className="stuffie__spotify-bar">
+        <SpotifyPlayer variant="bar" />
       </div>
 
       {/* Footer - no data fetching, renders immediately */}
@@ -116,6 +127,7 @@ const Main = () => {
       {/* Floating AI chat — fixed bottom-right, available on all pages */}
       <FloatingChat />
     </div>
+    </SpotifyProvider>
   );
 }
 

@@ -1,130 +1,45 @@
-/**
- * Spotify Component
- * 
- * Purpose: Social media personalization feature
- * - Search and browse Spotify tracks
- * - Play using Spotify's embed player
- * - Part of the personalized social experience
- * 
- * Note: Spotify removed preview_url from their API in 2024.
- * Using Spotify embed player for playback instead.
- */
-
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
-import { getToken, searchTracks } from '../../api/external/spotify';
+import { useSpotify, type Track } from '../../context/SpotifyContext';
 
 import './Spotify.scss';
 
-interface Track {
-  id: string;
-  name: string;
-  artists: { name: string }[];
-  album: {
-    name: string;
-    images: { url: string }[];
-  };
-  external_urls: { spotify: string };
-  duration_ms: number;
-}
+// Playing bars icon
+const PlayingIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="#1DB954" aria-hidden="true">
+    <rect x="3" y="8" width="4" height="13" rx="1" />
+    <rect x="10" y="4" width="4" height="17" rx="1" />
+    <rect x="17" y="10" width="4" height="11" rx="1" />
+  </svg>
+);
+
+// Play arrow icon
+const PlayIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M8 5v14l11-7z" />
+  </svg>
+);
+
+// External link icon
+const LinkIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <polyline points="15 3 21 3 21 9" />
+    <line x1="10" y1="14" x2="21" y2="3" />
+  </svg>
+);
 
 const Spotify = () => {
-  // Use environment variables for Spotify credentials
-  const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
   const { t } = useTranslation();
-
-  const [token, setToken] = useState<string | null>(null);
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSearching, setIsSearching] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { tracks, selectedTrack, searchTitle, isLoading, isSearching, error, selectTrack, search } = useSpotify();
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchTitle, setSearchTitle] = useState('');
 
-  // Initialize - get token and load initial tracks
-  useEffect(() => {
-    if (!clientId || !clientSecret) {
-      setIsLoading(false);
-      setError(t('spotify.credentialsError'));
-      return;
-    }
-
-    let isMounted = true;
-
-    const initialize = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const tokenRes = await getToken(clientId, clientSecret);
-        const accessToken = tokenRes.data.access_token;
-        
-        if (!isMounted) return;
-        setToken(accessToken);
-
-        // Search for popular tracks on initial load
-        const searchRes = await searchTracks(accessToken, 'Bad Bunny', 20);
-        
-        if (!isMounted) return;
-        const initialTracks = searchRes.data.tracks?.items || [];
-        setTracks(initialTracks);
-        setSearchTitle('Bad Bunny');
-        
-        // Auto-select first track
-        if (initialTracks.length > 0) {
-          setSelectedTrack(initialTracks[0]);
-        }
-      } catch (err) {
-        console.error('Spotify error:', err);
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : t('spotify.connectionFailed'));
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    initialize();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [clientId, clientSecret]);
-  
-  // Handle search
   const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !searchQuery.trim()) return;
-
-    setIsSearching(true);
-    setError(null);
-
-    try {
-      const res = await searchTracks(token, searchQuery);
-      const searchResults = res.data.tracks?.items || [];
-      setTracks(searchResults);
-      setSearchTitle(searchQuery);
-      
-      // Auto-select first result
-      if (searchResults.length > 0) {
-        setSelectedTrack(searchResults[0]);
-      }
-    } catch (err) {
-      setError(t('spotify.searchFailed'));
-    } finally {
-      setIsSearching(false);
-    }
-  }, [token, searchQuery]);
-
-  const handleSelectTrack = useCallback((track: Track) => {
-    setSelectedTrack(track);
-  }, []);
+    await search(searchQuery);
+  }, [search, searchQuery]);
 
   const formatDuration = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
@@ -143,7 +58,6 @@ const Spotify = () => {
   if (error && tracks.length === 0) {
     return (
       <div className="spotify spotify--error">
-        <div className="spotify__error-icon">🎵</div>
         <h3>{t('spotify.errorTitle')}</h3>
         <p>{error}</p>
       </div>
@@ -156,61 +70,55 @@ const Spotify = () => {
         <h2>{t('spotify.title')}</h2>
       </div>
 
-      {/* Search Bar */}
+      {/* Search */}
       <form className="spotify__search" onSubmit={handleSearch}>
         <input
           type="text"
           placeholder={t('spotify.searchPlaceholder')}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           className="spotify__search-input"
         />
-        <button type="submit" className="spotify__search-btn" disabled={!searchQuery.trim() || isSearching}>
+        <button
+          type="submit"
+          className="spotify__search-btn"
+          disabled={!searchQuery.trim() || isSearching}
+        >
           {isSearching ? '...' : t('spotify.searchButton')}
         </button>
       </form>
 
-      {/* Spotify Embed Player */}
-      {selectedTrack && (
-        <div className="spotify__embed-container">
-          <iframe
-            title={t('spotify.playerTitle')}
-            src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
-            width="100%"
-            height="152"
-            frameBorder="0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            className="spotify__embed"
-          />
-        </div>
-      )}
-
-      {/* Tracks List */}
+      {/* Track list */}
       <div className="spotify__tracks">
         <div className="spotify__tracks-header">
-          <h3>{searchTitle ? t('spotify.results', { query: searchTitle }) : t('spotify.tracks')}</h3>
+          <h3>
+            {searchTitle
+              ? t('spotify.results', { query: searchTitle })
+              : t('spotify.tracks')}
+          </h3>
         </div>
-        <p className="spotify__tracks-note">
-          {t('spotify.playInstruction')}
-        </p>
+
         {isSearching ? (
           <Loading size="md" message={t('spotify.searching')} />
         ) : tracks.length === 0 ? (
           <p className="spotify__empty">{t('spotify.noResults')}</p>
         ) : (
           <div className="spotify__track-list">
-            {tracks.map((track) => (
-              <div 
+            {tracks.map((track: Track) => (
+              <div
                 key={track.id}
-                className={`spotify__track spotify__track--clickable ${selectedTrack?.id === track.id ? 'spotify__track--selected' : ''}`}
-                onClick={() => handleSelectTrack(track)}
+                className={`spotify__track spotify__track--clickable${selectedTrack?.id === track.id ? ' spotify__track--selected' : ''}`}
+                onClick={() => selectTrack(track)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') selectTrack(track); }}
+                aria-label={`${track.name} by ${track.artists.map(a => a.name).join(', ')}`}
               >
                 <div className="spotify__track-play">
-                  {selectedTrack?.id === track.id ? '🔊' : '▶'}
+                  {selectedTrack?.id === track.id ? <PlayingIcon /> : <PlayIcon />}
                 </div>
-                <img 
-                  src={track.album.images[2]?.url || track.album.images[0]?.url || ''} 
+                <img
+                  src={track.album.images[2]?.url || track.album.images[0]?.url || ''}
                   alt={track.album.name}
                   className="spotify__track-image"
                 />
@@ -223,15 +131,15 @@ const Spotify = () => {
                 <div className="spotify__track-duration">
                   {formatDuration(track.duration_ms)}
                 </div>
-                <a 
-                  href={track.external_urls?.spotify} 
-                  target="_blank" 
+                <a
+                  href={track.external_urls?.spotify}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="spotify__track-link"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={e => e.stopPropagation()}
                   title={t('spotify.openInApp')}
                 >
-                  🔗
+                  <LinkIcon />
                 </a>
               </div>
             ))}

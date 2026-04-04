@@ -1,0 +1,148 @@
+@use '../../styles/base/main' as *;
+
+// ── Sidebar widget ────────────────────────────────────────────────────────────
+
+.spotify-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: 0 var(--spacing-4);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__browse-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: #1DB954;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__state {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    text-align: center;
+    padding: var(--spacing-3) 0;
+
+    &--error {
+      color: var(--text-tertiary);
+    }
+  }
+
+  &__start-link {
+    color: #1DB954;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Spotify embed — bleeds to full section width
+  &__embed {
+    display: block;
+    width: calc(100% + 2 * var(--spacing-4));
+    margin-left: calc(-1 * var(--spacing-4));
+    margin-right: calc(-1 * var(--spacing-4));
+    margin-top: var(--spacing-3);
+    border: none;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+}
+
+// ── Mobile fixed bottom bar ───────────────────────────────────────────────────
+
+.spotify-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  background: var(--background-color);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-2) var(--spacing-4);
+  height: 56px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+
+  &__art {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__name {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__artist {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__play {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.15s, transform 0.1s;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  &__browse {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #1DB954;
+    text-decoration: none;
+    flex-shrink: 0;
+    padding: var(--spacing-1) var(--spacing-2);
+    border: 1px solid #1DB954;
+    border-radius: var(--radius-full);
+
+    &:hover {
+      background: rgba(29, 185, 84, 0.1);
+    }
+  }
+}
