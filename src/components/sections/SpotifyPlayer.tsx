@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSpotify } from '../../context/SpotifyContext';
 import Loading from '../shared/Loading';
 
+
 import './SpotifyPlayer.scss';
 
 // Spotify logo mark
@@ -34,35 +35,22 @@ interface SpotifyPlayerProps {
 
 const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
   const { selectedTrack, isLoading, error } = useSpotify();
+  const [embedOpen, setEmbedOpen] = React.useState(false);
 
   // ── Mobile bar ──────────────────────────────────────────────────────────────
   if (variant === 'bar') {
     if (!selectedTrack) return null;
-    const albumArt = selectedTrack.album.images[2]?.url || selectedTrack.album.images[0]?.url;
     return (
-      <div className="spotify-bar">
-        {albumArt && (
-          <img src={albumArt} alt="" className="spotify-bar__art" />
-        )}
-        <div className="spotify-bar__info">
-          <span className="spotify-bar__name">{selectedTrack.name}</span>
-          <span className="spotify-bar__artist">
-            {selectedTrack.artists.map(a => a.name).join(', ')}
-          </span>
-        </div>
-        <a
-          href={selectedTrack.external_urls.spotify}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="spotify-bar__play"
-          aria-label="Play on Spotify"
-        >
-          <SpotifyLogo size={22} />
-        </a>
-        <Link to="/spotify" className="spotify-bar__browse">
-          Browse
-        </Link>
-      </div>
+      <iframe
+        key={selectedTrack.id}
+        title="Spotify Player"
+        src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
+        width="100%"
+        height="80"
+        frameBorder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        style={{ display: 'block', border: 'none' }}
+      />
     );
   }
 

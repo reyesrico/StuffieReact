@@ -65,6 +65,9 @@ const buildProductsContext = (products: Record<number, any[]>, categories: any[]
   return lines.length > 0 ? lines.join('\n') : 'No products added yet.';
 };
 
+const SNAP_MARGIN = 16; // px from screen edge
+const BUBBLE_SIZE = 56;
+
 const FloatingChat = () => {
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
@@ -75,6 +78,62 @@ const FloatingChat = () => {
   const [inputValue, setInputValue] = useState('');
   const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // ── Snap-to-edge drag state ─────────────────────────────────────────────────
+  const [snapSide, setSnapSide] = useState<'left' | 'right'>('right');
+  const [snapY, setSnapY] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragXY, setDragXY] = useState({ x: 0, y: 0 });
+  const dragMoved = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const suppressNextClick = useRef(false);
+
+  const handleTriggerPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    dragMoved.current = false;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handleTriggerPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    if (!dragMoved.current && Math.sqrt(dx * dx + dy * dy) > 8) {
+      dragMoved.current = true;
+      setIsDragging(true);
+    }
+    if (dragMoved.current) {
+      setDragXY({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleTriggerPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (dragMoved.current) {
+      suppressNextClick.current = true;
+      const newSide: 'left' | 'right' = e.clientX < window.innerWidth / 2 ? 'left' : 'right';
+      const clampedY = Math.max(
+        SNAP_MARGIN,
+        Math.min(window.innerHeight - BUBBLE_SIZE - SNAP_MARGIN, e.clientY - BUBBLE_SIZE / 2)
+      );
+      setSnapSide(newSide);
+      setSnapY(clampedY);
+      setIsDragging(false);
+      dragMoved.current = false;
+    }
+  };
+
+  const handleTriggerClick = () => {
+    if (suppressNextClick.current) {
+      suppressNextClick.current = false;
+      return;
+    }
+    setIsOpen(prev => !prev);
+  };
+
+  const floatingStyle: React.CSSProperties = isDragging
+    ? { left: dragXY.x - BUBBLE_SIZE / 2, top: dragXY.y - BUBBLE_SIZE / 2, right: 'auto', bottom: 'auto', transition: 'none' }
+    : snapY !== null
+      ? { [snapSide === 'left' ? 'left' : 'right']: SNAP_MARGIN, [snapSide === 'left' ? 'right' : 'left']: 'auto', top: snapY, bottom: 'auto' }
+      : {};
 
   const productsContext = React.useMemo(
     () => buildProductsContext(products as Record<number, any[]>, categories as any[]),
@@ -116,7 +175,10 @@ const FloatingChat = () => {
   };
 
   return (
-    <div className="floating-chat">
+    <div
+      className={`floating-chat${snapSide === 'left' ? ' floating-chat--left' : ''}`}
+      style={floatingStyle}
+    >
       {isOpen && (
         <div className="floating-chat__panel">
           {/* Header */}
@@ -194,7 +256,10 @@ const FloatingChat = () => {
       {/* Trigger bubble */}
       <button
         className={`floating-chat__trigger${isOpen ? ' floating-chat__trigger--open' : ''}`}
-        onClick={() => setIsOpen(prev => !prev)}
+        onClick={handleTriggerClick}
+        onPointerDown={handleTriggerPointerDown}
+        onPointerMove={handleTriggerPointerMove}
+        onPointerUp={handleTriggerPointerUp}
         aria-label={t('chat.openAssistant')}
         title={t('chat.openAssistant')}
       >

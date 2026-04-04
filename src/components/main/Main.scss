@@ -132,6 +132,7 @@ $layout-gap: 16px; // var(--spacing-4) = 1rem = 16px
   left: 0;
   right: 0;
   z-index: 100;
+  line-height: 0; // prevent extra space below iframe
 }
 
 .stuffie__right-section {

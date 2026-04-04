@@ -102,6 +102,8 @@ const CatalogPanel = () => {
   );
 };
 
+type AdminTab = 'notifications' | 'catalog' | 'actions';
+
 // ─── Main Admin component ─────────────────────────────────────────────────────
 const Admin = () => {
   const navigate = useNavigate();
@@ -109,7 +111,7 @@ const Admin = () => {
   const { data: userRequests = [] } = useUserRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   const approveUserMutation = useApproveUser();
-  const [showCatalog, setShowCatalog] = useState(false);
+  const [activeTab, setActiveTab] = useState<AdminTab>('notifications');
 
   const totalNotifications = userRequests.length + pendingProducts.length;
 
@@ -134,103 +136,116 @@ const Admin = () => {
         </div>
       </div>
 
-      {/* ── Notifications section ── */}
+      {/* ── Tab bar ── */}
+      <div className="admin__tabs" role="tablist">
+        <button
+          role="tab"
+          aria-selected={activeTab === 'notifications'}
+          className={`admin__tab${activeTab === 'notifications' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('notifications')}
+        >
+          {t('admin.notifications')}
+          {totalNotifications > 0 && (
+            <span className="admin__tab-badge">{totalNotifications}</span>
+          )}
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === 'catalog'}
+          className={`admin__tab${activeTab === 'catalog' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('catalog')}
+        >
+          {t('admin.catalog')}
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === 'actions'}
+          className={`admin__tab${activeTab === 'actions' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('actions')}
+        >
+          {t('admin.actions')}
+        </button>
+      </div>
+
+      {/* ── Tab panels ── */}
       <section className="admin__section">
-        <div className="admin__section-header">
-          <h3 className="admin__section-title">
-            {t('admin.notifications')}
-            {totalNotifications > 0 && (
-              <span className="admin__badge">{totalNotifications}</span>
+
+        {/* Notifications tab */}
+        {activeTab === 'notifications' && (
+          <>
+            {totalNotifications === 0 && (
+              <div className="admin__empty">{t('admin.noNotifications')}</div>
             )}
-          </h3>
-        </div>
 
-        {totalNotifications === 0 && (
-          <div className="admin__empty">{t('admin.noNotifications')}</div>
-        )}
-
-        {/* User registration requests */}
-        {userRequests.length > 0 && (
-          <div className="admin__subsection">
-            <h4 className="admin__subsection-title">
-              {t('admin.userRequests')}
-              <span className="admin__badge admin__badge--sm">{userRequests.length}</span>
-            </h4>
-            <ul className="admin__list">
-              {userRequests.map((user: User, index: number) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <li key={index} className="admin__request">
-                  <div className="admin__request-info">
-                    <span className="admin__request-name">{user.first_name} {user.last_name}</span>
-                    <span className="admin__request-email">{user.email}</span>
-                  </div>
-                  <div className="admin__request-buttons">
-                    <Button onClick={() => approveUser(user)} text={t('common.accept')} size="sm" />
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Products missing images */}
-        {pendingProducts.length > 0 && (
-          <div className="admin__subsection">
-            <h4 className="admin__subsection-title">
-              {t('admin.pendingProducts')}
-              <span className="admin__badge admin__badge--sm">{pendingProducts.length}</span>
-            </h4>
-            <ul className="admin__list">
-              {pendingProducts.map((product: Product) => {
-                const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category}/${product.subcategory}/${product.id}`;
-                return (
-                  <li key={product.id}>
-                    <a
-                      href={cloudinaryUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="admin__request admin__request--product admin__request--clickable"
-                    >
+            {userRequests.length > 0 && (
+              <div className="admin__subsection">
+                <h4 className="admin__subsection-title">
+                  {t('admin.userRequests')}
+                  <span className="admin__badge admin__badge--sm">{userRequests.length}</span>
+                </h4>
+                <ul className="admin__list">
+                  {userRequests.map((user: User, index: number) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <li key={index} className="admin__request">
                       <div className="admin__request-info">
-                        <span className="admin__request-name">{product.name}</span>
-                        <span className="admin__request-meta">
-                          ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory}
-                        </span>
+                        <span className="admin__request-name">{user.first_name} {user.last_name}</span>
+                        <span className="admin__request-email">{user.email}</span>
                       </div>
-                      <span className="admin__request-arrow">↗</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
+                      <div className="admin__request-buttons">
+                        <Button onClick={() => approveUser(user)} text={t('common.accept')} size="sm" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {pendingProducts.length > 0 && (
+              <div className="admin__subsection">
+                <h4 className="admin__subsection-title">
+                  {t('admin.pendingProducts')}
+                  <span className="admin__badge admin__badge--sm">{pendingProducts.length}</span>
+                </h4>
+                <ul className="admin__list">
+                  {pendingProducts.map((product: Product) => {
+                    const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category}/${product.subcategory}/${product.id}`;
+                    return (
+                      <li key={product.id}>
+                        <a
+                          href={cloudinaryUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="admin__request admin__request--product admin__request--clickable"
+                        >
+                          <div className="admin__request-info">
+                            <span className="admin__request-name">{product.name}</span>
+                            <span className="admin__request-meta">
+                              ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory}
+                            </span>
+                          </div>
+                          <span className="admin__request-arrow">↗</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Catalog tab */}
+        {activeTab === 'catalog' && <CatalogPanel />}
+
+        {/* Actions tab */}
+        {activeTab === 'actions' && (
+          <div className="admin__actions">
+            <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
+            <Button text={t('admin.addCategory')} onClick={() => navigate('/category/add')} size="sm" variant="outline" />
+            <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
           </div>
         )}
-      </section>
 
-      {/* ── Catalog section ── */}
-      <section className="admin__section">
-        <div className="admin__section-header">
-          <h3 className="admin__section-title">{t('admin.catalog')}</h3>
-          <Button
-            text={showCatalog ? t('common.cancel') : t('admin.catalog.manage')}
-            onClick={() => setShowCatalog(p => !p)}
-            size="sm"
-            variant={showCatalog ? 'secondary' : 'outline'}
-          />
-        </div>
-        {showCatalog && <CatalogPanel />}
-      </section>
-
-      {/* ── Actions section ── */}
-      <section className="admin__section">
-        <div className="admin__section-header">
-          <h3 className="admin__section-title">{t('admin.actions')}</h3>
-        </div>
-        <div className="admin__actions">
-          <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
-          <Button text={t('admin.addCategory')} onClick={() => navigate('/category/add')} size="sm" variant="outline" />
-          <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
-        </div>
       </section>
     </div>
   );
