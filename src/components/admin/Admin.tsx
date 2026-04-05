@@ -6,6 +6,7 @@ import { map } from 'lodash';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
+import AdminChartsPanel from '../charts/AdminChartsPanel';
 import Product from '../types/Product';
 import User from '../types/User';
 import {
@@ -102,7 +103,7 @@ const CatalogPanel = () => {
   );
 };
 
-type AdminTab = 'notifications' | 'catalog' | 'actions';
+type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions';
 
 // ─── Main Admin component ─────────────────────────────────────────────────────
 const Admin = () => {
@@ -156,6 +157,14 @@ const Admin = () => {
           onClick={() => setActiveTab('catalog')}
         >
           {t('admin.catalog')}
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === 'charts'}
+          className={`admin__tab${activeTab === 'charts' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('charts')}
+        >
+          {t('admin.charts')}
         </button>
         <button
           role="tab"
@@ -236,6 +245,9 @@ const Admin = () => {
 
         {/* Catalog tab */}
         {activeTab === 'catalog' && <CatalogPanel />}
+
+        {/* Charts tab */}
+        {activeTab === 'charts' && <AdminChartsPanel />}
 
         {/* Actions tab */}
         {activeTab === 'actions' && (

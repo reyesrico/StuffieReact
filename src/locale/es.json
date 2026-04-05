@@ -148,7 +148,7 @@
 
     "apps.title": "Apps y extras",
     "apps.tickets": "Tiquetes",
-    "apps.charts": "Gráficas",
+
     "apps.spotify": "Spotify",
     "apps.covidCharts": "Gráficas Covid",
 
@@ -253,9 +253,23 @@
     "admin.catalog.added": "¡Agregado exitosamente!",
     "admin.catalog.idPlaceholder": "ID",
     "admin.catalog.namePlaceholder": "Nombre",
+    "admin.charts": "Gráficas",
     "admin.actions": "Acciones",
     "admin.category": "Categoría",
     "admin.subcategory": "Subcategoría",
+
+    "charts.itemsByCategory": "Objetos por categoría",
+    "charts.spendByCategory": "Gasto por categoría",
+    "charts.items": "objetos",
+    "charts.spend": "gasto",
+    "charts.admin.totalUsers": "Total usuarios",
+    "charts.admin.approvedUsers": "Aprobados",
+    "charts.admin.pendingApprovals": "Pendientes de aprobación",
+    "charts.admin.pendingImages": "Imágenes pendientes",
+    "charts.admin.userRegistration": "Registro de usuarios",
+    "charts.admin.actionableItems": "Pendientes",
+    "charts.admin.userRequests": "Solicitudes",
+    "charts.admin.futureNote": "Más gráficas después de la reestructura de API.",
 
     "addProduct.title": "Agregar Artículo",
     "addProduct.selectProduct": "Seleccionar Producto",

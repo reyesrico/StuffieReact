@@ -30,6 +30,7 @@ export const queryKeys = {
   user: {
     current: (email: string) => ['user', email] as const,
     requests: () => ['user', 'requests'] as const, // Admin: pending user registrations
+    all: () => ['users', 'all'] as const,           // Admin: all registered users
   },
   
   // Friends

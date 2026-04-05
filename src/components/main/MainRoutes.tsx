@@ -11,7 +11,6 @@ const AddProduct = lazy(() => import('../content/AddProduct'));
 const Admin = lazy(() => import('../admin/Admin'));
 const Buy = lazy(() => import('../apps/Buy'));
 const CategoryPage = lazy(() => import('../content/CategoryPage'));
-const Charts = lazy(() => import('../apps/Charts'));
 const Exchange = lazy(() => import('../apps/Exchange'));
 const Friends = lazy(() => import('../content/Friends'));
 const FriendPage = lazy(() => import('../content/FriendPage'));
@@ -44,7 +43,6 @@ const MainRoutes = () => {
       <Route path="exchange" element={<Exchange />} />
       <Route path="loan" element={<Loan />} />
       <Route path="buy" element={<Buy />} />
-      <Route path="charts" element={<Charts />} />
       <Route path="spotify" element={<Spotify />} />
       <Route path="tickets" element={<Tickets />} />
       <Route path="notifications" element={<Notifications />} />

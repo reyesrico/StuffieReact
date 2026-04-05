@@ -58,6 +58,9 @@ export {
   useInvalidateLoanRequests,
 } from './useLoans';
 
+// Users (admin)
+export { useAllUsers } from './useUsers';
+
 // Purchases
 export {
   usePurchaseRequests,

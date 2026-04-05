@@ -19,7 +19,6 @@ const Apps = (_props: any) => {
     <div className="apps">
       <div className="apps__title">{t('apps.title')}</div>
       <div className="apps__item"><Link to='/tickets'>{t('apps.tickets')}</Link></div>
-      <div className="apps__item"><Link to='/charts'>{t('apps.charts')}</Link></div>
       <div className="apps__item">
         <a href='https://reyesrico.github.io/CovidCharts' target="_blank" rel="noopener noreferrer">
           {t('apps.covidCharts')}<ExternalIcon />

@@ -8,6 +8,7 @@ import Category from '../types/Category';
 import EmptyState from '../shared/EmptyState';
 import Loading from '../shared/Loading';
 import ProductCard from './ProductCard';
+import ProductsInsightsChart from '../charts/ProductsInsightsChart';
 import { downloadCSV } from '../helpers/DownloadHelper';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
@@ -75,6 +76,9 @@ const Products = () => {
           </div>
         )}
       </div>
+      {!isProductsEmpty(products) && (
+        <ProductsInsightsChart products={products} categories={categories} />
+      )}
       {isProductsEmpty(products) && (
         <div className="products__empty">
           <EmptyState

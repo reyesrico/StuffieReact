@@ -1,0 +1,30 @@
+@use '../../styles/base/main' as *;
+
+.products-insights {
+  margin-bottom: var(--spacing-6);
+
+  &__charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-4);
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__card {
+    @include page-section;
+    margin-bottom: 0;
+    padding: var(--spacing-4);
+  }
+
+  &__card-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 var(--spacing-3);
+  }
+}
