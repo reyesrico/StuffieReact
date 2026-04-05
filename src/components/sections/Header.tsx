@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
@@ -19,7 +19,6 @@ import {
   usePurchaseRequests,
   usePendingProducts 
 } from '../../hooks/queries';
-import { clearAllCache } from '../../utils/cache';
 import { defaultImageUrl, existImage, userImageUrl } from '../../lib/cloudinary';
 
 import './Header.scss';
@@ -46,7 +45,6 @@ const Header = () => {
   const { data: purchaseRequests = [] } = usePurchaseRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const [picture, setPicture] = React.useState<string>();
@@ -78,18 +76,17 @@ const Header = () => {
     // Clear React Query cache
     queryClient.clear();
     
-    // Clear localStorage cache  
-    clearAllCache('cache_');
-    localStorage.removeItem('stuffie-cache');
-    localStorage.removeItem('picture');
-    localStorage.removeItem('username');
+    // Clear ALL localStorage — wipe every key to ensure no user data survives
+    localStorage.clear();
     sessionStorage.clear();
     
     // Update UserContext
     logoutUser();
     
-    // Navigate to login — replace state so no 'from' redirect is set
-    navigate('/login', { replace: true, state: {} });
+    // Hard browser redirect to /login — bypasses React Router entirely.
+    // This resets all React state, history stack, and React Query cache,
+    // preventing any previous user's page or data from leaking to the next login.
+    window.location.href = (import.meta.env.BASE_URL || '/') + 'login';
   }
 
   /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */
