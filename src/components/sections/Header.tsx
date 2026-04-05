@@ -61,6 +61,14 @@ const Header = () => {
     }
   }, [user?.id]);
 
+  // Close mobile dropdowns on every route change
+  React.useEffect(() => {
+    const apps = document.getElementById("apps");
+    const menu = document.getElementById("menu");
+    if (apps) apps.style.display = "none";
+    if (menu) menu.style.display = "none";
+  }, [location.pathname]);
+
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
   const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length + friendsRequests.length;
 

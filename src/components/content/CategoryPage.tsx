@@ -17,6 +17,8 @@ const CategoryPage = () => {
   const categoryId = id ? parseInt(id) : -1;
   const category: any = categories.find(c => c.id === categoryId);
 
+  if (!category) return <div className="category-page">{t('NoProducts')}</div>;
+
   const stuff: any = products[category.id];
   const name = category.name;
   return (
