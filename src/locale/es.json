@@ -223,6 +223,10 @@
 
     "notifications.title": "Notificaciones",
     "notifications.empty": "No tienes notificaciones pendientes.",
+    "notifications.tabFriends": "Amigos",
+    "notifications.tabBuy": "Compras",
+    "notifications.tabExchange": "Intercambios",
+    "notifications.tabLoan": "Préstamos",
 
     "friendPage.productsTitle": "Cosas de {{ name }}",
     "friendPage.noProducts": "Este amigo aún no tiene productos.",

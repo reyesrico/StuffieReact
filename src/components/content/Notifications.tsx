@@ -18,6 +18,8 @@ import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import './Notifications.scss';
 
+type NotifTab = 'exchange' | 'loan' | 'buy' | 'friends';
+
 const Notifications = () => {
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
@@ -40,6 +42,7 @@ const Notifications = () => {
 
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
+  const [activeTab, setActiveTab] = useState<NotifTab>('exchange');
 
   const executeDeleteExchange = (_id: string, isLoan = false) => {
     if (isLoan) {
@@ -80,6 +83,14 @@ const Notifications = () => {
       .catch(() => setType(WarningMessageType.ERROR));
   };
 
+  const tabsWithData: NotifTab[] = [
+    ...(friendRequests.length ? ['friends' as NotifTab] : []),
+    ...(Array.isArray(purchaseRequests) && purchaseRequests.length ? ['buy' as NotifTab] : []),
+    ...(Array.isArray(exchangeRequests) && exchangeRequests.length ? ['exchange' as NotifTab] : []),
+    ...(Array.isArray(loanRequests) && loanRequests.length ? ['loan' as NotifTab] : []),
+  ];
+  const effectiveTab: NotifTab = tabsWithData.includes(activeTab) ? activeTab : (tabsWithData[0] ?? 'exchange');
+
   if (isLoading) {
     return <Loading size="xl" message={t('common.loading')} />;
   }
@@ -95,13 +106,35 @@ const Notifications = () => {
         <div className="notifications__empty">{t('notifications.empty')}</div>
       )}
 
-      {Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && (
+      {totalRequests > 0 && (
+        <div className="notifications__tabs">
+          {tabsWithData.map(tab => {
+            const count =
+              tab === 'exchange' ? exchangeRequests.length :
+              tab === 'loan' ? loanRequests.length :
+              tab === 'buy' ? purchaseRequests.length :
+              friendRequests.length;
+            const label =
+              tab === 'exchange' ? t('notifications.tabExchange') :
+              tab === 'loan' ? t('notifications.tabLoan') :
+              tab === 'buy' ? t('notifications.tabBuy') :
+              t('notifications.tabFriends');
+            return (
+              <button
+                key={tab}
+                className={`notifications__tab${effectiveTab === tab ? ' notifications__tab--active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {label}
+                <span className="notifications__tab-badge">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {effectiveTab === 'exchange' && Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && (
         <div className="notifications__section">
-          <hr />
-          <h3 className="notifications__section-title">
-            <span>{t('products.exchangeRequests')}</span>
-            <span className="notifications__badge">{exchangeRequests.length}</span>
-          </h3>
           <ul>
             {exchangeRequests.map((request: ExchangeRequest, index: number) => {
               const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
@@ -141,13 +174,8 @@ const Notifications = () => {
         </div>
       )}
 
-      {Array.isArray(loanRequests) && loanRequests.length > 0 && (
+      {effectiveTab === 'loan' && Array.isArray(loanRequests) && loanRequests.length > 0 && (
         <div className="notifications__section">
-          <hr />
-          <h3 className="notifications__section-title">
-            <span>{t('products.loanRequests')}</span>
-            <span className="notifications__badge">{loanRequests.length}</span>
-          </h3>
           <ul>
             {loanRequests.map((request: LoanRequest, index: number) => {
               const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
@@ -183,13 +211,8 @@ const Notifications = () => {
         </div>
       )}
 
-      {Array.isArray(purchaseRequests) && purchaseRequests.length > 0 && (
+      {effectiveTab === 'buy' && Array.isArray(purchaseRequests) && purchaseRequests.length > 0 && (
         <div className="notifications__section">
-          <hr />
-          <h3 className="notifications__section-title">
-            <span>{t('products.purchaseRequests')}</span>
-            <span className="notifications__badge">{purchaseRequests.length}</span>
-          </h3>
           <ul>
             {purchaseRequests.map((request: PurchaseRequest, index: number) => {
               const requestor = request.id_friend === user?.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
@@ -238,13 +261,8 @@ const Notifications = () => {
           </ul>
         </div>
       )}
-      {friendRequests.length > 0 && (
+      {effectiveTab === 'friends' && friendRequests.length > 0 && (
         <div className="notifications__section">
-          <hr />
-          <h3 className="notifications__section-title">
-            <span>{t('friends.requests')}</span>
-            <span className="notifications__badge">{friendRequests.length}</span>
-          </h3>
           <ul>
             {friendRequests.map((friend: User) => (
               <li className="notifications__request" key={friend.id}>
