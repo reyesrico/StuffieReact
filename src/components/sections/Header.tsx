@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
 
 import Apps from '../sections/Apps';
+import Language from './Language';
 import SearchBar from '../shared/SearchBar';
 import Theme from './Theme';
 import ThemeContext from '../../context/ThemeContext';
@@ -150,7 +151,7 @@ const Header = () => {
             <Link to='/products'>{window.outerWidth >= 1024 ? t('header.products') : t('header.prodsShort')}</Link>
           </div>
           <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/notifications') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/notifications'>{t('header.notifications')}</Link>
+            <Link to='/notifications'>{window.outerWidth >= 1024 ? t('header.notifications') : t('header.notifsShort')}</Link>
             {requests > 0 && (
               <div className="stuffie-header__warning">
                 <span className="stuffie-header__warning-text">{requests}</span>
@@ -166,7 +167,15 @@ const Header = () => {
             </div>
           )}
           <div className="stuffie-header__section-item">
-            <button className="stuffie-header__button" onClick={handleLogout}>{t('Logout')}</button>
+            <button className="stuffie-header__button" onClick={handleLogout}>
+              {window.outerWidth >= 1024 ? t('Logout') : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label={t('Logout')}>
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -199,6 +208,7 @@ const Header = () => {
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
         <div className="stuffie-header__apps">
           <div id="apps">
+            <div className="stuffie-header__menu-theme"><Language /></div>
             <div className="stuffie-header__menu-theme"><Theme /></div>
           </div>
           <button className="icon" onClick={event => event && toggleApps()}>

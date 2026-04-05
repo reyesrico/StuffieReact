@@ -131,27 +131,28 @@
 }
 
 .search__result-type {
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
   border-radius: var(--radius-full);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .search__result-C {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-600);
+  background-color: #e5e7eb;
+  color: #374151;
 }
 
 .search__result-P {
-  background-color: var(--color-primary-50);
-  color: var(--color-primary-600);
+  background-color: #dbeafe;
+  color: #1d4ed8;
 }
 
 .search__result-S {
-  background-color: var(--color-warning, #FFF3E0);
-  color: var(--color-warning, #F57C00);
+  background-color: #fef3c7;
+  color: #92400e;
 }
 
 // =============================================================================

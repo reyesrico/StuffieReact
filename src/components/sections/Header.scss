@@ -241,6 +241,21 @@
     display: none;
   }
 
+  // Collapse badge to a tiny dot — no number, no size, just a signal
+  .stuffie-header__warning {
+    min-width: 7px;
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    margin-left: 3px;
+    vertical-align: super;
+    border-radius: var(--radius-full);
+  }
+
+  .stuffie-header__warning-text {
+    display: none;
+  }
+
   .stuffie-header__user-name {
     display: flex;
     flex-direction: row;

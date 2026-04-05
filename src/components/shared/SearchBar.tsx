@@ -109,7 +109,7 @@ const SearchBar = (props: any) => {
     return (
       <div className="search__result-info">
         <div className="search__result-name">{result.name}</div>
-        <div className={`search__result-type search__result-${type}`}>| {type}</div>
+        <div className={`search__result-type search__result-${type}`}>{type}</div>
       </div>
     );
   }

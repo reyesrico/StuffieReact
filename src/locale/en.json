@@ -219,6 +219,7 @@
     "header.products": "Products",
     "header.prodsShort": "Prods",
     "header.notifications": "Notifications",
+    "header.notifsShort": "Notifs",
 
     "notifications.title": "Notifications",
     "notifications.empty": "You have no pending notifications.",
