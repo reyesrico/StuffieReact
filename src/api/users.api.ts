@@ -87,16 +87,16 @@ export const loginUser = async (email: string, password: string): Promise<User |
   const pbkdf2Hash = await crypto.pbkdf2(password, email);
 
   // Strip password hash before returning — hash must not reach UserContext, localStorage, or query cache
-  const safeUser = (): User => { const { password: _pw, ...rest } = user; return rest as User; };
+  const safeUser = (): User => { const { password_hash: _pw, ...rest } = user; return rest as User; };
 
   // 1. Match current PBKDF2 hash
-  if (user.password === pbkdf2Hash) return safeUser();
+  if (user.password_hash === pbkdf2Hash) return safeUser();
 
   // 2. Fallback: SHA256 — migrate to PBKDF2 on success
   const sha256Hash = crypto.encrypt(password);
-  if (user.password === sha256Hash) {
+  if (user.password_hash === sha256Hash) {
     if (user._id) {
-      await apiClient.put(userEndpoints.update(String(user._id)), { ...user, password: pbkdf2Hash });
+      await apiClient.put(userEndpoints.update(String(user._id)), { ...user, password_hash: pbkdf2Hash });
     }
     return safeUser();
   }
@@ -135,12 +135,15 @@ export const registerUser = async (userData: RegisterUserInput): Promise<User> =
 
   const newId = lastId + 1;
 
+  // Destructure to exclude plain-text password from what gets stored
+  const { password: _plaintext, ...userDataWithoutPassword } = userData;
+
   const newUser = {
-    ...userData,
-    password: encryptedPassword,
+    ...userDataWithoutPassword,
+    password_hash: encryptedPassword,
     id: newId,
-    admin: false,
-    request: true, // Requires admin approval
+    is_admin: false,
+    status: 'pending' as const, // Requires admin approval
   };
 
   // Write to Codehooks only — RestDB is now a frozen backup (see _restdbClient_BACKUP above)
@@ -156,10 +159,9 @@ export interface UpdateUserInput {
   first_name?: string;
   last_name?: string;
   picture?: string;
-  admin?: boolean;
-  request?: boolean;
-  password?: string;
-  // email is used to locate the matching record in RestDB for dual-write sync
+  is_admin?: boolean;
+  status?: 'pending' | 'active';
+  password_hash?: string;
   email?: string;
   zip_code?: string;
   lat?: number;
@@ -178,7 +180,7 @@ export const updateUser = async (_id: string, data: UpdateUserInput): Promise<Us
  * Approve a user request (removes request flag) — Codehooks only. RestDB is frozen backup.
  */
 export const approveUserRequest = async (user: User): Promise<User> => {
-  const payload = { ...user, request: false };
+  const payload = { ...user, status: 'active' as const };
   const response = await apiClient.put<User>(userEndpoints.update(String(user._id)), payload);
   return response.data;
 };

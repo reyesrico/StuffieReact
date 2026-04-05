@@ -145,7 +145,7 @@ const Stuffier = () => {
       }
 
       if (password) {
-        updates.password = await crypto.pbkdf2(password, user.email);
+        updates.password_hash = await crypto.pbkdf2(password, user.email);
       }
 
       const photoUrl = await uploadPhoto();

@@ -162,7 +162,7 @@ const Header = () => {
                 <span className="stuffie-header__warning-text">{requests}</span>
               </div>)}
           </div>
-          {user.admin && (
+          {user.is_admin && (
             <div className={`stuffie-header__section-item ${isActive('/admin') ? 'stuffie-header__section-item--active' : ''}`}>
               <Link to='/admin'>{t('Admin')}</Link>
               {(userRequests.length > 0 || pendingProducts.length > 0) && (

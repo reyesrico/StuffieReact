@@ -4,10 +4,11 @@ export default interface User {
   _id?: number,
   id?: number,
   email?: string,
-  password?: string,
+  password_hash?: string,
   first_name?: string,
   last_name?: string,
-  admin?: boolean,
+  is_admin?: boolean,
+  status?: 'pending' | 'active',
   products?: Product[]
   picture?: string;
   zip_code?: string;

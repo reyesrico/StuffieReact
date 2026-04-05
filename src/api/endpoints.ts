@@ -11,7 +11,7 @@ const collections = {
   subcategories: 'subcategories',
   stuff: 'stuff',
   stuffiersStuff: 'stuffiersstuff',
-  stuffiers: 'stuffiers',
+  users: 'users',
   friends: 'friends',
   friendRequests: 'friendrequests',
   exchangeRequests: 'exchangerequests',
@@ -118,39 +118,39 @@ export const stuffiersStuffEndpoints = {
 };
 
 /**
- * User (stuffiers) endpoints
+ * User endpoints
  */
 export const userEndpoints = {
   /** GET all users */
-  list: () => collections.stuffiers,
+  list: () => collections.users,
   
   /** GET user by email */
   getByEmail: (email: string) => 
-    `${collections.stuffiers}?q=${JSON.stringify({ email })}`,
+    `${collections.users}?q=${JSON.stringify({ email })}`,
   
   /** GET multiple users by ids */
   listByIds: (ids: Array<{ id: number }>) => 
-    `${collections.stuffiers}?q={"$or":${JSON.stringify(ids)}}`,
+    `${collections.users}?q={"$or":${JSON.stringify(ids)}}`,
   
   /** GET users pending approval */
   listPendingRequests: () => 
-    `${collections.stuffiers}?q={"request": true}`,
+    `${collections.users}?q=${JSON.stringify({ status: 'pending' })}`,
   
   /** GET last user id (for registration — fallback only) */
   getLastId: () => 
-    `${collections.stuffiers}?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
+    `${collections.users}?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
 
   /** POST atomic next-id counter (Codehooks keyvalue counter) — preferred over getLastId */
-  nextId: () => `stuffiers/next-id`,
+  nextId: () => `users/next-id`,
 
   /** POST register user */
-  create: () => collections.stuffiers,
+  create: () => collections.users,
   
   /** PUT update user */
-  update: (_id: string) => `${collections.stuffiers}/${_id}`,
+  update: (_id: string) => `${collections.users}/${_id}`,
   
   /** DELETE user */
-  delete: (_id: string) => `${collections.stuffiers}/${_id}`,
+  delete: (_id: string) => `${collections.users}/${_id}`,
 };
 
 /**
