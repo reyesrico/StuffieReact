@@ -5,7 +5,7 @@
  *
  * OPENAI_API_KEY lives only in Codehooks env vars — never in source code or git.
  */
-import { app } from 'codehooks-js';
+import { app, datastore } from 'codehooks-js';
 
 // Allowlist of models — prevents clients from calling expensive models
 const ALLOWED_MODELS = ['gpt-5-nano', 'gpt-4.1-nano'];
@@ -56,5 +56,68 @@ app.post('/ai-chat', async (req, res) => {
 // Without this line, deploying a codehooks-js function disables the built-in
 // CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
 app.crudlify();
+
+// =============================================================================
+// Atomic ID counters — replaces unsafe client-side Math.max pattern
+// POST /stuff/next-id   → { id: <next integer> }
+// POST /stuffiers/next-id → { id: <next integer> }
+//
+// Uses Codehooks keyvalue store as an atomic counter so concurrent requests
+// never generate duplicate numeric IDs.
+// =============================================================================
+
+app.post('/stuff/next-id', async (req, res) => {
+  const db = await datastore.open();
+  const id = await db.incr('counter_stuff_id', 1);
+  return res.json({ id });
+});
+
+app.post('/stuffiers/next-id', async (req, res) => {
+  const db = await datastore.open();
+  const id = await db.incr('counter_stuffiers_id', 1);
+  return res.json({ id });
+});
+
+// =============================================================================
+// Server-side user products join — replaces 3-call client pipeline
+// GET /userproducts/:stuffierId
+//   1. Fetches stuffiersstuff rows for this user
+//   2. Batch-fetches matching stuff rows
+//   3. Merges cost onto each product
+//   Returns: Array<Product & { cost: number, ss_id: string }>
+// =============================================================================
+
+app.get('/userproducts/:stuffierId', async (req, res) => {
+  const stuffierId = Number(req.params.stuffierId);
+  if (!stuffierId || isNaN(stuffierId)) {
+    return res.status(400).json({ error: 'Invalid stuffierId' });
+  }
+
+  const db = await datastore.open();
+
+  // 1. Get ownership rows
+  const ssRows = [];
+  const ssCursor = db.getMany('stuffiersstuff', { filter: { id_stuffier: stuffierId } });
+  for await (const row of ssCursor) ssRows.push(row);
+
+  if (ssRows.length === 0) return res.json([]);
+
+  // 2. Get matching stuff rows
+  const stuffIds = ssRows.map(r => r.id_stuff).filter(Boolean);
+  const stuffMap = {};
+  const stuffCursor = db.getMany('stuff', { filter: { id: { $in: stuffIds } } });
+  for await (const row of stuffCursor) stuffMap[row.id] = row;
+
+  // 3. Merge
+  const result = ssRows
+    .map(ss => {
+      const product = stuffMap[ss.id_stuff];
+      if (!product) return null;
+      return { ...product, cost: ss.cost ?? null, ss_id: ss._id };
+    })
+    .filter(Boolean);
+
+  return res.json(result);
+});
 
 export default app.init();

@@ -1,23 +1,22 @@
 /**
  * API Endpoints - Centralized URL builders
  * 
- * Migrated from services/routes.js with TypeScript support
- * All endpoints return relative paths (baseURL is set in client.ts)
+ * All endpoints target Codehooks only — RestDB is a frozen backup.
+ * Collection names use Codehooks conventions (camelCase/lowercase).
  */
-import { useCodehooks } from '../config/api';
 
-// Collection names differ between RestDB (kebab-case) and Codehooks (camelCase)
+// Codehooks collection names (single source of truth)
 const collections = {
   categories: 'categories',
   subcategories: 'subcategories',
   stuff: 'stuff',
-  stuffiersStuff: useCodehooks ? 'stuffiersstuff' : 'stuffiers-stuff',
+  stuffiersStuff: 'stuffiersstuff',
   stuffiers: 'stuffiers',
   friends: 'friends',
-  friendRequests: useCodehooks ? 'friendrequests' : 'friend-requests',
-  exchangeRequests: useCodehooks ? 'exchangerequests' : 'exchange-requests',
-  loanRequests: useCodehooks ? 'loanrequests' : 'loan-requests',
-  purchaseRequests: useCodehooks ? 'purchaserequests' : 'purchase-requests',
+  friendRequests: 'friendrequests',
+  exchangeRequests: 'exchangerequests',
+  loanRequests: 'loanrequests',
+  purchaseRequests: 'purchaserequests',
   conf: 'conf',
 };
 
@@ -83,9 +82,12 @@ export const productEndpoints = {
   /** POST create product */
   create: () => collections.stuff,
   
-  /** GET all product ids (for computing next sequential id) */
+  /** GET all product ids (for computing next sequential id — fallback only) */
   getLastId: () => `${collections.stuff}?q={}&h={"$fields": {"id":1}}`,
-  
+
+  /** POST atomic next-id counter (Codehooks keyvalue counter) — preferred over getLastId */
+  nextId: () => `stuff/next-id`,
+
   /** PUT update product by _id (not used directly - see stuffiersStuff) */
   update: (_id: string) => `${collections.stuff}/${_id}`,
   
@@ -138,10 +140,13 @@ export const userEndpoints = {
   listPendingRequests: () => 
     `${collections.stuffiers}?q={"request": true}`,
   
-  /** GET last user id (for registration) */
+  /** GET last user id (for registration — fallback only) */
   getLastId: () => 
     `${collections.stuffiers}?q={}&h={"$fields": {"id":1}, "$aggregate":["COUNT:"] }`,
-  
+
+  /** POST atomic next-id counter (Codehooks keyvalue counter) — preferred over getLastId */
+  nextId: () => `stuffiers/next-id`,
+
   /** POST register user */
   create: () => collections.stuffiers,
   
@@ -240,6 +245,16 @@ export const configEndpoints = {
     `${collections.conf}?q={"platform": "${platform}"}`,
 };
 
+/**
+ * User Products — server-side join endpoint (Phase 3 of DB migration)
+ * Replaces the 3-call client-side pipeline: stuffiersstuff + stuff + mapCost
+ * Endpoint: GET /userproducts/:stuffierId  (custom Codehooks handler in backend/index.js)
+ */
+export const userProductsEndpoints = {
+  /** GET all products for a user with cost, via server-side join */
+  listByUser: (stuffierId: number) => `userproducts/${stuffierId}`,
+};
+
 // Export all endpoints as single object for convenience
 export const endpoints = {
   categories: categoryEndpoints,
@@ -253,6 +268,7 @@ export const endpoints = {
   loans: loanEndpoints,
   purchases: purchaseEndpoints,
   config: configEndpoints,
+  userProducts: userProductsEndpoints,
 };
 
 export default endpoints;

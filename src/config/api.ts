@@ -6,10 +6,10 @@
  */
 
 // ============================================================
-// BACKEND TOGGLE - Change this to switch API providers
+// BACKEND TOGGLE
+// Codehooks is the ONLY active backend. RestDB is a frozen backup.
+// DO NOT set this to false — RestDB writes are retired.
 // ============================================================
-// true  = Codehooks (current production backend)
-// false = RestDB (legacy backend)
 export const useCodehooks = true;
 // ============================================================
 
@@ -30,16 +30,20 @@ const data = {
     appId: import.meta.env.VITE_FB_APP_ID || ''
   },
   headers: {
+    // ⚠️ BACKUP — DO NOT DELETE — RestDB is our permanent frozen backup database.
+    // Keep these env vars. Keep this config block. Never write to RestDB from app code.
+    // To sync after migration: run backend/scripts/sync-to-restdb.js manually.
     restdb: {
       'cache-control': 'no-cache',
       'x-apikey': import.meta.env.VITE_RESTDB_API_KEY || ''
-    }, 
+    },
     codehooks: {
       'x-apikey': import.meta.env.VITE_CODEHOOKS_API_KEY || '',
       'Content-Type': 'application/json'
     }
   },
   server: {
+    // ⚠️ BACKUP — DO NOT DELETE — See note above on restdb
     restdb: import.meta.env.VITE_RESTDB_SERVER_URL || 'https://stuffie-98b2.restdb.io/rest/',
     codehooks: import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/'
   }

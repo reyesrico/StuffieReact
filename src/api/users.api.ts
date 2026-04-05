@@ -7,13 +7,18 @@ import { userEndpoints } from './endpoints';
 import crypto from '../lib/crypto';
 import type User from '../components/types/User';
 
-// Dedicated clients for each backend — used during registration to write to both
+// Dedicated Codehooks client — always the source of truth
 const codehooksClient = axios.create({
   baseURL: import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/',
   headers: { 'x-apikey': import.meta.env.VITE_CODEHOOKS_API_KEY || '', 'Content-Type': 'application/json' },
   timeout: 30000,
 });
-const restdbClient = axios.create({
+
+// ⚠️  BACKUP — DO NOT DELETE — DO NOT REMOVE ENV VARS
+// RestDB is our permanent backup database. All writes are now Codehooks-only.
+// To do a manual sync at end of migration: run backend/scripts/sync-to-restdb.js
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _restdbClient_BACKUP = axios.create({
   baseURL: import.meta.env.VITE_RESTDB_SERVER_URL || 'https://stuffie-98b2.restdb.io/rest/',
   headers: { 'cache-control': 'no-cache', 'x-apikey': import.meta.env.VITE_RESTDB_API_KEY || '' },
   timeout: 30000,
@@ -135,17 +140,11 @@ export const registerUser = async (userData: RegisterUserInput): Promise<User> =
     request: true, // Requires admin approval
   };
 
-  // Write to both databases — Codehooks is primary, RestDB is secondary
-  const [codehooksRes] = await Promise.all([
-    codehooksClient.post<User>(userEndpoints.create(), newUser),
-    restdbClient.post<User>(userEndpoints.create(), newUser).catch((err) => {
-      // RestDB failure is non-fatal — Codehooks is source of truth
-      console.warn('[Register] RestDB write failed:', err?.message);
-    }),
-  ]);
+  // Write to Codehooks only — RestDB is now a frozen backup (see _restdbClient_BACKUP above)
+  const response = await codehooksClient.post<User>(userEndpoints.create(), newUser);
 
-  // Guarantee the id is present — some backends don't echo custom fields back
-  return { ...codehooksRes.data, id: newId };
+  // Guarantee the id is present — Codehooks doesn't always echo custom fields back
+  return { ...response.data, id: newId };
 };
 
 // ============ UPDATE ============
@@ -165,60 +164,29 @@ export interface UpdateUserInput {
 }
 
 /**
- * Find a user in RestDB by email and apply a PATCH — keeps RestDB in sync with Codehooks.
- * Non-fatal: a RestDB failure is warned but never throws.
- */
-const syncRestDB = async (email: string, data: Record<string, any>): Promise<void> => {
-  try {
-    const search = await restdbClient.get<User[]>(userEndpoints.getByEmail(email));
-    const rbUser = search.data[0];
-    if (rbUser?._id) {
-      await restdbClient.put(userEndpoints.update(String(rbUser._id)), data);
-    }
-  } catch (err: any) {
-    console.warn('[RestDB] sync failed for', email, err?.message);
-  }
-};
-
-/**
- * Update user by _id — writes to Codehooks, then syncs RestDB via email lookup.
+ * Update user by _id — writes to Codehooks only. RestDB is a frozen backup.
  */
 export const updateUser = async (_id: string, data: UpdateUserInput): Promise<User> => {
   const response = await apiClient.put<User>(userEndpoints.update(_id), data);
-  if (data.email) {
-    await syncRestDB(data.email, data);
-  }
   return response.data;
 };
 
 /**
- * Approve a user request (removes request flag) — dual-write to both DBs.
+ * Approve a user request (removes request flag) — Codehooks only. RestDB is frozen backup.
  */
 export const approveUserRequest = async (user: User): Promise<User> => {
   const payload = { ...user, request: false };
   const response = await apiClient.put<User>(userEndpoints.update(String(user._id)), payload);
-  if (user.email) {
-    await syncRestDB(user.email, payload);
-  }
   return response.data;
 };
 
 // ============ DELETE ============
 
 /**
- * Delete user by _id from Codehooks, and by email lookup from RestDB.
+ * Delete user by _id from Codehooks only. RestDB is a frozen backup — never delete from it.
  */
-export const deleteUser = async (_id: string, email: string): Promise<void> => {
+export const deleteUser = async (_id: string, _email: string): Promise<void> => {
   await apiClient.delete(userEndpoints.delete(_id));
-  try {
-    const search = await restdbClient.get<User[]>(userEndpoints.getByEmail(email));
-    const rbUser = search.data[0];
-    if (rbUser?._id) {
-      await restdbClient.delete(userEndpoints.delete(String(rbUser._id)));
-    }
-  } catch (err: any) {
-    console.warn('[RestDB] delete sync failed for', email, err?.message);
-  }
 };
 
 // Export all functions
