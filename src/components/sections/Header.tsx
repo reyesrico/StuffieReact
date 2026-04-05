@@ -88,8 +88,8 @@ const Header = () => {
     // Update UserContext
     logoutUser();
     
-    // Navigate to login
-    navigate('/login');
+    // Navigate to login — replace state so no 'from' redirect is set
+    navigate('/login', { replace: true, state: {} });
   }
 
   /* Toggle between showing and hiding the navigation menu links when the user clicks on the hamburger menu / bar icon */

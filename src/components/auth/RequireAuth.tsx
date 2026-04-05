@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { AuthLoadingSkeleton } from '../skeletons/AuthLoadingSkeleton';
 
@@ -12,22 +12,20 @@ interface RequireAuthProps {
  * - Shows loading skeleton while checking authentication
  * - Redirects to /login if not authenticated
  * - Renders children if authenticated
- * 
- * This replaces the complex Auth.tsx routing logic with a simple guard.
  */
 export function RequireAuth({ children }: RequireAuthProps) {
   const { isAuthenticated, isLoading } = useAuth();
-  const location = useLocation();
 
   // Show skeleton while checking auth state
   if (isLoading) {
     return <AuthLoadingSkeleton />;
   }
 
-  // Redirect to login if not authenticated
-  // Save the attempted location for redirect after login
+  // Redirect to login if not authenticated.
+  // No 'from' state — login always navigates to feed to prevent
+  // cross-user page persistence (previous user's route leaking to next login).
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" replace />;
   }
 
   // User is authenticated, render the protected content

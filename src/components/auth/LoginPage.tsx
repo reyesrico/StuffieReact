@@ -35,8 +35,7 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // Get the page they were trying to visit
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || '/'; // unused — login always navigates to feed
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -63,8 +62,10 @@ export function LoginPage() {
           // Update UserContext
           loginUser(userData);
           
-          // Navigate to the page they were trying to visit, or home
-          navigate(from, { replace: true });
+          // Always navigate to feed after login.
+          // Do not honor location.state.from — it can be set by RequireAuth
+          // when a previous user's session ends, causing cross-user redirects.
+          navigate('/', { replace: true });
         },
         onError: (err: any) => {
           setMessage(err?.message || t('login.loginError'));
