@@ -34,7 +34,10 @@ export interface CreateCategoryInput {
  * Create a new category
  */
 export const createCategory = async (category: CreateCategoryInput): Promise<Category> => {
-  const response = await apiClient.post<Category>(categoryEndpoints.create(), category);
+  const response = await apiClient.post<Category>(categoryEndpoints.create(), {
+    ...category,
+    created_at: new Date().toISOString(),
+  });
   return response.data;
 };
 

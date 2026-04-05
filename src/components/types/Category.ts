@@ -1,4 +1,5 @@
 export default interface Category {
   id: number,
-  name: string
+  name: string,
+  created_at?: string,
 };

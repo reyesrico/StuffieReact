@@ -1,4 +1,6 @@
 export default interface Subcategory {
   id: number,
-  name: string
+  name: string,
+  category_id?: number,
+  created_at?: string,
 }

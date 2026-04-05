@@ -28,13 +28,17 @@ export const getSubcategory = async (id: number): Promise<Subcategory | null> =>
 export interface CreateSubcategoryInput {
   id: number;
   name: string;
+  category_id?: number;
 }
 
 /**
  * Create a new subcategory
  */
 export const createSubcategory = async (subcategory: CreateSubcategoryInput): Promise<Subcategory> => {
-  const response = await apiClient.post<Subcategory>(subcategoryEndpoints.create(), subcategory);
+  const response = await apiClient.post<Subcategory>(subcategoryEndpoints.create(), {
+    ...subcategory,
+    created_at: new Date().toISOString(),
+  });
   return response.data;
 };
 

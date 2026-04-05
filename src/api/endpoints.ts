@@ -128,10 +128,6 @@ export const userEndpoints = {
   getByEmail: (email: string) => 
     `${collections.stuffiers}?q=${JSON.stringify({ email })}`,
   
-  /** GET user by email and password (login) */
-  login: (email: string, password: string) => 
-    `${collections.stuffiers}?q=${JSON.stringify({ email, password })}`,
-  
   /** GET multiple users by ids */
   listByIds: (ids: Array<{ id: number }>) => 
     `${collections.stuffiers}?q={"$or":${JSON.stringify(ids)}}`,
