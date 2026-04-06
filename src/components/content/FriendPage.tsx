@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../shared/Loading';
 import ProductCard from './ProductCard';
 import MapView from '../shared/MapView';
-import { useFriends, useFriendsWithProducts } from '../../hooks/queries';
+import { useFriends, useUserProducts, useCategories } from '../../hooks/queries';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
 import type User from '../types/User';
 import type Product from '../types/Product';
@@ -20,14 +20,14 @@ const FriendPage = () => {
   const friendId = parseInt(id || '0');
 
   const { data: friends = [], isLoading: loadingFriends } = useFriends();
-  const { data: friendsWithProducts = [], isLoading: loadingProducts } = useFriendsWithProducts();
+  const { data: categories = [] } = useCategories();
+  const { data: productsMap = {}, isLoading: loadingProducts } = useUserProducts(friendId, categories);
   const [picture, setPicture] = React.useState<string>();
   const [activeTab, setActiveTab] = React.useState<Tab>('location');
 
   const friend = (friends as User[]).find(f => f.id === friendId);
-  const friendWithProds = (friendsWithProducts as User[]).find(f => f.id === friendId);
   const friendName = `${friend?.first_name ?? ''} ${friend?.last_name ?? ''}`.trim();
-  const products: Product[] = (friendWithProds?.products as Product[]) ?? [];
+  const products: Product[] = Object.values(productsMap).flat();
 
   const lat = Number(friend?.lat);
   const lng = Number(friend?.lng);
