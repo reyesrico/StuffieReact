@@ -13,11 +13,11 @@ import {
 
 describe('StuffHelper', () => {
   describe('mapStuff', () => {
-    it('should transform stuffiers_stuff array to id objects', () => {
+    it('should transform user_items array to id objects', () => {
       const stuff = [
-        { id_stuffier: 1, id_stuff: 100, cost: 50 },
-        { id_stuffier: 1, id_stuff: 200, cost: 75 },
-        { id_stuffier: 1, id_stuff: 300, cost: 25 },
+        { user_id: 1, item_id: 100, asking_price: 50 },
+        { user_id: 1, item_id: 200, asking_price: 75 },
+        { user_id: 1, item_id: 300, asking_price: 25 },
       ];
       
       const result = mapStuff(stuff);

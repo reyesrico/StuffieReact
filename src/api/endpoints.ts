@@ -10,7 +10,8 @@ const collections = {
   categories: 'categories',
   subcategories: 'subcategories',
   items: 'items',
-  stuffiersStuff: 'stuffiersstuff',
+  userItems: 'user_items',
+  stuffiersStuff: 'user_items', // Stage 6: redirected to user_items
   users: 'users',
   friends: 'friends',
   friendRequests: 'friendrequests',
@@ -97,25 +98,31 @@ export const productEndpoints = {
 
 /**
  * Stuffiers-Stuff (user-product relationship with cost) endpoints
+ * Stage 6: now points at user_items collection
  */
 export const stuffiersStuffEndpoints = {
   /** GET all user-product relationships for a user */
-  listByUser: (userId: number) => 
-    `${collections.stuffiersStuff}?q=${JSON.stringify({ id_stuffier: userId })}`,
-  
+  listByUser: (userId: number) =>
+    `${collections.userItems}?q=${JSON.stringify({ user_id: userId })}`,
+
   /** GET user-product relationships for multiple users */
-  listByUsers: (userIds: Array<{ id_stuffier: number }>) => 
-    `${collections.stuffiersStuff}?q={"$or":${JSON.stringify(userIds)}}`,
-  
+  listByUsers: (userIds: Array<{ user_id: number }>) =>
+    `${collections.userItems}?q={"$or":${JSON.stringify(userIds)}}`,
+
   /** POST create user-product relationship */
-  create: () => collections.stuffiersStuff,
-  
-  /** PUT update user-product relationship (e.g., cost) */
-  update: (_id: string) => `${collections.stuffiersStuff}/${_id}`,
-  
+  create: () => collections.userItems,
+
+  /** PUT update user-product relationship */
+  update: (_id: string) => `${collections.userItems}/${_id}`,
+
   /** DELETE user-product relationship */
-  delete: (_id: string) => `${collections.stuffiersStuff}/${_id}`,
+  delete: (_id: string) => `${collections.userItems}/${_id}`,
 };
+
+/**
+ * UserItem endpoints (new name for stuffiersStuffEndpoints)
+ */
+export const userItemEndpoints = stuffiersStuffEndpoints;
 
 /**
  * User endpoints

@@ -105,9 +105,9 @@ export const useAddProduct = () => {
       // 2. Associate with user
       if (user?.id && product.id) {
         await addProductToUser({
-          id_stuffier: user.id,
-          id_stuff: product.id,
-          cost: productData.cost,
+          user_id: user.id,
+          item_id: product.id,
+          asking_price: productData.cost,
         });
       }
       
@@ -141,8 +141,8 @@ export const useAddExistingProduct = () => {
         throw new Error('User and product IDs required');
       }
       await addProductToUser({
-        id_stuffier: user.id,
-        id_stuff: product.id,
+        user_id: user.id,
+        item_id: product.id,
       });
       return product;
     },

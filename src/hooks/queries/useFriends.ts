@@ -44,9 +44,9 @@ export const useFriendsWithProducts = () => {
         return [];
       }
       
-      // Get all stuffiers_stuff for all friends
+      // Get all user_items for all friends
       const stuffiersList = await getProductsForUsers(
-        friends.map(f => ({ id_stuffier: f.id! }))
+        friends.map(f => ({ user_id: f.id! }))
       );
       
       if (stuffiersList.length === 0) {

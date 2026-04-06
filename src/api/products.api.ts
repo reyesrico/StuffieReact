@@ -8,7 +8,7 @@
 import { apiClient } from './client';
 import { productEndpoints, stuffiersStuffEndpoints } from './endpoints';
 import type Product from '../components/types/Product';
-import type StuffiersStuff from '../components/types/StuffiersStuff';
+import type UserItem from '../components/types/UserItem';
 
 // ============ READ - Products ============
 
@@ -124,13 +124,13 @@ export const deleteProduct = async (_id: string): Promise<void> => {
   await apiClient.delete(productEndpoints.delete(_id));
 };
 
-// ============ READ - User-Product Relationships (StuffiersStuff) ============
+// ============ READ - User-Product Relationships (UserItem) ============
 
 /**
- * Get all products for a user (returns stuffiers_stuff records)
+ * Get all products for a user (returns user_items records)
  */
-export const getUserProducts = async (userId: number): Promise<StuffiersStuff[]> => {
-  const response = await apiClient.get<StuffiersStuff[]>(
+export const getUserProducts = async (userId: number): Promise<UserItem[]> => {
+  const response = await apiClient.get<UserItem[]>(
     stuffiersStuffEndpoints.listByUser(userId)
   );
   return response.data;
@@ -140,10 +140,10 @@ export const getUserProducts = async (userId: number): Promise<StuffiersStuff[]>
  * Get products for multiple users
  */
 export const getProductsForUsers = async (
-  userIds: Array<{ id_stuffier: number }>
-): Promise<StuffiersStuff[]> => {
+  userIds: Array<{ user_id: number }>
+): Promise<UserItem[]> => {
   if (userIds.length === 0) return [];
-  const response = await apiClient.get<StuffiersStuff[]>(
+  const response = await apiClient.get<UserItem[]>(
     stuffiersStuffEndpoints.listByUsers(userIds)
   );
   return response.data;
@@ -152,17 +152,17 @@ export const getProductsForUsers = async (
 // ============ CREATE - User-Product Relationship ============
 
 export interface AddProductToUserInput {
-  id_stuffier: number;
-  id_stuff: number;
-  cost?: number;
+  user_id: number;
+  item_id: number;
+  asking_price?: number;
 }
 
 /**
  * Add a product to a user's collection
  */
-export const addProductToUser = async (data: AddProductToUserInput): Promise<StuffiersStuff> => {
-  const response = await apiClient.post<StuffiersStuff>(
-    stuffiersStuffEndpoints.create(), 
+export const addProductToUser = async (data: AddProductToUserInput): Promise<UserItem> => {
+  const response = await apiClient.post<UserItem>(
+    stuffiersStuffEndpoints.create(),
     data
   );
   return response.data;
@@ -171,44 +171,39 @@ export const addProductToUser = async (data: AddProductToUserInput): Promise<Stu
 // ============ UPDATE - User-Product Relationship ============
 
 export interface UpdateUserProductInput {
-  cost?: number;
+  asking_price?: number;
 }
 
 /**
- * Update a user-product relationship (e.g., cost)
+ * Update a user-product relationship (e.g., asking_price)
  */
 export const updateUserProduct = async (
-  _id: string, 
+  _id: string,
   data: UpdateUserProductInput
-): Promise<StuffiersStuff> => {
-  const response = await apiClient.put<StuffiersStuff>(
-    stuffiersStuffEndpoints.update(_id), 
+): Promise<UserItem> => {
+  const response = await apiClient.put<UserItem>(
+    stuffiersStuffEndpoints.update(_id),
     data
   );
   return response.data;
 };
 
 /**
- * Update product cost for a user
- * This is a convenience function that finds the record and updates it
+ * Update product asking_price for a user
  */
 export const updateProductCost = async (
-  userId: number, 
-  productId: number, 
+  userId: number,
+  productId: number,
   cost: number
-): Promise<StuffiersStuff | null> => {
-  // First, get the user's stuffiers_stuff records to find the _id
+): Promise<UserItem | null> => {
   const userProducts = await getUserProducts(userId);
-  const record = userProducts.find(r => r.id_stuff === productId);
-  
+  const record = userProducts.find(r => r.item_id === productId);
+
   if (!record) return null;
-  
-  // Now update with the _id
-  // Note: The endpoint needs the MongoDB _id, but our type only has numeric id
-  // We need to cast or update the type - for now, assuming _id is available
-  const response = await apiClient.put<StuffiersStuff>(
-    stuffiersStuffEndpoints.update((record as StuffiersStuff & { _id: string })._id), 
-    { ...record, cost }
+
+  const response = await apiClient.put<UserItem>(
+    stuffiersStuffEndpoints.update((record as UserItem & { _id: string })._id),
+    { ...record, asking_price: cost }
   );
   return response.data;
 };

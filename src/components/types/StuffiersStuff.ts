@@ -1,6 +1,2 @@
-export default interface StuffiersStuff {
-  id: number,
-  id_stuffier: number,
-  id_stuff: number,
-  cost?: number
-}
+// Deprecated alias — use UserItem instead
+export type { default } from './UserItem';
