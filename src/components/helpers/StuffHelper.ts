@@ -31,7 +31,7 @@ export function getProductsMap(categories: Category[], objects: any): ProductsMa
   if (!isEmpty(productsMap)) {
     // Filling products per category
     forEach(objects, (object: any) => {
-      productsMap[object.category].push(object);
+      productsMap[object.category_id].push(object);
     });
   }
 

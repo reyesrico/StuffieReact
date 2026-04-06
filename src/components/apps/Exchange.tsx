@@ -47,7 +47,7 @@ const Exchange = () => {
 
     // Filter user's products by same category/subcategory
     const uProducts = getProductsList(products)
-      .filter(p => p.category === product.category || p.subcategory === product.subcategory);
+      .filter(p => p.category_id === product.category_id || p.subcategory_id === product.subcategory_id);
     setUserProducts(uProducts);
 
     // Fetch friend info
@@ -86,15 +86,15 @@ const Exchange = () => {
   }, []);
 
   const renderProduct = useCallback((product: Product) => {
-    const category: Category = categories.filter(c => c.id === product.category)[0];
-    const subcategory: Subcategory = subcategories.filter(s => s.id === product.subcategory)[0];
+    const category: Category = categories.filter(c => c.id === product.category_id)[0];
+    const subcategory: Subcategory = subcategories.filter(s => s.id === product.subcategory_id)[0];
 
     return (
       <div className="exchange__product">
         <Media
           fileName={product.id}
-          category={product.category}
-          subcategory={product.subcategory}
+          category={product.category_id}
+          subcategory={product.subcategory_id}
           format="jpg"
           height="100"
           width="100"

@@ -22,7 +22,7 @@ const SubcategoryPage = () => {
       .filter((categoryId: string) => id?.startsWith(categoryId))
       .reduce((ps: any, categoryId: string) => {
         const psBySub = products[parseInt(categoryId)].filter((p: any) => {
-          return p.subcategory === subcategoryId
+          return p.subcategory_id === subcategoryId
         });
         return ps.concat(psBySub);
       }, []);
@@ -47,8 +47,8 @@ const SubcategoryPage = () => {
                 <div className="category-page__header">
                   <Media
                     fileName={product.id}
-                    category={product.category}
-                    subcategory={product.subcategory}
+                    category={product.category_id}
+                    subcategory={product.subcategory_id}
                     isProduct="true"
                     height="200"
                     width="100" />

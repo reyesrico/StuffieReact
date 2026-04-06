@@ -115,7 +115,7 @@ describe('Products API', () => {
   describe('getPendingProducts', () => {
     it('should fetch products without images', async () => {
       const mockPending = [
-        { id: 1, name: 'Pending', file_name: '' },
+        { id: 1, name: 'Pending', image_key: '' },
       ];
       
       vi.mocked(apiClient.get).mockResolvedValueOnce({ data: mockPending });
@@ -128,7 +128,7 @@ describe('Products API', () => {
 
   describe('createProduct', () => {
     it('should create a new product', async () => {
-      const newProduct = { name: 'New Item', category: 1, subcategory: 1, file_name: 'image.jpg' };
+      const newProduct = { name: 'New Item', category_id: 1, subcategory_id: 1, image_key: 'image.jpg' };
       const createdProduct = { id: 100, ...newProduct };
       
       vi.mocked(apiClient.post).mockResolvedValueOnce({ data: createdProduct });

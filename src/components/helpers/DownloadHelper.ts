@@ -10,7 +10,7 @@ function capitalize(word: string) {
 
 function getArrayofArrays(productsArray: Array<Product>) {
   return productsArray.map((product: Product) => {
-    return [product.id, product.name, product.category, product.subcategory];
+    return [product.id, product.name, product.category_id, product.subcategory_id];
   });
 }
 
@@ -36,8 +36,8 @@ export function getDataToExport(products: any) {
         data = [getColsName({
           id: products[key][0].id,
           name: products[key][0].name,
-          category: products[key][0].category,
-          subcategory: products[key][0].subcategory
+          category: products[key][0].category_id,
+          subcategory: products[key][0].subcategory_id
         })];
       }
 
@@ -66,7 +66,7 @@ export function downloadCSV(products: any, categories: Array<{ id: number; name:
       rows.push([
         product.name ?? '',
         String(categoryName),
-        product.subcategory != null ? String(product.subcategory) : '',
+        product.subcategory_id != null ? String(product.subcategory_id) : '',
         product.cost != null ? String(product.cost) : '',
       ]);
     });

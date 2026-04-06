@@ -39,8 +39,8 @@ const CategoryPage = () => {
                 <div className="category-page__header">
                   <Media
                     fileName={product.id}
-                    category={product.category}
-                    subcategory={product.subcategory}
+                    category={product.category_id}
+                    subcategory={product.subcategory_id}
                     isProduct="true"
                     height="200"
                     width="100" />

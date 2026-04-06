@@ -21,7 +21,7 @@ const ProductCard = ({ product, navigationState }: ProductCardProps) => {
   const { t } = useTranslation();
   const { data: categories = [] } = useCategories();
 
-  const category = find(categories, (c: any) => c.id === product.category);
+  const category = find(categories, (c: any) => c.id === product.category_id);
 
   const handleClick = () => navigate(`/product/${product.id}`, { state: navigationState });
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -40,8 +40,8 @@ const ProductCard = ({ product, navigationState }: ProductCardProps) => {
       <div className="product-card__image">
         <Media
           fileName={product.id}
-          category={product.category}
-          subcategory={product.subcategory}
+          category={product.category_id}
+          subcategory={product.subcategory_id}
           isProduct="true"
           height="120"
           width="100"

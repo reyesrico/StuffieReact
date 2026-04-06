@@ -182,8 +182,8 @@ export function useTicketScanner(): TicketScannerState {
       try {
         await addProductMutation.mutateAsync({
           name: item.name,
-          category: item.category!.id,
-          subcategory: item.subcategory!.id,
+          category_id: item.category!.id,
+          subcategory_id: item.subcategory!.id,
           cost: item.price ?? undefined,
         });
         count++;

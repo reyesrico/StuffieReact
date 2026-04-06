@@ -1,8 +1,8 @@
 /**
- * Products API - CRUD operations for products (stuff)
+ * Products API - CRUD operations for products (items)
  * 
  * Products have two related collections:
- * - 'stuff': Product catalog (name, category, subcategory, file_name)
+ * - 'items': Product catalog (name, category_id, subcategory_id, image_key)
  * - 'stuffiers-stuff': User-product relationships (id_stuffier, id_stuff, cost)
  */
 import { apiClient } from './client';
@@ -62,9 +62,9 @@ export const getPendingProducts = async (): Promise<Product[]> => {
 
 export interface CreateProductInput {
   name: string;
-  category: number;
-  subcategory: number;
-  fileName?: string;
+  category_id: number;
+  subcategory_id: number;
+  image_key?: string;
   cost?: number;
 }
 
@@ -89,9 +89,9 @@ export const createProduct = async (product: CreateProductInput): Promise<Produc
 
   const response = await apiClient.post<Product>(productEndpoints.create(), {
     name: product.name,
-    category: product.category,
-    subcategory: product.subcategory,
-    file_name: product.fileName,
+    category_id: product.category_id,
+    subcategory_id: product.subcategory_id,
+    image_key: product.image_key,
     id: newId,
   });
   // Guarantee id is present — Codehooks does not always echo custom fields back

@@ -43,9 +43,9 @@ const Product = (props: any) => {
     }
 
     if (!isEmpty(products) && productRendered) {
-      const cat = find(categories, c => c.id === productRendered.category);
+      const cat = find(categories, c => c.id === productRendered.category_id);
       setCategory(cat);
-      const subcat = find(subcategories, s => s.id === productRendered.subcategory);
+      const subcat = find(subcategories, s => s.id === productRendered.subcategory_id);
       setSubcategory(subcat);
     }
   }, [categories, subcategories, productRendered, products, product, id]);
@@ -99,8 +99,8 @@ const Product = (props: any) => {
       <div className="product__media">
         <Media
           fileName={productRendered.id}
-          category={productRendered.category}
-          subcategory={productRendered.subcategory}
+          category={productRendered.category_id}
+          subcategory={productRendered.subcategory_id}
           isProduct="true"
           height="200"
           width="100" />

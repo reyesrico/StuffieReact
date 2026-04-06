@@ -1,7 +1,2 @@
-export default interface Stuff {
-  id: number,
-  name: string,
-  category: number,
-  subcategory: number,
-  fileName: string
-}
+// Deprecated alias — use Product from './Product' instead
+export type { default } from './Product';

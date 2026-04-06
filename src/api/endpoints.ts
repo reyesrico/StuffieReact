@@ -9,7 +9,7 @@
 const collections = {
   categories: 'categories',
   subcategories: 'subcategories',
-  stuff: 'stuff',
+  items: 'items',
   stuffiersStuff: 'stuffiersstuff',
   users: 'users',
   friends: 'friends',
@@ -57,42 +57,42 @@ export const subcategoryEndpoints = {
 };
 
 /**
- * Product (stuff) endpoints
+ * Product (items) endpoints
  */
 export const productEndpoints = {
-  /** GET all products (stuff collection) */
-  list: () => collections.stuff,
+  /** GET all products (items collection) */
+  list: () => collections.items,
   
   /** GET product by id */
   get: (id: number) => 
-    `${collections.stuff}?q=${JSON.stringify({ id })}`,
+    `${collections.items}?q=${JSON.stringify({ id })}`,
   
   /** GET multiple products by ids array */
   listByIds: (ids: Array<{ id: number }>) => 
-    `${collections.stuff}?q={"$or":${JSON.stringify(ids)}}&metafields=true`,
+    `${collections.items}?q={"$or":${JSON.stringify(ids)}}&metafields=true`,
   
   /** GET products by category and subcategory */
-  listByCategory: (category: number, subcategory: number) => 
-    `${collections.stuff}?q={"$and":[{"category": ${category}}, {"subcategory": ${subcategory}}]}`,
+  listByCategory: (category_id: number, subcategory_id: number) => 
+    `${collections.items}?q={"$and":[{"category_id": ${category_id}}, {"subcategory_id": ${subcategory_id}}]}`,
   
   /** GET products without images (pending) */
   listPending: () => 
-    `${collections.stuff}?q={"$or": [ {"file_name": {"$exists": false}}, {"file_name": ""} ]}`,
+    `${collections.items}?q={"$or": [ {"image_key": {"$exists": false}}, {"image_key": ""} ]}`,
   
   /** POST create product */
-  create: () => collections.stuff,
+  create: () => collections.items,
   
   /** GET all product ids (for computing next sequential id — fallback only) */
-  getLastId: () => `${collections.stuff}?q={}&h={"$fields": {"id":1}}`,
+  getLastId: () => `${collections.items}?q={}&h={"$fields": {"id":1}}`,
 
   /** POST atomic next-id counter (Codehooks keyvalue counter) — preferred over getLastId */
   nextId: () => `stuff/next-id`,
 
   /** PUT update product by _id (not used directly - see stuffiersStuff) */
-  update: (_id: string) => `${collections.stuff}/${_id}`,
+  update: (_id: string) => `${collections.items}/${_id}`,
   
   /** DELETE product by _id */
-  delete: (_id: string) => `${collections.stuff}/${_id}`,
+  delete: (_id: string) => `${collections.items}/${_id}`,
 };
 
 /**

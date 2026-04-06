@@ -1,9 +1,9 @@
 export default interface Product {
   name?: string,
   id?: number,
-  category?: number,
-  subcategory?: number,
-  file_name?: string
-  _created?: string,
+  category_id?: number,
+  subcategory_id?: number,
+  image_key?: string,
+  created_at?: string,
   cost?: number
 }

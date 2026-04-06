@@ -217,7 +217,7 @@ const Admin = () => {
                 </h4>
                 <ul className="admin__list">
                   {pendingProducts.map((product: Product) => {
-                    const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category}/${product.subcategory}/${product.id}`;
+                    const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`;
                     return (
                       <li key={product.id}>
                         <a
@@ -229,7 +229,7 @@ const Admin = () => {
                           <div className="admin__request-info">
                             <span className="admin__request-name">{product.name}</span>
                             <span className="admin__request-meta">
-                              ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory}
+                              ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
                             </span>
                           </div>
                           <span className="admin__request-arrow">↗</span>

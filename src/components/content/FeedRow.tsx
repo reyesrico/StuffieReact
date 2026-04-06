@@ -25,7 +25,7 @@ const FeedRow = (props: FeedRowProps) => {
   }, [feedPost.friend_id]);
 
   const getProductType = () => {
-    const subcategory = subcategories.find(s => s.id === feedPost.product.subcategory);
+    const subcategory = subcategories.find(s => s.id === feedPost.product.subcategory_id);
     return subcategory ? subcategory.name : null;
   }
 
@@ -53,8 +53,8 @@ const FeedRow = (props: FeedRowProps) => {
       <div className="feed-row__image">
         <Media
           fileName={feedPost.product.id}
-          category={feedPost.product.category}
-          subcategory={feedPost.product.subcategory}
+          category={feedPost.product.category_id}
+          subcategory={feedPost.product.subcategory_id}
           format="jpg"
           height="100"
           width="100"

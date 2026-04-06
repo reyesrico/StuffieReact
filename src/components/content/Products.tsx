@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -35,8 +35,20 @@ const RefreshIcon = () => (
 
 const Products = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
+
+  const [successMsg, setSuccessMsg] = useState<string | null>(() =>
+    (location.state as any)?.added ?? null
+  );
+
+  useEffect(() => {
+    if (successMsg) {
+      const timer = setTimeout(() => setSuccessMsg(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMsg]);
 
   const { data: categories = [] } = useCategories();
   const { data: products = {}, refetch: refreshProductsQuery, isFetching: isRefreshing } = useProducts();
@@ -49,6 +61,11 @@ const Products = () => {
 
   return (
     <div className="products">
+      {successMsg && (
+        <div className="products__success-banner" role="status">
+          ✅ <strong>{successMsg}</strong> {t('addProduct.addedSuccess')}
+        </div>
+      )}
       {isRefreshing && (
         <div className="products__refresh-spinner" role="status" aria-live="polite">
           <Loading size="sm" className="products__refresh-spinner-icon" />
