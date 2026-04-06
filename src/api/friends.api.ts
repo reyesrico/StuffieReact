@@ -134,6 +134,13 @@ export const rejectFriendRequest = async (
 };
 
 /**
+ * Cancel a sent friend request — deletes the pending record by its _id
+ */
+export const cancelFriendRequest = async (requestId: string): Promise<void> => {
+  await apiClient.delete(friendshipEndpoints.delete(requestId));
+};
+
+/**
  * Remove an accepted friendship — deletes both directions
  */
 export const removeFriend = async (userId: number, friendId: number): Promise<void> => {
@@ -159,5 +166,6 @@ export const friendsApi = {
   sendRequest: sendFriendRequest,
   acceptRequest: acceptFriendRequest,
   rejectRequest: rejectFriendRequest,
+  cancelRequest: cancelFriendRequest,
   remove: removeFriend,
 };

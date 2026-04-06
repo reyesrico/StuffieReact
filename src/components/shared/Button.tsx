@@ -10,6 +10,7 @@ export interface ButtonProps {
   text?: string;
   children?: React.ReactNode;
   disabled?: boolean;
+  loading?: boolean;
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
@@ -19,6 +20,7 @@ export interface ButtonProps {
 
 const Button = ({
   disabled = false,
+  loading = false,
   type = 'button',
   text,
   children,
@@ -29,12 +31,14 @@ const Button = ({
   icon,
   className = '',
 }: ButtonProps) => {
+  const isDisabled = disabled || loading;
   const classes = [
     'stuffie-button',
     `stuffie-button--${variant}`,
     `stuffie-button--${size}`,
     fullWidth && 'stuffie-button--full-width',
-    disabled && 'stuffie-button--disabled',
+    isDisabled && 'stuffie-button--disabled',
+    loading && 'stuffie-button--loading',
     className,
   ].filter(Boolean).join(' ');
 
@@ -43,9 +47,12 @@ const Button = ({
       className={classes}
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={isDisabled}
     >
-      {icon && <span className="stuffie-button__icon">{icon}</span>}
+      {loading
+        ? <span className="stuffie-button__spinner" aria-hidden="true" />
+        : icon && <span className="stuffie-button__icon">{icon}</span>
+      }
       {text || children}
     </button>
   );

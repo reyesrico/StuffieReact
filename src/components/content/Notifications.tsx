@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
+import Modal from '../shared/Modal';
 import ExchangeRequest from '../types/ExchangeRequest';
 import LoanRequest from '../types/LoanRequest';
 import PurchaseRequest from '../types/PurchaseRequest';
@@ -13,8 +14,7 @@ import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { acceptFriendRequest, rejectFriendRequest } from '../../api/friends.api';
-import { useDeleteExchange, useDeleteLoan, useDeletePurchase } from '../../hooks/queries';
+import { useDeleteExchange, useDeleteLoan, useDeletePurchase, useAcceptFriendRequest, useRejectFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import './Notifications.scss';
@@ -33,6 +33,7 @@ const Notifications = () => {
     purchaseRequests,
     friendRequests,
     sentFriendRequests,
+    rawSentRequests,
     requestedProducts,
     totalRequests,
     removeFriendRequest,
@@ -41,11 +42,15 @@ const Notifications = () => {
   const deleteExchangeMutation = useDeleteExchange();
   const deleteLoanMutation = useDeleteLoan();
   const deletePurchaseMutation = useDeletePurchase();
+  const acceptFriendMutation = useAcceptFriendRequest();
+  const rejectFriendMutation = useRejectFriendRequest();
+  const cancelFriendMutation = useCancelFriendRequest();
 
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
   const [activeTab, setActiveTab] = useState<NotifTab>('exchange');
   const [pendingFriendId, setPendingFriendId] = useState<number | null>(null);
+  const [confirmCancelTarget, setConfirmCancelTarget] = useState<User | null>(null);
 
   useEffect(() => {
     if (!message) return;
@@ -92,17 +97,19 @@ const Notifications = () => {
     if (!friend.id || !user.id || pendingFriendId !== null) return;
     const name = `${friend.first_name} ${friend.last_name}`;
     setPendingFriendId(friend.id);
-    const action = isAccepted
-      ? acceptFriendRequest(user.id, friend.id)
-      : rejectFriendRequest(user.id, friend.id);
-    action
-      .then(() => {
+    const mutation = isAccepted ? acceptFriendMutation : rejectFriendMutation;
+    mutation.mutate(friend.id, {
+      onSuccess: () => {
         removeFriendRequest(friend.id!);
         setMessage(isAccepted ? t('friends.accepted', { name }) : t('friends.rejected', { name }));
         setType(isAccepted ? WarningMessageType.SUCCESSFUL : WarningMessageType.WARNING);
-      })
-      .catch(() => setType(WarningMessageType.ERROR))
-      .finally(() => setPendingFriendId(null));
+        setPendingFriendId(null);
+      },
+      onError: () => {
+        setType(WarningMessageType.ERROR);
+        setPendingFriendId(null);
+      },
+    });
   };
 
   const tabsWithData: NotifTab[] = [
@@ -187,7 +194,7 @@ const Notifications = () => {
                       </div>
                     )}
                     <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" />
+                      <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" loading={deleteExchangeMutation.isPending} />
                     </div>
                   </div>
                 </li>
@@ -224,7 +231,7 @@ const Notifications = () => {
                       </div>
                     )}
                     <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" />
+                      <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" loading={deleteLoanMutation.isPending} />
                     </div>
                   </div>
                 </li>
@@ -275,6 +282,7 @@ const Notifications = () => {
                         text={rejectText}
                         size="sm"
                         variant="secondary"
+                        loading={deletePurchaseMutation.isPending}
                       />
                     </div>
                   </div>
@@ -329,8 +337,14 @@ const Notifications = () => {
                         <div className="notifications__request-text">{target.email}</div>
                       </div>
                     </div>
-                    <div className="notifications__request-status">
+                    <div className="notifications__request-buttons">
                       <span className="notifications__pending-badge">{t('friends.pendingStatus')}</span>
+                      <Button
+                        onClick={() => setConfirmCancelTarget(target)}
+                        text={t('common.cancel')}
+                        size="sm"
+                        variant="secondary"
+                      />
                     </div>
                   </li>
                 ))}
@@ -338,6 +352,39 @@ const Notifications = () => {
             </>
           )}
         </div>
+      )}
+
+      {confirmCancelTarget && (
+        <Modal
+          title={t('friends.cancelRequestTitle')}
+          onClose={() => !cancelFriendMutation.isPending && setConfirmCancelTarget(null)}
+          disableBackdropClose={cancelFriendMutation.isPending}
+          actions={
+            <>
+              <Button
+                text={t('friends.cancelRequestConfirm')}
+                variant="secondary"
+                loading={cancelFriendMutation.isPending}
+                onClick={() => {
+                  const raw = rawSentRequests.find((r: any) => r.user_id === confirmCancelTarget.id);
+                  if (raw?._id) {
+                    cancelFriendMutation.mutate(raw._id, {
+                      onSuccess: () => setConfirmCancelTarget(null),
+                    });
+                  }
+                }}
+              />
+              <Button
+                text={t('common.cancel')}
+                variant="outline"
+                onClick={() => setConfirmCancelTarget(null)}
+                disabled={cancelFriendMutation.isPending}
+              />
+            </>
+          }
+        >
+          {t('friends.cancelRequestBody', { name: `${confirmCancelTarget.first_name} ${confirmCancelTarget.last_name}` })}
+        </Modal>
       )}
     </div>
   );

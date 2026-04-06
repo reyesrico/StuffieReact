@@ -34,6 +34,7 @@ import {
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
+  cancelFriendRequest,
 } from '../../api/friends.api';
 import {
   createExchangeRequest,
@@ -233,6 +234,7 @@ export const useApproveUser = () => {
  * Replaces: requestToBeFriend
  */
 export const useSendFriendRequest = () => {
+  const queryClient = useQueryClient();
   const { user } = useContext(UserContext);
 
   return useMutation({
@@ -241,6 +243,13 @@ export const useSendFriendRequest = () => {
       const target = await getUserByEmail(targetEmail);
       if (!target?.id) throw new Error('User not found');
       return sendFriendRequest(target.id, user.id);
+    },
+    onSuccess: () => {
+      if (user?.email) {
+        queryClient.invalidateQueries({
+          queryKey: [...queryKeys.friends.requests(user.email), 'sent'],
+        });
+      }
     },
   });
 };
@@ -286,6 +295,25 @@ export const useRejectFriendRequest = () => {
       if (user?.email) {
         queryClient.invalidateQueries({ 
           queryKey: queryKeys.friends.requests(user.email) 
+        });
+      }
+    },
+  });
+};
+
+/**
+ * Cancel a sent (outgoing) friend request
+ */
+export const useCancelFriendRequest = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (requestId: string) => cancelFriendRequest(requestId),
+    onSuccess: () => {
+      if (user?.email) {
+        queryClient.invalidateQueries({
+          queryKey: [...queryKeys.friends.requests(user.email), 'sent'],
         });
       }
     },

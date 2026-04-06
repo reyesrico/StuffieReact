@@ -325,6 +325,11 @@
     opacity: 1;
   }
 
+  // Always visible on pending items (not inside .friend-row)
+  .friends__pending-item & {
+    opacity: 1;
+  }
+
   &:hover {
     background-color: rgba(244, 67, 54, 0.1);
     color: var(--color-error);

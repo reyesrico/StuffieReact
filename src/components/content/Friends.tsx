@@ -9,12 +9,11 @@ import TextField from '../shared/TextField';
 import EmptyState from '../shared/EmptyState';
 import User from '../types/User';
 import UserContext from '../../context/UserContext';
-import { useFriends, useInvalidateFriends } from '../../hooks/queries';
+import { useFriends, useInvalidateFriends, useSendFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
 import { useSentFriendRequests } from '../../hooks/queries/useFriends';
 import { getUsersByIds } from '../../api/users.api';
 import type Friendship from '../types/Friendship';
-import { sendFriendRequest, removeFriend } from '../../api/friends.api';
-import { getUserByEmail } from '../../api/users.api';
+import { removeFriend } from '../../api/friends.api';
 
 import './Friends.scss';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
@@ -72,28 +71,26 @@ const FriendRow = ({ user, onClick, onRemove }: FriendRowProps) => {
 
 const AddFriendForm = ({ onSent }: { onSent?: () => void }) => {
   const { t } = useTranslation();
-  const { user } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
+  const sendRequest = useSendFriendRequest();
+
   const handleRequest = () => {
-    if (!email.trim() || !user.id) return;
-    getUserByEmail(email.trim())
-      .then(target => {
-        if (!target?.id) throw new Error('not found');
-        return sendFriendRequest(target.id, user.id);
-      })
-      .then(() => {
+    if (!email.trim() || sendRequest.isPending) return;
+    sendRequest.mutate(email.trim(), {
+      onSuccess: () => {
         setMessage(t('friends.requestSent'));
         setIsError(false);
         setEmail('');
         onSent?.();
-      })
-      .catch(() => {
+      },
+      onError: () => {
         setMessage(t('friends.requestFailed'));
         setIsError(true);
-      });
+      },
+    });
   };
 
   return (
@@ -109,7 +106,11 @@ const AddFriendForm = ({ onSent }: { onSent?: () => void }) => {
           onKeyPress={(e: any) => e.key === 'Enter' && handleRequest()}
           fullWidth
         />
-        <Button text={t('friends.requestButton')} onClick={handleRequest} />
+        <Button
+          text={t('friends.requestButton')}
+          onClick={handleRequest}
+          loading={sendRequest.isPending}
+        />
       </div>
       {message && (
         <p className={`friends__add-form-message friends__add-form-message--${isError ? 'error' : 'success'}`}>
@@ -129,9 +130,11 @@ const Friends = () => {
   const { data: friends = [] } = useFriends();
   const { data: sentRequests = [] } = useSentFriendRequests();
   const invalidateFriends = useInvalidateFriends();
+  const cancelRequest = useCancelFriendRequest();
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [confirmRemove, setConfirmRemove] = useState<User | null>(null);
   const [removing, setRemoving] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState<Friendship | null>(null);
 
   // Resolve user_id numbers in sent requests to User objects for display
   const sentTargetIds = sentRequests.map((r: Friendship) => ({ id: r.user_id }));
@@ -210,6 +213,15 @@ const Friends = () => {
                   {target && <span className="friends__pending-email">{target.email}</span>}
                 </div>
                 <span className="friends__pending-badge">{t('friends.pendingStatus')}</span>
+                <button
+                  type="button"
+                  className="friend-row__remove"
+                  onClick={() => setConfirmCancel(r)}
+                  disabled={cancelRequest.isPending}
+                  aria-label={t('friends.cancelRequest')}
+                >
+                  ✕
+                </button>
               </div>
             );
           })}
@@ -249,6 +261,38 @@ const Friends = () => {
           {t('friends.removeBody', { name: `${confirmRemove.first_name} ${confirmRemove.last_name}` })}
         </Modal>
       )}
+
+      {confirmCancel && (() => {
+        const target = sentTargetUsers.find((u: User) => u.id === confirmCancel.user_id);
+        const name = target ? `${target.first_name} ${target.last_name}` : `#${confirmCancel.user_id}`;
+        return (
+          <Modal
+            title={t('friends.cancelRequestTitle')}
+            onClose={() => !cancelRequest.isPending && setConfirmCancel(null)}
+            disableBackdropClose={cancelRequest.isPending}
+            actions={
+              <>
+                <Button
+                  text={t('friends.cancelRequestConfirm')}
+                  variant="secondary"
+                  loading={cancelRequest.isPending}
+                  onClick={() => confirmCancel._id && cancelRequest.mutate(confirmCancel._id, {
+                    onSuccess: () => setConfirmCancel(null),
+                  })}
+                />
+                <Button
+                  text={t('common.cancel')}
+                  variant="outline"
+                  onClick={() => setConfirmCancel(null)}
+                  disabled={cancelRequest.isPending}
+                />
+              </>
+            }
+          >
+            {t('friends.cancelRequestBody', { name })}
+          </Modal>
+        );
+      })()}
     </div>
   );
 };

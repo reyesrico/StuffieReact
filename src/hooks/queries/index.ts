@@ -101,6 +101,7 @@ export {
   useSendFriendRequest,
   useAcceptFriendRequest,
   useRejectFriendRequest,
+  useCancelFriendRequest,
   // Exchanges
   useCreateExchange,
   useDeleteExchange,

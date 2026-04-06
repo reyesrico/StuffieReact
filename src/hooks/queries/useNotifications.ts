@@ -98,6 +98,7 @@ export const useNotifications = () => {
     purchaseRequests,
     friendRequests,
     sentFriendRequests: resolvedSentTargets,
+    rawSentRequests,
     requestedProducts,
     totalRequests,
     removeFriendRequest,
