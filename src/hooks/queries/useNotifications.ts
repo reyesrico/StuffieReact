@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { uniq } from 'lodash';
 
 import { getUsersByIds } from '../../api/users.api';
@@ -12,7 +12,9 @@ import {
   useLoanRequests,
   usePurchaseRequests,
   useFriendRequests,
+  useSentFriendRequests,
 } from './index';
+import type Friendship from '../../components/types/Friendship';
 
 export const useNotifications = () => {
   const { data: friends = [], isLoading: friendsLoading } = useFriends();
@@ -20,32 +22,49 @@ export const useNotifications = () => {
   const { data: loanRequests = [], isLoading: loanLoading } = useLoanRequests();
   const { data: purchaseRequests = [], isLoading: purchaseLoading } = usePurchaseRequests();
   const { data: rawFriendRequests = [], isLoading: friendReqLoading } = useFriendRequests();
+  const { data: rawSentRequests = [], isLoading: sentReqLoading } = useSentFriendRequests();
 
-  // Resolved User objects for friend requests (secondary fetch)
-  const friendUserIds = rawFriendRequests.map((r: any) => r.id_friend as number);
+  // Memoize id arrays so query keys are stable across renders
+  const friendUserIds = useMemo(
+    () => rawFriendRequests.map((r: any) => r.friend_id as number),
+    [rawFriendRequests]
+  );
+  const sentTargetIds = useMemo(
+    () => rawSentRequests.map((r: Friendship) => r.user_id),
+    [rawSentRequests]
+  );
+
   const { data: resolvedFriendUsers = [], isLoading: friendUsersLoading } = useQuery<User[]>({
     queryKey: ['friendRequestUsers', friendUserIds],
     queryFn: () => getUsersByIds(friendUserIds.map(id => ({ id }))) as Promise<User[]>,
     enabled: friendUserIds.length > 0,
   });
 
+  const { data: resolvedSentTargets = [], isLoading: sentTargetsLoading } = useQuery<User[]>({
+    queryKey: ['sentRequestTargets', sentTargetIds],
+    queryFn: () => getUsersByIds(sentTargetIds.map(id => ({ id }))) as Promise<User[]>,
+    enabled: sentTargetIds.length > 0,
+  });
+
   // Local mirror for optimistic removal after accept/reject
-  const [friendRequests, setFriendRequests] = useState<User[]>(resolvedFriendUsers);
-  useEffect(() => {
-    setFriendRequests(resolvedFriendUsers);
-  }, [resolvedFriendUsers]);
+  // Derived directly — no useEffect setState loop
+  const [removedIds, setRemovedIds] = useState<number[]>([]);
+  const friendRequests = useMemo(
+    () => resolvedFriendUsers.filter((u: User) => !removedIds.includes(u.id!)),
+    [resolvedFriendUsers, removedIds]
+  );
 
   const removeFriendRequest = (id: number) => {
-    setFriendRequests(prev => prev.filter(f => f.id !== id));
+    setRemovedIds(prev => [...prev, id]);
   };
 
   // Products needed to render exchange/loan/purchase request rows
-  const productIds = uniq([
+  const productIds = useMemo(() => uniq([
     ...loanRequests.map((r: any) => r.id_stuff as number),
     ...exchangeRequests.map((r: any) => r.id_stuff as number),
     ...exchangeRequests.map((r: any) => r.id_friend_stuff as number),
     ...purchaseRequests.map((r: any) => r.id_stuff as number),
-  ]).filter(Boolean);
+  ]).filter(Boolean), [loanRequests, exchangeRequests, purchaseRequests]);
 
   const { data: requestedProducts = [], isLoading: productsLoading } = useQuery<ProductType[]>({
     queryKey: ['notificationProducts', productIds],
@@ -59,14 +78,17 @@ export const useNotifications = () => {
     loanLoading ||
     purchaseLoading ||
     friendReqLoading ||
+    sentReqLoading ||
     (friendUserIds.length > 0 && friendUsersLoading) ||
+    (sentTargetIds.length > 0 && sentTargetsLoading) ||
     (productIds.length > 0 && productsLoading);
 
   const totalRequests =
     exchangeRequests.length +
     loanRequests.length +
     purchaseRequests.length +
-    rawFriendRequests.length;
+    friendRequests.length +        // filtered (optimistic)
+    rawSentRequests.length;
 
   return {
     isLoading,
@@ -75,6 +97,7 @@ export const useNotifications = () => {
     loanRequests,
     purchaseRequests,
     friendRequests,
+    sentFriendRequests: resolvedSentTargets,
     requestedProducts,
     totalRequests,
     removeFriendRequest,

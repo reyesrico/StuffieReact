@@ -15,6 +15,7 @@ const collections = {
   users: 'users',
   friends: 'friends',
   friendRequests: 'friendrequests',
+  friendships: 'friendships', // Stage 7: replaces friends + friendrequests
   exchangeRequests: 'exchangerequests',
   loanRequests: 'loanrequests',
   purchaseRequests: 'purchaserequests',
@@ -161,7 +162,38 @@ export const userEndpoints = {
 };
 
 /**
- * Friends endpoints
+ * Friendships endpoints (Stage 7 — replaces friends + friendrequests)
+ * Schema: { user_id, friend_id, status: 'accepted'|'pending', initiated_by }
+ */
+export const friendshipEndpoints = {
+  /** GET all friendships where user is a participant */
+  listByUser: (userId: number) =>
+    `${collections.friendships}?q=${JSON.stringify({ user_id: userId })}`,
+
+  /** GET specific friendship between two users */
+  get: (userId: number, friendId: number) =>
+    `${collections.friendships}?q=${JSON.stringify({ user_id: userId, friend_id: friendId })}`,
+
+  /** GET pending requests targeting a user (received) */
+  listPendingForUser: (userId: number) =>
+    `${collections.friendships}?q=${JSON.stringify({ user_id: userId, status: 'pending' })}`,
+
+  /** GET pending requests sent by a user (outgoing) */
+  listSentByUser: (userId: number) =>
+    `${collections.friendships}?q=${JSON.stringify({ friend_id: userId, status: 'pending' })}`,
+
+  /** POST create friendship record */
+  create: () => collections.friendships,
+
+  /** PUT update friendship record (e.g. pending → accepted) */
+  update: (_id: string) => `${collections.friendships}/${_id}`,
+
+  /** DELETE friendship record */
+  delete: (_id: string) => `${collections.friendships}/${_id}`,
+};
+
+/**
+ * Friends endpoints (legacy — Stage 7 shadow period)
  */
 export const friendsEndpoints = {
   /** GET friends for a user */

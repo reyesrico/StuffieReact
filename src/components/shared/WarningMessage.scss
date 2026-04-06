@@ -1,25 +1,32 @@
 @use '../../styles/base/main' as *;
 
 .warning-message {
-  @include margin(12px, bottom);
-  @include padding(2px, vertical);
-  font-weight: bold;
-  padding: 0 8px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  margin-bottom: var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .warning-message__error {
-  background-color: $lightorange;
-  color: $black;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: var(--color-error);
+  border: 1px solid rgba(244, 67, 54, 0.25);
 }
 
 .warning-message__successful {
-  background-color: $lightgreen;
-  color: $white;
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(76, 175, 80, 0.25);
 }
 
 .warning-message__warning {
-  background-color: $lightyellow;
-  color: $black;
+  background-color: rgba(255, 152, 0, 0.1);
+  color: var(--color-warning);
+  border: 1px solid rgba(255, 152, 0, 0.25);
 }

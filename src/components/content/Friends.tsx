@@ -1,14 +1,20 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
+import Modal from '../shared/Modal';
 import TextField from '../shared/TextField';
 import EmptyState from '../shared/EmptyState';
 import User from '../types/User';
 import UserContext from '../../context/UserContext';
-import { useFriends } from '../../hooks/queries';
-import { sendFriendRequest } from '../../api/friends.api';
+import { useFriends, useInvalidateFriends } from '../../hooks/queries';
+import { useSentFriendRequests } from '../../hooks/queries/useFriends';
+import { getUsersByIds } from '../../api/users.api';
+import type Friendship from '../types/Friendship';
+import { sendFriendRequest, removeFriend } from '../../api/friends.api';
+import { getUserByEmail } from '../../api/users.api';
 
 import './Friends.scss';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
@@ -18,9 +24,10 @@ import { existImage, userImageUrl } from '../../lib/cloudinary';
 type FriendRowProps = {
   user: User;
   onClick: () => void;
+  onRemove: () => void;
 }
 
-const FriendRow = ({ user, onClick }: FriendRowProps) => {
+const FriendRow = ({ user, onClick, onRemove }: FriendRowProps) => {
   const [picture, setPicture] = React.useState<string>();
   const { t } = useTranslation();
 
@@ -46,7 +53,17 @@ const FriendRow = ({ user, onClick }: FriendRowProps) => {
           <span className='friend-row__email'>{user.email}</span>
         </div>
       </div>
-      <span className="friend-row__chevron">›</span>
+      <div className="friend-row__actions">
+        <button
+          type="button"
+          className="friend-row__remove"
+          onClick={e => { e.stopPropagation(); onRemove(); }}
+          aria-label={t('friends.removeAriaLabel')}
+        >
+          ✕
+        </button>
+        <span className="friend-row__chevron">›</span>
+      </div>
     </div>
   );
 };
@@ -61,8 +78,12 @@ const AddFriendForm = ({ onSent }: { onSent?: () => void }) => {
   const [isError, setIsError] = useState(false);
 
   const handleRequest = () => {
-    if (!email.trim()) return;
-    sendFriendRequest(email.trim(), user.id)
+    if (!email.trim() || !user.id) return;
+    getUserByEmail(email.trim())
+      .then(target => {
+        if (!target?.id) throw new Error('not found');
+        return sendFriendRequest(target.id, user.id);
+      })
       .then(() => {
         setMessage(t('friends.requestSent'));
         setIsError(false);
@@ -104,10 +125,35 @@ const AddFriendForm = ({ onSent }: { onSent?: () => void }) => {
 const Friends = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const { data: friends = [] } = useFriends();
+  const { data: sentRequests = [] } = useSentFriendRequests();
+  const invalidateFriends = useInvalidateFriends();
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState<User | null>(null);
+  const [removing, setRemoving] = useState(false);
+
+  // Resolve user_id numbers in sent requests to User objects for display
+  const sentTargetIds = sentRequests.map((r: Friendship) => ({ id: r.user_id }));
+  const { data: sentTargetUsers = [] } = useQuery<User[]>({
+    queryKey: ['sentRequestTargets', sentTargetIds.map((x: { id: number }) => x.id)],
+    queryFn: () => getUsersByIds(sentTargetIds),
+    enabled: sentTargetIds.length > 0,
+    staleTime: 0,
+  });
 
   const hasFriends = friends.length > 0;
+
+  const handleRemove = () => {
+    if (!confirmRemove?.id || !user?.id) return;
+    setRemoving(true);
+    removeFriend(user.id, confirmRemove.id)
+      .then(() => {
+        setConfirmRemove(null);
+        invalidateFriends();
+      })
+      .finally(() => setRemoving(false));
+ };
 
   return (
     <div className="friends">
@@ -146,17 +192,62 @@ const Friends = () => {
         </div>
       )}
 
-      {/* Friends list */}
-      {hasFriends && (
+      {/* Combined friends + pending sent requests list */}
+      {(hasFriends || sentRequests.length > 0) && (
         <div className="friends__list">
+          {sentRequests.map((r: Friendship) => {
+            const target = sentTargetUsers.find((u: User) => u.id === r.user_id);
+            const initials = target
+              ? `${target.first_name?.[0] ?? ''}${target.last_name?.[0] ?? ''}`.toUpperCase()
+              : '?';
+            return (
+              <div key={r._id} className="friends__pending-item">
+                <div className="friends__pending-avatar">{initials}</div>
+                <div className="friends__pending-info">
+                  <span className="friends__pending-name">
+                    {target ? `${target.first_name} ${target.last_name}` : `#${r.user_id}`}
+                  </span>
+                  {target && <span className="friends__pending-email">{target.email}</span>}
+                </div>
+                <span className="friends__pending-badge">{t('friends.pendingStatus')}</span>
+              </div>
+            );
+          })}
           {friends.map((friend: any) => (
             <FriendRow
               key={friend.id}
               user={friend}
               onClick={() => navigate(`/friends/${friend.id}`)}
+              onRemove={() => setConfirmRemove(friend)}
             />
           ))}
         </div>
+      )}
+
+      {confirmRemove && (
+        <Modal
+          title={t('friends.removeTitle')}
+          onClose={() => !removing && setConfirmRemove(null)}
+          disableBackdropClose={removing}
+          actions={
+            <>
+              <Button
+                text={removing ? '…' : t('friends.removeConfirm')}
+                variant="secondary"
+                onClick={handleRemove}
+                disabled={removing}
+              />
+              <Button
+                text={t('common.cancel')}
+                variant="outline"
+                onClick={() => setConfirmRemove(null)}
+                disabled={removing}
+              />
+            </>
+          }
+        >
+          {t('friends.removeBody', { name: `${confirmRemove.first_name} ${confirmRemove.last_name}` })}
+        </Modal>
       )}
     </div>
   );

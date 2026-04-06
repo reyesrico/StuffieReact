@@ -12,7 +12,8 @@ import ThemeContext from '../../context/ThemeContext';
 import UserContext from '../../context/UserContext';
 import { 
   useUserRequests, 
-  useFriendRequests, 
+  useFriendRequests,
+  useSentFriendRequests,
   useProducts, 
   useExchangeRequests, 
   useLoanRequests,
@@ -39,6 +40,7 @@ const Header = () => {
   // React Query hooks replace Redux selectors
   const { data: userRequests = [] } = useUserRequests();
   const { data: friendsRequests = [] } = useFriendRequests();
+  const { data: sentFriendsRequests = [] } = useSentFriendRequests();
   const { data: products = {} } = useProducts();
   const { data: exchangeRequests = [] } = useExchangeRequests();
   const { data: loanRequests = [] } = useLoanRequests();
@@ -68,7 +70,7 @@ const Header = () => {
   }, [location.pathname]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
-  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length + friendsRequests.length;
+  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length + friendsRequests.length + sentFriendsRequests.length;
 
   const handleLogout = (event: any) => {
     event.preventDefault();

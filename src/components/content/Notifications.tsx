@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -12,7 +13,7 @@ import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { addFriend, rejectFriendRequest } from '../../api/friends.api';
+import { acceptFriendRequest, rejectFriendRequest } from '../../api/friends.api';
 import { useDeleteExchange, useDeleteLoan, useDeletePurchase } from '../../hooks/queries';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
@@ -31,6 +32,7 @@ const Notifications = () => {
     loanRequests,
     purchaseRequests,
     friendRequests,
+    sentFriendRequests,
     requestedProducts,
     totalRequests,
     removeFriendRequest,
@@ -43,6 +45,22 @@ const Notifications = () => {
   const [message, setMessage] = useState('');
   const [type, setType] = useState(WarningMessageType.EMPTY);
   const [activeTab, setActiveTab] = useState<NotifTab>('exchange');
+  const [pendingFriendId, setPendingFriendId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => {
+      setMessage('');
+      setType(WarningMessageType.EMPTY);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [message]);
+  const location = useLocation();
+
+  // Reset active tab whenever we navigate away and back to this page
+  useEffect(() => {
+    setActiveTab('exchange');
+  }, [location.key]);
 
   const executeDeleteExchange = (_id: string, isLoan = false) => {
     if (isLoan) {
@@ -71,20 +89,24 @@ const Notifications = () => {
   };
 
   const executeFriendRequest = (friend: User, isAccepted: boolean) => {
-    if (!friend.id || !user.email) return;
-    const promises: Promise<unknown>[] = [rejectFriendRequest(user.email, friend.id)];
-    if (isAccepted) promises.push(addFriend(user.email, friend.id));
-    Promise.all(promises)
+    if (!friend.id || !user.id || pendingFriendId !== null) return;
+    const name = `${friend.first_name} ${friend.last_name}`;
+    setPendingFriendId(friend.id);
+    const action = isAccepted
+      ? acceptFriendRequest(user.id, friend.id)
+      : rejectFriendRequest(user.id, friend.id);
+    action
       .then(() => {
         removeFriendRequest(friend.id!);
-        setMessage(isAccepted ? t('friends.accepted') : t('friends.rejected'));
+        setMessage(isAccepted ? t('friends.accepted', { name }) : t('friends.rejected', { name }));
         setType(isAccepted ? WarningMessageType.SUCCESSFUL : WarningMessageType.WARNING);
       })
-      .catch(() => setType(WarningMessageType.ERROR));
+      .catch(() => setType(WarningMessageType.ERROR))
+      .finally(() => setPendingFriendId(null));
   };
 
   const tabsWithData: NotifTab[] = [
-    ...(friendRequests.length ? ['friends' as NotifTab] : []),
+    ...((friendRequests.length || sentFriendRequests.length) ? ['friends' as NotifTab] : []),
     ...(Array.isArray(purchaseRequests) && purchaseRequests.length ? ['buy' as NotifTab] : []),
     ...(Array.isArray(exchangeRequests) && exchangeRequests.length ? ['exchange' as NotifTab] : []),
     ...(Array.isArray(loanRequests) && loanRequests.length ? ['loan' as NotifTab] : []),
@@ -113,7 +135,7 @@ const Notifications = () => {
               tab === 'exchange' ? exchangeRequests.length :
               tab === 'loan' ? loanRequests.length :
               tab === 'buy' ? purchaseRequests.length :
-              friendRequests.length;
+              friendRequests.length + sentFriendRequests.length;
             const label =
               tab === 'exchange' ? t('notifications.tabExchange') :
               tab === 'loan' ? t('notifications.tabLoan') :
@@ -122,6 +144,7 @@ const Notifications = () => {
             return (
               <button
                 key={tab}
+                type="button"
                 className={`notifications__tab${effectiveTab === tab ? ' notifications__tab--active' : ''}`}
                 onClick={() => setActiveTab(tab)}
               >
@@ -261,24 +284,59 @@ const Notifications = () => {
           </ul>
         </div>
       )}
-      {effectiveTab === 'friends' && friendRequests.length > 0 && (
+      {effectiveTab === 'friends' && (
         <div className="notifications__section">
-          <ul>
-            {friendRequests.map((friend: User) => (
-              <li className="notifications__request" key={friend.id}>
-                <div className="notifications__request-group">
-                  <div className="notifications__request-text">
-                    {friend.first_name} {friend.last_name}
-                  </div>
-                  <div className="notifications__request-text">{friend.email}</div>
-                </div>
-                <div className="notifications__request-buttons">
-                  <Button onClick={() => executeFriendRequest(friend, true)} text={t('common.accept')} size="sm" variant="outline" />
-                  <Button onClick={() => executeFriendRequest(friend, false)} text={t('common.reject')} size="sm" variant="secondary" />
-                </div>
-              </li>
-            ))}
-          </ul>
+          {friendRequests.length > 0 && (
+            <>
+              <div className="notifications__subsection-label">{t('notifications.incomingRequests')}</div>
+              <ul>
+                {friendRequests.map((friend: User) => (
+                  <li className="notifications__request notifications__request--incoming" key={friend.id}>
+                    <div className="notifications__friend-left">
+                      <div className="notifications__friend-avatar">
+                        {friend.first_name?.[0]?.toUpperCase()}{friend.last_name?.[0]?.toUpperCase()}
+                      </div>
+                      <div className="notifications__request-group">
+                        <div className="notifications__request-name">
+                          {friend.first_name} {friend.last_name}
+                        </div>
+                        <div className="notifications__request-text">{friend.email}</div>
+                      </div>
+                    </div>
+                    <div className="notifications__request-buttons">
+                      <Button onClick={() => executeFriendRequest(friend, true)} text={pendingFriendId === friend.id ? '…' : t('common.accept')} size="sm" variant="outline" disabled={pendingFriendId !== null} />
+                      <Button onClick={() => executeFriendRequest(friend, false)} text={t('common.reject')} size="sm" variant="secondary" disabled={pendingFriendId !== null} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {sentFriendRequests.length > 0 && (
+            <>
+              <div className="notifications__subsection-label notifications__subsection-label--sent">{t('notifications.sentRequests')}</div>
+              <ul>
+                {sentFriendRequests.map((target: User) => (
+                  <li className="notifications__request notifications__request--sent" key={target.id}>
+                    <div className="notifications__friend-left">
+                      <div className="notifications__friend-avatar notifications__friend-avatar--sent">
+                        {target.first_name?.[0]?.toUpperCase()}{target.last_name?.[0]?.toUpperCase()}
+                      </div>
+                      <div className="notifications__request-group">
+                        <div className="notifications__request-name">
+                          {target.first_name} {target.last_name}
+                        </div>
+                        <div className="notifications__request-text">{target.email}</div>
+                      </div>
+                    </div>
+                    <div className="notifications__request-status">
+                      <span className="notifications__pending-badge">{t('friends.pendingStatus')}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       )}
     </div>

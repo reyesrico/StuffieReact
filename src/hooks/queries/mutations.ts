@@ -27,6 +27,7 @@ import {
   loginUser as loginUserApi,
   registerUser as registerUserApi,
   approveUserRequest,
+  getUserByEmail,
   type RegisterUserInput,
 } from '../../api/users.api';
 import {
@@ -233,11 +234,13 @@ export const useApproveUser = () => {
  */
 export const useSendFriendRequest = () => {
   const { user } = useContext(UserContext);
-  
+
   return useMutation({
-    mutationFn: (targetEmail: string) => {
+    mutationFn: async (targetEmail: string) => {
       if (!user?.id) throw new Error('User ID required');
-      return sendFriendRequest(targetEmail, user.id);
+      const target = await getUserByEmail(targetEmail);
+      if (!target?.id) throw new Error('User not found');
+      return sendFriendRequest(target.id, user.id);
     },
   });
 };
@@ -251,8 +254,8 @@ export const useAcceptFriendRequest = () => {
   
   return useMutation({
     mutationFn: (friendId: number) => {
-      if (!user?.email) throw new Error('User email required');
-      return acceptFriendRequest(user.email, friendId);
+      if (!user?.id) throw new Error('User ID required');
+      return acceptFriendRequest(user.id, friendId);
     },
     onSuccess: () => {
       if (user?.email) {
@@ -276,8 +279,8 @@ export const useRejectFriendRequest = () => {
   
   return useMutation({
     mutationFn: (friendId: number) => {
-      if (!user?.email) throw new Error('User email required');
-      return rejectFriendRequest(user.email, friendId);
+      if (!user?.id) throw new Error('User ID required');
+      return rejectFriendRequest(user.id, friendId);
     },
     onSuccess: () => {
       if (user?.email) {

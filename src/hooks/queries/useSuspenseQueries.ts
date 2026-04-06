@@ -79,7 +79,7 @@ export function useFriendsSuspense() {
   
   return useSuspenseQuery({
     queryKey: queryKeys.friends.all(user?.email || ''),
-    queryFn: () => getFriends(user!.email),
+    queryFn: () => getFriends(user!.id!),
   });
 }
 
@@ -91,7 +91,7 @@ export function useFriendRequestsSuspense() {
   
   return useSuspenseQuery({
     queryKey: queryKeys.friends.requests(user?.email || ''),
-    queryFn: () => getFriendRequests(user!.email),
+    queryFn: () => getFriendRequests(user!.id!),
   });
 }
 

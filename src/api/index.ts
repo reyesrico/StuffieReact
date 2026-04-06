@@ -34,7 +34,7 @@ export { categoriesApi, default as categories } from './categories.api';
 export { subcategoriesApi, default as subcategories } from './subcategories.api';
 export { productsApi, default as products } from './products.api';
 export { usersApi, default as users } from './users.api';
-export { friendsApi, default as friends } from './friends.api';
+export { friendsApi } from './friends.api';
 export { exchangesApi, default as exchanges } from './exchanges.api';
 export { loansApi, default as loans } from './loans.api';
 
@@ -85,15 +85,13 @@ export {
 
 export {
   getFriends,
-  getFriendRelations,
-  addFriend,
+  getFriendships,
   removeFriend,
   getFriendRequests,
   getFriendRequest,
   sendFriendRequest,
   acceptFriendRequest,
   rejectFriendRequest,
-  deleteFriendRequest,
 } from './friends.api';
 
 export {

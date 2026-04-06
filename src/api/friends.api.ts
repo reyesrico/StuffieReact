@@ -1,167 +1,163 @@
 /**
- * Friends API - CRUD operations for friends and friend requests
+ * Friends API - CRUD operations using the new friendships collection (Stage 7)
+ *
+ * Schema: { user_id, friend_id, status: 'accepted'|'pending', initiated_by }
+ * Both directions stored: A→B and B→A for accepted friendships.
  */
 import { apiClient } from './client';
-import { friendsEndpoints, friendRequestEndpoints, userEndpoints } from './endpoints';
+import { friendshipEndpoints, userEndpoints } from './endpoints';
 import type User from '../components/types/User';
-import type FriendRequest from '../components/types/FriendRequest';
-
-// ============ Types ============
-
-interface FriendRelation {
-  _id?: string;
-  email_stuffier: string;
-  id_friend: number;
-}
+import type Friendship from '../components/types/Friendship';
 
 // ============ READ - Friends ============
 
 /**
- * Get friends list for a user by email
- * Returns the friend relations (email_stuffier, id_friend)
+ * Get accepted friends for a user (returns full User objects)
  */
-export const getFriendRelations = async (email: string): Promise<FriendRelation[]> => {
-  const response = await apiClient.get<FriendRelation[]>(friendsEndpoints.listByUser(email));
-  return response.data;
+export const getFriends = async (userId: number): Promise<User[]> => {
+  const response = await apiClient.get<Friendship[]>(
+    friendshipEndpoints.listByUser(userId)
+  );
+  const accepted = (response.data || []).filter(f => f.status === 'accepted');
+  if (accepted.length === 0) return [];
+
+  const ids = accepted.map(f => ({ id: f.friend_id }));
+  const users = await apiClient.get<User[]>(userEndpoints.listByIds(ids));
+  return users.data || [];
 };
 
 /**
- * Get friends with full user data
- * First gets relations, then fetches user details
+ * Get raw friendship records for a user (accepted only)
  */
-export const getFriends = async (email: string): Promise<User[]> => {
-  const relations = await getFriendRelations(email);
-  
-  if (relations.length === 0) return [];
-  
-  // Map to ids for lookup
-  const ids = relations.map(r => ({ id: r.id_friend }));
-  
-  const response = await apiClient.get<User[]>(userEndpoints.listByIds(ids));
-  return response.data || [];
-};
-
-// ============ CREATE - Add Friend ============
-
-/**
- * Add a friend relationship (after request is accepted)
- */
-export const addFriend = async (email: string, friendId: number): Promise<FriendRelation> => {
-  const response = await apiClient.post<FriendRelation>(friendsEndpoints.create(), {
-    email_stuffier: email,
-    id_friend: friendId,
-  });
-  return response.data;
-};
-
-// ============ DELETE - Remove Friend ============
-
-/**
- * Remove a friend relationship
- */
-export const removeFriend = async (_id: string): Promise<void> => {
-  await apiClient.delete(friendsEndpoints.delete(_id));
+export const getFriendships = async (userId: number): Promise<Friendship[]> => {
+  const response = await apiClient.get<Friendship[]>(
+    friendshipEndpoints.listByUser(userId)
+  );
+  return (response.data || []).filter(f => f.status === 'accepted');
 };
 
 // ============ READ - Friend Requests ============
 
 /**
- * Get friend requests sent to a user
+ * Get pending friend requests targeting this user
  */
-export const getFriendRequests = async (email: string): Promise<FriendRequest[]> => {
-  const response = await apiClient.get<FriendRequest[]>(
-    friendRequestEndpoints.listByUser(email)
+export const getFriendRequests = async (userId: number): Promise<Friendship[]> => {
+  const response = await apiClient.get<Friendship[]>(
+    friendshipEndpoints.listPendingForUser(userId)
   );
-  return response.data;
+  return response.data || [];
 };
 
 /**
- * Get a specific friend request
+ * Get outgoing pending requests sent by this user
+ */
+export const getSentFriendRequests = async (userId: number): Promise<Friendship[]> => {
+  const response = await apiClient.get<Friendship[]>(
+    friendshipEndpoints.listSentByUser(userId)
+  );
+  return response.data || [];
+};
+
+/**
+ * Get a specific pending request between two users
  */
 export const getFriendRequest = async (
-  email: string, 
-  friendId: number
-): Promise<FriendRequest | null> => {
-  const response = await apiClient.get<(FriendRequest & { _id: string })[]>(
-    friendRequestEndpoints.get(email, friendId)
+  userId: number,
+  requesterId: number
+): Promise<Friendship | null> => {
+  const response = await apiClient.get<Friendship[]>(
+    friendshipEndpoints.get(userId, requesterId)
   );
-  return response.data[0] || null;
+  return response.data?.[0] || null;
 };
 
 // ============ CREATE - Send Friend Request ============
 
 /**
- * Send a friend request
+ * Send a friend request (creates one pending record)
  */
 export const sendFriendRequest = async (
-  targetEmail: string, 
+  targetUserId: number,
   fromUserId: number
-): Promise<FriendRequest> => {
-  const response = await apiClient.post<FriendRequest>(friendRequestEndpoints.create(), {
-    email_stuffier: targetEmail,
-    id_friend: fromUserId,
+): Promise<Friendship> => {
+  const response = await apiClient.post<Friendship>(friendshipEndpoints.create(), {
+    user_id: targetUserId,
+    friend_id: fromUserId,
+    status: 'pending',
+    initiated_by: fromUserId,
   });
   return response.data;
 };
 
-// ============ DELETE - Accept/Reject Friend Request ============
+// ============ UPDATE - Accept Friend Request ============
 
 /**
- * Delete a friend request by _id
- * Called when accepting or rejecting
- */
-export const deleteFriendRequest = async (_id: string): Promise<void> => {
-  await apiClient.delete(friendRequestEndpoints.delete(_id));
-};
-
-/**
- * Accept a friend request
- * - Deletes the request
- * - Creates the friend relationship
+ * Accept a friend request:
+ * - Updates the pending record to accepted
+ * - Creates the reverse record (so both parties can query by user_id)
  */
 export const acceptFriendRequest = async (
-  email: string, 
-  friendId: number
-): Promise<FriendRelation> => {
-  // First find and delete the request
-  const request = await getFriendRequest(email, friendId) as FriendRequest & { _id: string };
-  if (request?._id) {
-    await deleteFriendRequest(request._id);
+  userId: number,
+  requesterId: number
+): Promise<void> => {
+  // Find the pending record targeting this user
+  const pending = await getFriendRequest(userId, requesterId) as Friendship & { _id: string };
+  if (pending?._id) {
+    await apiClient.put(friendshipEndpoints.update(pending._id), {
+      ...pending,
+      status: 'accepted',
+    });
   }
-  
-  // Then add the friend relationship
-  return addFriend(email, friendId);
+
+  // Create the reverse record so the requester also sees the friendship
+  await apiClient.post<Friendship>(friendshipEndpoints.create(), {
+    user_id: requesterId,
+    friend_id: userId,
+    status: 'accepted',
+    initiated_by: requesterId,
+  });
+};
+
+// ============ DELETE - Reject / Remove ============
+
+/**
+ * Reject a friend request — deletes the pending record
+ */
+export const rejectFriendRequest = async (
+  userId: number,
+  requesterId: number
+): Promise<void> => {
+  const pending = await getFriendRequest(userId, requesterId) as Friendship & { _id: string };
+  if (pending?._id) {
+    await apiClient.delete(friendshipEndpoints.delete(pending._id));
+  }
 };
 
 /**
- * Reject a friend request
- * Just deletes the request without adding friend
+ * Remove an accepted friendship — deletes both directions
  */
-export const rejectFriendRequest = async (
-  email: string, 
-  friendId: number
-): Promise<void> => {
-  const request = await getFriendRequest(email, friendId) as FriendRequest & { _id: string };
-  if (request?._id) {
-    await deleteFriendRequest(request._id);
-  }
+export const removeFriend = async (userId: number, friendId: number): Promise<void> => {
+  const [a, b] = await Promise.all([
+    apiClient.get<Friendship[]>(friendshipEndpoints.get(userId, friendId)),
+    apiClient.get<Friendship[]>(friendshipEndpoints.get(friendId, userId)),
+  ]);
+  const toDelete = [
+    ...(a.data || []),
+    ...(b.data || []),
+  ] as (Friendship & { _id: string })[];
+
+  await Promise.all(toDelete.map(r => apiClient.delete(friendshipEndpoints.delete(r._id))));
 };
 
 // Export all functions
 export const friendsApi = {
-  // Friends
   list: getFriends,
-  listRelations: getFriendRelations,
-  add: addFriend,
-  remove: removeFriend,
-  
-  // Friend Requests
+  listRaw: getFriendships,
   listRequests: getFriendRequests,
+  listSentRequests: getSentFriendRequests,
   getRequest: getFriendRequest,
   sendRequest: sendFriendRequest,
   acceptRequest: acceptFriendRequest,
   rejectRequest: rejectFriendRequest,
-  deleteRequest: deleteFriendRequest,
+  remove: removeFriend,
 };
-
-export default friendsApi;

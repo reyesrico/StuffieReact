@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Loading from '../shared/Loading';
 
 // Eagerly loaded (home page)
@@ -24,8 +24,9 @@ const Tickets = lazy(() => import('../apps/Tickets'));
 const Notifications = lazy(() => import('../content/Notifications'));
 
 const MainRoutes = () => {
+  const location = useLocation();
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense key={location.key} fallback={<Loading />}>
     <Routes>
       <Route path="/" element={<Content />} />
       <Route path="StuffieReact" element={<Content />} />

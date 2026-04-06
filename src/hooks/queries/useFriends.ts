@@ -6,7 +6,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { queryKeys } from './queryKeys';
-import { getFriends, getFriendRequests } from '../../api/friends.api';
+import { getFriends, getFriendRequests, getSentFriendRequests } from '../../api/friends.api';
 import { getProductsForUsers, getProductsByIds } from '../../api/products.api';
 import { getFriendProducts, mapStuff } from '../../components/helpers/StuffHelper';
 import UserContext from '../../context/UserContext';
@@ -23,9 +23,9 @@ export const useFriends = () => {
   
   return useQuery({
     queryKey: queryKeys.friends.all(user?.email || ''),
-    queryFn: () => getFriends(user!.email!),
-    enabled: !!user?.email,
-    staleTime: 1000 * 60 * 5, // 5 min — friend profiles can update (location, name, etc.)
+    queryFn: () => getFriends(user!.id!),
+    enabled: !!(user?.id),
+    staleTime: 1000 * 60 * 5,
   });
 };
 
@@ -72,8 +72,25 @@ export const useFriendRequests = () => {
   
   return useQuery({
     queryKey: queryKeys.friends.requests(user?.email || ''),
-    queryFn: () => getFriendRequests(user!.email!),
-    enabled: !!user?.email,
+    queryFn: () => getFriendRequests(user!.id!),
+    enabled: !!(user?.id),
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+};
+
+/**
+ * Fetch pending friend requests sent BY the user (outgoing)
+ */
+export const useSentFriendRequests = () => {
+  const { user } = useContext(UserContext);
+
+  return useQuery({
+    queryKey: [...queryKeys.friends.requests(user?.email || ''), 'sent'],
+    queryFn: () => getSentFriendRequests(user!.id!),
+    enabled: !!(user?.id),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 

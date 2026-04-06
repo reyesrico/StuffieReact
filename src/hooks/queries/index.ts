@@ -38,6 +38,7 @@ export {
   useFriends,
   useFriendsWithProducts,
   useFriendRequests,
+  useSentFriendRequests,
   useGetFriendsData,
   useInvalidateFriends,
 } from './useFriends';
