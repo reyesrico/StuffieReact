@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
+import Modal from '../shared/Modal';
 import Product from '../types/Product';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
@@ -24,26 +25,25 @@ const ResultModal = ({ type, name, onDone, t }: {
   onDone: () => void;
   t: (key: string) => string;
 }) => {
+  const title = `${type === 'success' ? '✅' : '❌'} ${type === 'success' ? t('addProduct.successTitle') : t('addProduct.errorTitle')}`;
   return (
-    <div className="add-product__modal-overlay" onClick={type === 'error' ? onDone : undefined}>
-      <div className="add-product__modal" onClick={e => e.stopPropagation()}>
-        <h4 className="add-product__modal-title">
-          {type === 'success' ? '✅' : '❌'}&nbsp;
-          {type === 'success' ? t('addProduct.successTitle') : t('addProduct.errorTitle')}
-        </h4>
-        {type === 'success' && (
-          <p className="add-product__modal-meta">
-            <strong>{name}</strong> {t('addProduct.addedSuccess')}
-          </p>
-        )}
-        {type === 'error' && (
-          <p className="add-product__modal-meta">{t('addProduct.notAdded')}</p>
-        )}
-        <div className="add-product__modal-actions">
-          <Button text={type === 'success' ? t('addProduct.goToProducts') : t('addProduct.confirmCancel')} onClick={onDone} />
-        </div>
-      </div>
-    </div>
+    <Modal
+      onClose={onDone}
+      disableBackdropClose={type === 'success'}
+      title={title}
+      actions={
+        <Button
+          text={type === 'success' ? t('addProduct.goToProducts') : t('addProduct.confirmCancel')}
+          onClick={onDone}
+        />
+      }
+    >
+      {type === 'success' ? (
+        <p className="add-product__modal-meta"><strong>{name}</strong> {t('addProduct.addedSuccess')}</p>
+      ) : (
+        <p className="add-product__modal-meta">{t('addProduct.notAdded')}</p>
+      )}
+    </Modal>
   );
 };
 
@@ -370,40 +370,41 @@ const AddProduct = () => {
 
       {/* Confirm modal */}
       {confirmOpen && (
-        <div className="add-product__modal-overlay" onClick={() => !isPending && setConfirmOpen(false)}>
-          <div className="add-product__modal" onClick={e => e.stopPropagation()}>
-            <h4 className="add-product__modal-title">{t('addProduct.confirmTitle')}</h4>
-            <div className="add-product__modal-body">
-              {mode === 'catalog' && selectedProduct && (
-                <>
-                  <div className="add-product__modal-thumb">
-                    <Media
-                      fileName={selectedProduct.id}
-                      category={selectedProduct.category_id}
-                      subcategory={selectedProduct.subcategory_id}
-                      isProduct="true"
-                      height="100"
-                      width="100"
-                    />
-                  </div>
-                  <p className="add-product__modal-name">{selectedProduct.name}</p>
-                </>
-              )}
-              {mode === 'new' && (
-                <>
-                  <p className="add-product__modal-name">{name.trim()}</p>
-                  <p className="add-product__modal-meta">
-                    {selectedCategory?.name} › {selectedSubcategory?.name}
-                  </p>
-                </>
-              )}
-            </div>
-            <div className="add-product__modal-actions">
+        <Modal
+          onClose={() => setConfirmOpen(false)}
+          disableBackdropClose={isPending}
+          title={t('addProduct.confirmTitle')}
+          actions={
+            <>
               <Button text={t('addProduct.confirmCancel')} variant="secondary" onClick={() => setConfirmOpen(false)} disabled={isPending} />
               <Button text={isPending ? t('addProduct.confirmAdding') : t('addProduct.confirmAdd')} onClick={handleConfirm} disabled={isPending} />
+            </>
+          }
+        >
+          {mode === 'catalog' && selectedProduct && (
+            <div className="add-product__modal-body">
+              <div className="add-product__modal-thumb">
+                <Media
+                  fileName={selectedProduct.id}
+                  category={selectedProduct.category_id}
+                  subcategory={selectedProduct.subcategory_id}
+                  isProduct="true"
+                  height="100"
+                  width="100"
+                />
+              </div>
+              <p className="add-product__modal-name">{selectedProduct.name}</p>
             </div>
-          </div>
-        </div>
+          )}
+          {mode === 'new' && (
+            <>
+              <p className="add-product__modal-name">{name.trim()}</p>
+              <p className="add-product__modal-meta">
+                {selectedCategory?.name} › {selectedSubcategory?.name}
+              </p>
+            </>
+          )}
+        </Modal>
       )}
     </div>
   );

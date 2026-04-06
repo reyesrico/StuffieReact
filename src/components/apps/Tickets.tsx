@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
+import Modal from '../shared/Modal';
 import DropDown from '../shared/DropDown';
 import Loading from '../shared/Loading';
 import type Category from '../types/Category';
@@ -284,34 +285,12 @@ const Tickets = () => {
 
       {/* ── CONFIRM MODAL ── */}
       {showConfirm && (
-        <div
-          className="tickets__modal-overlay"
-          onClick={() => !isAdding && setShowConfirm(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="tickets-confirm-title"
-        >
-          <div className="tickets__modal" onClick={e => e.stopPropagation()}>
-            <h3 id="tickets-confirm-title" className="tickets__modal-title">{t('tickets.confirmTitle')}</h3>
-            <p className="tickets__modal-desc">{t('tickets.confirmDesc', { count: readyItems.length })}</p>
-
-            <ul className="tickets__modal-list">
-              {readyItems.map(item => (
-                <li key={item.id} className="tickets__modal-item">
-                  <div className="tickets__modal-item-info">
-                    <span className="tickets__modal-item-name">{item.name}</span>
-                    <span className="tickets__modal-item-cat">
-                      {item.category?.name}{item.subcategory ? ` › ${item.subcategory.name}` : ''}
-                    </span>
-                  </div>
-                  {item.price !== null && (
-                    <span className="tickets__modal-item-price">${item.price.toFixed(2)}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            <div className="tickets__modal-actions">
+        <Modal
+          onClose={() => setShowConfirm(false)}
+          disableBackdropClose={isAdding}
+          title={t('tickets.confirmTitle')}
+          actions={
+            <>
               <Button
                 text={t('tickets.cancel')}
                 onClick={() => setShowConfirm(false)}
@@ -325,10 +304,27 @@ const Tickets = () => {
                 size="md"
                 disabled={isAdding}
               />
-            </div>
-            {isAdding && <div className="tickets__modal-loading"><Loading size="sm" /></div>}
-          </div>
-        </div>
+            </>
+          }
+        >
+          <p className="tickets__modal-desc">{t('tickets.confirmDesc', { count: readyItems.length })}</p>
+          <ul className="tickets__modal-list">
+            {readyItems.map(item => (
+              <li key={item.id} className="tickets__modal-item">
+                <div className="tickets__modal-item-info">
+                  <span className="tickets__modal-item-name">{item.name}</span>
+                  <span className="tickets__modal-item-cat">
+                    {item.category?.name}{item.subcategory ? ` › ${item.subcategory.name}` : ''}
+                  </span>
+                </div>
+                {item.price !== null && (
+                  <span className="tickets__modal-item-price">${item.price.toFixed(2)}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+          {isAdding && <div className="tickets__modal-loading"><Loading size="sm" /></div>}
+        </Modal>
       )}
 
     </div>

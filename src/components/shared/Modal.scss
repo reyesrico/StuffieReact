@@ -1,0 +1,58 @@
+// ── Shared Modal component ────────────────────────────────────────────────────
+// DO NOT duplicate modal HTML/CSS elsewhere in the app.
+// Always import Modal from 'src/components/shared/Modal'.
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-4);
+  animation: modal-fade-in 0.15s ease;
+}
+
+.modal {
+  background-color: var(--background-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  padding: var(--spacing-6);
+  width: 100%;
+  max-width: 460px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modal-slide-up 0.2s ease;
+}
+
+.modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-2);
+}
+
+.modal__body {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--spacing-4);
+}
+
+.modal__actions {
+  display: flex;
+  gap: var(--spacing-3);
+  justify-content: flex-end;
+}
+
+// ── Animations ────────────────────────────────────────────────────────────────
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

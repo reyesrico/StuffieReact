@@ -533,38 +533,7 @@
   justify-content: center;
 }
 
-// ── Confirm modal ─────────────────────────────────────────────────────────────
-
-.tickets__modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: var(--spacing-4);
-  animation: tickets-fade-in 0.15s ease;
-}
-
-.tickets__modal {
-  background-color: var(--background-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
-  padding: var(--spacing-6);
-  width: 100%;
-  max-width: 460px;
-  max-height: 80vh;
-  overflow-y: auto;
-  animation: tickets-slide-up 0.2s ease;
-}
-
-.tickets__modal-title {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--text-color);
-  margin: 0 0 var(--spacing-2);
-}
+// ── Confirm modal body content ─────────────────────────────────────────────────
 
 .tickets__modal-desc {
   font-size: var(--font-size-sm);
@@ -622,27 +591,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tickets__modal-actions {
-  display: flex;
-  gap: var(--spacing-3);
-  justify-content: flex-end;
-}
-
 .tickets__modal-loading {
   display: flex;
   justify-content: center;
   margin-top: var(--spacing-3);
-}
-
-// ── Animations ────────────────────────────────────────────────────────────────
-
-@keyframes tickets-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes tickets-slide-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
 }
 

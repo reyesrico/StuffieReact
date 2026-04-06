@@ -301,42 +301,12 @@
   padding: var(--spacing-2) 0;
 }
 
-// ── Confirm Modal ─────────────────────────────────────────────────────────────
-.add-product__modal-overlay {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.5);
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 1000;
-}
-
-.add-product__modal {
-  background: var(--background-secondary);
-  border-radius: var(--radius-xl, 16px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 360px;
-  padding: var(--spacing-6);
-  width: 90%;
-}
-
-.add-product__modal-title {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  margin: 0 0 var(--spacing-3) 0;
-  color: var(--text-color);
-}
-
+// ── Confirm Modal body content ─────────────────────────────────────────────────
 .add-product__modal-body {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
-  margin-bottom: var(--spacing-5);
   text-align: center;
 }
 
@@ -359,12 +329,6 @@
 .add-product__modal-meta {
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
-  margin: 0;
-}
-
-.add-product__modal-actions {
-  display: flex;
-  gap: var(--spacing-3);
-  justify-content: flex-end;
+  margin: 0 0 var(--spacing-4);
 }
 
