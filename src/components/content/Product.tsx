@@ -12,6 +12,7 @@ import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useUpdateProductCost } from '../../hooks/queries';
+import { getProduct } from '../../api/products.api';
 
 import './Product.scss';
 
@@ -36,13 +37,26 @@ const Product = (props: any) => {
   const [productRendered, setProductRendered] = useState<any>(null);
 
   useEffect(() => {
-    if (!isEmpty(products) && !productRendered) {
+    if (!productRendered) {
       const idP = id ? parseInt(id) : product ? product.id : NaN;
-      const pRendered = getProductFromProducts(idP, products);
-      setProductRendered(pRendered);
+      if (isNaN(idP)) return;
+
+      // Try user's own product map first (fast, cached)
+      if (!isEmpty(products)) {
+        const pRendered = getProductFromProducts(idP, products);
+        if (pRendered) {
+          setProductRendered(pRendered);
+          return;
+        }
+      }
+
+      // Not in user's map — fetch directly from catalog (friend's product)
+      getProduct(idP).then(p => {
+        if (p) setProductRendered(p);
+      });
     }
 
-    if (!isEmpty(products) && productRendered) {
+    if (productRendered) {
       const cat = find(categories, c => c.id === productRendered.category_id);
       setCategory(cat);
       const subcat = find(subcategories, s => s.id === productRendered.subcategory_id);

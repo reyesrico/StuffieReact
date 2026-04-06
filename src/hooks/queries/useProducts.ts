@@ -60,25 +60,28 @@ export const useProducts = () => {
  */
 export const useUserProducts = (userId: number, categories: Category[]) => {
   return useQuery({
-    queryKey: queryKeys.products.all(userId),
+    // Distinct key from the logged-in user's products to avoid stale-cache collisions
+    queryKey: ['friends', userId, 'products'] as const,
     queryFn: async (): Promise<ProductsMap> => {
       if (!userId || !categories?.length) {
         return {};
       }
-      
+
       const stuffList = await getUserProducts(userId);
-      
+
       if (stuffList.length === 0) {
         return getProductsMap(categories, []);
       }
-      
+
       const productIds = mapStuff(stuffList);
       const products = await getProductsByIds(productIds);
       const productsWithCost = mapCostToProducts(products, stuffList);
-      
+
       return getProductsMap(categories, productsWithCost);
     },
     enabled: !!(userId && categories?.length),
+    staleTime: 0,           // Always fetch fresh — friend profiles update independently
+    refetchOnMount: true,   // Show cached data instantly, update in background
   });
 };
 
