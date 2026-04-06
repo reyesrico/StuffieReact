@@ -61,9 +61,9 @@ describe('StuffHelper', () => {
 
     it('should create products map organized by category', () => {
       const products = [
-        { id: 100, name: 'Laptop', category: 1 },
-        { id: 101, name: 'Phone', category: 1 },
-        { id: 200, name: 'Novel', category: 2 },
+        { id: 100, name: 'Laptop', category_id: 1 },
+        { id: 101, name: 'Phone', category_id: 1 },
+        { id: 200, name: 'Novel', category_id: 2 },
       ];
       
       const result = getProductsMap(categories, products);

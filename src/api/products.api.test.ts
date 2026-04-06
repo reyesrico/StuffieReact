@@ -130,7 +130,9 @@ describe('Products API', () => {
     it('should create a new product', async () => {
       const newProduct = { name: 'New Item', category_id: 1, subcategory_id: 1, image_key: 'image.jpg' };
       const createdProduct = { id: 100, ...newProduct };
-      
+
+      // createProduct calls getLastProductId (GET) before the POST
+      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: [{ id: 99 }] });
       vi.mocked(apiClient.post).mockResolvedValueOnce({ data: createdProduct });
       
       const result = await createProduct(newProduct);
