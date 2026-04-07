@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
 
 import Apps from '../sections/Apps';
+import ChatToggle from './ChatToggle';
 import Language from './Language';
 import SearchBar from '../shared/SearchBar';
 import Theme from './Theme';
@@ -104,7 +105,7 @@ const Header = () => {
         position: absolute;
         background-color: var(--background-elevated);
         color: var(--text-color);
-        width: 146px;
+        width: 190px;
         padding: 8px;
         box-shadow: 5px 5px #888888;
         border-radius: 6px;
@@ -215,6 +216,7 @@ const Header = () => {
         {/* https://www.w3schools.com/howto/howto_js_mobile_navbar.asp */}
         <div className="stuffie-header__apps">
           <div id="apps">
+            <div className="stuffie-header__menu-theme"><ChatToggle /></div>
             <div className="stuffie-header__menu-theme"><Language /></div>
             <div className="stuffie-header__menu-theme"><Theme /></div>
           </div>

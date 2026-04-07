@@ -34,6 +34,9 @@
 
 .chat-toggle__label {
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat-toggle__pill {
