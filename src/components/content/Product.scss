@@ -96,3 +96,33 @@
 .product__cost-button {
   flex-shrink: 0;
 }
+
+// =============================================================================
+// Friend Product Action Bar
+// =============================================================================
+
+.product__actions {
+  margin-top: var(--spacing-5);
+  padding: var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.product__actions-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.product__actions-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
+}

@@ -103,6 +103,8 @@ const FriendPage = () => {
                   key={product.id}
                   product={product}
                   navigationState={{
+                    friendId,
+                    product,
                     breadcrumb: [
                       { label: t('Friends'), path: '/friends' },
                       { label: friendName, path: `/friends/${friendId}` },

@@ -1,153 +1,296 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
-import Category from '../types/Category';
 import Media from '../shared/Media';
-import Product from '../types/Product';
-import Subcategory from '../types/Subcategory';
-import SearchBar from '../shared/SearchBar';
-import WarningMessage from '../shared/WarningMessage';
-import { WarningMessageType } from '../shared/types';
+import Modal from '../shared/Modal';
 import { getProductsList } from '../helpers/StuffHelper';
 import { getUsersByIds } from '../../api/users.api';
 import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useCreateExchange } from '../../hooks/queries';
+import type Category from '../types/Category';
+import type Subcategory from '../types/Subcategory';
+import type Product from '../types/Product';
 
 import './Exchange.scss';
 
-const Exchange = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { user } = useContext(UserContext);
+// ── Selectable product row ─────────────────────────────────────────────────────
 
-  // React Query hooks
-  const { data: categories = [] } = useCategories();
-  const { data: subcategories = [] } = useSubcategories();
-  const { data: products = {} } = useProducts();
-  const createExchangeMutation = useCreateExchange();
-  
-  const [userProducts, setUserProducts] = useState<any>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product>({});
-  const [message, setMessage] = useState('');
-  const [friend, setFriend] = useState({ first_name: '' });
-  const [type, setType] = useState(WarningMessageType.EMPTY);
-  const { t } = useTranslation();
+type ProductRowProps = {
+  product: Product;
+  isSelected: boolean;
+  onSelect: (p: Product) => void;
+  categories: Category[];
+  subcategories: Subcategory[];
+};
 
-  const product: Product = (location.state as any)?.["product"];
-  const friendId = (location.state as any)?.["friend"];
+const ProductRow = ({ product, isSelected, onSelect, categories, subcategories }: ProductRowProps) => {
+  const category = categories.find((c: Category) => c.id === product.category_id);
+  const subcategory = subcategories.find((s: Subcategory) => s.id === product.subcategory_id);
 
-  useEffect(() => {
-    if (!product) {
-      navigate('/');
-      return;
-    }
-
-    // Filter user's products by same category/subcategory
-    const uProducts = getProductsList(products)
-      .filter(p => p.category_id === product.category_id || p.subcategory_id === product.subcategory_id);
-    setUserProducts(uProducts);
-
-    // Fetch friend info
-    if (friendId) {
-      getUsersByIds([{ id: friendId }])
-        .then((users) => setFriend(users[0] as any));
-    }
-  }, [product, friendId, products, navigate]);
-
-  const requestExchange = useCallback(() => {
-    if (!friendId || !product?.id || !user?.id || !selectedProduct?.id) return;
-    
-    createExchangeMutation.mutate(
-      {
-        id_stuffier: friendId,
-        id_stuff: product.id,
-        id_friend: user.id,
-        id_friend_stuff: selectedProduct.id,
-      },
-      {
-        onSuccess: () => {
-          setMessage(t('exchange.successMessage'));
-          setType(WarningMessageType.SUCCESSFUL);
-          navigate('/products');
-        },
-        onError: () => {
-          setMessage(t('exchange.errorMessage'));
-          setType(WarningMessageType.ERROR);
-        },
-      }
-    );
-  }, [createExchangeMutation, friendId, product?.id, user?.id, selectedProduct, navigate]);
-
-  const selectProduct = useCallback((product: Product) => {
-    setSelectedProduct(product);
-  }, []);
-
-  const renderProduct = useCallback((product: Product) => {
-    const category: Category = categories.filter(c => c.id === product.category_id)[0];
-    const subcategory: Subcategory = subcategories.filter(s => s.id === product.subcategory_id)[0];
-
-    return (
-      <div className="exchange__product">
+  return (
+    <div
+      className={`exchange-row${isSelected ? ' exchange-row--selected' : ''}`}
+      onClick={() => onSelect(product)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelect(product)}
+      aria-pressed={isSelected}
+    >
+      <div className="exchange-row__media">
         <Media
           fileName={product.id}
           category={product.category_id}
           subcategory={product.subcategory_id}
           format="jpg"
-          height="100"
-          width="100"
+          height="48"
+          width="48"
           isProduct="true"
         />
-        <div className="exchange__product-info">
-          <div>{product.name}</div>
-          <div>{category.name}</div>
-          <div>{subcategory.name}</div>
-        </div>
       </div>
+      <div className="exchange-row__info">
+        <span className="exchange-row__name">{product.name}</span>
+        <span className="exchange-row__meta">
+          {category?.name}{subcategory ? ` · ${subcategory.name}` : ''}
+        </span>
+      </div>
+      <div className="exchange-row__check" aria-hidden="true">
+        {isSelected ? '✓' : ''}
+      </div>
+    </div>
+  );
+};
+
+// ── Main component ─────────────────────────────────────────────────────────────
+
+const Exchange = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useContext(UserContext);
+  const { t } = useTranslation();
+
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+  const { data: products = {} } = useProducts();
+  const createExchangeMutation = useCreateExchange();
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [filterText, setFilterText] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [friend, setFriend] = useState<{ first_name: string } | null>(null);
+
+  const targetProduct: Product = (location.state as any)?.['product'];
+  const friendId: number = (location.state as any)?.['friend'];
+
+  useEffect(() => {
+    if (!targetProduct) {
+      navigate('/');
+      return;
+    }
+    if (friendId) {
+      getUsersByIds([{ id: friendId }]).then((users) => setFriend(users[0] as any));
+    }
+  }, [targetProduct, friendId, navigate]);
+
+  // Build two lists: same-category first, then everything else
+  const allProducts = getProductsList(products);
+  const lowerFilter = filterText.toLowerCase();
+  const filtered = filterText
+    ? allProducts.filter((p) => p.name?.toLowerCase().includes(lowerFilter))
+    : allProducts;
+
+  const sameCategory = filtered.filter((p) => p.category_id === targetProduct?.category_id);
+  const otherProducts = filtered.filter((p) => p.category_id !== targetProduct?.category_id);
+
+  const targetCategory = categories.find((c: Category) => c.id === targetProduct?.category_id);
+  const targetSubcategory = subcategories.find((s: Subcategory) => s.id === targetProduct?.subcategory_id);
+
+  const handleSelect = useCallback((p: Product) => {
+    setSelectedProduct((prev) => (prev?.id === p.id ? null : p));
+  }, []);
+
+  const requestExchange = useCallback(() => {
+    setShowConfirm(false);
+    if (!friendId || !targetProduct?.id || !user?.id || !selectedProduct?.id) return;
+
+    createExchangeMutation.mutate(
+      {
+        id_stuffier: friendId,
+        id_stuff: targetProduct.id,
+        id_friend: user.id,
+        id_friend_stuff: selectedProduct.id,
+      },
+      {
+        onSuccess: () => setShowSuccess(true),
+        onError: () => setShowError(true),
+      }
     );
-  }, [categories, subcategories]);
+  }, [createExchangeMutation, friendId, targetProduct?.id, user?.id, selectedProduct]);
 
-  if (!product) {
-    return null;
-  }
-
-  if (!userProducts.length) {
-    return <div className="exchange exchange--empty">{t('exchange.noProducts')}</div>;
-  }
+  if (!targetProduct) return null;
 
   return (
     <div className="exchange">
+      {/* Header */}
       <div className="exchange__page-header">
-        <h2>{t('exchange.friendProduct', { name: friend?.first_name })}</h2>
+        <button className="exchange__back" onClick={() => navigate(-1)} aria-label={t('common.back')}>
+          ←
+        </button>
+        <h2>{t('exchange.friendProduct', { name: friend?.first_name ?? '…' })}</h2>
       </div>
-      <WarningMessage message={message} type={type} />
-      <div className="exchange__search-header">
-        <SearchBar products={userProducts} selectProduct={(p: Product) => selectProduct(p)} />
-      </div>
-      { !isEmpty(selectedProduct) &&
-        <div className="exchange__content">
-          <div className="exchange__compare">
-            <div className="exchange__compare-info">
-              <h4>{t('exchange.myProduct')}</h4>
-              {renderProduct(selectedProduct)}
-            </div>
-            <div className="exchange__line" />
-            <div className="exchange__compare-info">
-              <h4>{t('exchange.friendProduct', { name: friend?.first_name })}</h4>
-              {renderProduct(product)}
-            </div>
-          </div>
-          <Button
-            type="submit"
-            onClick={requestExchange}
-            text={t('exchange.requestButton')}
+
+      {/* Target card — what they're trading for */}
+      <div className="exchange__target-card">
+        <div className="exchange__target-media">
+          <Media
+            fileName={targetProduct.id}
+            category={targetProduct.category_id}
+            subcategory={targetProduct.subcategory_id}
+            format="jpg"
+            height="56"
+            width="56"
+            isProduct="true"
           />
         </div>
-      }
+        <div className="exchange__target-info">
+          <span className="exchange__target-chip">{t('exchange.requesting')}</span>
+          <span className="exchange__target-name">{targetProduct.name}</span>
+          <span className="exchange__target-meta">
+            {targetCategory?.name}{targetSubcategory ? ` · ${targetSubcategory.name}` : ''}
+          </span>
+        </div>
+      </div>
+
+      {/* Instructions */}
+      <p className="exchange__instructions">{t('exchange.instructions')}</p>
+
+      {/* Offer section */}
+      <div className="exchange__offer-section">
+        <div className="exchange__offer-header">
+          <span className="exchange__offer-label">{t('exchange.offerSection')}</span>
+          <input
+            className="exchange__filter"
+            type="text"
+            placeholder={t('exchange.filterPlaceholder')}
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+        </div>
+
+        {allProducts.length === 0 && (
+          <p className="exchange__empty">{t('exchange.noProducts')}</p>
+        )}
+
+        {sameCategory.length > 0 && (
+          <>
+            <p className="exchange__section-label">{t('exchange.sameCategoryLabel')}</p>
+            {sameCategory.map((p) => (
+              <ProductRow
+                key={p.id}
+                product={p}
+                isSelected={selectedProduct?.id === p.id}
+                onSelect={handleSelect}
+                categories={categories}
+                subcategories={subcategories}
+              />
+            ))}
+          </>
+        )}
+
+        {otherProducts.length > 0 && (
+          <>
+            <p className="exchange__section-label">{t('exchange.otherItemsLabel')}</p>
+            {otherProducts.map((p) => (
+              <ProductRow
+                key={p.id}
+                product={p}
+                isSelected={selectedProduct?.id === p.id}
+                onSelect={handleSelect}
+                categories={categories}
+                subcategories={subcategories}
+              />
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Sticky confirm bar */}
+      {selectedProduct && (
+        <div className="exchange__confirm-bar">
+          <div className="exchange__confirm-summary">
+            <span className="exchange__confirm-item">{selectedProduct.name}</span>
+            <span className="exchange__confirm-arrow">↔</span>
+            <span className="exchange__confirm-item">{targetProduct.name}</span>
+          </div>
+          <Button
+            variant="primary"
+            text={t('exchange.requestButton')}
+            onClick={() => setShowConfirm(true)}
+          />
+        </div>
+      )}
+
+      {showConfirm && (
+        <Modal
+          title={t('exchange.confirmTitle')}
+          onClose={() => setShowConfirm(false)}
+          disableBackdropClose={createExchangeMutation.isPending}
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                text={t('common.cancel')}
+                onClick={() => setShowConfirm(false)}
+                disabled={createExchangeMutation.isPending}
+              />
+              <Button
+                variant="primary"
+                text={t('exchange.requestButton')}
+                onClick={requestExchange}
+                loading={createExchangeMutation.isPending}
+              />
+            </>
+          }
+        >
+          <p>{t('exchange.confirmBody', { mine: selectedProduct?.name, theirs: targetProduct.name })}</p>
+        </Modal>
+      )}
+
+      {showSuccess && (
+        <Modal
+          title={t('exchange.successTitle')}
+          actions={
+            <Button
+              variant="primary"
+              text={t('common.accept')}
+              onClick={() => navigate('/products')}
+            />
+          }
+        >
+          <p>{t('exchange.successMessage')}</p>
+        </Modal>
+      )}
+
+      {showError && (
+        <Modal
+          title={t('exchange.errorTitle')}
+          onClose={() => setShowError(false)}
+          actions={
+            <Button
+              variant="secondary"
+              text={t('common.cancel')}
+              onClick={() => setShowError(false)}
+            />
+          }
+        >
+          <p>{t('exchange.errorMessage')}</p>
+        </Modal>
+      )}
     </div>
   );
-}
+};
 
 export default Exchange;

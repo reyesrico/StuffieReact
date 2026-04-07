@@ -50,6 +50,8 @@ const Notifications = () => {
   const [type, setType] = useState(WarningMessageType.EMPTY);
   const [activeTab, setActiveTab] = useState<NotifTab>('exchange');
   const [pendingFriendId, setPendingFriendId] = useState<number | null>(null);
+  const [pendingExchangeId, setPendingExchangeId] = useState<string | null>(null);
+  const [pendingLoanId, setPendingLoanId] = useState<string | null>(null);
   const [confirmCancelTarget, setConfirmCancelTarget] = useState<User | null>(null);
 
   useEffect(() => {
@@ -69,25 +71,31 @@ const Notifications = () => {
 
   const executeDeleteExchange = (_id: string, isLoan = false) => {
     if (isLoan) {
+      setPendingLoanId(_id);
       deleteLoanMutation.mutate(_id, {
         onSuccess: () => {
           setMessage(t('products.loanDeleted'));
           setType(WarningMessageType.SUCCESSFUL);
+          setPendingLoanId(null);
         },
         onError: () => {
           setMessage(t('products.loanDeleteFailed'));
           setType(WarningMessageType.ERROR);
+          setPendingLoanId(null);
         },
       });
     } else {
+      setPendingExchangeId(_id);
       deleteExchangeMutation.mutate(_id, {
         onSuccess: () => {
           setMessage(t('products.exchangeDeleted'));
           setType(WarningMessageType.SUCCESSFUL);
+          setPendingExchangeId(null);
         },
         onError: () => {
           setMessage(t('products.exchangeDeleteFailed'));
           setType(WarningMessageType.ERROR);
+          setPendingExchangeId(null);
         },
       });
     }
@@ -190,11 +198,11 @@ const Notifications = () => {
                   <div className="notifications__request-buttons">
                     {!isUserRequestor && (
                       <div className="notifications__request-button">
-                        <Button onClick={() => {}} text={t('common.accept')} disabled size="sm" variant="outline" />
+                        <Button onClick={() => executeDeleteExchange(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
                       </div>
                     )}
                     <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" loading={deleteExchangeMutation.isPending} />
+                      <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
                     </div>
                   </div>
                 </li>
@@ -227,11 +235,11 @@ const Notifications = () => {
                   <div className="notifications__request-buttons">
                     {!isUserRequestor && (
                       <div className="notifications__request-button">
-                        <Button onClick={() => {}} text={t('common.accept')} disabled size="sm" variant="outline" />
+                        <Button onClick={() => executeDeleteExchange(request._id, true)} text={t('common.accept')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
                       </div>
                     )}
                     <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" loading={deleteLoanMutation.isPending} />
+                      <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
                     </div>
                   </div>
                 </li>

@@ -8,25 +8,96 @@
   @include page-root;
 }
 
-.buy__header {
+.buy__page-header {
   @include page-header;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
   margin-bottom: var(--spacing-4);
-}
-
-.buy__title {
-  @include page-title;
-}
-
-.buy__product {
-  @include page-section;
 
   h2 {
-    @include page-subtitle;
+    @include page-title;
+    margin: 0;
   }
 }
 
-.buy__actions {
+.buy__back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-xl);
+  color: var(--text-color);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: var(--background-secondary);
+  }
+}
+
+.buy__target-card {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border-color);
+  margin-bottom: var(--spacing-4);
+}
+
+.buy__target-media {
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.buy__target-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.buy__target-chip {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary-500);
+  background-color: var(--color-primary-100);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  align-self: flex-start;
+}
+
+.buy__target-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.buy__target-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.buy__target-price {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-success);
+  margin-top: var(--spacing-1);
+}
+
+.buy__instructions {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-6);
+  line-height: 1.5;
+}
+
+.buy__actions {
   margin-top: var(--spacing-4);
 }

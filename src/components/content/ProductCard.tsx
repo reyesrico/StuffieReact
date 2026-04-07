@@ -13,7 +13,7 @@ import './ProductCard.scss';
 
 interface ProductCardProps {
   product: ProductType;
-  navigationState?: { breadcrumb: BreadcrumbItem[] };
+  navigationState?: { friendId?: number; product?: ProductType; breadcrumb: BreadcrumbItem[] };
 }
 
 const ProductCard = ({ product, navigationState }: ProductCardProps) => {

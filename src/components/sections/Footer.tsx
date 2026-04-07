@@ -7,7 +7,7 @@ const Footer = () => {
       <hr />
       <div>
         <span>Stuffie&trade; is a platform coded and registered by &nbsp;</span>
-        <a href="http://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html" target="_blank" rel="noopener noreferrer">Carlos Reyes-Rico</a>
+        <a href="http://stuffie.azurewebsites.net/PM_Carlos-Reyes2.html" target="_blank" rel="noopener noreferrer">Carlos Reyes</a>
       </div>
     </div>
   );

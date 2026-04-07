@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import Apps from '../sections/Apps';
 import Breadcrumb from '../shared/Breadcrumb';
 import FloatingChat from '../sections/FloatingChat';
+import { CHAT_VISIBLE_KEY } from '../sections/ChatToggle';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import MainRoutes from './MainRoutes';
@@ -43,6 +44,19 @@ const Main = () => {
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
   const [picture, setPicture] = React.useState<string>();
+  const [chatVisible, setChatVisible] = React.useState<boolean>(
+    localStorage.getItem(CHAT_VISIBLE_KEY) !== 'false'
+  );
+
+  React.useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === CHAT_VISIBLE_KEY) {
+        setChatVisible(e.newValue !== 'false');
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
 
   React.useEffect(() => {
     if (user?.id) {
@@ -124,8 +138,8 @@ const Main = () => {
         <Footer />
       </div>
 
-      {/* Floating AI chat — fixed bottom-right, available on all pages */}
-      <FloatingChat />
+      {/* Floating AI chat — toggle in Settings › Support Chat */}
+      {chatVisible && <FloatingChat />}
     </div>
     </SpotifyProvider>
   );

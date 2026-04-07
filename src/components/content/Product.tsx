@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { find, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -19,9 +19,15 @@ import './Product.scss';
 const Product = (props: any) => {
   const { hideOfferButton, product, showCost } = props;
   const { id } = useParams();
-  // User context needed for updateProductCost mutation
-  useContext(UserContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const { t } = useTranslation();
+
+  // friendId in location state means we arrived from a friend's profile
+  const friendId: number | undefined = (location.state as any)?.friendId;
+  const productFromState: any = (location.state as any)?.product;
+  const isFriendProduct = !!friendId;
   
   // React Query hooks
   const { data: categories = [] } = useCategories();
@@ -40,6 +46,12 @@ const Product = (props: any) => {
     if (!productRendered) {
       const idP = id ? parseInt(id) : product ? product.id : NaN;
       if (isNaN(idP)) return;
+
+      // If we came from a friend's profile, location state has the full product with cost
+      if (productFromState?.id === idP) {
+        setProductRendered(productFromState);
+        return;
+      }
 
       // Try user's own product map first (fast, cached)
       if (!isEmpty(products)) {
@@ -105,6 +117,8 @@ const Product = (props: any) => {
 
   if (!productRendered) return <Loading size="lg" message={t('product.loading')} />;
 
+  const actionState = { product: productRendered, friend: friendId };
+
   return (
     <div className="product">
       <WarningMessage message={message} type={type} />
@@ -123,6 +137,34 @@ const Product = (props: any) => {
       <div>{t('product.categoryLabel')}{ category && category.name }</div>
       <div>{t('product.subcategoryLabel')}{ subcategory && subcategory.name }</div>
       {showCost && renderCost()}
+
+      {isFriendProduct && (
+        <div className="product__actions">
+          <span className="product__actions-label">{t('feedRow.askFor')}</span>
+          <div className="product__actions-buttons">
+            <Button
+              variant="outline"
+              size="sm"
+              text={t('feedRow.borrow')}
+              onClick={() => navigate('/loan', { state: actionState })}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              text={t('feedRow.trade')}
+              onClick={() => navigate('/exchange', { state: actionState })}
+            />
+            {(productRendered.cost ?? 0) > 0 && (
+              <Button
+                variant="primary"
+                size="sm"
+                text={t('feedRow.buy')}
+                onClick={() => navigate('/buy', { state: actionState })}
+              />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

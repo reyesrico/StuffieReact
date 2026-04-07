@@ -68,5 +68,9 @@
     margin-top: var(--spacing-3);
     border: none;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+
+    & html {
+      background-color: transparent;
+    }
   }
 }
