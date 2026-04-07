@@ -5,5 +5,6 @@ export const ExchangeRequestMock: ExchangeRequest = {
   id_stuffier: 1,
   id_stuff: 1,
   id_friend: 2,
-  id_friend_stuff: 2
+  id_friend_stuff: 2,
+  status: 'pending',
 };
