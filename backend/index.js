@@ -97,23 +97,23 @@ app.get('/userproducts/:stuffierId', async (req, res) => {
 
   // 1. Get ownership rows
   const ssRows = [];
-  const ssCursor = db.getMany('stuffiersstuff', { filter: { id_stuffier: stuffierId } });
+  const ssCursor = db.getMany('user_items', { filter: { user_id: stuffierId } });
   for await (const row of ssCursor) ssRows.push(row);
 
   if (ssRows.length === 0) return res.json([]);
 
   // 2. Get matching stuff rows
-  const stuffIds = ssRows.map(r => r.id_stuff).filter(Boolean);
+  const stuffIds = ssRows.map(r => r.item_id).filter(Boolean);
   const stuffMap = {};
-  const stuffCursor = db.getMany('stuff', { filter: { id: { $in: stuffIds } } });
+  const stuffCursor = db.getMany('items', { filter: { id: { $in: stuffIds } } });
   for await (const row of stuffCursor) stuffMap[row.id] = row;
 
   // 3. Merge
   const result = ssRows
     .map(ss => {
-      const product = stuffMap[ss.id_stuff];
+      const product = stuffMap[ss.item_id];
       if (!product) return null;
-      return { ...product, cost: ss.cost ?? null, ss_id: ss._id };
+      return { ...product, cost: ss.asking_price ?? null, ss_id: ss._id };
     })
     .filter(Boolean);
 
