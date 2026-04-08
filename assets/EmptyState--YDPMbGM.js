@@ -1,0 +1,2 @@
+import{j as s}from"./vendor-fluent-DrxafIa4.js";const l=({icon:t,title:m,description:e,action:a,className:c=""})=>s.jsxs("div",{className:`empty-state ${c}`,children:[t&&s.jsx("div",{className:"empty-state__icon",children:t}),s.jsx("h3",{className:"empty-state__title",children:m}),e&&s.jsx("p",{className:"empty-state__description",children:e}),a&&s.jsx("div",{className:"empty-state__action",children:a})]});export{l as E};
+//# sourceMappingURL=EmptyState--YDPMbGM.js.map
