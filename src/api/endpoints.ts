@@ -17,7 +17,7 @@ const collections = {
   friendRequests: 'friendrequests',
   friendships: 'friendships', // Stage 7: replaces friends + friendrequests
   exchangeRequests: 'exchange_requests', // Stage 8: renamed from exchangerequests + status field
-  loanRequests: 'loanrequests',
+  loanRequests: 'loan_requests', // Stage 9: renamed from loanrequests + status field
   purchaseRequests: 'purchaserequests',
   conf: 'conf',
 };

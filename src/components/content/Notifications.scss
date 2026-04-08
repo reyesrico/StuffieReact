@@ -78,6 +78,12 @@
 
 .notifications__section {
   margin-bottom: var(--spacing-4);
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 .notifications__section-title {
@@ -115,12 +121,21 @@
   background-color: var(--background-secondary);
   border-radius: var(--radius-md);
   border-left: 3px solid var(--color-primary-500);
+  gap: var(--spacing-3);
+  min-width: 0;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .notifications__request-group {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
+  flex: 1;
+  min-width: 0;
 }
 
 .notifications__request-buttons {
@@ -131,6 +146,15 @@
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 2px;
+
+  @media (max-width: 600px) {
+    align-self: stretch;
+    margin-top: var(--spacing-2);
+
+    > * {
+      flex: 1;
+    }
+  }
 }
 
 .notifications__request-text {
