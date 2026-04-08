@@ -52,6 +52,7 @@ const Notifications = () => {
   const [pendingFriendId, setPendingFriendId] = useState<number | null>(null);
   const [pendingExchangeId, setPendingExchangeId] = useState<string | null>(null);
   const [pendingLoanId, setPendingLoanId] = useState<string | null>(null);
+  const [pendingPurchaseId, setPendingPurchaseId] = useState<string | null>(null);
   const [confirmCancelTarget, setConfirmCancelTarget] = useState<User | null>(null);
 
   useEffect(() => {
@@ -99,6 +100,22 @@ const Notifications = () => {
         },
       });
     }
+  };
+
+  const executeDeletePurchase = (_id: string) => {
+    setPendingPurchaseId(_id);
+    deletePurchaseMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('products.purchaseDeleted'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingPurchaseId(null);
+      },
+      onError: () => {
+        setMessage(t('products.purchaseDeleteFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingPurchaseId(null);
+      },
+    });
   };
 
   const executeFriendRequest = (friend: User, isAccepted: boolean) => {
@@ -273,24 +290,24 @@ const Notifications = () => {
                     </div>
                   </div>
                   <div className="notifications__request-buttons">
+                    {!isUserRequestor && (
+                      <div className="notifications__request-button">
+                        <Button
+                          onClick={() => executeDeletePurchase(request._id)}
+                          text={t('common.accept')}
+                          size="sm"
+                          variant="outline"
+                          loading={pendingPurchaseId === request._id}
+                        />
+                      </div>
+                    )}
                     <div className="notifications__request-button">
                       <Button
-                        onClick={() =>
-                          deletePurchaseMutation.mutate(request._id, {
-                            onSuccess: () => {
-                              setMessage(t('products.purchaseDeleted'));
-                              setType(WarningMessageType.SUCCESSFUL);
-                            },
-                            onError: () => {
-                              setMessage(t('products.purchaseDeleteFailed'));
-                              setType(WarningMessageType.ERROR);
-                            },
-                          })
-                        }
+                        onClick={() => executeDeletePurchase(request._id)}
                         text={rejectText}
                         size="sm"
                         variant="secondary"
-                        loading={deletePurchaseMutation.isPending}
+                        loading={pendingPurchaseId === request._id}
                       />
                     </div>
                   </div>
