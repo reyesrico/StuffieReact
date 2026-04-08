@@ -1,90 +1,58 @@
 import React, { useContext } from "react";
-
-import {
-  Button,
-  FluentProvider,
-  makeStyles,
-  Popover,
-  PopoverSurface,
-  PopoverTrigger,
-  webDarkTheme,
-  webLightTheme,
-} from "@fluentui/react-components";
-import { WeatherMoon24Regular, WeatherSunny24Regular } from "@fluentui/react-icons";
+import { WeatherMoon24Regular, WeatherSunny24Regular, WeatherPartlyCloudyDay24Regular } from "@fluentui/react-icons";
 import ThemeContext, { ThemeSetting } from "../../context/ThemeContext";
-
-import "./Theme.scss";
-
-const useStyles = makeStyles({
-  button: {
-    backgroundColor: "transparent",
-    color: "inherit",
-  },
-  buttonSelected: {
-    backgroundColor: "transparent",
-    borderBottom: "2px solid blue",
-    color: "inherit",
-  },
-  popoverSurface: {
-    padding: "12px",
-  },
-  triggerButton: {
-    minWidth: "auto",
-    padding: "6px",
-  },
-});
 
 const Theme = () => {
   const { theme, themeSetting, setTheme } = useContext(ThemeContext);
   const [open, setOpen] = React.useState(false);
-  const styles = useStyles();
+  const ref = React.useRef<HTMLDivElement>(null);
 
   const typeValues: ThemeSetting[] = ["light", "dark", "auto"];
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
 
   const onClick = (typeValue: ThemeSetting) => {
     setTheme(typeValue);
     setOpen(false);
   };
 
-  const buttonStyle = (typeValue: ThemeSetting) => {
-    return themeSetting === typeValue ? styles.buttonSelected : styles.button;
-  };
-
   const ThemeIcon = theme === "light" ? WeatherSunny24Regular : WeatherMoon24Regular;
 
+  const OptionIcon = ({ value }: { value: ThemeSetting }) => {
+    if (value === 'light') return <WeatherSunny24Regular />;
+    if (value === 'dark') return <WeatherMoon24Regular />;
+    return <WeatherPartlyCloudyDay24Regular />;
+  };
+
   return (
-    <FluentProvider theme={theme === "light" ? webLightTheme : webDarkTheme}>
-      <Popover open={open} onOpenChange={(_, data) => setOpen(data.open)} positioning="below">
-        <PopoverTrigger disableButtonEnhancement>
-          <Button
-            className={styles.triggerButton}
-            appearance="subtle"
-            icon={<ThemeIcon />}
-          >
-            Theme
-          </Button>
-        </PopoverTrigger>
-        <PopoverSurface className={styles.popoverSurface}>
-          <div className="stuffie__theme">
-            <div className="stuffie__theme-title">Theme</div>
-            <div className="theme__buttons-container">
-              {typeValues.map((typeValue) => (
-                <Button
-                  className={buttonStyle(typeValue)}
-                  key={typeValue}
-                  onClick={() => onClick(typeValue)}
-                  shape="rounded"
-                  appearance="subtle"
-                  size="small"
-                >
-                  {typeValue}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </PopoverSurface>
-      </Popover>
-    </FluentProvider>
+    <div ref={ref} className="settings__dropdown-wrapper">
+      <button className="settings__row" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <span className="settings__row-icon"><ThemeIcon /></span>
+        <span className="settings__row-label">Theme</span>
+        <span className="settings__row-badge">{themeSetting}</span>
+      </button>
+      {open && (
+        <div className="settings__dropdown">
+          {typeValues.map((typeValue) => (
+            <button
+              key={typeValue}
+              className={`settings__dropdown-option${themeSetting === typeValue ? ' settings__dropdown-option--active' : ''}`}
+              onClick={() => onClick(typeValue)}
+            >
+              <span className="settings__dropdown-option-icon"><OptionIcon value={typeValue} /></span>
+              {typeValue}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

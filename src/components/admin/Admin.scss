@@ -59,6 +59,10 @@
   gap: 0;
   margin-bottom: var(--spacing-4);
   border-bottom: 2px solid var(--border-color);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 .admin__tab {
@@ -74,6 +78,8 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: color var(--transition-fast), border-color var(--transition-fast);
 
   &:hover {

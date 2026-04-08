@@ -7,6 +7,7 @@ import Apps from '../sections/Apps';
 import Breadcrumb from '../shared/Breadcrumb';
 import FloatingChat from '../sections/FloatingChat';
 import { CHAT_VISIBLE_KEY } from '../sections/ChatToggle';
+import { SPOTIFY_VISIBLE_KEY } from '../sections/SpotifyToggle';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 import MainRoutes from './MainRoutes';
@@ -47,11 +48,17 @@ const Main = () => {
   const [chatVisible, setChatVisible] = React.useState<boolean>(
     localStorage.getItem(CHAT_VISIBLE_KEY) !== 'false'
   );
+  const [spotifyVisible, setSpotifyVisible] = React.useState<boolean>(
+    localStorage.getItem(SPOTIFY_VISIBLE_KEY) !== 'false'
+  );
 
   React.useEffect(() => {
     const handler = (e: StorageEvent) => {
       if (e.key === CHAT_VISIBLE_KEY) {
         setChatVisible(e.newValue !== 'false');
+      }
+      if (e.key === SPOTIFY_VISIBLE_KEY) {
+        setSpotifyVisible(e.newValue !== 'false');
       }
     };
     window.addEventListener('storage', handler);
@@ -119,9 +126,11 @@ const Main = () => {
 
         {/* Right sidebar */}
         <div className="stuffie__right">
-          <div className="stuffie__right-section stuffie__right-section--spotify">
-            <SpotifyPlayer />
-          </div>
+          {spotifyVisible && (
+            <div className="stuffie__right-section stuffie__right-section--spotify">
+              <SpotifyPlayer />
+            </div>
+          )}
           <div className="stuffie__right-section">
             <Menu />
           </div>
@@ -129,9 +138,11 @@ const Main = () => {
       </div>
 
       {/* Mobile-only fixed Spotify bar — shown when sidebars collapse */}
-      <div className="stuffie__spotify-bar">
-        <SpotifyPlayer variant="bar" />
-      </div>
+      {spotifyVisible && (
+        <div className="stuffie__spotify-bar">
+          <SpotifyPlayer variant="bar" />
+        </div>
+      )}
 
       {/* Footer - no data fetching, renders immediately */}
       <div className="stuffie_footer">

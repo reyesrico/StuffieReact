@@ -133,6 +133,14 @@ $layout-gap: 16px; // var(--spacing-4) = 1rem = 16px
   right: 0;
   z-index: 100;
   line-height: 0; // prevent extra space below iframe
+
+  [data-theme="dark"] & {
+    background: #121212;
+
+    iframe {
+      color-scheme: dark;
+    }
+  }
 }
 
 .stuffie__right-section {
@@ -145,6 +153,10 @@ $layout-gap: 16px; // var(--spacing-4) = 1rem = 16px
   &--spotify {
     padding: var(--spacing-4) 0 0;
     overflow: hidden;
+
+    [data-theme="dark"] & {
+      background: #121212;
+    }
   }
 }
 

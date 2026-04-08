@@ -8,6 +8,7 @@ import Apps from '../sections/Apps';
 import ChatToggle from './ChatToggle';
 import Language from './Language';
 import SearchBar from '../shared/SearchBar';
+import SpotifyToggle from './SpotifyToggle';
 import Theme from './Theme';
 import ThemeContext from '../../context/ThemeContext';
 import UserContext from '../../context/UserContext';
@@ -217,6 +218,7 @@ const Header = () => {
         <div className="stuffie-header__apps">
           <div id="apps">
             <div className="stuffie-header__menu-theme"><ChatToggle /></div>
+            <div className="stuffie-header__menu-theme"><SpotifyToggle /></div>
             <div className="stuffie-header__menu-theme"><Language /></div>
             <div className="stuffie-header__menu-theme"><Theme /></div>
           </div>

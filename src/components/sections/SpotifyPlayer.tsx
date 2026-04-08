@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSpotify } from '../../context/SpotifyContext';
+import { useTheme } from '../../context/ThemeContext';
 import Loading from '../shared/Loading';
-
 
 import './SpotifyPlayer.scss';
 
@@ -35,7 +35,15 @@ interface SpotifyPlayerProps {
 
 const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
   const { selectedTrack, isLoading, error } = useSpotify();
+  const { theme } = useTheme();
   const [embedOpen, setEmbedOpen] = React.useState(false);
+
+  // Applied inline so it takes effect before the stylesheet loads,
+  // which propagates into the iframe's browsing context per CSS Color Adjust spec
+  // and sets the document Canvas color to dark — eliminating the white html/body background.
+  const darkEmbedStyle: React.CSSProperties = theme === 'dark'
+    ? { colorScheme: 'dark', background: '#121212' }
+    : {};
 
   // ── Mobile bar ──────────────────────────────────────────────────────────────
   if (variant === 'bar') {
@@ -49,7 +57,7 @@ const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
         height="80"
         frameBorder="0"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        style={{ display: 'block', border: 'none' }}
+        style={{ display: 'block', border: 'none', ...darkEmbedStyle }}
       />
     );
   }
@@ -98,6 +106,7 @@ const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
           frameBorder="0"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           className="spotify-player__embed"
+          style={darkEmbedStyle}
         />
       )}
     </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
-import './ChatToggle.scss';
+import { Chat20Regular } from '@fluentui/react-icons';
 
 export const CHAT_VISIBLE_KEY = 'stuffie_chat_visible';
 
@@ -27,13 +26,13 @@ const ChatToggle = () => {
   return (
     <button
       type="button"
-      className="chat-toggle"
+      className="settings__row"
       onClick={toggle}
       aria-pressed={visible}
     >
-      <span className="chat-toggle__icon">💬</span>
-      <span className="chat-toggle__label">{t('settings.chatLabel')}</span>
-      <span className={`chat-toggle__pill${visible ? ' chat-toggle__pill--on' : ''}`}>
+      <span className="settings__row-icon"><Chat20Regular /></span>
+      <span className="settings__row-label">{t('settings.chatLabel')}</span>
+      <span className={`settings__row-badge${visible ? ' settings__row-badge--on' : ''}`}>
         {visible ? t('settings.chatOn') : t('settings.chatOff')}
       </span>
     </button>

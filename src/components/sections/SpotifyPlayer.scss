@@ -68,9 +68,11 @@
     margin-top: var(--spacing-3);
     border: none;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: transparent;
 
-    & html {
-      background-color: transparent;
+    [data-theme="dark"] & {
+      color-scheme: dark;
+      background: #121212;
     }
   }
 }

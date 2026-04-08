@@ -16,14 +16,133 @@
   margin-bottom: var(--spacing-1);
 }
 
+// Wrapper only — each .settings__row handles its own hover and padding
 .settings__item {
-  padding: var(--spacing-1) var(--spacing-2);
+  display: flex;
+  flex-direction: column;
+}
+
+// =============================================================================
+// Shared row style — used by Language, Theme, ChatToggle, SpotifyToggle
+// Mirrors the Menu "Summary" row style for visual consistency
+// =============================================================================
+
+.settings__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: none;
   border-radius: var(--radius-md);
-  background-color: transparent;
+  background: none;
+  cursor: pointer;
   color: var(--text-color);
-  transition: background-color var(--transition-fast);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background-color: var(--background-secondary);
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.settings__row-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.settings__row-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings__row-badge {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background-color: var(--background-tertiary);
+  color: var(--text-secondary);
+  text-transform: capitalize;
+  flex-shrink: 0;
+
+  &--on {
+    background-color: var(--color-primary-500);
+    color: var(--text-inverse);
+  }
+}
+
+// =============================================================================
+// Dropdown panel — shared by Language and Theme
+// =============================================================================
+
+.settings__dropdown-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: var(--spacing-3);
+  right: var(--spacing-3);
+  z-index: 200;
+  background-color: var(--background-elevated);
+  border: 1px solid var(--border-color, rgba(0,0,0,0.08));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--spacing-1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings__dropdown-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-2);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  text-transform: capitalize;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+
+  &--active {
+    color: var(--color-primary-600);
+    font-weight: 600;
+  }
+}
+
+.settings__dropdown-option-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.7;
 }

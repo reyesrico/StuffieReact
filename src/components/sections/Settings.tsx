@@ -2,6 +2,7 @@ import React from "react";
 
 import ChatToggle from "./ChatToggle";
 import Language from "./Language";
+import SpotifyToggle from "./SpotifyToggle";
 import Theme from "./Theme";
 
 import "./Settings.scss";
@@ -12,6 +13,9 @@ const Settings = () => {
       <div className="settings__title">Settings</div>
       <div className="settings__item">
         <ChatToggle />
+      </div>
+      <div className="settings__item">
+        <SpotifyToggle />
       </div>
       <div className="settings__item">
         <Language />

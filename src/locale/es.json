@@ -47,6 +47,7 @@
     "settings.chatLabel": "Chat de Soporte",
     "settings.chatOn": "Activado",
     "settings.chatOff": "Desactivado",
+    "settings.spotifyLabel": "Reproductor Spotify",
 
     "login.title": "Iniciar Sesión",
     "login.emailPlaceholder": "Correo electrónico",
