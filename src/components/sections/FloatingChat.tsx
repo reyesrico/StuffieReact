@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import UserContext from '../../context/UserContext';
 import { useProducts, useCategories } from '../../hooks/queries';
 import { useChatGpt, CHAT_MODELS, DEFAULT_MODEL_ID } from '../../hooks/useChatGpt';
+import { Bot20Regular, Send20Regular, Dismiss20Regular, Chat20Regular } from '@fluentui/react-icons';
 
 import './FloatingChat.scss';
 
@@ -184,7 +185,7 @@ const FloatingChat = () => {
           {/* Header */}
           <div className="floating-chat__header">
             <div className="floating-chat__header-info">
-              <span className="floating-chat__header-icon" aria-hidden="true">🤖</span>
+              <span className="floating-chat__header-icon" aria-hidden="true"><Bot20Regular /></span>
               <div>
                 <div className="floating-chat__title">{t('chat.title')}</div>
                 <div className="floating-chat__subtitle">{t('chat.subtitle')}</div>
@@ -195,7 +196,7 @@ const FloatingChat = () => {
               onClick={() => setIsOpen(false)}
               aria-label={t('chat.close')}
             >
-              ✕
+              <Dismiss20Regular />
             </button>
           </div>
 
@@ -246,7 +247,7 @@ const FloatingChat = () => {
                 disabled={isLimitReached || isLoading || !inputValue.trim()}
                 aria-label={t('chat.send')}
               >
-                ➤
+                <Send20Regular />
               </button>
             </div>
           </div>
@@ -263,7 +264,7 @@ const FloatingChat = () => {
         aria-label={t('chat.openAssistant')}
         title={t('chat.openAssistant')}
       >
-        {isOpen ? '✕' : '💬'}
+        {isOpen ? <Dismiss20Regular /> : <Chat20Regular />}
       </button>
     </div>
   );

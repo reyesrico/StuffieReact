@@ -13,6 +13,13 @@ import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct } from '../../hooks/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../../hooks/queries/queryKeys';
+import {
+  CheckmarkCircle20Regular, DismissCircle20Regular,
+  ClothesHanger20Regular, Book20Regular, MusicNote120Regular, Laptop20Regular,
+  BuildingHome20Regular, AnimalPawPrint20Regular, Cart20Regular, HeartPulse20Regular,
+  Balloon20Regular, Gift20Regular, SportSoccer20Regular, VehicleCar20Regular,
+  Pill20Regular, Box20Regular, Checkmark20Regular,
+} from '@fluentui/react-icons';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import Media from '../shared/Media';
 
@@ -27,12 +34,18 @@ const ResultModal = ({ type, name, onDone, t }: {
   onDone: () => void;
   t: (key: string) => string;
 }) => {
-  const title = `${type === 'success' ? '✅' : '❌'} ${type === 'success' ? t('addProduct.successTitle') : t('addProduct.errorTitle')}`;
+  const TitleIcon = type === 'success' ? CheckmarkCircle20Regular : DismissCircle20Regular;
+  const title = (
+    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <TitleIcon />
+      {type === 'success' ? t('addProduct.successTitle') : t('addProduct.errorTitle')}
+    </span>
+  );
   return (
     <Modal
       onClose={onDone}
       disableBackdropClose={type === 'success'}
-      title={title}
+      title={title as any}
       actions={
         <Button
           text={type === 'success' ? t('addProduct.goToProducts') : t('addProduct.confirmCancel')}
@@ -158,11 +171,21 @@ const AddProduct = () => {
     }
   };
 
-  // Category emoji icons for visual flair
-  const categoryIcon: Record<number, string> = {
-    1: '👗', 2: '📚', 3: '🎮', 4: '💻', 5: '🏡',
-    6: '🐾', 7: '🛒', 8: '💄', 9: '🧸', 10: '🤝',
-    11: '⚽', 12: '🚗', 13: '💊',
+  // Category icons — Fluent UI icons keyed by category id
+  const categoryIcon: Record<number, React.ReactElement> = {
+    1: <ClothesHanger20Regular />,
+    2: <Book20Regular />,
+    3: <MusicNote120Regular />,
+    4: <Laptop20Regular />,
+    5: <BuildingHome20Regular />,
+    6: <AnimalPawPrint20Regular />,
+    7: <Cart20Regular />,
+    8: <HeartPulse20Regular />,
+    9: <Balloon20Regular />,
+    10: <Gift20Regular />,
+    11: <SportSoccer20Regular />,
+    12: <VehicleCar20Regular />,
+    13: <Pill20Regular />,
   };
 
   return (
@@ -216,7 +239,7 @@ const AddProduct = () => {
                     className={`add-product__cat-card ${selectedCategory?.id === cat.id ? 'add-product__cat-card--active' : ''}`}
                     onClick={() => handleCategorySelect(cat)}
                   >
-                    <span className="add-product__cat-icon">{categoryIcon[cat.id] ?? '📦'}</span>
+                    <span className="add-product__cat-icon">{categoryIcon[cat.id] ?? <Box20Regular />}</span>
                     <span className="add-product__cat-name">{cat.name}</span>
                   </button>
                 ))}
@@ -286,7 +309,7 @@ const AddProduct = () => {
                           <span className="add-product__product-owned-badge">{t('addProduct.owned')}</span>
                         )}
                         {!alreadyOwned && selectedProduct?.id === p.id && (
-                          <span className="add-product__product-check">✓</span>
+                          <span className="add-product__product-check"><Checkmark20Regular /></span>
                         )}
                       </button>
                       );
@@ -331,7 +354,7 @@ const AddProduct = () => {
                     className={`add-product__cat-card ${selectedCategory?.id === cat.id ? 'add-product__cat-card--active' : ''}`}
                     onClick={() => handleCategorySelect(cat)}
                   >
-                    <span className="add-product__cat-icon">{categoryIcon[cat.id] ?? '📦'}</span>
+                    <span className="add-product__cat-icon">{categoryIcon[cat.id] ?? <Box20Regular />}</span>
                     <span className="add-product__cat-name">{cat.name}</span>
                   </button>
                 ))}

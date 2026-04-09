@@ -1,6 +1,7 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { ArrowCounterclockwise20Regular } from '@fluentui/react-icons';
 
 import { existImage, userImageUrl } from '../../lib/cloudinary';
 import crypto from '../../lib/crypto';
@@ -245,7 +246,8 @@ const Stuffier = () => {
             <TextField name="zipCode" type="text"
               value={zipCode} onChange={(e: any) => setZipCode(e.target.value)} />
             <Button
-              text={zipLoading ? '…' : '↻'}
+              icon={zipLoading ? undefined : <ArrowCounterclockwise20Regular />}
+              text={zipLoading ? '…' : undefined}
               onClick={onRefreshZip}
               size="sm"
               disabled={zipLoading || !zipCode.trim()}

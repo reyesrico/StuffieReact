@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Checkmark20Regular, Receipt20Regular } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Modal from '../shared/Modal';
@@ -51,7 +52,7 @@ const Tickets = () => {
               i === currentStepIndex ? 'tickets__step--active' : '',
               i < currentStepIndex   ? 'tickets__step--done'   : '',
             ].filter(Boolean).join(' ')}>
-              <span className="tickets__step-num">{i < currentStepIndex ? '✓' : i + 1}</span>
+              <span className="tickets__step-num">{i < currentStepIndex ? <Checkmark20Regular /> : i + 1}</span>
               <span className="tickets__step-label">{stepLabels[i]}</span>
             </div>
             {i < STEPS_KEYS.length - 1 && (
@@ -76,7 +77,7 @@ const Tickets = () => {
             onKeyDown={e => e.key === 'Enter' && fileInputRef.current?.click()}
             aria-label={t('tickets.dropZoneLabel')}
           >
-            <div className="tickets__drop-icon">🧾</div>
+            <div className="tickets__drop-icon"><Receipt20Regular /></div>
             <p className="tickets__drop-title">{t('tickets.dropTitle')}</p>
             <p className="tickets__drop-hint">{t('tickets.dropHint')}</p>
             <span className="tickets__drop-formats">{t('tickets.supportedFormats')}</span>

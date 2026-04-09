@@ -15,6 +15,7 @@ import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
 import { useCategories, useProducts } from '../../hooks/queries';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
+import { CheckmarkCircle20Regular, Box20Regular } from '@fluentui/react-icons';
 
 import './Products.scss';
 
@@ -63,7 +64,7 @@ const Products = () => {
     <div className="products">
       {successMsg && (
         <div className="products__success-banner" role="status">
-          ✅ <strong>{successMsg}</strong> {t('addProduct.addedSuccess')}
+          <CheckmarkCircle20Regular /> <strong>{successMsg}</strong> {t('addProduct.addedSuccess')}
         </div>
       )}
       {isRefreshing && (
@@ -99,7 +100,7 @@ const Products = () => {
       {isProductsEmpty(products) && (
         <div className="products__empty">
           <EmptyState
-            icon={<span>📦</span>}
+            icon={<Box20Regular />}
             title={t('products.noStuffTitle')}
             description={t('products.noStuffDesc')}
             action={

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ArrowLeft20Regular } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Media from '../shared/Media';
@@ -64,7 +65,7 @@ const Loan = () => {
     <div className="loan">
       <div className="loan__page-header">
         <button className="loan__back" onClick={() => navigate(-1)} aria-label={t('common.cancel')}>
-          ←
+          <ArrowLeft20Regular />
         </button>
         <h2>{t('loan.friendProduct', { name: friend?.first_name ?? '…' })}</h2>
       </div>

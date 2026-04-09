@@ -14,6 +14,7 @@ import { useSentFriendRequests } from '../../hooks/queries/useFriends';
 import { getUsersByIds } from '../../api/users.api';
 import type Friendship from '../types/Friendship';
 import { removeFriend } from '../../api/friends.api';
+import { Dismiss20Regular, People20Regular } from '@fluentui/react-icons';
 
 import './Friends.scss';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
@@ -59,7 +60,7 @@ const FriendRow = ({ user, onClick, onRemove }: FriendRowProps) => {
           onClick={e => { e.stopPropagation(); onRemove(); }}
           aria-label={t('friends.removeAriaLabel')}
         >
-          ✕
+          <Dismiss20Regular />
         </button>
         <span className="friend-row__chevron">›</span>
       </div>
@@ -185,7 +186,7 @@ const Friends = () => {
       {!hasFriends && (
         <div className="friends__empty">
           <EmptyState
-            icon={<span>👥</span>}
+            icon={<People20Regular />}
             title={t('friends.noFriendsTitle')}
             description={t('friends.noFriendsDesc')}
           />
@@ -220,7 +221,7 @@ const Friends = () => {
                   disabled={cancelRequest.isPending}
                   aria-label={t('friends.cancelRequest')}
                 >
-                  ✕
+                  <Dismiss20Regular />
                 </button>
               </div>
             );

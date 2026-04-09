@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Checkmark20Regular, ArrowLeft20Regular, ArrowSwap20Regular } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Media from '../shared/Media';
@@ -56,7 +57,7 @@ const ProductRow = ({ product, isSelected, onSelect, categories, subcategories }
         </span>
       </div>
       <div className="exchange-row__check" aria-hidden="true">
-        {isSelected ? '✓' : ''}
+        {isSelected ? <Checkmark20Regular /> : null}
       </div>
     </div>
   );
@@ -137,7 +138,7 @@ const Exchange = () => {
       {/* Header */}
       <div className="exchange__page-header">
         <button className="exchange__back" onClick={() => navigate(-1)} aria-label={t('common.back')}>
-          ←
+          <ArrowLeft20Regular />
         </button>
         <h2>{t('exchange.friendProduct', { name: friend?.first_name ?? '…' })}</h2>
       </div>
@@ -222,7 +223,7 @@ const Exchange = () => {
         <div className="exchange__confirm-bar">
           <div className="exchange__confirm-summary">
             <span className="exchange__confirm-item">{selectedProduct.name}</span>
-            <span className="exchange__confirm-arrow">↔</span>
+            <span className="exchange__confirm-arrow"><ArrowSwap20Regular /></span>
             <span className="exchange__confirm-item">{targetProduct.name}</span>
           </div>
           <Button

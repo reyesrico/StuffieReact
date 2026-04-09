@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { map } from 'lodash';
+import { ArrowUpRight20Regular } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
@@ -232,7 +233,7 @@ const Admin = () => {
                               ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
                             </span>
                           </div>
-                          <span className="admin__request-arrow">↗</span>
+                          <span className="admin__request-arrow"><ArrowUpRight20Regular /></span>
                         </a>
                       </li>
                     );
