@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +11,8 @@ import TextField from '../shared/TextField';
 import { getProductsByCategory } from '../../api/products.api';
 import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct } from '../../hooks/queries';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '../../hooks/queries/queryKeys';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import Media from '../shared/Media';
 
@@ -51,6 +53,13 @@ const AddProduct = () => {
   const navigate = useNavigate();
   useContext(UserContext);
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  // Always fetch fresh categories/subcategories so new entries appear immediately
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
+    queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+  }, []);
 
   const { data: categories = [] } = useCategories();
   const { data: subcategories = [] } = useSubcategories();

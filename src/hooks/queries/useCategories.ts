@@ -18,6 +18,7 @@ export const useCategories = () => {
   return useQuery({
     queryKey: queryKeys.categories.all,
     queryFn: getCategories,
+    staleTime: 5 * 60 * 1000, // 5 min — same as useSubcategories
   });
 };
 
