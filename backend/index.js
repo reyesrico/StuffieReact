@@ -59,12 +59,18 @@ app.crudlify();
 
 // =============================================================================
 // Atomic ID counters — replaces unsafe client-side Math.max pattern
-// POST /stuff/next-id   → { id: <next integer> }
+// POST /items/next-id   → { id: <next integer> }  (Stage 12: was stuff/next-id)
 // POST /stuffiers/next-id → { id: <next integer> }
 //
 // Uses Codehooks keyvalue store as an atomic counter so concurrent requests
 // never generate duplicate numeric IDs.
 // =============================================================================
+
+app.post('/items/next-id', async (req, res) => {
+  const db = await datastore.open();
+  const id = await db.incr('counter_stuff_id', 1);
+  return res.json({ id });
+});
 
 app.post('/stuff/next-id', async (req, res) => {
   const db = await datastore.open();

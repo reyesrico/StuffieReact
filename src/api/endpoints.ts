@@ -88,7 +88,7 @@ export const productEndpoints = {
   getLastId: () => `${collections.items}?q={}&h={"$fields": {"id":1}}`,
 
   /** POST atomic next-id counter (Codehooks keyvalue counter) — preferred over getLastId */
-  nextId: () => `stuff/next-id`,
+  nextId: () => `items/next-id`,
 
   /** PUT update product by _id (not used directly - see stuffiersStuff) */
   update: (_id: string) => `${collections.items}/${_id}`,
