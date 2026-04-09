@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { WeatherMoon24Regular, WeatherSunny24Regular, WeatherPartlyCloudyDay24Regular } from "@fluentui/react-icons";
+import { WeatherMoon20Regular, WeatherSunny20Regular, WeatherPartlyCloudyDay20Regular } from "@fluentui/react-icons";
 import ThemeContext, { ThemeSetting } from "../../context/ThemeContext";
 
 const Theme = () => {
@@ -23,12 +23,12 @@ const Theme = () => {
     setOpen(false);
   };
 
-  const ThemeIcon = theme === "light" ? WeatherSunny24Regular : WeatherMoon24Regular;
+  const ThemeIcon = theme === "light" ? WeatherSunny20Regular : WeatherMoon20Regular;
 
   const OptionIcon = ({ value }: { value: ThemeSetting }) => {
-    if (value === 'light') return <WeatherSunny24Regular />;
-    if (value === 'dark') return <WeatherMoon24Regular />;
-    return <WeatherPartlyCloudyDay24Regular />;
+    if (value === 'light') return <WeatherSunny20Regular />;
+    if (value === 'dark') return <WeatherMoon20Regular />;
+    return <WeatherPartlyCloudyDay20Regular />;
   };
 
   return (

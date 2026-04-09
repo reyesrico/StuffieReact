@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { LocalLanguage24Regular } from "@fluentui/react-icons";
+import { LocalLanguage20Regular } from "@fluentui/react-icons";
 import { options } from "../../config/options";
 
 const Language = () => {
@@ -27,7 +27,7 @@ const Language = () => {
   return (
     <div ref={ref} className="settings__dropdown-wrapper">
       <button className="settings__row" onClick={() => setOpen(o => !o)} aria-expanded={open}>
-        <span className="settings__row-icon"><LocalLanguage24Regular /></span>
+        <span className="settings__row-icon"><LocalLanguage20Regular /></span>
         <span className="settings__row-label">{t('Language')}</span>
         <span className="settings__row-badge">{languageSelected.slice(0, 2).toUpperCase()}</span>
       </button>
