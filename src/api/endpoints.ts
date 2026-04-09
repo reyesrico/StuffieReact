@@ -36,6 +36,9 @@ export const categoryEndpoints = {
   /** POST create category */
   create: () => collections.categories,
   
+  /** PUT update category by _id */
+  update: (_id: string) => `${collections.categories}/${_id}`,
+  
   /** DELETE category by _id */
   delete: (_id: string) => `${collections.categories}/${_id}`,
 };
@@ -53,6 +56,9 @@ export const subcategoryEndpoints = {
   
   /** POST create subcategory */
   create: () => collections.subcategories,
+  
+  /** PUT update subcategory by _id */
+  update: (_id: string) => `${collections.subcategories}/${_id}`,
   
   /** DELETE subcategory by _id */
   delete: (_id: string) => `${collections.subcategories}/${_id}`,

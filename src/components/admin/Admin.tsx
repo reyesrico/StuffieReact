@@ -1,105 +1,315 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { map } from 'lodash';
-import { ArrowUpRight20Regular } from '@fluentui/react-icons';
+import {
+  ArrowUpRight20Regular,
+  ChevronDown20Regular,
+  ChevronRight20Regular,
+  Add20Regular,
+  Edit20Regular,
+  Delete20Regular,
+  Tag20Regular,
+  Folder20Regular,
+} from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';
+import Modal from '../shared/Modal';
 import AdminChartsPanel from '../charts/AdminChartsPanel';
 import Product from '../types/Product';
 import User from '../types/User';
+import Category from '../types/Category';
+import Subcategory from '../types/Subcategory';
 import {
   useUserRequests, usePendingProducts, useApproveUser,
-  useCategories, useSubcategories, useAddCategory, useAddSubcategory,
+  useCategories, useSubcategories,
+  useAddCategory, useUpdateCategory, useDeleteCategory,
+  useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
 } from '../../hooks/queries';
 import './Admin.scss';
 
-// ─── Inline Add-Category/Subcategory panel ────────────────────────────────────
+// ─── Catalog panel: accordion category tree with full CRUD ───────────────────
 const CatalogPanel = () => {
   const { t } = useTranslation();
-  const { data: categories = [] } = useCategories();
-  const { data: subcategories = [] } = useSubcategories();
-  const addCategoryMutation = useAddCategory();
-  const addSubcategoryMutation = useAddSubcategory();
+  const { data: categories = [], isLoading: catsLoading } = useCategories();
+  const { data: subcategories = [], isLoading: subsLoading } = useSubcategories();
 
-  const [catId, setCatId] = useState('');
-  const [catName, setCatName] = useState('');
-  const [subId, setSubId] = useState('');
-  const [subName, setSubName] = useState('');
-  const [catLoading, setCatLoading] = useState(false);
-  const [subLoading, setSubLoading] = useState(false);
-  const [catMsg, setCatMsg] = useState('');
-  const [subMsg, setSubMsg] = useState('');
+  const addCategory = useAddCategory();
+  const updateCategory = useUpdateCategory();
+  const deleteCategory = useDeleteCategory();
+  const addSubcategory = useAddSubcategory();
+  const updateSubcategory = useUpdateSubcategory();
+  const deleteSubcategory = useDeleteSubcategory();
 
-  const addCategory = () => {
-    if (!catId || !catName) return;
-    setCatLoading(true);
-    addCategoryMutation.mutate(
-      { id: Number(catId), name: catName },
-      {
-        onSuccess: () => { setCatId(''); setCatName(''); setCatMsg(t('admin.catalog.added')); },
-        onSettled: () => setCatLoading(false),
-      }
+  // expanded category rows
+  const [expanded, setExpanded] = useState<Set<number>>(new Set());
+
+  // ── Add category form ───────────────────────────────
+  const [newCatName, setNewCatName] = useState('');
+  const [showAddCat, setShowAddCat] = useState(false);
+
+  // ── Add subcategory form (per category) ─────────────
+  const [addingSubFor, setAddingSubFor] = useState<number | null>(null);
+  const [newSubName, setNewSubName] = useState('');
+
+  // ── Edit modal ───────────────────────────────────────
+  type EditTarget = { kind: 'category'; item: Category } | { kind: 'subcategory'; item: Subcategory };
+  const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
+  const [editName, setEditName] = useState('');
+
+  // ── Delete modal ─────────────────────────────────────
+  type DeleteTarget = { kind: 'category'; item: Category } | { kind: 'subcategory'; item: Subcategory };
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
+
+  // helpers
+  const toggleExpand = (id: number) => setExpanded(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+
+  const subsForCat = (catId: number) =>
+    (subcategories as Subcategory[]).filter(s => s.category_id === catId);
+
+  // next suggested ID = max existing + 1
+  const nextCatId = () => {
+    const ids = (categories as Category[]).map(c => c.id);
+    return ids.length ? Math.max(...ids) + 1 : 1;
+  };
+  const nextSubId = (catId: number) => {
+    const base = catId * 100;
+    const existing = (subcategories as Subcategory[])
+      .filter(s => s.category_id === catId)
+      .map(s => s.id);
+    if (!existing.length) return base + 1;
+    return Math.max(...existing) + 1;
+  };
+
+  // ── Handlers ────────────────────────────────────────
+  const handleAddCategory = () => {
+    if (!newCatName.trim()) return;
+    addCategory.mutate(
+      { id: nextCatId(), name: newCatName.trim() },
+      { onSuccess: () => { setNewCatName(''); setShowAddCat(false); } }
     );
   };
 
-  const addSubcategory = () => {
-    if (!subId || !subName) return;
-    setSubLoading(true);
-    addSubcategoryMutation.mutate(
-      { id: Number(subId), name: subName },
-      {
-        onSuccess: () => { setSubId(''); setSubName(''); setSubMsg(t('admin.catalog.added')); },
-        onSettled: () => setSubLoading(false),
-      }
+  const handleAddSubcategory = (catId: number) => {
+    if (!newSubName.trim()) return;
+    addSubcategory.mutate(
+      { id: nextSubId(catId), name: newSubName.trim(), category_id: catId },
+      { onSuccess: () => { setNewSubName(''); setAddingSubFor(null); } }
     );
   };
+
+  const openEdit = (target: EditTarget) => {
+    setEditTarget(target);
+    setEditName(target.item.name);
+  };
+
+  const confirmEdit = () => {
+    if (!editTarget || !editName.trim() || !editTarget.item._id) return;
+    if (editTarget.kind === 'category') {
+      updateCategory.mutate(
+        { _id: editTarget.item._id, data: { name: editName.trim() } },
+        { onSuccess: () => setEditTarget(null) }
+      );
+    } else {
+      updateSubcategory.mutate(
+        { _id: editTarget.item._id, data: { name: editName.trim() } },
+        { onSuccess: () => setEditTarget(null) }
+      );
+    }
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget || !deleteTarget.item._id) return;
+    if (deleteTarget.kind === 'category') {
+      deleteCategory.mutate(deleteTarget.item._id, { onSuccess: () => setDeleteTarget(null) });
+    } else {
+      deleteSubcategory.mutate(deleteTarget.item._id, { onSuccess: () => setDeleteTarget(null) });
+    }
+  };
+
+  if (catsLoading || subsLoading) return <Loading />;
 
   return (
-    <div className="admin__catalog-grid">
-      {/* Categories column */}
-      <div className="admin__catalog-col">
-        <h4 className="admin__catalog-col-title">{t('admin.addCategory')}</h4>
-        <ul className="admin__catalog-list">
-          {map(categories, (c: any) => (
-            <li key={c.id} className="admin__catalog-item">
-              <span className="admin__catalog-id">({c.id})</span> {c.name}
-            </li>
-          ))}
-        </ul>
-        <div className="admin__catalog-form">
-          <TextField name="catId" type="number" placeholder={t('admin.catalog.idPlaceholder')}
-            value={catId} onChange={(e: any) => setCatId(e.target.value)} />
-          <TextField name="catName" type="text" placeholder={t('admin.catalog.namePlaceholder')}
-            value={catName} onChange={(e: any) => setCatName(e.target.value)} />
-          <Button text={catLoading ? t('common.loading') : t('admin.catalog.add')}
-            onClick={addCategory} size="sm" disabled={catLoading || !catId || !catName} />
-        </div>
-        {catMsg && <div className="admin__catalog-msg">{catMsg}</div>}
+    <div className="catalog-panel">
+
+      {/* ── Category tree ── */}
+      <div className="catalog-panel__tree">
+        {(categories as Category[]).map(cat => (
+          <div key={cat.id} className="catalog-panel__cat-row">
+
+            {/* Category header row */}
+            <div className="catalog-panel__cat-header">
+              <button
+                className="catalog-panel__expand-btn"
+                onClick={() => toggleExpand(cat.id)}
+                aria-label={expanded.has(cat.id) ? t('common.collapse') : t('common.expand')}
+              >
+                {expanded.has(cat.id) ? <ChevronDown20Regular /> : <ChevronRight20Regular />}
+              </button>
+              <Folder20Regular className="catalog-panel__cat-icon" />
+              <span className="catalog-panel__cat-name">{cat.name}</span>
+              <span className="catalog-panel__cat-id">#{cat.id}</span>
+              <span className="catalog-panel__cat-count">{subsForCat(cat.id).length} {t('admin.catalog.subcategories')}</span>
+              <div className="catalog-panel__row-actions">
+                <button
+                  className="catalog-panel__action-btn"
+                  onClick={() => openEdit({ kind: 'category', item: cat })}
+                  title={t('common.edit')}
+                ><Edit20Regular /></button>
+                <button
+                  className="catalog-panel__action-btn catalog-panel__action-btn--danger"
+                  onClick={() => setDeleteTarget({ kind: 'category', item: cat })}
+                  title={t('common.delete')}
+                ><Delete20Regular /></button>
+              </div>
+            </div>
+
+            {/* Subcategory rows (expanded) */}
+            {expanded.has(cat.id) && (
+              <div className="catalog-panel__subs">
+                {subsForCat(cat.id).map(sub => (
+                  <div key={sub.id} className="catalog-panel__sub-row">
+                    <Tag20Regular className="catalog-panel__sub-icon" />
+                    <span className="catalog-panel__sub-name">{sub.name}</span>
+                    <span className="catalog-panel__sub-id">#{sub.id}</span>
+                    <div className="catalog-panel__row-actions">
+                      <button
+                        className="catalog-panel__action-btn"
+                        onClick={() => openEdit({ kind: 'subcategory', item: sub })}
+                        title={t('common.edit')}
+                      ><Edit20Regular /></button>
+                      <button
+                        className="catalog-panel__action-btn catalog-panel__action-btn--danger"
+                        onClick={() => setDeleteTarget({ kind: 'subcategory', item: sub })}
+                        title={t('common.delete')}
+                      ><Delete20Regular /></button>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Add subcategory inline */}
+                {addingSubFor === cat.id ? (
+                  <div className="catalog-panel__add-sub-form">
+                    <TextField
+                      name="newSubName"
+                      placeholder={t('admin.catalog.subNamePlaceholder')}
+                      value={newSubName}
+                      onChange={e => setNewSubName(e.target.value)}
+                      size="sm"
+                    />
+                    <span className="catalog-panel__suggested-id">→ #{nextSubId(cat.id)}</span>
+                    <Button
+                      text={t('common.add')}
+                      size="sm"
+                      loading={addSubcategory.isPending}
+                      disabled={!newSubName.trim()}
+                      onClick={() => handleAddSubcategory(cat.id)}
+                    />
+                    <Button
+                      text={t('common.cancel')}
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => { setAddingSubFor(null); setNewSubName(''); }}
+                    />
+                  </div>
+                ) : (
+                  <button
+                    className="catalog-panel__add-sub-btn"
+                    onClick={() => { setAddingSubFor(cat.id); setNewSubName(''); }}
+                  >
+                    <Add20Regular /> {t('admin.catalog.addSubcategory')}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
-      {/* Subcategories column */}
-      <div className="admin__catalog-col">
-        <h4 className="admin__catalog-col-title">{t('admin.addSubcategory')}</h4>
-        <ul className="admin__catalog-list">
-          {map(subcategories, (s: any) => (
-            <li key={s.id} className="admin__catalog-item">
-              <span className="admin__catalog-id">({s.id})</span> {s.name}
-            </li>
-          ))}
-        </ul>
-        <div className="admin__catalog-form">
-          <TextField name="subId" type="number" placeholder={t('admin.catalog.idPlaceholder')}
-            value={subId} onChange={(e: any) => setSubId(e.target.value)} />
-          <TextField name="subName" type="text" placeholder={t('admin.catalog.namePlaceholder')}
-            value={subName} onChange={(e: any) => setSubName(e.target.value)} />
-          <Button text={subLoading ? t('common.loading') : t('admin.catalog.add')}
-            onClick={addSubcategory} size="sm" disabled={subLoading || !subId || !subName} />
+      {/* ── Add category ── */}
+      {showAddCat ? (
+        <div className="catalog-panel__add-cat-form">
+          <TextField
+            name="newCatName"
+            placeholder={t('admin.catalog.catNamePlaceholder')}
+            value={newCatName}
+            onChange={e => setNewCatName(e.target.value)}
+            size="sm"
+          />
+          <span className="catalog-panel__suggested-id">→ #{nextCatId()}</span>
+          <Button
+            text={t('common.add')}
+            size="sm"
+            loading={addCategory.isPending}
+            disabled={!newCatName.trim()}
+            onClick={handleAddCategory}
+          />
+          <Button
+            text={t('common.cancel')}
+            size="sm"
+            variant="ghost"
+            onClick={() => { setShowAddCat(false); setNewCatName(''); }}
+          />
         </div>
-        {subMsg && <div className="admin__catalog-msg">{subMsg}</div>}
-      </div>
+      ) : (
+        <Button
+          text={t('admin.catalog.addCategory')}
+          icon={<Add20Regular />}
+          size="sm"
+          variant="outline"
+          onClick={() => setShowAddCat(true)}
+        />
+      )}
+
+      {/* ── Edit modal ── */}
+      {editTarget && (
+        <Modal
+          title={editTarget.kind === 'category' ? t('admin.catalog.editCategory') : t('admin.catalog.editSubcategory')}
+          onClose={() => setEditTarget(null)}
+          actions={<>
+            <Button
+              text={t('common.save')}
+              loading={updateCategory.isPending || updateSubcategory.isPending}
+              disabled={!editName.trim()}
+              onClick={confirmEdit}
+            />
+            <Button text={t('common.cancel')} variant="outline" onClick={() => setEditTarget(null)} />
+          </>}
+        >
+          <TextField
+            name="editName"
+            value={editName}
+            onChange={e => setEditName(e.target.value)}
+            label={t('admin.catalog.namePlaceholder')}
+          />
+        </Modal>
+      )}
+
+      {/* ── Delete confirm modal ── */}
+      {deleteTarget && (
+        <Modal
+          title={deleteTarget.kind === 'category' ? t('admin.catalog.deleteCategory') : t('admin.catalog.deleteSubcategory')}
+          onClose={() => setDeleteTarget(null)}
+          actions={<>
+            <Button
+              text={t('common.delete')}
+              variant="secondary"
+              loading={deleteCategory.isPending || deleteSubcategory.isPending}
+              onClick={confirmDelete}
+            />
+            <Button text={t('common.cancel')} variant="outline" onClick={() => setDeleteTarget(null)} />
+          </>}
+        >
+          <p className="catalog-panel__delete-msg">
+            {t('admin.catalog.deleteConfirm', { name: deleteTarget.item.name })}
+          </p>
+        </Modal>
+      )}
     </div>
   );
 };

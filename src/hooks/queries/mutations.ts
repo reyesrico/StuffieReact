@@ -11,11 +11,17 @@ import UserContext from '../../context/UserContext';
 // API imports
 import { 
   createCategory, 
-  type CreateCategoryInput 
+  updateCategory,
+  deleteCategory,
+  type CreateCategoryInput,
+  type UpdateCategoryInput,
 } from '../../api/categories.api';
 import { 
-  createSubcategory, 
-  type CreateSubcategoryInput 
+  createSubcategory,
+  updateSubcategory,
+  deleteSubcategory,
+  type CreateSubcategoryInput,
+  type UpdateSubcategoryInput,
 } from '../../api/subcategories.api';
 import { 
   createProduct, 
@@ -72,6 +78,26 @@ export const useAddCategory = () => {
   });
 };
 
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ _id, data }: { _id: string; data: UpdateCategoryInput }) => updateCategory(_id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (_id: string) => deleteCategory(_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+    },
+  });
+};
+
 // ============ SUBCATEGORY MUTATIONS ============
 
 /**
@@ -83,6 +109,26 @@ export const useAddSubcategory = () => {
   
   return useMutation({
     mutationFn: (data: CreateSubcategoryInput) => createSubcategory(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
+    },
+  });
+};
+
+export const useUpdateSubcategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ _id, data }: { _id: string; data: UpdateSubcategoryInput }) => updateSubcategory(_id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
+    },
+  });
+};
+
+export const useDeleteSubcategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (_id: string) => deleteSubcategory(_id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
     },

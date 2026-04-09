@@ -87,8 +87,12 @@ export {
 export {
   // Categories
   useAddCategory,
+  useUpdateCategory,
+  useDeleteCategory,
   // Subcategories
   useAddSubcategory,
+  useUpdateSubcategory,
+  useDeleteSubcategory,
   // Products
   useAddProduct,
   useAddExistingProduct,

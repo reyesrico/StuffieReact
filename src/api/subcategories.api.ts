@@ -42,6 +42,21 @@ export const createSubcategory = async (subcategory: CreateSubcategoryInput): Pr
   return response.data;
 };
 
+// ============ UPDATE ============
+
+export interface UpdateSubcategoryInput {
+  name?: string;
+  category_id?: number;
+}
+
+/**
+ * Update subcategory by _id
+ */
+export const updateSubcategory = async (_id: string, data: UpdateSubcategoryInput): Promise<Subcategory> => {
+  const response = await apiClient.put<Subcategory>(subcategoryEndpoints.update(_id), data);
+  return response.data;
+};
+
 // ============ DELETE ============
 
 /**
@@ -56,6 +71,7 @@ export const subcategoriesApi = {
   list: getSubcategories,
   get: getSubcategory,
   create: createSubcategory,
+  update: updateSubcategory,
   delete: deleteSubcategory,
 };
 

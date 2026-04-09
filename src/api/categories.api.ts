@@ -41,6 +41,20 @@ export const createCategory = async (category: CreateCategoryInput): Promise<Cat
   return response.data;
 };
 
+// ============ UPDATE ============
+
+export interface UpdateCategoryInput {
+  name: string;
+}
+
+/**
+ * Update category name by _id
+ */
+export const updateCategory = async (_id: string, data: UpdateCategoryInput): Promise<Category> => {
+  const response = await apiClient.put<Category>(categoryEndpoints.update(_id), data);
+  return response.data;
+};
+
 // ============ DELETE ============
 
 /**
@@ -55,6 +69,7 @@ export const categoriesApi = {
   list: getCategories,
   get: getCategory,
   create: createCategory,
+  update: updateCategory,
   delete: deleteCategory,
 };
 

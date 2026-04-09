@@ -18,7 +18,8 @@ export const useSubcategories = () => {
   return useQuery({
     queryKey: queryKeys.subcategories.all,
     queryFn: getSubcategories,
-    staleTime: 5 * 60 * 1000, // 5 min — allows new subcategories to appear without clearing cache
+    staleTime: 5 * 60 * 1000,
+    refetchOnMount: true, // always refetch on mount to bust stale persisted cache
   });
 };
 
