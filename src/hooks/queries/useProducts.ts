@@ -10,9 +10,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { queryKeys } from './queryKeys';
-import { getUserProducts, getProductsByIds, getPendingProducts } from '../../api/products.api';
+import { getUserProductsJoined, getPendingProducts } from '../../api/products.api';
+import { getProductsMap } from '../../components/helpers/StuffHelper';
 import { useCategories } from './useCategories';
-import { mapStuff, getProductsMap, mapCostToProducts } from '../../components/helpers/StuffHelper';
 import UserContext from '../../context/UserContext';
 import type ProductsMap from '../../components/types/ProductsMap';
 import type Category from '../../components/types/Category';
@@ -31,25 +31,10 @@ export const useProducts = () => {
   return useQuery({
     queryKey: queryKeys.products.all(user?.id || 0),
     queryFn: async (): Promise<ProductsMap> => {
-      if (!user?.id || !categories?.length) {
-        return {};
-      }
-      
-      // 1. Get user's stuffiers_stuff records (contains cost)
-      const stuffList = await getUserProducts(user.id);
-      
-      if (stuffList.length === 0) {
-        // Return empty products map with category keys
-        return getProductsMap(categories, []);
-      }
-      
-      // 2. Get product details for those IDs
-      const productIds = mapStuff(stuffList);
-      const products = await getProductsByIds(productIds);
-      
-      // 3. Map costs to products and organize by category
-      const productsWithCost = mapCostToProducts(products, stuffList);
-      return getProductsMap(categories, productsWithCost);
+      if (!user?.id || !categories?.length) return {};
+      // Phase 4: single server-side join call (replaces 3-call pipeline)
+      const products = await getUserProductsJoined(user.id);
+      return getProductsMap(categories, products);
     },
     enabled: !!(user?.id && categories?.length),
   });
@@ -60,28 +45,16 @@ export const useProducts = () => {
  */
 export const useUserProducts = (userId: number, categories: Category[]) => {
   return useQuery({
-    // Distinct key from the logged-in user's products to avoid stale-cache collisions
     queryKey: ['friends', userId, 'products'] as const,
     queryFn: async (): Promise<ProductsMap> => {
-      if (!userId || !categories?.length) {
-        return {};
-      }
-
-      const stuffList = await getUserProducts(userId);
-
-      if (stuffList.length === 0) {
-        return getProductsMap(categories, []);
-      }
-
-      const productIds = mapStuff(stuffList);
-      const products = await getProductsByIds(productIds);
-      const productsWithCost = mapCostToProducts(products, stuffList);
-
-      return getProductsMap(categories, productsWithCost);
+      if (!userId || !categories?.length) return {};
+      // Phase 4: single server-side join call
+      const products = await getUserProductsJoined(userId);
+      return getProductsMap(categories, products);
     },
     enabled: !!(userId && categories?.length),
-    staleTime: 0,           // Always fetch fresh — friend profiles update independently
-    refetchOnMount: true,   // Show cached data instantly, update in background
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 

@@ -6,7 +6,7 @@
  * - 'stuffiers-stuff': User-product relationships (id_stuffier, id_stuff, cost)
  */
 import { apiClient } from './client';
-import { productEndpoints, stuffiersStuffEndpoints } from './endpoints';
+import { productEndpoints, stuffiersStuffEndpoints, userProductsEndpoints } from './endpoints';
 import type Product from '../components/types/Product';
 import type UserItem from '../components/types/UserItem';
 
@@ -132,6 +132,17 @@ export const deleteProduct = async (_id: string): Promise<void> => {
 export const getUserProducts = async (userId: number): Promise<UserItem[]> => {
   const response = await apiClient.get<UserItem[]>(
     stuffiersStuffEndpoints.listByUser(userId)
+  );
+  return response.data;
+};
+
+/**
+ * Phase 4: Single-call server-side join — replaces getUserProducts + getProductsByIds + mapCostToProducts
+ * Returns Product[] with cost merged from user_items, ready for getProductsMap()
+ */
+export const getUserProductsJoined = async (userId: number): Promise<Product[]> => {
+  const response = await apiClient.get<Product[]>(
+    userProductsEndpoints.listByUser(userId)
   );
   return response.data;
 };
