@@ -61,6 +61,7 @@ export const useFriendsWithProducts = () => {
       return getFriendProducts(friends, products, stuffiersList);
     },
     enabled: !!(user?.email && friends && friends.length > 0),
+    staleTime: 1000 * 60 * 5, // 5 min — social data, friend products change occasionally
   });
 };
 

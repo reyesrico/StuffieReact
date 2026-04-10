@@ -37,6 +37,7 @@ export const useProducts = () => {
       return getProductsMap(categories, products);
     },
     enabled: !!(user?.id && categories?.length),
+    staleTime: 1000 * 60 * 5, // 5 min — mutations invalidate on any change
   });
 };
 
@@ -65,6 +66,7 @@ export const usePendingProducts = () => {
   return useQuery({
     queryKey: queryKeys.products.pending(),
     queryFn: getPendingProducts,
+    staleTime: 1000 * 60 * 5, // 5 min — admin data
   });
 };
 

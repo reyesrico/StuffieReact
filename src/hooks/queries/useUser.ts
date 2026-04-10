@@ -20,6 +20,7 @@ export const useUserByEmail = (email: string) => {
     queryKey: queryKeys.user.current(email),
     queryFn: () => getUserByEmail(email),
     enabled: !!email,
+    staleTime: 1000 * 60 * 10, // 10 min — user profile is stable; mutations update cache directly
   });
 };
 
@@ -30,6 +31,8 @@ export const useUserRequests = () => {
   return useQuery({
     queryKey: queryKeys.user.requests(),
     queryFn: getPendingUserRequests,
+    staleTime: 1000 * 60 * 5, // 5 min — admin data, changes slowly
+    refetchOnMount: true,
   });
 };
 

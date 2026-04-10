@@ -21,5 +21,7 @@ export const usePurchaseRequests = () => {
     queryKey: queryKeys.purchases.all(user?.id || 0),
     queryFn: () => getPurchaseRequests(user!.id!),
     enabled: !!user?.id,
+    staleTime: 1000 * 60 * 2, // 2 min — live social: new requests arrive without warning
+    refetchOnMount: true,
   });
 };
