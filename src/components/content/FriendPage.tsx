@@ -1,12 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Loading from '../shared/Loading';
+import Button from '../shared/Button';
+import Modal from '../shared/Modal';
 import ProductCard from './ProductCard';
 import MapView from '../shared/MapView';
-import { useFriends, useUserProducts, useCategories } from '../../hooks/queries';
+import { useFriends, useUserProducts, useCategories, useInvalidateFriends } from '../../hooks/queries';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
+import { removeFriend } from '../../api/friends.api';
+import UserContext from '../../context/UserContext';
 import type User from '../types/User';
 import type Product from '../types/Product';
 
@@ -17,13 +21,18 @@ type Tab = 'location' | 'products';
 const FriendPage = () => {
   const { id } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { user: currentUser } = React.useContext(UserContext);
   const friendId = parseInt(id || '0');
 
   const { data: friends = [], isLoading: loadingFriends } = useFriends();
   const { data: categories = [] } = useCategories();
   const { data: productsMap = {}, isLoading: loadingProducts } = useUserProducts(friendId, categories);
+  const invalidateFriends = useInvalidateFriends();
   const [picture, setPicture] = React.useState<string>();
   const [activeTab, setActiveTab] = React.useState<Tab>('location');
+  const [showConfirmRemove, setShowConfirmRemove] = React.useState(false);
+  const [removing, setRemoving] = React.useState(false);
 
   const friend = (friends as User[]).find(f => f.id === friendId);
   const friendName = `${friend?.first_name ?? ''} ${friend?.last_name ?? ''}`.trim();
@@ -46,9 +55,22 @@ const FriendPage = () => {
     if (!hasLocation) setActiveTab('products');
   }, [hasLocation]);
 
+  const handleRemove = () => {
+    if (!currentUser?.id || !friend?.id) return;
+    setRemoving(true);
+    removeFriend(currentUser.id, friend.id)
+      .then(() => {
+        setShowConfirmRemove(false);
+        invalidateFriends();
+        navigate('/friends');
+      })
+      .finally(() => setRemoving(false));
+  };
+
   if (loadingFriends) return <Loading size="lg" message={t('common.loading')} />;
 
   return (
+    <>
     <div className="friend-page">
       <div className="friend-page__header">
         <div className="friend-page__identity">
@@ -60,6 +82,14 @@ const FriendPage = () => {
             <span className="friend-page__email">{friend?.email}</span>
           </div>
         </div>
+        {friend && (
+          <Button
+            text={t('friends.removeConfirm')}
+            variant="outline"
+            size="sm"
+            onClick={() => setShowConfirmRemove(true)}
+          />
+        )}
       </div>
 
       <div className="friend-page__tabs">
@@ -118,6 +148,33 @@ const FriendPage = () => {
         </div>
       )}
     </div>
+
+    {showConfirmRemove && friend && (
+      <Modal
+        title={t('friends.removeTitle')}
+        onClose={() => !removing && setShowConfirmRemove(false)}
+        disableBackdropClose={removing}
+        actions={
+          <>
+            <Button
+              text={t('friends.removeConfirm')}
+              variant="secondary"
+              loading={removing}
+              onClick={handleRemove}
+            />
+            <Button
+              text={t('common.cancel')}
+              variant="outline"
+              onClick={() => setShowConfirmRemove(false)}
+              disabled={removing}
+            />
+          </>
+        }
+      >
+        {t('friends.removeBody', { name: friendName })}
+      </Modal>
+    )}
+    </>
   );
 };
 
