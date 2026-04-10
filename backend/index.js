@@ -50,8 +50,8 @@ const verifyPassword = (password, storedHash, email) => {
     return { valid: computed === hexStored, needsUpgrade: false };
   }
 
-  // Legacy PBKDF2 (CryptoJS PBKDF2 default = HMAC-SHA1, email as salt)
-  const legacyHash = pbkdf2Sync(password, email, 1_000, 32, 'sha1').toString('hex');
+  // Legacy PBKDF2 (CryptoJS v4 default = HMAC-SHA256, email as salt)
+  const legacyHash = pbkdf2Sync(password, email, 1_000, 32, 'sha256').toString('hex');
   if (legacyHash === storedHash) return { valid: true, needsUpgrade: true };
 
   // Oldest fallback — raw SHA256
@@ -78,7 +78,7 @@ app.post('/auth/login', async (req, res) => {
 
   // Fetch user by email
   const users = [];
-  const cursor = db.getMany('stuffiers', { filter: { email } });
+  const cursor = db.getMany('users', { filter: { email } });
   for await (const u of cursor) users.push(u);
   const user = users[0];
 
@@ -93,7 +93,7 @@ app.post('/auth/login', async (req, res) => {
     const salt   = randomBytes(16);
     const hash   = pbkdf2Sync(password, salt, 600_000, 32, 'sha256').toString('hex');
     const v2Hash = `v2:${salt.toString('hex')}:${hash}`;
-    db.updateOne('stuffiers', { _id: user._id }, { password_hash: v2Hash }).catch(() => {});
+    db.updateOne('users', { _id: user._id }, { password_hash: v2Hash }).catch(() => {});
   }
 
   // Strip sensitive fields before returning
