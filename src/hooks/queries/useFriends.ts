@@ -75,7 +75,7 @@ export const useFriendRequests = () => {
     queryKey: queryKeys.friends.requests(user?.email || ''),
     queryFn: () => getFriendRequests(user!.id!),
     enabled: !!(user?.id),
-    staleTime: 0,
+    staleTime: 1000 * 30, // 30s — inbox, check on mount but not every render
     refetchOnMount: true,
   });
 };
@@ -90,7 +90,7 @@ export const useSentFriendRequests = () => {
     queryKey: [...queryKeys.friends.requests(user?.email || ''), 'sent'],
     queryFn: () => getSentFriendRequests(user!.id!),
     enabled: !!(user?.id),
-    staleTime: 0,
+    staleTime: 1000 * 30, // 30s — inbox
     refetchOnMount: true,
   });
 };

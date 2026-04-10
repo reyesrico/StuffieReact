@@ -77,8 +77,9 @@ app.post('/auth/login', async (req, res) => {
   try {
     const db = await datastore.open();
 
-    // getMany with flat MongoDB query + .toArray() — the documented Codehooks pattern
-    const users = await db.getMany('users', { email }).toArray();
+    // getMany with flat MongoDB query + forEach — the documented Codehooks pattern
+    const users = [];
+    await db.getMany('users', { email }).forEach(u => users.push(u));
     const user = users[0];
 
     // Constant-time-safe message — don't reveal whether email exists
@@ -157,11 +158,6 @@ app.post('/ai-chat', async (req, res) => {
   });
 });
 
-// Re-enable Codehooks auto-REST API for all collections.
-// Without this line, deploying a codehooks-js function disables the built-in
-// CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
-app.crudlify();
-
 // =============================================================================
 // Atomic ID counters — replaces unsafe client-side Math.max pattern
 // POST /items/next-id   → { id: <next integer> }  (Stage 12: was stuff/next-id)
@@ -192,10 +188,13 @@ app.post('/stuffiers/next-id', async (req, res) => {
 // =============================================================================
 // Server-side user products join — replaces 3-call client pipeline
 // GET /userproducts/:stuffierId
-//   1. Fetches stuffiersstuff rows for this user
-//   2. Batch-fetches matching stuff rows
+//   1. Fetches user_items rows for this user
+//   2. Batch-fetches matching items rows
 //   3. Merges cost onto each product
 //   Returns: Array<Product & { cost: number, ss_id: string }>
+//
+// IMPORTANT: must be registered BEFORE app.crudlify() — crudlify registers a
+// wildcard /:collection/:id route that would otherwise intercept this path.
 // =============================================================================
 
 app.get('/userproducts/:stuffierId', async (req, res) => {
@@ -204,31 +203,41 @@ app.get('/userproducts/:stuffierId', async (req, res) => {
     return res.status(400).json({ error: 'Invalid stuffierId' });
   }
 
-  const db = await datastore.open();
+  try {
+    const db = await datastore.open();
 
-  // 1. Get ownership rows
-  const ssRows = [];
-  const ssCursor = db.getMany('user_items', { filter: { user_id: stuffierId } });
-  for await (const row of ssCursor) ssRows.push(row);
+    // 1. Get ownership rows — forEach is the documented cursor iteration method
+    const ssRows = [];
+    await db.getMany('user_items', { user_id: stuffierId }).forEach(row => ssRows.push(row));
 
-  if (ssRows.length === 0) return res.json([]);
+    if (ssRows.length === 0) return res.json([]);
 
-  // 2. Get matching stuff rows
-  const stuffIds = ssRows.map(r => r.item_id).filter(Boolean);
-  const stuffMap = {};
-  const stuffCursor = db.getMany('items', { filter: { id: { $in: stuffIds } } });
-  for await (const row of stuffCursor) stuffMap[row.id] = row;
+    // 2. Get matching item rows
+    const stuffIds = ssRows.map(r => r.item_id).filter(Boolean);
+    const stuffMap = {};
+    await db.getMany('items', { id: { $in: stuffIds } }).forEach(row => { stuffMap[row.id] = row; });
 
-  // 3. Merge
-  const result = ssRows
-    .map(ss => {
-      const product = stuffMap[ss.item_id];
-      if (!product) return null;
-      return { ...product, cost: ss.asking_price ?? null, ss_id: ss._id };
-    })
-    .filter(Boolean);
+    // 3. Merge
+    const result = ssRows
+      .map(ss => {
+        const product = stuffMap[ss.item_id];
+        if (!product) return null;
+        return { ...product, cost: ss.asking_price ?? null, ss_id: ss._id };
+      })
+      .filter(Boolean);
 
-  return res.json(result);
+    return res.json(result);
+  } catch (err) {
+    console.error('userproducts error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
+// Re-enable Codehooks auto-REST API for all collections.
+// Without this line, deploying a codehooks-js function disables the built-in
+// CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
+// NOTE: crudlify must come AFTER all custom routes — it registers a wildcard
+// /:collection/:id handler that would shadow custom paths if registered first.
+app.crudlify();
 
 export default app.init();

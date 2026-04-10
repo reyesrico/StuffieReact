@@ -54,8 +54,7 @@ export const useUserProducts = (userId: number, categories: Category[]) => {
       return getProductsMap(categories, products);
     },
     enabled: !!(userId && categories?.length),
-    staleTime: 0,
-    refetchOnMount: true,
+    staleTime: 1000 * 60 * 5, // 5 min — same as own products
   });
 };
 
