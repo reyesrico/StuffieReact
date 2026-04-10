@@ -74,39 +74,42 @@ app.post('/auth/login', async (req, res) => {
     return res.status(400).json({ error: 'email and password are required' });
   }
 
-  const db = await datastore.open();
+  try {
+    const db = await datastore.open();
 
-  // Fetch user by email
-  const users = [];
-  const cursor = db.getMany('users', { filter: { email } });
-  for await (const u of cursor) users.push(u);
-  const user = users[0];
+    // getMany with flat MongoDB query + .toArray() — the documented Codehooks pattern
+    const users = await db.getMany('users', { email }).toArray();
+    const user = users[0];
 
-  // Use constant-time-safe message — don't reveal whether email exists
-  if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    // Constant-time-safe message — don't reveal whether email exists
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
 
-  const { valid, needsUpgrade } = verifyPassword(password, user.password_hash, email);
-  if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
+    const { valid, needsUpgrade } = verifyPassword(password, user.password_hash, email);
+    if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
-  // Auto-upgrade old hash to v2 in background — don't block response
-  if (needsUpgrade) {
-    const salt   = randomBytes(16);
-    const hash   = pbkdf2Sync(password, salt, 600_000, 32, 'sha256').toString('hex');
-    const v2Hash = `v2:${salt.toString('hex')}:${hash}`;
-    db.updateOne('users', { _id: user._id }, { password_hash: v2Hash }).catch(() => {});
+    // Auto-upgrade old hash to v2 — fire and forget, don't block response
+    if (needsUpgrade && user._id) {
+      const salt   = randomBytes(16);
+      const hash   = pbkdf2Sync(password, salt, 600_000, 32, 'sha256').toString('hex');
+      const v2Hash = `v2:${salt.toString('hex')}:${hash}`;
+      db.updateOne('users', { _id: user._id }, { $set: { password_hash: v2Hash } }).catch(() => {});
+    }
+
+    // Strip sensitive fields before returning
+    const { password_hash: _pw, ...safeUser } = user;
+
+    const expiresAt = Math.floor(Date.now() / 1000) + 3600;
+    const accessToken = signJWT({
+      sub:    email,
+      userId: user.id,
+      role:   user.is_admin ? 'admin' : 'user',
+    });
+
+    return res.json({ user: safeUser, accessToken, expiresAt });
+  } catch (err) {
+    console.error('auth/login error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
   }
-
-  // Strip sensitive fields before returning
-  const { password_hash: _pw, ...safeUser } = user;
-
-  const expiresAt = Math.floor(Date.now() / 1000) + 3600;
-  const accessToken = signJWT({
-    sub:    email,
-    userId: user.id,
-    role:   user.is_admin ? 'admin' : 'user',
-  });
-
-  return res.json({ user: safeUser, accessToken, expiresAt });
 });
 
 // Allowlist of models — prevents clients from calling expensive models
