@@ -14,19 +14,9 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 30000, // 30 second timeout
 });
 
-// Request interceptor for logging and token handling
+// Request interceptor for logging
 apiClient.interceptors.request.use(
   (requestConfig: InternalAxiosRequestConfig) => {
-    // Attach JWT Bearer token if a valid session exists
-    try {
-      const raw = localStorage.getItem('stuffie-session');
-      if (raw) {
-        const { accessToken } = JSON.parse(raw);
-        if (accessToken) requestConfig.headers['Authorization'] = `Bearer ${accessToken}`;
-      }
-    } catch {
-      // Malformed session — ignore, the auth check in UserContext will clean up
-    }
     // Add timestamp for debugging
     if (import.meta.env.DEV) {
       console.debug(`[API] ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
