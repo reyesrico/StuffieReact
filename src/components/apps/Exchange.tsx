@@ -44,6 +44,7 @@ const ProductRow = ({ product, isSelected, onSelect, categories, subcategories }
           fileName={product.id}
           category={product.category_id}
           subcategory={product.subcategory_id}
+          imageKey={product.image_key}
           format="jpg"
           height="48"
           width="48"
@@ -150,6 +151,7 @@ const Exchange = () => {
             fileName={targetProduct.id}
             category={targetProduct.category_id}
             subcategory={targetProduct.subcategory_id}
+            imageKey={targetProduct.image_key}
             format="jpg"
             height="56"
             width="56"

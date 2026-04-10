@@ -5,6 +5,21 @@ import config from '../../config/api';
 import { existImage } from '../../lib/cloudinary';
 import './Media.scss';
 
+// Maps current subcategory_id values to the Cloudinary folder names used at upload time.
+// The old folder scheme was {cat_id}{seq}000; new subcategory IDs are cat_id*100+seq.
+const SUBCATEGORY_FOLDER: Record<number, string> = {
+  101: '11000', // Jerseys        (cat 1)
+  201: '21000', // Books          (cat 2)
+  301: '31000', // Movies         (cat 3)
+  401: '41000', // Consoles       (cat 4)
+  402: '42000', // Games          (cat 4)
+  403: '43000', // Computers      (cat 4)
+  404: '44000', // Printers       (cat 4)
+  405: '45000', // TVs            (cat 4)
+  406: '46000', // Mobiles        (cat 4)
+  501: '51000', // Home Furniture (cat 5)
+};
+
 const Media = (props: any) => {
   const { format, fileName, isLogo, width } = props;
   const [imageUrl, setImageUrl] = useState('default_product');
@@ -30,10 +45,17 @@ const Media = (props: any) => {
   });
 
   const setUrl = () => {
-    const { fileName, category, subcategory, isProduct, isLogo } = props;
+    const { fileName, category, subcategory, isProduct, isLogo, imageKey } = props;
 
-    if (isProduct && category && subcategory) {
-      const imageUrl = `products/${category}/${subcategory}/${fileName}`;
+    if (imageKey) {
+      // Use the stored Cloudinary path directly (source of truth, strips extension for publicId)
+      const publicPath = String(imageKey).replace(/\.[^.]+$/, '');
+      existImage(publicPath)
+        .then(() => setImageUrl(publicPath))
+        .catch(() => setImageUrl('default_product'));
+    } else if (isProduct && category && subcategory) {
+      const folder = SUBCATEGORY_FOLDER[subcategory] ?? subcategory;
+      const imageUrl = `products/${category}/${folder}/${fileName}`;
       existImage(imageUrl)
         .then(() => setImageUrl(imageUrl))
         .catch(() => setImageUrl('default_product'));

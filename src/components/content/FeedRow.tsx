@@ -55,6 +55,7 @@ const FeedRow = (props: FeedRowProps) => {
           fileName={feedPost.product.id}
           category={feedPost.product.category_id}
           subcategory={feedPost.product.subcategory_id}
+          imageKey={feedPost.product.image_key}
           format="jpg"
           height="100"
           width="100"

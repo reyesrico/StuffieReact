@@ -161,6 +161,7 @@ const Product = (props: any) => {
           fileName={productRendered.id}
           category={productRendered.category_id}
           subcategory={productRendered.subcategory_id}
+          imageKey={productRendered.image_key}
           isProduct="true"
           height="200"
           width="100" />

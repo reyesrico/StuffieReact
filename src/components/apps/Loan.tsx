@@ -76,6 +76,7 @@ const Loan = () => {
             fileName={targetProduct.id}
             category={targetProduct.category_id}
             subcategory={targetProduct.subcategory_id}
+            imageKey={targetProduct.image_key}
             format="jpg"
             height="56"
             width="56"

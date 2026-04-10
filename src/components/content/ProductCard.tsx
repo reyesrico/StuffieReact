@@ -42,6 +42,7 @@ const ProductCard = ({ product, navigationState }: ProductCardProps) => {
           fileName={product.id}
           category={product.category_id}
           subcategory={product.subcategory_id}
+          imageKey={product.image_key}
           isProduct="true"
           height="120"
           width="100"

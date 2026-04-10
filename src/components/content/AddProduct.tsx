@@ -299,6 +299,7 @@ const AddProduct = () => {
                             fileName={p.id}
                             category={p.category_id}
                             subcategory={p.subcategory_id}
+                            imageKey={p.image_key}
                             isProduct="true"
                             height="80"
                             width="100"
@@ -420,6 +421,7 @@ const AddProduct = () => {
                   fileName={selectedProduct.id}
                   category={selectedProduct.category_id}
                   subcategory={selectedProduct.subcategory_id}
+                  imageKey={selectedProduct.image_key}
                   isProduct="true"
                   height="100"
                   width="100"
