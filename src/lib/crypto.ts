@@ -12,10 +12,10 @@ const hexToBytes = (hex: string): Uint8Array<ArrayBuffer> => {
 // Internal: derive 256-bit PBKDF2-HMAC-SHA256 via native WebCrypto, returns hex
 const deriveKeyHex = async (password: string, hexSalt: string): Promise<string> => {
   const enc = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey(
+  const keyMaterial = await globalThis.crypto.subtle.importKey(
     'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits'],
   );
-  const bits = await window.crypto.subtle.deriveBits(
+  const bits = await globalThis.crypto.subtle.deriveBits(
     { name: 'PBKDF2', salt: hexToBytes(hexSalt), iterations: 600_000, hash: 'SHA-256' },
     keyMaterial,
     256,
@@ -37,7 +37,7 @@ const crypto = {
   // v2: native WebCrypto PBKDF2-HMAC-SHA256, 600k iterations, 16-byte random salt
   // Format: "v2:<hexSalt>:<hexHash>"
   pbkdf2v2: async (password: string): Promise<string> => {
-    const saltBytes = window.crypto.getRandomValues(new Uint8Array(16));
+    const saltBytes = globalThis.crypto.getRandomValues(new Uint8Array(16));
     const hexSalt = Array.from(saltBytes).map(b => b.toString(16).padStart(2, '0')).join('');
     const hexHash = await deriveKeyHex(password, hexSalt);
     return `v2:${hexSalt}:${hexHash}`;
