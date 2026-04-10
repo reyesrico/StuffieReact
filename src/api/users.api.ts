@@ -78,30 +78,19 @@ export const getLastUserId = async (): Promise<number> => {
  * Password is encrypted before sending
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
-  // Fetch by email only — compare hash client-side.
-  // Avoids sending the password hash in a URL query string (shows up in server logs).
-  const response = await apiClient.get<User[]>(userEndpoints.getByEmail(email));
-  const user = response.data[0];
-  if (!user) return null;
-
-  const pbkdf2Hash = await crypto.pbkdf2(password, email);
-
-  // Strip password hash before returning — hash must not reach UserContext, localStorage, or query cache
-  const safeUser = (): User => { const { password_hash: _pw, ...rest } = user; return rest as User; };
-
-  // 1. Match current PBKDF2 hash
-  if (user.password_hash === pbkdf2Hash) return safeUser();
-
-  // 2. Fallback: SHA256 — migrate to PBKDF2 on success
-  const sha256Hash = crypto.encrypt(password);
-  if (user.password_hash === sha256Hash) {
-    if (user._id) {
-      await apiClient.put(userEndpoints.update(String(user._id)), { ...user, password_hash: pbkdf2Hash });
-    }
-    return safeUser();
+  try {
+    const response = await codehooksClient.post<{ user: User; accessToken: string; expiresAt: number }>(
+      '/auth/login',
+      { email, password },
+    );
+    const { user, accessToken, expiresAt } = response.data;
+    // Store JWT session — UserContext will read expiresAt on next mount to auto-expire
+    localStorage.setItem('stuffie-session', JSON.stringify({ accessToken, expiresAt }));
+    return user;
+  } catch (err: any) {
+    if (err?.response?.status === 401) return null;
+    throw err;
   }
-
-  return null;
 };
 
 export interface RegisterUserInput {
@@ -130,7 +119,7 @@ export interface RegisterUserInput {
 export const registerUser = async (userData: RegisterUserInput): Promise<User> => {
   const [lastId, encryptedPassword] = await Promise.all([
     getLastUserId(),
-    crypto.pbkdf2(userData.password, userData.email),
+    crypto.pbkdf2v2(userData.password),
   ]);
 
   const newId = lastId + 1;

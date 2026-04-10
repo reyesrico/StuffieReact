@@ -26,9 +26,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Restore user from localStorage on mount (synchronous check)
+  // Restore user from localStorage on mount — reject if JWT session has expired
   useEffect(() => {
     try {
+      const storedSession = localStorage.getItem('stuffie-session');
+      if (storedSession) {
+        const { expiresAt } = JSON.parse(storedSession);
+        if (Math.floor(Date.now() / 1000) >= expiresAt) {
+          // Session expired — clear everything
+          localStorage.removeItem('stuffie-user');
+          localStorage.removeItem('stuffie-session');
+          localStorage.removeItem('username');
+          setIsLoading(false);
+          return;
+        }
+      }
       const storedUser = localStorage.getItem('stuffie-user');
       if (storedUser) {
         const userData = JSON.parse(storedUser);
@@ -37,6 +49,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     } catch (error) {
       console.error('Failed to restore user from localStorage:', error);
       localStorage.removeItem('stuffie-user');
+      localStorage.removeItem('stuffie-session');
     }
     setIsLoading(false);
   }, []);
@@ -50,8 +63,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 
   const logoutUser = () => {
     setUser(null);
-    // Clear persisted user
+    // Clear persisted user and JWT session
     localStorage.removeItem('stuffie-user');
+    localStorage.removeItem('stuffie-session');
     localStorage.removeItem('username');
   };
 
