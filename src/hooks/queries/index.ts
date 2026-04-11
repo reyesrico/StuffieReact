@@ -109,12 +109,15 @@ export {
   // Exchanges
   useCreateExchange,
   useDeleteExchange,
+  useAcceptExchange,
   // Loans
   useCreateLoan,
   useDeleteLoan,
+  useAcceptLoan,
   // Purchases
   useCreatePurchase,
   useDeletePurchase,
+  useAcceptPurchase,
 } from './mutations';
 
 // Suspense-enabled hooks (for use with React Suspense boundaries)

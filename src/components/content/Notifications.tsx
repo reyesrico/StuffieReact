@@ -14,7 +14,7 @@ import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { useDeleteExchange, useDeleteLoan, useDeletePurchase, useAcceptFriendRequest, useRejectFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
+import { useDeleteExchange, useDeleteLoan, useDeletePurchase, useAcceptExchange, useAcceptLoan, useAcceptPurchase, useAcceptFriendRequest, useRejectFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import './Notifications.scss';
@@ -42,6 +42,9 @@ const Notifications = () => {
   const deleteExchangeMutation = useDeleteExchange();
   const deleteLoanMutation = useDeleteLoan();
   const deletePurchaseMutation = useDeletePurchase();
+  const acceptExchangeMutation = useAcceptExchange();
+  const acceptLoanMutation = useAcceptLoan();
+  const acceptPurchaseMutation = useAcceptPurchase();
   const acceptFriendMutation = useAcceptFriendRequest();
   const rejectFriendMutation = useRejectFriendRequest();
   const cancelFriendMutation = useCancelFriendRequest();
@@ -112,6 +115,54 @@ const Notifications = () => {
       },
       onError: () => {
         setMessage(t('products.purchaseDeleteFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingPurchaseId(null);
+      },
+    });
+  };
+
+  const executeAcceptExchange = (_id: string) => {
+    setPendingExchangeId(_id);
+    acceptExchangeMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('products.exchangeAccepted'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingExchangeId(null);
+      },
+      onError: () => {
+        setMessage(t('products.exchangeAcceptFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingExchangeId(null);
+      },
+    });
+  };
+
+  const executeAcceptLoan = (_id: string) => {
+    setPendingLoanId(_id);
+    acceptLoanMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('products.loanAccepted'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingLoanId(null);
+      },
+      onError: () => {
+        setMessage(t('products.loanAcceptFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingLoanId(null);
+      },
+    });
+  };
+
+  const executeAcceptPurchase = (_id: string) => {
+    setPendingPurchaseId(_id);
+    acceptPurchaseMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('products.purchaseAccepted'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingPurchaseId(null);
+      },
+      onError: () => {
+        setMessage(t('products.purchaseAcceptFailed'));
         setType(WarningMessageType.ERROR);
         setPendingPurchaseId(null);
       },
@@ -215,7 +266,7 @@ const Notifications = () => {
                   <div className="notifications__request-buttons">
                     {!isUserRequestor && (
                       <div className="notifications__request-button">
-                        <Button onClick={() => executeDeleteExchange(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
+                        <Button onClick={() => executeAcceptExchange(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
                       </div>
                     )}
                     <div className="notifications__request-button">
@@ -252,7 +303,7 @@ const Notifications = () => {
                   <div className="notifications__request-buttons">
                     {!isUserRequestor && (
                       <div className="notifications__request-button">
-                        <Button onClick={() => executeDeleteExchange(request._id, true)} text={t('common.accept')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                        <Button onClick={() => executeAcceptLoan(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
                       </div>
                     )}
                     <div className="notifications__request-button">
@@ -293,7 +344,7 @@ const Notifications = () => {
                     {!isUserRequestor && (
                       <div className="notifications__request-button">
                         <Button
-                          onClick={() => executeDeletePurchase(request._id)}
+                          onClick={() => executeAcceptPurchase(request._id)}
                           text={t('common.accept')}
                           size="sm"
                           variant="outline"

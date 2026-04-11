@@ -45,16 +45,19 @@ import {
 import {
   createExchangeRequest,
   deleteExchangeRequest,
+  acceptExchangeRequest,
   type CreateExchangeInput,
 } from '../../api/exchanges.api';
 import {
   createLoanRequest,
   deleteLoanRequest,
+  acceptLoanRequest,
   type CreateLoanInput,
 } from '../../api/loans.api';
 import {
   createPurchaseRequest,
   deletePurchaseRequest,
+  acceptPurchaseRequest,
   type CreatePurchaseInput,
 } from '../../api/purchases.api';
 
@@ -408,6 +411,25 @@ export const useDeleteExchange = () => {
   });
 };
 
+/**
+ * Accept exchange request — sets status to 'accepted'
+ */
+export const useAcceptExchange = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => acceptExchangeRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.exchanges.all(user.id),
+        });
+      }
+    },
+  });
+};
+
 // ============ LOAN MUTATIONS ============
 
 /**
@@ -450,6 +472,25 @@ export const useDeleteLoan = () => {
   });
 };
 
+/**
+ * Accept loan request — calls backend to set status 'active' + mark item on_loan
+ */
+export const useAcceptLoan = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => acceptLoanRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.loans.all(user.id),
+        });
+      }
+    },
+  });
+};
+
 // ============ PURCHASE MUTATIONS ============
 
 /**
@@ -480,6 +521,25 @@ export const useDeletePurchase = () => {
 
   return useMutation({
     mutationFn: (_id: string) => deletePurchaseRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.purchases.all(user.id),
+        });
+      }
+    },
+  });
+};
+
+/**
+ * Accept purchase request — sets status to 'accepted'
+ */
+export const useAcceptPurchase = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => acceptPurchaseRequest(_id),
     onSuccess: () => {
       if (user?.id) {
         queryClient.invalidateQueries({

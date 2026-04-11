@@ -46,11 +46,10 @@ export const deleteLoanRequest = async (_id: string): Promise<void> => {
 };
 
 /**
- * Accept a loan request (product owner approves)
+ * Accept a loan request — calls backend to set status 'active' + mark item on_loan
  */
 export const acceptLoanRequest = async (_id: string): Promise<void> => {
-  // TODO: In future, could mark product as "on loan"
-  await deleteLoanRequest(_id);
+  await apiClient.post(`loan_requests/${_id}/accept`, {});
 };
 
 /**

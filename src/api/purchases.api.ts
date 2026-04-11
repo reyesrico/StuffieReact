@@ -45,3 +45,10 @@ export const createPurchaseRequest = async (data: CreatePurchaseInput): Promise<
 export const deletePurchaseRequest = async (_id: string): Promise<void> => {
   await apiClient.delete(purchaseEndpoints.delete(_id));
 };
+
+/**
+ * Accept a purchase request — changes status to 'accepted'
+ */
+export const acceptPurchaseRequest = async (_id: string): Promise<void> => {
+  await apiClient.patch(purchaseEndpoints.update(_id), { status: 'accepted' });
+};

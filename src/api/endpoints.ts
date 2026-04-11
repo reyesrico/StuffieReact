@@ -242,8 +242,11 @@ export const exchangeEndpoints = {
   
   /** POST create exchange request */
   create: () => collections.exchangeRequests,
-  
-  /** DELETE exchange request (accept/reject/cancel) */
+
+  /** PATCH exchange request (e.g. status update) */
+  update: (_id: string) => `${collections.exchangeRequests}/${_id}`,
+
+  /** DELETE exchange request (reject/cancel) */
   delete: (_id: string) => `${collections.exchangeRequests}/${_id}`,
 };
 
@@ -257,8 +260,11 @@ export const loanEndpoints = {
   
   /** POST create loan request */
   create: () => collections.loanRequests,
-  
-  /** DELETE loan request (accept/reject/return) */
+
+  /** PATCH loan request (e.g. status update) */
+  update: (_id: string) => `${collections.loanRequests}/${_id}`,
+
+  /** DELETE loan request (reject/cancel) */
   delete: (_id: string) => `${collections.loanRequests}/${_id}`,
 };
 
@@ -273,7 +279,10 @@ export const purchaseEndpoints = {
   /** POST create purchase request */
   create: () => collections.purchaseRequests,
 
-  /** DELETE purchase request */
+  /** PATCH purchase request (e.g. status update) */
+  update: (_id: string) => `${collections.purchaseRequests}/${_id}`,
+
+  /** DELETE purchase request (reject/cancel) */
   delete: (_id: string) => `${collections.purchaseRequests}/${_id}`,
 };
 

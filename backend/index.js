@@ -233,6 +233,45 @@ app.get('/userproducts/:stuffierId', async (req, res) => {
   }
 });
 
+// =============================================================================
+// Accept loan request — marks item as on_loan and sets status to 'active'
+// POST /loan_requests/:id/accept
+// =============================================================================
+
+app.post('/loan_requests/:id/accept', async (req, res) => {
+  const requestId = req.params.id;
+  if (!requestId) {
+    return res.status(400).json({ error: 'Invalid request ID' });
+  }
+
+  try {
+    const db = await datastore.open();
+
+    const requests = [];
+    await db.getMany('loan_requests', { _id: requestId }).forEach(r => requests.push(r));
+    const loanReq = requests[0];
+    if (!loanReq) return res.status(404).json({ error: 'Loan request not found' });
+
+    // Mark the owner's user_items row as on_loan
+    const items = [];
+    await db.getMany('user_items', { user_id: loanReq.id_friend, item_id: loanReq.id_stuff }).forEach(r => items.push(r));
+    const item = items[0];
+    if (item?._id) {
+      await db.updateOne('user_items', { _id: item._id }, {
+        $set: { on_loan: true, loaned_to: loanReq.id_stuffier, loan_request_id: loanReq._id },
+      });
+    }
+
+    // Set status to 'active'
+    await db.updateOne('loan_requests', { _id: requestId }, { $set: { status: 'active' } });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('loan_requests/accept error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Re-enable Codehooks auto-REST API for all collections.
 // Without this line, deploying a codehooks-js function disables the built-in
 // CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.

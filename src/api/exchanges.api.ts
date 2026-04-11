@@ -52,13 +52,10 @@ export const deleteExchangeRequest = async (_id: string): Promise<void> => {
 };
 
 /**
- * Accept an exchange request
- * In the future, this could also swap ownership in stuffiers_stuff
- * For now, it just deletes the request (UI handles the swap)
+ * Accept an exchange request — changes status to 'accepted'
  */
 export const acceptExchangeRequest = async (_id: string): Promise<void> => {
-  // TODO: In future, implement actual product swap logic here
-  await deleteExchangeRequest(_id);
+  await apiClient.patch(exchangeEndpoints.update(_id), { status: 'accepted' });
 };
 
 /**
