@@ -169,12 +169,30 @@ export interface AddProductToUserInput {
 }
 
 /**
- * Add a product to a user's collection
+ * Add a product to a user's collection.
+ * If the user already owns this item, increments quantity instead of creating a duplicate row.
  */
 export const addProductToUser = async (data: AddProductToUserInput): Promise<UserItem> => {
+  // Check for existing row for this (user_id, item_id) pair
+  const existing = await apiClient.get<UserItem[]>(
+    `${stuffiersStuffEndpoints.listByUser(data.user_id)}`
+  ).then(r => r.data.find(row => row.item_id === data.item_id));
+
+  if (existing && (existing as UserItem & { _id: string })._id) {
+    // Increment quantity on the existing row
+    const existingWithId = existing as UserItem & { _id: string };
+    const currentQty = existing.quantity ?? 1;
+    const response = await apiClient.put<UserItem>(
+      stuffiersStuffEndpoints.update(existingWithId._id),
+      { ...existing, quantity: currentQty + 1 }
+    );
+    return response.data;
+  }
+
+  // No existing row — create a new one with quantity: 1
   const response = await apiClient.post<UserItem>(
     stuffiersStuffEndpoints.create(),
-    data
+    { ...data, quantity: 1 }
   );
   return response.data;
 };

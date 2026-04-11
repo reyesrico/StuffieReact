@@ -12,7 +12,8 @@ import {
   getProductsByCategory,
   getPendingProducts,
   createProduct,
-  updateProduct 
+  updateProduct,
+  addProductToUser,
 } from './products.api';
 import { apiClient } from './client';
 
@@ -152,6 +153,58 @@ describe('Products API', () => {
       const result = await updateProduct(1, updates);
       
       expect(result).toEqual(updatedProduct);
+    });
+  });
+
+  describe('addProductToUser', () => {
+    it('should POST new row with quantity:1 when user does not own the item yet', async () => {
+      const input = { user_id: 1, item_id: 99, asking_price: 10 };
+      const created = { _id: 'abc', user_id: 1, item_id: 99, asking_price: 10, quantity: 1 };
+
+      // First call: listByUser returns empty (user doesn't own item 99)
+      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: [] });
+      // Second call: POST returns the new row
+      vi.mocked(apiClient.post).mockResolvedValueOnce({ data: created });
+
+      const result = await addProductToUser(input);
+
+      expect(apiClient.post).toHaveBeenCalledTimes(1);
+      expect(apiClient.put).not.toHaveBeenCalled();
+      expect(result.quantity).toBe(1);
+    });
+
+    it('should PUT existing row with quantity+1 when user already owns the item', async () => {
+      const input = { user_id: 1, item_id: 3 };
+      const existingRow = { _id: 'existing-id', user_id: 1, item_id: 3, quantity: 1 };
+      const updatedRow = { ...existingRow, quantity: 2 };
+
+      // First call: listByUser returns the existing row
+      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: [existingRow] });
+      // Second call: PUT returns the updated row
+      vi.mocked(apiClient.put).mockResolvedValueOnce({ data: updatedRow });
+
+      const result = await addProductToUser(input);
+
+      expect(apiClient.post).not.toHaveBeenCalled();
+      expect(apiClient.put).toHaveBeenCalledTimes(1);
+      expect(result.quantity).toBe(2);
+    });
+
+    it('should treat missing quantity as 1 and produce quantity:2 on second add', async () => {
+      const input = { user_id: 1, item_id: 3 };
+      // Existing row has no quantity field (old DB rows)
+      const existingRow = { _id: 'existing-id', user_id: 1, item_id: 3 };
+      const updatedRow = { ...existingRow, quantity: 2 };
+
+      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: [existingRow] });
+      vi.mocked(apiClient.put).mockResolvedValueOnce({ data: updatedRow });
+
+      const result = await addProductToUser(input);
+
+      expect(result.quantity).toBe(2);
+      // Verify PUT was called with quantity:2 (1 + 1 since missing treated as 1)
+      const putCall = vi.mocked(apiClient.put).mock.calls[0];
+      expect(putCall[1]).toMatchObject({ quantity: 2 });
     });
   });
 });
