@@ -27,7 +27,7 @@ import type Category from '../../components/types/Category';
 export const useProducts = () => {
   const { user } = useContext(UserContext);
   const { data: categories } = useCategories();
-  
+
   return useQuery({
     queryKey: queryKeys.products.all(user?.id || 0),
     queryFn: async (): Promise<ProductsMap> => {
@@ -38,6 +38,7 @@ export const useProducts = () => {
     },
     enabled: !!(user?.id && categories?.length),
     staleTime: 1000 * 60 * 5, // 5 min — mutations invalidate on any change
+    refetchOnMount: true,     // always re-fetch on mount so empty cache doesn't get stuck
   });
 };
 

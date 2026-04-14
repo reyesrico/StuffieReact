@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -13,9 +14,15 @@ import { downloadCSV } from '../helpers/DownloadHelper';
 import { isProductsEmpty } from '../helpers/StuffHelper';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { useCategories, useProducts } from '../../hooks/queries';
+import { useCategories, useProducts, useLoanRequests, useExchangeRequests, usePurchaseRequests } from '../../hooks/queries';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
+import { getProductsByIds } from '../../api/products.api';
+import { getUsersByIds } from '../../api/users.api';
 import { CheckmarkCircle20Regular, Box20Regular } from '@fluentui/react-icons';
+import type LoanRequest from '../types/LoanRequest';
+import type ExchangeRequest from '../types/ExchangeRequest';
+import type PurchaseRequest from '../types/PurchaseRequest';
+import type User from '../types/User';
 
 import './Products.scss';
 
@@ -53,6 +60,79 @@ const Products = () => {
 
   const { data: categories = [] } = useCategories();
   const { data: products = {}, refetch: refreshProductsQuery, isFetching: isRefreshing } = useProducts();
+  const { data: loanRequests = [] } = useLoanRequests();
+  const { data: exchangeRequests = [] } = useExchangeRequests();
+  const { data: purchaseRequests = [] } = usePurchaseRequests();
+
+  // Active loans where I am the borrower (id_friend = me)
+  const activeBorrowedLoans = loanRequests.filter(
+    (r: LoanRequest) => r.id_friend === user?.id && r.status === 'active'
+  );
+  const borrowedItemIds = activeBorrowedLoans.map((r: LoanRequest) => ({ id: r.id_stuff }));
+  const borrowedOwnerIds = activeBorrowedLoans.map((r: LoanRequest) => ({ id: r.id_stuffier }));
+
+  // Active loans where I am the owner/lender (id_stuffier = me)
+  const activeLoanedOutLoans = loanRequests.filter(
+    (r: LoanRequest) => r.id_stuffier === user?.id && r.status === 'active'
+  );
+  const loanedOutBorrowerIds = activeLoanedOutLoans.map((r: LoanRequest) => ({ id: r.id_friend }));
+
+  const { data: borrowedProducts = [] } = useQuery<ProductType[]>({
+    queryKey: ['borrowedProducts', borrowedItemIds.map((i: { id: number }) => i.id)],
+    queryFn: () => getProductsByIds(borrowedItemIds),
+    enabled: borrowedItemIds.length > 0,
+  });
+
+  const { data: borrowedOwners = [] } = useQuery<User[]>({
+    queryKey: ['borrowedOwners', borrowedOwnerIds.map((i: { id: number }) => i.id)],
+    queryFn: () => getUsersByIds(borrowedOwnerIds),
+    enabled: borrowedOwnerIds.length > 0,
+  });
+
+  const { data: loanedOutBorrowers = [] } = useQuery<User[]>({
+    queryKey: ['loanedOutBorrowers', loanedOutBorrowerIds.map((i: { id: number }) => i.id)],
+    queryFn: () => getUsersByIds(loanedOutBorrowerIds),
+    enabled: loanedOutBorrowerIds.length > 0,
+  });
+
+  // Accepted exchanges where I am the owner (id_stuffier = me) — my product being physically traded
+  const acceptedOwnerExchanges = exchangeRequests.filter(
+    (r: ExchangeRequest) => r.id_stuffier === user?.id && r.status === 'accepted'
+  );
+  // Accepted exchanges where I am the requester (id_friend = me) — my offered product is in trade
+  const acceptedRequesterExchanges = exchangeRequests.filter(
+    (r: ExchangeRequest) => r.id_friend === user?.id && r.status === 'accepted'
+  );
+  // Completed exchanges where I am the requester — I received id_stuff (the owner's product)
+  const completedRequesterExchanges = exchangeRequests.filter(
+    (r: ExchangeRequest) => r.id_friend === user?.id && r.status === 'completed'
+  );
+  // Completed exchanges where I am the owner — I received id_friend_stuff (the requester's product)
+  const completedOwnerExchanges = exchangeRequests.filter(
+    (r: ExchangeRequest) => r.id_stuffier === user?.id && r.status === 'completed'
+  );
+  const exchangeCounterpartIds = [
+    ...acceptedOwnerExchanges.map((r: ExchangeRequest) => ({ id: r.id_friend })),
+    ...acceptedRequesterExchanges.map((r: ExchangeRequest) => ({ id: r.id_stuffier })),
+    ...completedRequesterExchanges.map((r: ExchangeRequest) => ({ id: r.id_stuffier })),
+    ...completedOwnerExchanges.map((r: ExchangeRequest) => ({ id: r.id_friend })),
+  ];
+  const { data: exchangeCounterparts = [] } = useQuery<User[]>({
+    queryKey: ['exchangeCounterparts', exchangeCounterpartIds.map((x: { id: number }) => x.id)],
+    queryFn: () => getUsersByIds(exchangeCounterpartIds),
+    enabled: exchangeCounterpartIds.length > 0,
+  });
+
+  // Completed purchases where I am the buyer (id_friend = me) — item is now mine
+  const completedPurchases = purchaseRequests.filter(
+    (r: PurchaseRequest) => r.id_friend === user?.id && r.status === 'completed'
+  );
+  const purchaseSellerIds = completedPurchases.map((r: PurchaseRequest) => ({ id: r.id_stuffier }));
+  const { data: purchaseSellers = [] } = useQuery<User[]>({
+    queryKey: ['purchaseSellers', purchaseSellerIds.map((x: { id: number }) => x.id)],
+    queryFn: () => getUsersByIds(purchaseSellerIds),
+    enabled: purchaseSellerIds.length > 0,
+  });
 
   usePullToRefresh(refreshProductsQuery);
 
@@ -121,13 +201,98 @@ const Products = () => {
               <div key={category.id}>
                 <h4 className="products__subheader">{category.name}</h4>
                 <div className="products__grid">
-                  {map(products[category.id as number], (product: ProductType) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
+                  {map(products[category.id as number], (product: ProductType) => {
+                    const loanOut = activeLoanedOutLoans.find((r: LoanRequest) => r.id_stuff === product.id);
+                    const borrower = loanOut ? loanedOutBorrowers.find((u: User) => u.id === loanOut.id_friend) : undefined;
+                    const borrowerName = borrower ? `${borrower.first_name} ${borrower.last_name}` : undefined;
+
+                    // Accepted: reyesrico owns Zelda (id_stuff) in trade
+                    const ownerExchange = !loanOut ? acceptedOwnerExchanges.find((r: ExchangeRequest) => r.id_stuff === product.id) : undefined;
+                    // Accepted: chiquitonet offering Mario Kart (id_friend_stuff) in trade
+                    const requesterExchange = !loanOut && !ownerExchange ? acceptedRequesterExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === product.id) : undefined;
+                    // Completed: chiquitonet received Zelda (id_stuff) from owner
+                    const completedReceived = !loanOut && !ownerExchange && !requesterExchange
+                      ? completedRequesterExchanges.find((r: ExchangeRequest) => r.id_stuff === product.id)
+                      : undefined;
+                    // Completed: reyesrico received Mario Kart (id_friend_stuff) from requester
+                    const completedGiven = !loanOut && !ownerExchange && !requesterExchange && !completedReceived
+                      ? completedOwnerExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === product.id)
+                      : undefined;
+
+                    const activeExchange = ownerExchange ?? requesterExchange;
+                    const completedExchange = completedReceived ?? completedGiven;
+                    const exchangeCounterpart = ownerExchange
+                      ? exchangeCounterparts.find((u: User) => u.id === ownerExchange.id_friend)
+                      : requesterExchange
+                      ? exchangeCounterparts.find((u: User) => u.id === requesterExchange.id_stuffier)
+                      : completedReceived
+                      ? exchangeCounterparts.find((u: User) => u.id === completedReceived.id_stuffier)
+                      : completedGiven
+                      ? exchangeCounterparts.find((u: User) => u.id === completedGiven.id_friend)
+                      : undefined;
+                    const exchangeCounterpartName = exchangeCounterpart ? `${exchangeCounterpart.first_name} ${exchangeCounterpart.last_name}` : undefined;
+
+                    const boughtPurchase = !loanOut && !activeExchange && !completedExchange
+                      ? completedPurchases.find((r: PurchaseRequest) => r.id_stuff === product.id)
+                      : undefined;
+                    const purchaseSeller = boughtPurchase
+                      ? purchaseSellers.find((u: User) => u.id === boughtPurchase.id_stuffier)
+                      : undefined;
+                    const purchaseSellerName = purchaseSeller ? `${purchaseSeller.first_name} ${purchaseSeller.last_name}` : undefined;
+
+                    const tag = loanOut
+                      ? t('products.loaned')
+                      : activeExchange
+                      ? t('products.beingTraded')
+                      : completedExchange
+                      ? t('products.traded')
+                      : boughtPurchase
+                      ? t('products.bought')
+                      : undefined;
+                    const navState = loanOut
+                      ? { loanInfo: { loanedTo: borrowerName } }
+                      : activeExchange
+                      ? { exchangeInfo: { tradingWith: exchangeCounterpartName } }
+                      : completedExchange
+                      ? { exchangeInfo: { tradedWith: exchangeCounterpartName } }
+                      : boughtPurchase
+                      ? { purchaseInfo: { boughtFrom: purchaseSellerName, cost: boughtPurchase.cost } }
+                      : undefined;
+
+                    return (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        tag={tag}
+                        navigationState={navState}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      {activeBorrowedLoans.length > 0 && (
+        <div>
+          <h4 className="products__subheader">{t('products.borrowedSection')}</h4>
+          <div className="products__grid">
+            {borrowedProducts.map((product: ProductType) => {
+              const loan = activeBorrowedLoans.find((r: LoanRequest) => r.id_stuff === product.id);
+              const owner = borrowedOwners.find((u: User) => u.id === loan?.id_stuffier);
+              const ownerName = owner ? `${owner.first_name} ${owner.last_name}` : undefined;
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  tag={t('products.borrowed')}
+                  navigationState={{ loanInfo: { borrowedFrom: ownerName } }}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

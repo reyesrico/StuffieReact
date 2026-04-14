@@ -34,6 +34,9 @@ const Product = (props: any) => {
   // friendId in location state means we arrived from a friend's profile
   const friendId: number | undefined = (location.state as any)?.friendId;
   const productFromState: any = (location.state as any)?.product;
+  const loanInfo: { borrowedFrom?: string; loanedTo?: string } | undefined = (location.state as any)?.loanInfo;
+  const exchangeInfo: { tradingWith?: string; tradedWith?: string } | undefined = (location.state as any)?.exchangeInfo;
+  const purchaseInfo: { boughtFrom?: string; cost?: number } | undefined = (location.state as any)?.purchaseInfo;
   const isFriendProduct = !!friendId;
   
   // React Query hooks
@@ -169,7 +172,37 @@ const Product = (props: any) => {
       <hr />
       <div>{t('product.categoryLabel')}{ category && category.name }</div>
       <div>{t('product.subcategoryLabel')}{ subcategory && subcategory.name }</div>
-      {!isFriendProduct && renderCost()}
+      {loanInfo?.borrowedFrom && (
+        <div className="product__borrowed-info">
+          {t('products.borrowedFrom', { name: loanInfo.borrowedFrom })}
+        </div>
+      )}
+      {loanInfo?.loanedTo && (
+        <div className="product__borrowed-info">
+          {t('products.loanedTo', { name: loanInfo.loanedTo })}
+        </div>
+      )}
+      {exchangeInfo?.tradingWith && (
+        <div className="product__borrowed-info">
+          {t('products.tradingWith', { name: exchangeInfo.tradingWith })}
+        </div>
+      )}
+      {exchangeInfo?.tradedWith && (
+        <div className="product__borrowed-info">
+          {t('products.tradedWith', { name: exchangeInfo.tradedWith })}
+        </div>
+      )}
+      {purchaseInfo?.boughtFrom && (
+        <div className="product__borrowed-info">
+          {t('products.boughtFrom', { name: purchaseInfo.boughtFrom })}
+        </div>
+      )}
+      {purchaseInfo?.cost != null && (
+        <div className="product__borrowed-info">
+          {t('products.boughtFor', { amount: purchaseInfo.cost })}
+        </div>
+      )}
+      {!isFriendProduct && !loanInfo && !exchangeInfo && renderCost()}
 
       {isFriendProduct && (
         <div className="product__actions">

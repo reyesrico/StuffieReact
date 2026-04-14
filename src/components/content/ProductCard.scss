@@ -58,6 +58,22 @@
   gap: var(--spacing-1);
 }
 
+.product-card__tag {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  align-self: flex-start;
+
+  [data-theme="dark"] & {
+    background-color: rgba(33, 150, 243, 0.18);
+    color: #90CAF9;
+  }
+}
+
 .product-card__name {
   font-size: var(--font-size-sm);
   font-weight: 600;

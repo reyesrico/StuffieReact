@@ -44,6 +44,24 @@
   }
 }
 
+.product__borrowed-info {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  background-color: var(--color-primary-100);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  margin: var(--spacing-2) 0;
+
+  [data-theme="dark"] & {
+    background-color: rgba(33, 150, 243, 0.18);
+    color: #90CAF9;
+  }
+}
+
 .product__cost {
   display: flex;
   flex-direction: column;

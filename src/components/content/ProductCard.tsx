@@ -13,10 +13,11 @@ import './ProductCard.scss';
 
 interface ProductCardProps {
   product: ProductType;
-  navigationState?: { friendId?: number; product?: ProductType; breadcrumb: BreadcrumbItem[] };
+  tag?: string;
+  navigationState?: { friendId?: number; product?: ProductType; breadcrumb?: BreadcrumbItem[]; loanInfo?: { borrowedFrom?: string; loanedTo?: string }; exchangeInfo?: { tradingWith?: string; tradedWith?: string }; purchaseInfo?: { boughtFrom?: string; cost?: number } };
 }
 
-const ProductCard = ({ product, navigationState }: ProductCardProps) => {
+const ProductCard = ({ product, tag, navigationState }: ProductCardProps) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: categories = [] } = useCategories();
@@ -49,6 +50,7 @@ const ProductCard = ({ product, navigationState }: ProductCardProps) => {
         />
       </div>
       <div className="product-card__info">
+        {tag && <span className="product-card__tag">{tag}</span>}
         <div className="product-card__name">{product.name}</div>
         {category && (
           <div className="product-card__category">{category.name}</div>

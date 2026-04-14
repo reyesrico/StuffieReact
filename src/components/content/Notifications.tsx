@@ -333,9 +333,9 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(requesterProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.theyOffer')}{get(requesterProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.from')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.theyWant')}{get(ownerProduct, 'name')}</div>
                         </div>
                         <div className="notifications__request-buttons">
                           <div className="notifications__request-button">
@@ -363,9 +363,9 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(requesterProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.theyOffer')}{get(requesterProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.from')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.theyWant')}{get(ownerProduct, 'name')}</div>
                         </div>
                         <div className="notifications__request-buttons">
                           <div className="notifications__request-button">
@@ -393,9 +393,9 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(myProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.youOffer')}{get(myProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.to')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.youWant')}{get(ownerProduct, 'name')}</div>
                           <span className="notifications__status-badge">{t('notifications.pendingResponse')}</span>
                         </div>
                         <div className="notifications__request-buttons">
@@ -421,9 +421,9 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
-                          <div className="notifications__request-text">{t('products.productLabel')}{get(myProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.youOffer')}{get(myProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.to')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.youWant')}{get(ownerProduct, 'name')}</div>
                           <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.ownerAgreed')}</span>
                         </div>
                         <div className="notifications__request-buttons">
@@ -445,12 +445,15 @@ const Notifications = () => {
       })()}
 
       {effectiveTab === 'loan' && (() => {
-        const incoming = activeLoans.filter((r: LoanRequest) => r.id_friend === user.id);
-        const outgoing = activeLoans.filter((r: LoanRequest) => r.id_stuffier === user.id);
+        // id_stuffier = owner (receives the borrow request = incoming)
+        // id_friend = borrower (sent the request = outgoing)
+        const incoming = activeLoans.filter((r: LoanRequest) => r.id_stuffier === user.id);
+        const outgoing = activeLoans.filter((r: LoanRequest) => r.id_friend === user.id);
         const incomingPending = incoming.filter((r: LoanRequest) => r.status === 'pending');
         const incomingActive = incoming.filter((r: LoanRequest) => ['active', 'return_requested'].includes(r.status));
         const outgoingPending = outgoing.filter((r: LoanRequest) => r.status === 'pending');
         const outgoingActive = outgoing.filter((r: LoanRequest) => r.status === 'active');
+        const outgoingReturnRequested = outgoing.filter((r: LoanRequest) => r.status === 'return_requested');
         if (!activeLoans.length) return null;
         return (
           <div className="notifications__section">
@@ -459,7 +462,7 @@ const Notifications = () => {
                 <div className="notifications__subsection-label">{t('notifications.incoming')}</div>
                 <ul>
                   {incomingPending.map((request: LoanRequest, index: number) => {
-                    const borrower = friends.find((f: User) => f.id === request.id_stuffier);
+                    const borrower = friends.find((f: User) => f.id === request.id_friend);
                     const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
                     return (
                       // eslint-disable-next-line react/no-array-index-key
@@ -487,7 +490,7 @@ const Notifications = () => {
                 <div className="notifications__subsection-label">{t('notifications.activeLoan')}</div>
                 <ul>
                   {incomingActive.map((request: LoanRequest, index: number) => {
-                    const borrower = friends.find((f: User) => f.id === request.id_stuffier);
+                    const borrower = friends.find((f: User) => f.id === request.id_friend);
                     const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
                     const isReturnRequested = request.status === 'return_requested';
                     return (
@@ -496,13 +499,18 @@ const Notifications = () => {
                         <div className="notifications__request-group">
                           <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
                           <div className="notifications__request-text">{t('notifications.loanedTo')}{borrower ? `${borrower.first_name} ${borrower.last_name}` : t('products.unknown')}</div>
-                          {isReturnRequested && <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.arrangeReturn')}</span>}
+                          {isReturnRequested
+                            ? <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.arrangeReturn')}</span>
+                            : <span className="notifications__status-badge">{t('notifications.waitingBorrowerReturn')}</span>
+                          }
                         </div>
-                        <div className="notifications__request-buttons">
-                          <div className="notifications__request-button">
-                            <Button onClick={() => executeCompleteLoan(request._id)} text={t('notifications.confirmReturned')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                        {isReturnRequested && (
+                          <div className="notifications__request-buttons">
+                            <div className="notifications__request-button">
+                              <Button onClick={() => executeCompleteLoan(request._id)} text={t('notifications.confirmReturned')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                            </div>
                           </div>
-                        </div>
+                        )}
                       </li>
                     );
                   })}
@@ -514,7 +522,7 @@ const Notifications = () => {
                 <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>
                 <ul>
                   {outgoingPending.map((request: LoanRequest, index: number) => {
-                    const owner = friends.find((f: User) => f.id === request.id_friend);
+                    const owner = friends.find((f: User) => f.id === request.id_stuffier);
                     const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
                     return (
                       // eslint-disable-next-line react/no-array-index-key
@@ -540,7 +548,7 @@ const Notifications = () => {
                 {!outgoingPending.length && <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>}
                 <ul>
                   {outgoingActive.map((request: LoanRequest, index: number) => {
-                    const owner = friends.find((f: User) => f.id === request.id_friend);
+                    const owner = friends.find((f: User) => f.id === request.id_stuffier);
                     const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
                     return (
                       // eslint-disable-next-line react/no-array-index-key
@@ -554,6 +562,27 @@ const Notifications = () => {
                           <div className="notifications__request-button">
                             <Button onClick={() => executeRequestReturnLoan(request._id)} text={t('notifications.returnItem')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
                           </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingReturnRequested.length > 0 && (
+              <>
+                {!outgoingPending.length && !outgoingActive.length && <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>}
+                <ul>
+                  {outgoingReturnRequested.map((request: LoanRequest, index: number) => {
+                    const owner = friends.find((f: User) => f.id === request.id_stuffier);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.borrowedFrom')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <span className="notifications__status-badge">{t('notifications.waitingOwnerConfirm')}</span>
                         </div>
                       </li>
                     );
@@ -586,7 +615,7 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.from')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
                           <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
                           <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
                         </div>
@@ -615,7 +644,7 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.from')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
                           <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
                           <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
                         </div>
@@ -644,7 +673,7 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.to')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
                           <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
                           <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
                           <span className="notifications__status-badge">{t('notifications.pendingResponse')}</span>
@@ -671,15 +700,12 @@ const Notifications = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       <li className="notifications__request" key={index}>
                         <div className="notifications__request-group">
-                          <div className="notifications__request-text">{t('products.requestorLabel')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('notifications.to')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
                           <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
                           <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
-                          <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.ownerAgreed')}</span>
+                          <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.waitingSellerConfirm')}</span>
                         </div>
                         <div className="notifications__request-buttons">
-                          <div className="notifications__request-button">
-                            <Button onClick={() => executeCompletePurchase(request._id)} text={t('notifications.confirmTransaction')} size="sm" variant="outline" loading={pendingPurchaseId === request._id} />
-                          </div>
                           <div className="notifications__request-button">
                             <Button onClick={() => executeDeletePurchase(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
                           </div>

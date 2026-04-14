@@ -253,12 +253,13 @@ app.post('/loan_requests/:id/accept', async (req, res) => {
     if (!loanReq) return res.status(404).json({ error: 'Loan request not found' });
 
     // Mark the owner's user_items row as on_loan
+    // id_stuffier = owner (lender), id_friend = borrower
     const items = [];
-    await db.getMany('user_items', { user_id: loanReq.id_friend, item_id: loanReq.id_stuff }).forEach(r => items.push(r));
+    await db.getMany('user_items', { user_id: loanReq.id_stuffier, item_id: loanReq.id_stuff }).forEach(r => items.push(r));
     const item = items[0];
     if (item?._id) {
       await db.updateOne('user_items', { _id: item._id }, {
-        $set: { on_loan: true, loaned_to: loanReq.id_stuffier, loan_request_id: loanReq._id },
+        $set: { on_loan: true, loaned_to: loanReq.id_friend, loan_request_id: loanReq._id },
       });
     }
 
@@ -435,7 +436,8 @@ app.post('/loan_requests/:id/complete', async (req, res) => {
       return res.status(409).json({ error: 'Loan must be active or return_requested to complete' });
     }
 
-    const ownerId = loanReq.id_friend;
+    // id_stuffier = owner (lender), id_friend = borrower
+    const ownerId = loanReq.id_stuffier;
     const itemId  = loanReq.id_stuff;
 
     // Restore owner's user_items row
