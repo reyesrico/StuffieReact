@@ -316,7 +316,7 @@ app.post('/purchase_requests/:id/complete', async (req, res) => {
       const qty = buyerRow.quantity ?? 1;
       await db.updateOne('user_items', { _id: buyerRow._id }, { $set: { quantity: qty + 1 } });
     } else {
-      await db.insert('user_items', { user_id: buyerId, item_id: itemId, asking_price: cost, quantity: 1 });
+      await db.insertOne('user_items', { user_id: buyerId, item_id: itemId, asking_price: cost, quantity: 1 });
     }
 
     // 3. Mark request completed
@@ -380,7 +380,7 @@ app.post('/exchange_requests/:id/complete', async (req, res) => {
     if (aRowY) {
       await db.updateOne('user_items', { _id: aRowY._id }, { $set: { quantity: (aRowY.quantity ?? 1) + 1 } });
     } else {
-      await db.insert('user_items', { user_id: userA, item_id: itemY, asking_price: priceY, quantity: 1 });
+      await db.insertOne('user_items', { user_id: userA, item_id: itemY, asking_price: priceY, quantity: 1 });
     }
 
     // 5. Remove Y from B
@@ -399,7 +399,7 @@ app.post('/exchange_requests/:id/complete', async (req, res) => {
     if (bRowX) {
       await db.updateOne('user_items', { _id: bRowX._id }, { $set: { quantity: (bRowX.quantity ?? 1) + 1 } });
     } else {
-      await db.insert('user_items', { user_id: userB, item_id: itemX, asking_price: priceX, quantity: 1 });
+      await db.insertOne('user_items', { user_id: userB, item_id: itemX, asking_price: priceX, quantity: 1 });
     }
 
     // 7. Mark request completed
