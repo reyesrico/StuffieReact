@@ -36,7 +36,7 @@ export const createExchangeRequest = async (
 ): Promise<ExchangeRequest> => {
   const response = await apiClient.post<ExchangeRequest>(
     exchangeEndpoints.create(), 
-    data
+    { ...data, status: 'pending' }
   );
   return response.data;
 };

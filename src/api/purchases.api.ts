@@ -32,7 +32,7 @@ export interface CreatePurchaseInput {
  * Create a new purchase request
  */
 export const createPurchaseRequest = async (data: CreatePurchaseInput): Promise<PurchaseRequest> => {
-  const response = await apiClient.post<PurchaseRequest>(purchaseEndpoints.create(), data);
+  const response = await apiClient.post<PurchaseRequest>(purchaseEndpoints.create(), { ...data, status: 'pending' });
   return response.data;
 };
 

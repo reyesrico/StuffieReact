@@ -31,7 +31,7 @@ export interface CreateLoanInput {
  * Create a new loan request
  */
 export const createLoanRequest = async (data: CreateLoanInput): Promise<LoanRequest> => {
-  const response = await apiClient.post<LoanRequest>(loanEndpoints.create(), data);
+  const response = await apiClient.post<LoanRequest>(loanEndpoints.create(), { ...data, status: 'pending' });
   return response.data;
 };
 
