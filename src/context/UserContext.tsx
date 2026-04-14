@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import User from '../components/types/User';
+import { queryClient } from './QueryProvider';
 
 interface UserContextType {
   user: any;
@@ -67,6 +68,9 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     localStorage.removeItem('stuffie-user');
     localStorage.removeItem('stuffie-session');
     localStorage.removeItem('username');
+    // Bust the persisted React Query cache so stale data never carries over
+    localStorage.removeItem('stuffie-cache');
+    queryClient.clear();
   };
 
   return (
