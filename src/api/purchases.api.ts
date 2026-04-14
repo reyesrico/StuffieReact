@@ -52,3 +52,24 @@ export const deletePurchaseRequest = async (_id: string): Promise<void> => {
 export const acceptPurchaseRequest = async (_id: string): Promise<void> => {
   await apiClient.patch(purchaseEndpoints.update(_id), { status: 'accepted' });
 };
+
+/**
+ * Reject a purchase request
+ */
+export const rejectPurchaseRequest = async (_id: string): Promise<void> => {
+  await deletePurchaseRequest(_id);
+};
+
+/**
+ * Cancel a purchase request (by the buyer)
+ */
+export const cancelPurchaseRequest = async (_id: string): Promise<void> => {
+  await deletePurchaseRequest(_id);
+};
+
+/**
+ * Complete a purchase — triggers ownership transfer on the backend
+ */
+export const completePurchaseRequest = async (_id: string): Promise<void> => {
+  await apiClient.post(`purchase_requests/${_id}/complete`, {});
+};

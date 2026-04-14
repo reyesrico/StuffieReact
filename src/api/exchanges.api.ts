@@ -72,6 +72,13 @@ export const cancelExchangeRequest = async (_id: string): Promise<void> => {
   await deleteExchangeRequest(_id);
 };
 
+/**
+ * Complete an exchange — triggers ownership swap on the backend
+ */
+export const completeExchangeRequest = async (_id: string): Promise<void> => {
+  await apiClient.post(`exchange_requests/${_id}/complete`, {});
+};
+
 // Export all functions
 export const exchangesApi = {
   list: getExchangeRequests,

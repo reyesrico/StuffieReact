@@ -46,18 +46,22 @@ import {
   createExchangeRequest,
   deleteExchangeRequest,
   acceptExchangeRequest,
+  completeExchangeRequest,
   type CreateExchangeInput,
 } from '../../api/exchanges.api';
 import {
   createLoanRequest,
   deleteLoanRequest,
   acceptLoanRequest,
+  requestReturnLoan,
+  completeLoanRequest,
   type CreateLoanInput,
 } from '../../api/loans.api';
 import {
   createPurchaseRequest,
   deletePurchaseRequest,
   acceptPurchaseRequest,
+  completePurchaseRequest,
   type CreatePurchaseInput,
 } from '../../api/purchases.api';
 
@@ -430,6 +434,24 @@ export const useAcceptExchange = () => {
   });
 };
 
+/**
+ * Complete exchange — triggers ownership swap on the backend
+ */
+export const useCompleteExchange = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => completeExchangeRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.exchanges.all(user.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all(user.id) });
+      }
+    },
+  });
+};
+
 // ============ LOAN MUTATIONS ============
 
 /**
@@ -491,6 +513,41 @@ export const useAcceptLoan = () => {
   });
 };
 
+/**
+ * Request return of a loaned item (borrower signals returning)
+ */
+export const useRequestReturnLoan = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => requestReturnLoan(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.loans.all(user.id) });
+      }
+    },
+  });
+};
+
+/**
+ * Complete a loan — owner confirms item returned, restores on_loan flags
+ */
+export const useCompleteLoan = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => completeLoanRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.loans.all(user.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all(user.id) });
+      }
+    },
+  });
+};
+
 // ============ PURCHASE MUTATIONS ============
 
 /**
@@ -545,6 +602,24 @@ export const useAcceptPurchase = () => {
         queryClient.invalidateQueries({
           queryKey: queryKeys.purchases.all(user.id),
         });
+      }
+    },
+  });
+};
+
+/**
+ * Complete a purchase — triggers ownership transfer on the backend
+ */
+export const useCompletePurchase = () => {
+  const queryClient = useQueryClient();
+  const { user } = useContext(UserContext);
+
+  return useMutation({
+    mutationFn: (_id: string) => completePurchaseRequest(_id),
+    onSuccess: () => {
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.purchases.all(user.id) });
+        queryClient.invalidateQueries({ queryKey: queryKeys.products.all(user.id) });
       }
     },
   });

@@ -67,11 +67,17 @@ export const cancelLoanRequest = async (_id: string): Promise<void> => {
 };
 
 /**
- * Return a loaned item
+ * Return a loaned item — borrower signals they are returning it
  */
-export const returnLoanedItem = async (_id: string): Promise<void> => {
-  // TODO: In future, could mark product as "returned"
-  await deleteLoanRequest(_id);
+export const requestReturnLoan = async (_id: string): Promise<void> => {
+  await apiClient.patch(loanEndpoints.update(_id), { status: 'return_requested' });
+};
+
+/**
+ * Complete a loan — owner confirms item was returned, restores ownership flags
+ */
+export const completeLoanRequest = async (_id: string): Promise<void> => {
+  await apiClient.post(`loan_requests/${_id}/complete`, {});
 };
 
 // Export all functions
@@ -82,7 +88,8 @@ export const loansApi = {
   accept: acceptLoanRequest,
   reject: rejectLoanRequest,
   cancel: cancelLoanRequest,
-  return: returnLoanedItem,
+  requestReturn: requestReturnLoan,
+  complete: completeLoanRequest,
 };
 
 export default loansApi;

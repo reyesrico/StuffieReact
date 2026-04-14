@@ -18,13 +18,9 @@ import type Friendship from '../../components/types/Friendship';
 
 export const useNotifications = () => {
   const { data: friends = [], isLoading: friendsLoading } = useFriends();
-  const { data: rawExchangeRequests = [], isLoading: exchangeLoading } = useExchangeRequests();
-  const { data: rawLoanRequests = [], isLoading: loanLoading } = useLoanRequests();
-  const { data: rawPurchaseRequests = [], isLoading: purchaseLoading } = usePurchaseRequests();
-
-  const exchangeRequests = useMemo(() => rawExchangeRequests.filter((r: any) => r.status === 'pending'), [rawExchangeRequests]);
-  const loanRequests = useMemo(() => rawLoanRequests.filter((r: any) => r.status === 'pending'), [rawLoanRequests]);
-  const purchaseRequests = useMemo(() => rawPurchaseRequests.filter((r: any) => r.status === 'pending'), [rawPurchaseRequests]);
+  const { data: exchangeRequests = [], isLoading: exchangeLoading } = useExchangeRequests();
+  const { data: loanRequests = [], isLoading: loanLoading } = useLoanRequests();
+  const { data: purchaseRequests = [], isLoading: purchaseLoading } = usePurchaseRequests();
   const { data: rawFriendRequests = [], isLoading: friendReqLoading } = useFriendRequests();
   const { data: rawSentRequests = [], isLoading: sentReqLoading } = useSentFriendRequests();
 
@@ -88,9 +84,9 @@ export const useNotifications = () => {
     (productIds.length > 0 && productsLoading);
 
   const totalRequests =
-    exchangeRequests.length +
-    loanRequests.length +
-    purchaseRequests.length +
+    exchangeRequests.filter((r: any) => ['pending', 'accepted'].includes(r.status)).length +
+    loanRequests.filter((r: any) => ['pending', 'active', 'return_requested'].includes(r.status)).length +
+    purchaseRequests.filter((r: any) => ['pending', 'accepted'].includes(r.status)).length +
     friendRequests.length +        // filtered (optimistic)
     rawSentRequests.length;
 

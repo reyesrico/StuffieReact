@@ -110,7 +110,8 @@ export {
   acceptLoanRequest,
   rejectLoanRequest,
   cancelLoanRequest,
-  returnLoanedItem,
+  requestReturnLoan,
+  completeLoanRequest,
 } from './loans.api';
 
 // Types re-exports for convenience

@@ -14,7 +14,7 @@ import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { default as ProductType } from '../types/Product';
 import UserContext from '../../context/UserContext';
-import { useDeleteExchange, useDeleteLoan, useDeletePurchase, useAcceptExchange, useAcceptLoan, useAcceptPurchase, useAcceptFriendRequest, useRejectFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
+import { useDeleteExchange, useDeleteLoan, useDeletePurchase, useAcceptExchange, useAcceptLoan, useAcceptPurchase, useCompleteExchange, useCompleteLoan, useRequestReturnLoan, useCompletePurchase, useAcceptFriendRequest, useRejectFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
 import { useNotifications } from '../../hooks/queries/useNotifications';
 
 import './Notifications.scss';
@@ -45,6 +45,10 @@ const Notifications = () => {
   const acceptExchangeMutation = useAcceptExchange();
   const acceptLoanMutation = useAcceptLoan();
   const acceptPurchaseMutation = useAcceptPurchase();
+  const completeExchangeMutation = useCompleteExchange();
+  const completeLoanMutation = useCompleteLoan();
+  const requestReturnLoanMutation = useRequestReturnLoan();
+  const completePurchaseMutation = useCompletePurchase();
   const acceptFriendMutation = useAcceptFriendRequest();
   const rejectFriendMutation = useRejectFriendRequest();
   const cancelFriendMutation = useCancelFriendRequest();
@@ -169,6 +173,70 @@ const Notifications = () => {
     });
   };
 
+  const executeCompleteExchange = (_id: string) => {
+    setPendingExchangeId(_id);
+    completeExchangeMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('notifications.completeSuccess'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingExchangeId(null);
+      },
+      onError: () => {
+        setMessage(t('notifications.completeFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingExchangeId(null);
+      },
+    });
+  };
+
+  const executeRequestReturnLoan = (_id: string) => {
+    setPendingLoanId(_id);
+    requestReturnLoanMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('notifications.returnRequested'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingLoanId(null);
+      },
+      onError: () => {
+        setMessage(t('notifications.completeFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingLoanId(null);
+      },
+    });
+  };
+
+  const executeCompleteLoan = (_id: string) => {
+    setPendingLoanId(_id);
+    completeLoanMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('notifications.completeSuccess'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingLoanId(null);
+      },
+      onError: () => {
+        setMessage(t('notifications.completeFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingLoanId(null);
+      },
+    });
+  };
+
+  const executeCompletePurchase = (_id: string) => {
+    setPendingPurchaseId(_id);
+    completePurchaseMutation.mutate(_id, {
+      onSuccess: () => {
+        setMessage(t('notifications.completeSuccess'));
+        setType(WarningMessageType.SUCCESSFUL);
+        setPendingPurchaseId(null);
+      },
+      onError: () => {
+        setMessage(t('notifications.completeFailed'));
+        setType(WarningMessageType.ERROR);
+        setPendingPurchaseId(null);
+      },
+    });
+  };
+
   const executeFriendRequest = (friend: User, isAccepted: boolean) => {
     if (!friend.id || !user.id || pendingFriendId !== null) return;
     const name = `${friend.first_name} ${friend.last_name}`;
@@ -188,11 +256,15 @@ const Notifications = () => {
     });
   };
 
+  const activeExchanges = exchangeRequests.filter((r: ExchangeRequest) => ['pending', 'accepted'].includes(r.status));
+  const activeLoans = loanRequests.filter((r: LoanRequest) => ['pending', 'active', 'return_requested'].includes(r.status));
+  const activePurchases = purchaseRequests.filter((r: PurchaseRequest) => ['pending', 'accepted'].includes(r.status));
+
   const tabsWithData: NotifTab[] = [
     ...((friendRequests.length || sentFriendRequests.length) ? ['friends' as NotifTab] : []),
-    ...(Array.isArray(purchaseRequests) && purchaseRequests.length ? ['buy' as NotifTab] : []),
-    ...(Array.isArray(exchangeRequests) && exchangeRequests.length ? ['exchange' as NotifTab] : []),
-    ...(Array.isArray(loanRequests) && loanRequests.length ? ['loan' as NotifTab] : []),
+    ...(activePurchases.length ? ['buy' as NotifTab] : []),
+    ...(activeExchanges.length ? ['exchange' as NotifTab] : []),
+    ...(activeLoans.length ? ['loan' as NotifTab] : []),
   ];
   const effectiveTab: NotifTab = tabsWithData.includes(activeTab) ? activeTab : (tabsWithData[0] ?? 'exchange');
 
@@ -215,9 +287,9 @@ const Notifications = () => {
         <div className="notifications__tabs">
           {tabsWithData.map(tab => {
             const count =
-              tab === 'exchange' ? exchangeRequests.length :
-              tab === 'loan' ? loanRequests.length :
-              tab === 'buy' ? purchaseRequests.length :
+              tab === 'exchange' ? activeExchanges.length :
+              tab === 'loan' ? activeLoans.length :
+              tab === 'buy' ? activePurchases.length :
               friendRequests.length + sentFriendRequests.length;
             const label =
               tab === 'exchange' ? t('notifications.tabExchange') :
@@ -239,135 +311,388 @@ const Notifications = () => {
         </div>
       )}
 
-      {effectiveTab === 'exchange' && Array.isArray(exchangeRequests) && exchangeRequests.length > 0 && (
-        <div className="notifications__section">
-          <ul>
-            {exchangeRequests.map((request: ExchangeRequest, index: number) => {
-              const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
-              const isUserRequestor = user === requestor;
-              const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
-              const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
-              const requestorProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
+      {effectiveTab === 'exchange' && (() => {
+        const incoming = activeExchanges.filter((r: ExchangeRequest) => r.id_stuffier === user.id);
+        const outgoing = activeExchanges.filter((r: ExchangeRequest) => r.id_friend === user.id);
+        const incomingPending = incoming.filter((r: ExchangeRequest) => r.status === 'pending');
+        const incomingAccepted = incoming.filter((r: ExchangeRequest) => r.status === 'accepted');
+        const outgoingPending = outgoing.filter((r: ExchangeRequest) => r.status === 'pending');
+        const outgoingAccepted = outgoing.filter((r: ExchangeRequest) => r.status === 'accepted');
+        if (!activeExchanges.length) return null;
+        return (
+          <div className="notifications__section">
+            {incomingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.incoming')}</div>
+                <ul>
+                  {incomingPending.map((request: ExchangeRequest, index: number) => {
+                    const requester = friends.find((f: User) => f.id === request.id_friend);
+                    const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    const requesterProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(requesterProduct, 'name')}</div>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeAcceptExchange(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeleteExchange(request._id)} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {incomingAccepted.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.arrangeAndComplete')}</div>
+                <ul>
+                  {incomingAccepted.map((request: ExchangeRequest, index: number) => {
+                    const requester = friends.find((f: User) => f.id === request.id_friend);
+                    const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    const requesterProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{requester ? `${requester.first_name} ${requester.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(requesterProduct, 'name')}</div>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeCompleteExchange(request._id)} text={t('notifications.confirmTrade')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeleteExchange(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>
+                <ul>
+                  {outgoingPending.map((request: ExchangeRequest, index: number) => {
+                    const owner = friends.find((f: User) => f.id === request.id_stuffier);
+                    const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    const myProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(myProduct, 'name')}</div>
+                          <span className="notifications__status-badge">{t('notifications.pendingResponse')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeleteExchange(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingAccepted.length > 0 && (
+              <>
+                {!outgoingPending.length && <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>}
+                <ul>
+                  {outgoingAccepted.map((request: ExchangeRequest, index: number) => {
+                    const owner = friends.find((f: User) => f.id === request.id_stuffier);
+                    const ownerProduct = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    const myProduct = requestedProducts.find((p: ProductType) => p.id === request.id_friend_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(ownerProduct, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(myProduct, 'name')}</div>
+                          <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.ownerAgreed')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeCompleteExchange(request._id)} text={t('notifications.confirmTrade')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeleteExchange(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </div>
+        );
+      })()}
 
-              return (
-                // eslint-disable-next-line react/no-array-index-key
-                <li className="notifications__request" key={index}>
-                  <div className="notifications__request-group">
-                    <div className="notifications__request-text">
-                      {t('products.productLabel')}{get(ownerProduct, 'name')}
-                    </div>
-                    <div className="notifications__request-text">
-                      {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
-                    </div>
-                    <div className="notifications__request-text">
-                      {t('products.productLabel')}{get(requestorProduct, 'name')}
-                    </div>
-                  </div>
-                  <div className="notifications__request-buttons">
-                    {!isUserRequestor && (
-                      <div className="notifications__request-button">
-                        <Button onClick={() => executeAcceptExchange(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingExchangeId === request._id} />
-                      </div>
-                    )}
-                    <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id)} text={rejectText} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+      {effectiveTab === 'loan' && (() => {
+        const incoming = activeLoans.filter((r: LoanRequest) => r.id_friend === user.id);
+        const outgoing = activeLoans.filter((r: LoanRequest) => r.id_stuffier === user.id);
+        const incomingPending = incoming.filter((r: LoanRequest) => r.status === 'pending');
+        const incomingActive = incoming.filter((r: LoanRequest) => ['active', 'return_requested'].includes(r.status));
+        const outgoingPending = outgoing.filter((r: LoanRequest) => r.status === 'pending');
+        const outgoingActive = outgoing.filter((r: LoanRequest) => r.status === 'active');
+        if (!activeLoans.length) return null;
+        return (
+          <div className="notifications__section">
+            {incomingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.incoming')}</div>
+                <ul>
+                  {incomingPending.map((request: LoanRequest, index: number) => {
+                    const borrower = friends.find((f: User) => f.id === request.id_stuffier);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{borrower ? `${borrower.first_name} ${borrower.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeAcceptLoan(request._id)} text={t('notifications.approveLoan')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => { deleteLoanMutation.mutate(request._id); }} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {incomingActive.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.activeLoan')}</div>
+                <ul>
+                  {incomingActive.map((request: LoanRequest, index: number) => {
+                    const borrower = friends.find((f: User) => f.id === request.id_stuffier);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    const isReturnRequested = request.status === 'return_requested';
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.loanedTo')}{borrower ? `${borrower.first_name} ${borrower.last_name}` : t('products.unknown')}</div>
+                          {isReturnRequested && <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.arrangeReturn')}</span>}
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeCompleteLoan(request._id)} text={t('notifications.confirmReturned')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>
+                <ul>
+                  {outgoingPending.map((request: LoanRequest, index: number) => {
+                    const owner = friends.find((f: User) => f.id === request.id_friend);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <span className="notifications__status-badge">{t('notifications.pendingResponse')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => { deleteLoanMutation.mutate(request._id); }} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingActive.length > 0 && (
+              <>
+                {!outgoingPending.length && <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>}
+                <ul>
+                  {outgoingActive.map((request: LoanRequest, index: number) => {
+                    const owner = friends.find((f: User) => f.id === request.id_friend);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('notifications.borrowedFrom')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
+                          <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.ownerAgreed')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeRequestReturnLoan(request._id)} text={t('notifications.returnItem')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </div>
+        );
+      })()}
 
-      {effectiveTab === 'loan' && Array.isArray(loanRequests) && loanRequests.length > 0 && (
-        <div className="notifications__section">
-          <ul>
-            {loanRequests.map((request: LoanRequest, index: number) => {
-              const requestor = request.id_friend === user.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
-              const isUserRequestor = user === requestor;
-              const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
-              const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
-
-              return (
-                // eslint-disable-next-line react/no-array-index-key
-                <li className="notifications__request" key={index}>
-                  <div className="notifications__request-group">
-                    <div className="notifications__request-text">
-                      {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
-                    </div>
-                    <div className="notifications__request-text">
-                      {t('products.productLabel')}{get(product, 'name')}
-                    </div>
-                  </div>
-                  <div className="notifications__request-buttons">
-                    {!isUserRequestor && (
-                      <div className="notifications__request-button">
-                        <Button onClick={() => executeAcceptLoan(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
-                      </div>
-                    )}
-                    <div className="notifications__request-button">
-                      <Button onClick={() => executeDeleteExchange(request._id, true)} text={rejectText} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
-
-      {effectiveTab === 'buy' && Array.isArray(purchaseRequests) && purchaseRequests.length > 0 && (
-        <div className="notifications__section">
-          <ul>
-            {purchaseRequests.map((request: PurchaseRequest, index: number) => {
-              const requestor = request.id_friend === user?.id ? user : friends.filter((f: User) => f.id === request.id_friend)[0];
-              const isUserRequestor = user?.id === request.id_friend;
-              const rejectText = isUserRequestor ? t('common.cancel') : t('common.reject');
-              const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
-
-              return (
-                // eslint-disable-next-line react/no-array-index-key
-                <li className="notifications__request" key={index}>
-                  <div className="notifications__request-group">
-                    <div className="notifications__request-text">
-                      {t('products.requestorLabel')}{isUserRequestor ? t('products.me') : requestor ? `${requestor.first_name} ${requestor.last_name} (${requestor.email})` : t('products.unknown')}
-                    </div>
-                    <div className="notifications__request-text">
-                      {t('products.productLabel')}{get(product, 'name')}
-                    </div>
-                    <div className="notifications__request-text">
-                      {t('products.costLabel')}{request.cost}
-                    </div>
-                  </div>
-                  <div className="notifications__request-buttons">
-                    {!isUserRequestor && (
-                      <div className="notifications__request-button">
-                        <Button
-                          onClick={() => executeAcceptPurchase(request._id)}
-                          text={t('common.accept')}
-                          size="sm"
-                          variant="outline"
-                          loading={pendingPurchaseId === request._id}
-                        />
-                      </div>
-                    )}
-                    <div className="notifications__request-button">
-                      <Button
-                        onClick={() => executeDeletePurchase(request._id)}
-                        text={rejectText}
-                        size="sm"
-                        variant="secondary"
-                        loading={pendingPurchaseId === request._id}
-                      />
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+      {effectiveTab === 'buy' && (() => {
+        const incoming = activePurchases.filter((r: PurchaseRequest) => r.id_stuffier === user.id);
+        const outgoing = activePurchases.filter((r: PurchaseRequest) => r.id_friend === user.id);
+        const incomingPending = incoming.filter((r: PurchaseRequest) => r.status === 'pending');
+        const incomingAccepted = incoming.filter((r: PurchaseRequest) => r.status === 'accepted');
+        const outgoingPending = outgoing.filter((r: PurchaseRequest) => r.status === 'pending');
+        const outgoingAccepted = outgoing.filter((r: PurchaseRequest) => r.status === 'accepted');
+        if (!activePurchases.length) return null;
+        return (
+          <div className="notifications__section">
+            {incomingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.incoming')}</div>
+                <ul>
+                  {incomingPending.map((request: PurchaseRequest, index: number) => {
+                    const buyer = friends.find((f: User) => f.id === request.id_friend);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeAcceptPurchase(request._id)} text={t('common.accept')} size="sm" variant="outline" loading={pendingPurchaseId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeletePurchase(request._id)} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {incomingAccepted.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.arrangeAndComplete')}</div>
+                <ul>
+                  {incomingAccepted.map((request: PurchaseRequest, index: number) => {
+                    const buyer = friends.find((f: User) => f.id === request.id_friend);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{buyer ? `${buyer.first_name} ${buyer.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeCompletePurchase(request._id)} text={t('notifications.confirmTransaction')} size="sm" variant="outline" loading={pendingPurchaseId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeletePurchase(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingPending.length > 0 && (
+              <>
+                <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>
+                <ul>
+                  {outgoingPending.map((request: PurchaseRequest, index: number) => {
+                    const seller = friends.find((f: User) => f.id === request.id_stuffier);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
+                          <span className="notifications__status-badge">{t('notifications.pendingResponse')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeletePurchase(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+            {outgoingAccepted.length > 0 && (
+              <>
+                {!outgoingPending.length && <div className="notifications__subsection-label">{t('notifications.outgoing')}</div>}
+                <ul>
+                  {outgoingAccepted.map((request: PurchaseRequest, index: number) => {
+                    const seller = friends.find((f: User) => f.id === request.id_stuffier);
+                    const product = requestedProducts.find((p: ProductType) => p.id === request.id_stuff);
+                    return (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li className="notifications__request" key={index}>
+                        <div className="notifications__request-group">
+                          <div className="notifications__request-text">{t('products.requestorLabel')}{seller ? `${seller.first_name} ${seller.last_name}` : t('products.unknown')}</div>
+                          <div className="notifications__request-text">{t('products.productLabel')}{get(product, 'name')}</div>
+                          <div className="notifications__request-text">{t('products.costLabel')}{request.cost}</div>
+                          <span className="notifications__status-badge notifications__status-badge--accepted">{t('notifications.ownerAgreed')}</span>
+                        </div>
+                        <div className="notifications__request-buttons">
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeCompletePurchase(request._id)} text={t('notifications.confirmTransaction')} size="sm" variant="outline" loading={pendingPurchaseId === request._id} />
+                          </div>
+                          <div className="notifications__request-button">
+                            <Button onClick={() => executeDeletePurchase(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )}
+          </div>
+        );
+      })()}
       {effectiveTab === 'friends' && (
         <div className="notifications__section">
           {friendRequests.length > 0 && (

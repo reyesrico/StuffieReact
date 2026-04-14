@@ -272,6 +272,194 @@ app.post('/loan_requests/:id/accept', async (req, res) => {
   }
 });
 
+// =============================================================================
+// Complete purchase request — transfers item ownership from seller to buyer
+// POST /purchase_requests/:id/complete
+// =============================================================================
+
+app.post('/purchase_requests/:id/complete', async (req, res) => {
+  const requestId = req.params.id;
+  if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
+
+  try {
+    const db = await datastore.open();
+
+    const requests = [];
+    await db.getMany('purchase_requests', { _id: requestId }).forEach(r => requests.push(r));
+    const req_ = requests[0];
+    if (!req_) return res.status(404).json({ error: 'Purchase request not found' });
+    if (req_.status !== 'accepted') return res.status(409).json({ error: 'Request must be accepted before completing' });
+
+    const sellerId = req_.id_stuffier;
+    const buyerId  = req_.id_friend;
+    const itemId   = req_.id_stuff;
+    const cost     = req_.cost ?? null;
+
+    // 1. Seller's row — decrement or delete
+    const sellerItems = [];
+    await db.getMany('user_items', { user_id: sellerId, item_id: itemId }).forEach(r => sellerItems.push(r));
+    const sellerRow = sellerItems[0];
+    if (sellerRow) {
+      const qty = sellerRow.quantity ?? 1;
+      if (qty > 1) {
+        await db.updateOne('user_items', { _id: sellerRow._id }, { $set: { quantity: qty - 1 } });
+      } else {
+        await db.deleteOne('user_items', { _id: sellerRow._id });
+      }
+    }
+
+    // 2. Buyer's row — increment or create
+    const buyerItems = [];
+    await db.getMany('user_items', { user_id: buyerId, item_id: itemId }).forEach(r => buyerItems.push(r));
+    const buyerRow = buyerItems[0];
+    if (buyerRow) {
+      const qty = buyerRow.quantity ?? 1;
+      await db.updateOne('user_items', { _id: buyerRow._id }, { $set: { quantity: qty + 1 } });
+    } else {
+      await db.insert('user_items', { user_id: buyerId, item_id: itemId, asking_price: cost, quantity: 1 });
+    }
+
+    // 3. Mark request completed
+    const now = new Date().toISOString();
+    await db.updateOne('purchase_requests', { _id: requestId }, {
+      $set: { status: 'completed', completed_at: now },
+    });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('purchase_requests/complete error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// =============================================================================
+// Complete exchange request — swaps item ownership between both users
+// POST /exchange_requests/:id/complete
+// =============================================================================
+
+app.post('/exchange_requests/:id/complete', async (req, res) => {
+  const requestId = req.params.id;
+  if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
+
+  try {
+    const db = await datastore.open();
+
+    const requests = [];
+    await db.getMany('exchange_requests', { _id: requestId }).forEach(r => requests.push(r));
+    const exReq = requests[0];
+    if (!exReq) return res.status(404).json({ error: 'Exchange request not found' });
+    if (exReq.status !== 'accepted') return res.status(409).json({ error: 'Request must be accepted before completing' });
+
+    const userA   = exReq.id_friend;    // requester (offered their item)
+    const itemX   = exReq.id_friend_stuff; // A's item being offered
+    const userB   = exReq.id_stuffier;  // owner being asked
+    const itemY   = exReq.id_stuff;     // B's item being requested
+
+    // Fetch all 4 rows
+    const aItemX = []; await db.getMany('user_items', { user_id: userA, item_id: itemX }).forEach(r => aItemX.push(r));
+    const bItemY = []; await db.getMany('user_items', { user_id: userB, item_id: itemY }).forEach(r => bItemY.push(r));
+    const aRowX = aItemX[0];
+    const bRowY = bItemY[0];
+
+    const priceX = aRowX?.asking_price ?? null;
+    const priceY = bRowY?.asking_price ?? null;
+
+    // 3. Remove X from A
+    if (aRowX) {
+      const qty = aRowX.quantity ?? 1;
+      if (qty > 1) {
+        await db.updateOne('user_items', { _id: aRowX._id }, { $set: { quantity: qty - 1 } });
+      } else {
+        await db.deleteOne('user_items', { _id: aRowX._id });
+      }
+    }
+
+    // 4. Add Y to A (with B's original asking_price)
+    const aItemY = []; await db.getMany('user_items', { user_id: userA, item_id: itemY }).forEach(r => aItemY.push(r));
+    const aRowY = aItemY[0];
+    if (aRowY) {
+      await db.updateOne('user_items', { _id: aRowY._id }, { $set: { quantity: (aRowY.quantity ?? 1) + 1 } });
+    } else {
+      await db.insert('user_items', { user_id: userA, item_id: itemY, asking_price: priceY, quantity: 1 });
+    }
+
+    // 5. Remove Y from B
+    if (bRowY) {
+      const qty = bRowY.quantity ?? 1;
+      if (qty > 1) {
+        await db.updateOne('user_items', { _id: bRowY._id }, { $set: { quantity: qty - 1 } });
+      } else {
+        await db.deleteOne('user_items', { _id: bRowY._id });
+      }
+    }
+
+    // 6. Add X to B (with A's original asking_price)
+    const bItemX = []; await db.getMany('user_items', { user_id: userB, item_id: itemX }).forEach(r => bItemX.push(r));
+    const bRowX = bItemX[0];
+    if (bRowX) {
+      await db.updateOne('user_items', { _id: bRowX._id }, { $set: { quantity: (bRowX.quantity ?? 1) + 1 } });
+    } else {
+      await db.insert('user_items', { user_id: userB, item_id: itemX, asking_price: priceX, quantity: 1 });
+    }
+
+    // 7. Mark request completed
+    const now = new Date().toISOString();
+    await db.updateOne('exchange_requests', { _id: requestId }, {
+      $set: { status: 'completed', completed_at: now },
+    });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('exchange_requests/complete error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// =============================================================================
+// Complete loan return — owner confirms item was returned, restores flags
+// POST /loan_requests/:id/complete
+// =============================================================================
+
+app.post('/loan_requests/:id/complete', async (req, res) => {
+  const requestId = req.params.id;
+  if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
+
+  try {
+    const db = await datastore.open();
+
+    const requests = [];
+    await db.getMany('loan_requests', { _id: requestId }).forEach(r => requests.push(r));
+    const loanReq = requests[0];
+    if (!loanReq) return res.status(404).json({ error: 'Loan request not found' });
+    if (!['active', 'return_requested'].includes(loanReq.status)) {
+      return res.status(409).json({ error: 'Loan must be active or return_requested to complete' });
+    }
+
+    const ownerId = loanReq.id_friend;
+    const itemId  = loanReq.id_stuff;
+
+    // Restore owner's user_items row
+    const ownerItems = [];
+    await db.getMany('user_items', { user_id: ownerId, item_id: itemId }).forEach(r => ownerItems.push(r));
+    const ownerRow = ownerItems[0];
+    if (ownerRow?._id) {
+      await db.updateOne('user_items', { _id: ownerRow._id }, {
+        $set: { on_loan: false, loaned_to: null, loan_request_id: null },
+      });
+    }
+
+    const now = new Date().toISOString();
+    await db.updateOne('loan_requests', { _id: requestId }, {
+      $set: { status: 'completed', completed_at: now },
+    });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('loan_requests/complete error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Re-enable Codehooks auto-REST API for all collections.
 // Without this line, deploying a codehooks-js function disables the built-in
 // CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
