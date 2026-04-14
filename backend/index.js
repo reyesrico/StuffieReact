@@ -28,6 +28,33 @@ const signJWT = (payload) => {
   return `${header}.${claims}.${sig}`;
 };
 
+const verifyJWT = (token) => {
+  const secret = process.env.JWT_ACCESS_TOKEN_SECRET;
+  if (!secret) return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+  const [header, claims, sig] = parts;
+  const expected = createHmac('sha256', secret).update(`${header}.${claims}`).digest('base64url');
+  if (sig !== expected) return null;
+  const payload = JSON.parse(Buffer.from(claims, 'base64url').toString('utf8'));
+  if (!payload.exp || Math.floor(Date.now() / 1000) > payload.exp) return null;
+  return payload;
+};
+
+// =============================================================================
+// requireAuth middleware — validates Bearer JWT, attaches req.user
+// Returns 401 if missing/invalid/expired
+// =============================================================================
+const requireAuth = (req, res, next) => {
+  const authHeader = req.headers?.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'Authentication required' });
+  const payload = verifyJWT(token);
+  if (!payload) return res.status(401).json({ error: 'Invalid or expired token' });
+  req.user = payload; // { sub, userId, role, iat, exp }
+  next();
+};
+
 // =============================================================================
 // Password verification — supports all 3 stored formats
 // =============================================================================
@@ -197,7 +224,7 @@ app.post('/stuffiers/next-id', async (req, res) => {
 // wildcard /:collection/:id route that would otherwise intercept this path.
 // =============================================================================
 
-app.get('/userproducts/:stuffierId', async (req, res) => {
+app.get('/userproducts/:stuffierId', requireAuth, async (req, res) => {
   const stuffierId = Number(req.params.stuffierId);
   if (!stuffierId || isNaN(stuffierId)) {
     return res.status(400).json({ error: 'Invalid stuffierId' });
@@ -238,7 +265,7 @@ app.get('/userproducts/:stuffierId', async (req, res) => {
 // POST /loan_requests/:id/accept
 // =============================================================================
 
-app.post('/loan_requests/:id/accept', async (req, res) => {
+app.post('/loan_requests/:id/accept', requireAuth, async (req, res) => {
   const requestId = req.params.id;
   if (!requestId) {
     return res.status(400).json({ error: 'Invalid request ID' });
@@ -278,7 +305,7 @@ app.post('/loan_requests/:id/accept', async (req, res) => {
 // POST /purchase_requests/:id/complete
 // =============================================================================
 
-app.post('/purchase_requests/:id/complete', async (req, res) => {
+app.post('/purchase_requests/:id/complete', requireAuth, async (req, res) => {
   const requestId = req.params.id;
   if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
 
@@ -338,7 +365,7 @@ app.post('/purchase_requests/:id/complete', async (req, res) => {
 // POST /exchange_requests/:id/complete
 // =============================================================================
 
-app.post('/exchange_requests/:id/complete', async (req, res) => {
+app.post('/exchange_requests/:id/complete', requireAuth, async (req, res) => {
   const requestId = req.params.id;
   if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
 
@@ -421,7 +448,7 @@ app.post('/exchange_requests/:id/complete', async (req, res) => {
 // POST /loan_requests/:id/complete
 // =============================================================================
 
-app.post('/loan_requests/:id/complete', async (req, res) => {
+app.post('/loan_requests/:id/complete', requireAuth, async (req, res) => {
   const requestId = req.params.id;
   if (!requestId) return res.status(400).json({ error: 'Invalid request ID' });
 

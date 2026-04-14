@@ -14,10 +14,20 @@ const apiClient: AxiosInstance = axios.create({
   timeout: 30000, // 30 second timeout
 });
 
-// Request interceptor for logging
+// Request interceptor — inject JWT from localStorage on every request
 apiClient.interceptors.request.use(
   (requestConfig: InternalAxiosRequestConfig) => {
-    // Add timestamp for debugging
+    try {
+      const session = localStorage.getItem('stuffie-session');
+      if (session) {
+        const { accessToken } = JSON.parse(session);
+        if (accessToken) {
+          requestConfig.headers.Authorization = `Bearer ${accessToken}`;
+        }
+      }
+    } catch {
+      // malformed session — ignore, let the request proceed unauthenticated
+    }
     if (import.meta.env.DEV) {
       console.debug(`[API] ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
     }
@@ -28,31 +38,30 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor for error handling
+// Response interceptor — auto-logout on 401 (expired or invalid token)
 apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error: AxiosError) => {
-    // Handle common errors
     if (error.response) {
       const status = error.response.status;
-      
       if (status === 401) {
-        // Unauthorized - could trigger logout
-        console.error('[API] Unauthorized request');
+        // Token expired or invalid — clear session and reload to login
+        localStorage.removeItem('stuffie-user');
+        localStorage.removeItem('stuffie-session');
+        localStorage.removeItem('username');
+        localStorage.removeItem('stuffie-cache');
+        // Only redirect if not already on the login page
+        if (!window.location.pathname.startsWith('/login')) {
+          window.location.href = '/login';
+        }
       } else if (status === 429) {
-        // Rate limited
         console.error('[API] Rate limit exceeded');
       } else if (status >= 500) {
-        // Server error
         console.error('[API] Server error:', status);
       }
     } else if (error.request) {
-      // Network error
       console.error('[API] Network error - no response received');
     }
-    
     return Promise.reject(error);
   }
 );
