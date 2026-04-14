@@ -46,8 +46,7 @@ const verifyJWT = (token) => {
 // Returns 401 if missing/invalid/expired
 // =============================================================================
 const requireAuth = (req, res, next) => {
-  const authHeader = req.headers?.authorization || '';
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const token = req.headers?.['x-stuffie-auth'] || null;
   if (!token) return res.status(401).json({ error: 'Authentication required' });
   const payload = verifyJWT(token);
   if (!payload) return res.status(401).json({ error: 'Invalid or expired token' });

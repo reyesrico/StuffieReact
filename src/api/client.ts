@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
       if (session) {
         const { accessToken } = JSON.parse(session);
         if (accessToken) {
-          requestConfig.headers.Authorization = `Bearer ${accessToken}`;
+          requestConfig.headers['X-Stuffie-Auth'] = accessToken;
         }
       }
     } catch {
