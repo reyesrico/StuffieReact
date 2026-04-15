@@ -15,7 +15,7 @@ interface ProductCardProps {
   product: ProductType;
   tag?: string;
   copies?: number;
-  navigationState?: { friendId?: number; product?: ProductType; breadcrumb?: BreadcrumbItem[]; loanInfo?: { borrowedFrom?: string; loanedTo?: string }; exchangeInfo?: { tradingWith?: string; tradedWith?: string }; purchaseInfo?: { boughtFrom?: string; cost?: number } };
+  navigationState?: { friendId?: number; product?: ProductType; breadcrumb?: BreadcrumbItem[]; loanInfo?: { borrowedFrom?: string; loanedTo?: string }; exchangeInfo?: { tradingWith?: string; tradedWith?: string }; purchaseInfo?: { boughtFrom?: string; cost?: number }; copiesInfo?: { total: number; statuses: string[] } };
 }
 
 const ProductCard = ({ product, tag, copies, navigationState }: ProductCardProps) => {

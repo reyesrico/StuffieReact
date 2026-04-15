@@ -37,6 +37,7 @@ const Product = (props: any) => {
   const loanInfo: { borrowedFrom?: string; loanedTo?: string } | undefined = (location.state as any)?.loanInfo;
   const exchangeInfo: { tradingWith?: string; tradedWith?: string } | undefined = (location.state as any)?.exchangeInfo;
   const purchaseInfo: { boughtFrom?: string; cost?: number } | undefined = (location.state as any)?.purchaseInfo;
+  const copiesInfo: { total: number; statuses: string[] } | undefined = (location.state as any)?.copiesInfo;
   const isFriendProduct = !!friendId;
   
   // React Query hooks
@@ -200,6 +201,18 @@ const Product = (props: any) => {
       {purchaseInfo?.cost != null && (
         <div className="product__borrowed-info">
           {t('products.boughtFor', { amount: purchaseInfo.cost })}
+        </div>
+      )}
+      {copiesInfo && copiesInfo.total > 1 && (
+        <div className="product__copies">
+          <div className="product__copies-title">{t('products.copiesTitle', { count: copiesInfo.total })}</div>
+          <div className="product__copies-list">
+            {copiesInfo.statuses.map((status, i) => (
+              <span key={i} className={`product__copies-badge product__copies-badge--${status === t('products.available') ? 'available' : 'active'}`}>
+                #{i + 1} {status}
+              </span>
+            ))}
+          </div>
         </div>
       )}
       {!isFriendProduct && !loanInfo && !exchangeInfo && renderCost()}

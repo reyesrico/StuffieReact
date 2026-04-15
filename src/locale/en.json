@@ -125,6 +125,8 @@
     "products.purchaseAccepted": "Purchase request accepted",
     "products.purchaseAcceptFailed": "Failed to accept purchase request",
     "products.costLabel": "Cost: ",
+    "products.available": "Available",
+    "products.copiesTitle": "Your copies ({{count}})",
 
     "feedRow.added": "added",
     "feedRow.in": "in",
