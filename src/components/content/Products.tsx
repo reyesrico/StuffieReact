@@ -202,31 +202,46 @@ const Products = () => {
                 <h4 className="products__subheader">{category.name}</h4>
                 <div className="products__grid">
                   {(() => {
-                    // Deduplicate: one card per unique product id; track copies count
                     const allInCategory: ProductType[] = products[category.id as number];
-                    const seenIds = new Set<number>();
-                    const uniqueProducts = allInCategory.filter((p: ProductType) => {
-                      if (seenIds.has(p.id!)) return false;
-                      seenIds.add(p.id!);
-                      return true;
+
+                    // Group by name — each add creates a new catalog entry, so
+                    // duplicates share the same name+category, not the same id.
+                    const byName = new Map<string, ProductType[]>();
+                    allInCategory.forEach((p: ProductType) => {
+                      const key = (p.name ?? '').toLowerCase();
+                      if (!byName.has(key)) byName.set(key, []);
+                      byName.get(key)!.push(p);
                     });
-                    return uniqueProducts.map((product: ProductType) => {
-                    const totalCopies = allInCategory.filter((p: ProductType) => p.id === product.id).length;
-                    const loanOut = activeLoanedOutLoans.find((r: LoanRequest) => r.id_stuff === product.id);
+
+                    return Array.from(byName.values()).map((copies: ProductType[]) => {
+                    const totalCopies = copies.length;
+
+                    // Pick the copy with the most relevant active status to display
+                    // Priority: loaned > being traded > completed exchange > bought > plain
+                    const findProduct = (predicate: (p: ProductType) => boolean) =>
+                      copies.find(predicate);
+
+                    const loanOut = activeLoanedOutLoans.find((r: LoanRequest) =>
+                      copies.some((p: ProductType) => p.id === r.id_stuff)
+                    );
+                    const product = loanOut
+                      ? (findProduct((p: ProductType) => p.id === loanOut.id_stuff) ?? copies[0])
+                      : copies[0];
+
                     const borrower = loanOut ? loanedOutBorrowers.find((u: User) => u.id === loanOut.id_friend) : undefined;
                     const borrowerName = borrower ? `${borrower.first_name} ${borrower.last_name}` : undefined;
 
                     // Accepted: reyesrico owns Zelda (id_stuff) in trade
-                    const ownerExchange = !loanOut ? acceptedOwnerExchanges.find((r: ExchangeRequest) => r.id_stuff === product.id) : undefined;
+                    const ownerExchange = !loanOut ? acceptedOwnerExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_stuff)) : undefined;
                     // Accepted: chiquitonet offering Mario Kart (id_friend_stuff) in trade
-                    const requesterExchange = !loanOut && !ownerExchange ? acceptedRequesterExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === product.id) : undefined;
+                    const requesterExchange = !loanOut && !ownerExchange ? acceptedRequesterExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_friend_stuff)) : undefined;
                     // Completed: chiquitonet received Zelda (id_stuff) from owner
                     const completedReceived = !loanOut && !ownerExchange && !requesterExchange
-                      ? completedRequesterExchanges.find((r: ExchangeRequest) => r.id_stuff === product.id)
+                      ? completedRequesterExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_stuff))
                       : undefined;
                     // Completed: reyesrico received Mario Kart (id_friend_stuff) from requester
                     const completedGiven = !loanOut && !ownerExchange && !requesterExchange && !completedReceived
-                      ? completedOwnerExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === product.id)
+                      ? completedOwnerExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_friend_stuff))
                       : undefined;
 
                     const activeExchange = ownerExchange ?? requesterExchange;
@@ -243,7 +258,7 @@ const Products = () => {
                     const exchangeCounterpartName = exchangeCounterpart ? `${exchangeCounterpart.first_name} ${exchangeCounterpart.last_name}` : undefined;
 
                     const boughtPurchase = !loanOut && !activeExchange && !completedExchange
-                      ? completedPurchases.find((r: PurchaseRequest) => r.id_stuff === product.id)
+                      ? completedPurchases.find((r: PurchaseRequest) => copies.some((p: ProductType) => p.id === r.id_stuff))
                       : undefined;
                     const purchaseSeller = boughtPurchase
                       ? purchaseSellers.find((u: User) => u.id === boughtPurchase.id_stuffier)
