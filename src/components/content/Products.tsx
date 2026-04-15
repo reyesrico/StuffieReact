@@ -201,7 +201,17 @@ const Products = () => {
               <div key={category.id}>
                 <h4 className="products__subheader">{category.name}</h4>
                 <div className="products__grid">
-                  {map(products[category.id as number], (product: ProductType) => {
+                  {(() => {
+                    // Deduplicate: one card per unique product id; track copies count
+                    const allInCategory: ProductType[] = products[category.id as number];
+                    const seenIds = new Set<number>();
+                    const uniqueProducts = allInCategory.filter((p: ProductType) => {
+                      if (seenIds.has(p.id!)) return false;
+                      seenIds.add(p.id!);
+                      return true;
+                    });
+                    return uniqueProducts.map((product: ProductType) => {
+                    const totalCopies = allInCategory.filter((p: ProductType) => p.id === product.id).length;
                     const loanOut = activeLoanedOutLoans.find((r: LoanRequest) => r.id_stuff === product.id);
                     const borrower = loanOut ? loanedOutBorrowers.find((u: User) => u.id === loanOut.id_friend) : undefined;
                     const borrowerName = borrower ? `${borrower.first_name} ${borrower.last_name}` : undefined;
@@ -264,10 +274,12 @@ const Products = () => {
                         key={product.id}
                         product={product}
                         tag={tag}
+                        copies={totalCopies > 1 ? totalCopies : undefined}
                         navigationState={navState}
                       />
                     );
-                  })}
+                  });
+                  })()}
                 </div>
               </div>
             );
