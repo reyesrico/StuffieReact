@@ -290,6 +290,7 @@ const Products = () => {
                         product={product}
                         tag={tag}
                         copies={totalCopies > 1 ? totalCopies : undefined}
+                        allowSetCost
                         navigationState={{
                           ...navState,
                           ...(totalCopies > 1 ? {

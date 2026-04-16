@@ -172,6 +172,8 @@
     "product.costUpdateFailed": "Error al actualizar el precio",
     "product.editCost": "Editar precio",
     "product.cancelEdit": "Cancelar",
+    "product.setPrice": "$ Poner precio de venta",
+    "product.save": "Guardar",
 
     "exchange.requesting": "Quieres",
     "exchange.offerSection": "Elige qué ofrecer",

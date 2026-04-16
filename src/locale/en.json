@@ -172,6 +172,8 @@
     "product.costUpdateFailed": "Failed to update cost",
     "product.editCost": "Edit price",
     "product.cancelEdit": "Cancel",
+    "product.setPrice": "$ Set selling price",
+    "product.save": "Save",
 
     "exchange.noProducts": "You have no products to offer",
     "exchange.myProduct": "My Product",

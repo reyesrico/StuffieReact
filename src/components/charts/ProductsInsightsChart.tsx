@@ -45,20 +45,27 @@ const ProductsInsightsChart = ({ products, categories }: Props) => {
   return (
     <div className="products-insights">
       <div className="products-insights__charts">
-        {/* Bar chart — items per category */}
+        {/* Bar chart — items per category, horizontal so all names are readable */}
         <div className="products-insights__card">
           <h4 className="products-insights__card-title">{t('charts.itemsByCategory')}</h4>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={data} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+          <ResponsiveContainer width="100%" height={Math.max(160, data.length * 36 + 24)}>
+            <BarChart
+              layout="vertical"
+              data={data}
+              margin={{ top: 4, right: 24, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" horizontal={false} />
               <XAxis
-                dataKey="name"
+                type="number"
+                allowDecimals={false}
                 tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                allowDecimals={false}
+                type="category"
+                dataKey="name"
+                width={96}
                 tick={{ fontSize: 11, fill: 'var(--text-secondary)' }}
                 tickLine={false}
                 axisLine={false}
@@ -72,7 +79,7 @@ const ProductsInsightsChart = ({ products, categories }: Props) => {
                 }}
                 formatter={(value: number) => [value, t('charts.items')]}
               />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                 {data.map((_entry, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}

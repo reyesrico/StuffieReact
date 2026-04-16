@@ -98,6 +98,62 @@
   margin-top: var(--spacing-1);
 }
 
+.product-card__set-price {
+  margin-top: var(--spacing-1);
+  background: none;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition-base), color var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-primary-500);
+    color: var(--color-primary-600);
+  }
+}
+
+.product-card__price-form {
+  margin-top: var(--spacing-1);
+  display: flex;
+  gap: var(--spacing-1);
+  align-items: center;
+}
+
+.product-card__price-input {
+  width: 68px;
+  padding: 3px 6px;
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--background-secondary);
+  color: var(--text-color);
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-primary-500);
+  }
+}
+
+.product-card__price-save {
+  padding: 3px 8px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background-color: var(--color-primary-500);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
 .product-card__count {
   position: absolute;
   top: var(--spacing-2);
