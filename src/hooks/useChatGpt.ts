@@ -2,7 +2,8 @@ import React from "react";
 import { getUsers } from "../api/users.api";
 
 // All OpenAI calls go through the Codehooks proxy — the API key NEVER touches the browser.
-const PROXY_URL = `${import.meta.env.VITE_CODEHOOKS_SERVER_URL}ai-chat`;
+const PROXY_URL        = `${import.meta.env.VITE_CODEHOOKS_SERVER_URL}ai-chat`;
+const PROXY_STREAM_URL = `${import.meta.env.VITE_CODEHOOKS_SERVER_URL}ai-chat-stream`;
 const PROXY_KEY = import.meta.env.VITE_CODEHOOKS_API_KEY || '';
 
 // ---------------------------------------------------------------------------
@@ -156,11 +157,12 @@ export const useChatGpt = ({
     inFlightLocks.add(lockKey);
     const userMsg: ChatMessage = { role: 'user', content: trimmed };
     const updatedConversation = [...conversation, userMsg];
-    setConversation(updatedConversation);
+    // Push empty assistant placeholder immediately so streaming text appears in-place
+    setConversation([...updatedConversation, { role: 'assistant', content: '' }]);
     setIsLoading(true);
 
     try {
-      const response = await fetch(PROXY_URL, {
+      const response = await fetch(PROXY_STREAM_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -173,22 +175,67 @@ export const useChatGpt = ({
         }),
       });
 
-      if (!response.ok) {
+      if (!response.ok || !response.body) {
         throw new Error(`Proxy error: ${response.status}`);
       }
 
-      const data = await response.json();
-      const assistantContent = (data.content as string) || '';
-      // Use exact token count returned by proxy for accurate budget tracking
-      const tokensUsed = (data.total_tokens as number) ?? 0;
-      setConversation(prev => [...prev, { role: 'assistant', content: assistantContent }]);
-      trackUsage(tokensUsed);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let totalTokens = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Process all complete SSE lines; keep the last incomplete fragment
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          const payload = line.slice(6).trim();
+          if (payload === '[DONE]') continue;
+
+          try {
+            const chunk = JSON.parse(payload);
+
+            // Usage arrives in the last chunk when stream_options.include_usage is set
+            if (chunk.usage?.total_tokens) {
+              totalTokens = chunk.usage.total_tokens;
+            }
+
+            const delta = chunk.choices?.[0]?.delta?.content;
+            if (delta) {
+              setConversation(prev => {
+                const updated = [...prev];
+                const last = updated[updated.length - 1];
+                if (last?.role === 'assistant') {
+                  updated[updated.length - 1] = { ...last, content: last.content + delta };
+                }
+                return updated;
+              });
+            }
+          } catch {
+            // Malformed chunk — skip
+          }
+        }
+      }
+
+      if (totalTokens > 0) trackUsage(totalTokens);
     } catch (err) {
-      console.error('Chat error:', err);
-      setConversation(prev => [
-        ...prev,
-        { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' },
-      ]);
+      console.error('Chat stream error:', err);
+      setConversation(prev => {
+        const updated = [...prev];
+        const last = updated[updated.length - 1];
+        // Fill the empty placeholder (or append if content already started)
+        if (last?.role === 'assistant' && last.content === '') {
+          updated[updated.length - 1] = { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' };
+        }
+        return updated;
+      });
     } finally {
       inFlightLocks.delete(lockKey);
       setIsLoading(false);

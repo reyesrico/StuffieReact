@@ -196,6 +196,63 @@ const ALLOWED_MODELS = ['gpt-5-nano', 'gpt-4.1-nano'];
 const DEFAULT_MODEL  = 'gpt-5-nano';
 
 /**
+ * POST /ai-chat-stream
+ * Body: { model: string, messages: {role,content}[], systemPrompt: string }
+ * Returns: text/event-stream — OpenAI SSE chunks forwarded verbatim, then
+ *   a final custom event: `event: done\ndata: {"total_tokens": N}\n\n`
+ */
+app.post('/ai-chat-stream', async (req, res) => {
+  const { model, messages, systemPrompt } = req.body ?? {};
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return res.status(400).json({ error: 'messages array is required' });
+  }
+
+  const safeModel = ALLOWED_MODELS.includes(model) ? model : DEFAULT_MODEL;
+
+  const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: safeModel,
+      stream: true,
+      stream_options: { include_usage: true },
+      messages: [
+        ...(systemPrompt ? [{ role: 'system', content: String(systemPrompt) }] : []),
+        ...messages,
+      ],
+    }),
+  });
+
+  if (!openaiRes.ok) {
+    return res.status(openaiRes.status).json({ error: `AI request failed (${openaiRes.status})` });
+  }
+
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // prevent nginx buffering
+
+  const reader = openaiRes.body.getReader();
+  const decoder = new TextDecoder();
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      res.write(decoder.decode(value, { stream: true }));
+    }
+  } catch {
+    res.write('data: {"error":"stream interrupted"}\n\n');
+  } finally {
+    res.end();
+  }
+});
+
+/**
  * POST /ai-chat
  * Body: { model: string, messages: {role,content}[], systemPrompt: string }
  * Returns: { content: string, total_tokens: number }

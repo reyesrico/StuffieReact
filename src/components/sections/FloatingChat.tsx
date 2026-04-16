@@ -210,12 +210,17 @@ const FloatingChat = () => {
             {conversation.map((msg, idx) => (
               <div
                 key={idx}
-                className={`floating-chat__bubble floating-chat__bubble--${msg.role}`}
+                className={`floating-chat__bubble floating-chat__bubble--${msg.role}${
+                  isLoading && msg.role === 'assistant' && idx === conversation.length - 1
+                    ? ' floating-chat__bubble--streaming'
+                    : ''
+                }`}
               >
                 {msg.role === 'assistant' ? renderMessage(msg.content) : msg.content}
               </div>
             ))}
-            {isLoading && (
+            {/* Typing dots: only while waiting for the first token (empty placeholder) */}
+            {isLoading && conversation[conversation.length - 1]?.role !== 'assistant' && (
               <div className="floating-chat__bubble floating-chat__bubble--assistant floating-chat__bubble--typing">
                 <span /><span /><span />
               </div>

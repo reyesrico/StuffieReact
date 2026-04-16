@@ -244,6 +244,17 @@
     }
   }
 
+  // Blinking cursor appended while streaming
+  &--streaming::after {
+    content: '▋';
+    display: inline-block;
+    margin-left: 2px;
+    opacity: 1;
+    animation: stuffie-cursor 0.7s step-end infinite;
+    font-size: 0.85em;
+    color: var(--color-primary-500);
+  }
+
   // Markdown: bullet list from AI responses
   ul {
     margin: 0;
@@ -265,6 +276,11 @@
 @keyframes stuffie-typing {
   0%, 80%, 100% { transform: scale(0.75); opacity: 0.4; }
   40%           { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes stuffie-cursor {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
 }
 
 // Breadcrumb-style path badge (e.g. "Products > Add Product")
