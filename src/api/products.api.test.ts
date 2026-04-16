@@ -151,7 +151,7 @@ describe('Products API', () => {
       
       vi.mocked(apiClient.put).mockResolvedValueOnce({ data: updatedProduct });
       
-      const result = await updateProduct(1, updates);
+      const result = await updateProduct('abc123', updates);
       
       expect(result).toEqual(updatedProduct);
     });

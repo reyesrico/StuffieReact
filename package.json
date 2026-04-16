@@ -37,6 +37,8 @@
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
     "typecheck": "tsc --noEmit",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.test.json",
+    "typecheck:all": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "seed:purchases": "node scripts/seed-purchases.js"
   },
   "engines": {
