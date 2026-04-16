@@ -69,23 +69,13 @@ export interface CreateProductInput {
 }
 
 /**
- * Get the highest 'id' value from the stuff collection.
- * Codehooks does not auto-generate numeric ids, so we manage them ourselves.
- */
-export const getLastProductId = async (): Promise<number> => {
-  const response = await apiClient.get<Record<string, any>[]>(productEndpoints.getLastId());
-  const ids = response.data
-    .map((row: Record<string, any>) => Number(row.id))
-    .filter((n: number) => Number.isFinite(n) && n > 0);
-  return ids.length > 0 ? Math.max(...ids) : 0;
-};
-
-/**
- * Create a new product
+ * Create a new product.
+ * Uses the atomic server-side counter (POST /items/next-id) to generate a
+ * unique numeric id — eliminates the race condition of the old
+ * getLastProductId() + Math.max() approach.
  */
 export const createProduct = async (product: CreateProductInput): Promise<Product> => {
-  const lastId = await getLastProductId();
-  const newId = lastId + 1;
+  const { data: { id: newId } } = await apiClient.post<{ id: number }>(productEndpoints.nextId());
 
   const response = await apiClient.post<Product>(productEndpoints.create(), {
     name: product.name,

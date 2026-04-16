@@ -132,14 +132,15 @@ describe('Products API', () => {
       const newProduct = { name: 'New Item', category_id: 1, subcategory_id: 1, image_key: 'image.jpg' };
       const createdProduct = { id: 100, ...newProduct };
 
-      // createProduct calls getLastProductId (GET) before the POST
-      vi.mocked(apiClient.get).mockResolvedValueOnce({ data: [{ id: 99 }] });
+      // createProduct POSTs to /items/next-id first (atomic counter), then POSTs the product
+      vi.mocked(apiClient.post).mockResolvedValueOnce({ data: { id: 100 } });
       vi.mocked(apiClient.post).mockResolvedValueOnce({ data: createdProduct });
       
       const result = await createProduct(newProduct);
       
       expect(result).toEqual(createdProduct);
-      expect(apiClient.post).toHaveBeenCalledTimes(1);
+      expect(apiClient.post).toHaveBeenCalledTimes(2);
+      expect(apiClient.get).not.toHaveBeenCalled();
     });
   });
 

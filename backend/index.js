@@ -233,28 +233,55 @@ app.post('/ai-chat', async (req, res) => {
 
 // =============================================================================
 // Atomic ID counters — replaces unsafe client-side Math.max pattern
-// POST /items/next-id   → { id: <next integer> }  (Stage 12: was stuff/next-id)
-// POST /stuffiers/next-id → { id: <next integer> }
+// POST /items/next-id     → { id: <next integer> }
+// POST /stuff/next-id     → alias for /items/next-id
+// POST /stuffiers/next-id → legacy alias (user counter)
+// POST /users/next-id     → { id: <next integer> }  (P1: canonical user id source)
 //
 // Uses Codehooks keyvalue store as an atomic counter so concurrent requests
 // never generate duplicate numeric IDs.
+//
+// Self-seeding: on first call the counter is seeded from the current DB max so
+// it is always safe to deploy without a separate migration step.
 // =============================================================================
+
+/**
+ * getNextId — atomic, self-seeding counter.
+ * Reads DB max on very first call (counter key absent) to avoid colliding with
+ * existing records, then uses KV incr for all subsequent calls.
+ */
+const getNextId = async (db, counterKey, collection) => {
+  const raw = await db.get(counterKey).catch(() => null);
+  if (raw === null || raw === undefined) {
+    const ids = [];
+    await db.getMany(collection, {}).forEach(r => { if (r.id != null) ids.push(Number(r.id)); });
+    const seed = ids.length > 0 ? Math.max(...ids) : 0;
+    await db.set(counterKey, String(seed));
+  }
+  return db.incr(counterKey, 1);
+};
 
 app.post('/items/next-id', async (req, res) => {
   const db = await datastore.open();
-  const id = await db.incr('counter_stuff_id', 1);
+  const id = await getNextId(db, 'counter_stuff_id', 'items');
   return res.json({ id });
 });
 
 app.post('/stuff/next-id', async (req, res) => {
   const db = await datastore.open();
-  const id = await db.incr('counter_stuff_id', 1);
+  const id = await getNextId(db, 'counter_stuff_id', 'items');
   return res.json({ id });
 });
 
 app.post('/stuffiers/next-id', async (req, res) => {
   const db = await datastore.open();
-  const id = await db.incr('counter_stuffiers_id', 1);
+  const id = await getNextId(db, 'counter_users_id', 'users');
+  return res.json({ id });
+});
+
+app.post('/users/next-id', async (req, res) => {
+  const db = await datastore.open();
+  const id = await getNextId(db, 'counter_users_id', 'users');
   return res.json({ id });
 });
 

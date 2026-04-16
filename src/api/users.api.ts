@@ -112,22 +112,20 @@ export interface RegisterUserInput {
  * - Sets request: true for admin approval
  */
 /**
- * Register a new user
+ * Register a new user.
  *
  * Steps (in order):
- * 1. Get the current max 'id' from Codehooks (our sequential id, not the DB's _id)
- * 2. Compute newId = max + 1
- * 3. Hash password with PBKDF2 (email as salt)
- * 4. Write to Codehooks AND RestDB with the same newId
- * 5. Return user with guaranteed 'id' field (used by caller for Cloudinary upload)
+ * 1. Get the next atomic user id from the server-side counter (POST /users/next-id)
+ *    — eliminates the race condition of the old getLastUserId() + Math.max() approach.
+ * 2. Hash password with PBKDF2 (done in parallel with step 1).
+ * 3. Write to Codehooks with the guaranteed unique numeric id.
+ * 4. Return user with guaranteed 'id' field (used by caller for Cloudinary upload).
  */
 export const registerUser = async (userData: RegisterUserInput): Promise<User> => {
-  const [lastId, encryptedPassword] = await Promise.all([
-    getLastUserId(),
+  const [{ data: { id: newId } }, encryptedPassword] = await Promise.all([
+    codehooksClient.post<{ id: number }>(userEndpoints.nextId()),
     crypto.pbkdf2v2(userData.password),
   ]);
-
-  const newId = lastId + 1;
 
   // Destructure to exclude plain-text password from what gets stored
   const { password: _plaintext, ...userDataWithoutPassword } = userData;
