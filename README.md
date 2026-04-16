@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/react-18.3.1-blue" alt="React" />
   <img src="https://img.shields.io/badge/vite-6.x-purple" alt="Vite" />
   <img src="https://img.shields.io/badge/typescript-5.9-blue" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/tests-80-green" alt="Tests" />
+  <img src="https://img.shields.io/badge/tests-168-green" alt="Tests" />
   <img src="https://img.shields.io/badge/bundle-486KB-orange" alt="Bundle Size" />
 </p>
 
@@ -44,9 +44,11 @@ TODAY                    NEAR FUTURE                    LONG TERM
 | Add & manage friends | Header | ✅ Ready |
 | Exchange products | Feed | ✅ Ready |
 | Loan products | Feed | ✅ Ready |
-| Buy products | Feed | 🚧 In Progress |
+| Buy products | Feed | ✅ Ready |
 | Spotify integration | Apps | ✅ Ready |
 | ChatGPT assistant | Apps | ✅ Ready |
+| AI auto-categorization | Add Product | ✅ Ready |
+| Product deduplication | Add Product | ✅ Ready |
 | Light / Dark theme | Settings | ✅ Ready |
 | Lazy-loaded routes | Core | ✅ Ready |
 | Offline-first caching | Core | ✅ Ready |
@@ -127,9 +129,9 @@ Copy `.env.example` to `.env` and fill in your values. All variables use the `VI
 | Variable | Required | Service |
 |----------|:--------:|---------|
 | `VITE_CLOUDINARY_*` | Yes | Image uploads (Cloudinary) |
-| `VITE_RESTDB_*` or `VITE_CODEHOOKS_*` | Yes | Backend API |
+| `VITE_CODEHOOKS_*` | Yes | Backend API (Codehooks) |
 | `VITE_SPOTIFY_*` | Optional | Spotify integration |
-| `VITE_OPENAI_API_KEY` | Optional | ChatGPT features |
+| `VITE_AZURE_MAPS_KEY` | Optional | Location / map features |
 | `VITE_FB_APP_ID` | Optional | Facebook login |
 
 ---
@@ -140,7 +142,7 @@ Copy `.env.example` to `.env` and fill in your values. All variables use the `VI
 src/
 ├── api/                  # Typed API layer (CRUD per entity)
 │   ├── client.ts         # Axios instance with auth headers
-│   ├── endpoints.ts      # URL builders (RestDB / Codehooks)
+│   ├── endpoints.ts      # URL builders (Codehooks)
 │   ├── *.api.ts          # Entity CRUD functions
 │   └── external/         # Third-party APIs (Spotify)
 ├── components/
@@ -150,7 +152,7 @@ src/
 │   ├── shared/           # Reusable UI (Card, EmptyState, ErrorState)
 │   └── skeletons/        # Loading skeleton components
 ├── config/
-│   ├── api.ts            # Backend toggle (RestDB ↔ Codehooks)
+│   ├── api.ts            # Backend config (Codehooks-only)
 │   └── constants/        # Static data & chart configs
 ├── context/
 │   ├── UserContext.tsx    # Auth state + auto-login
@@ -172,9 +174,10 @@ src/
 ## Architecture Highlights
 
 - **No Redux** — React Query handles all server state with `staleTime: Infinity` and localStorage persistence (7-day TTL). Zero API calls on return visits.
+- **JWT Auth** — HS256 tokens (1h expiry), rate-limited login (5 failures / 15 min), PBKDF2v2 password hashing (600k iterations). Backend on Codehooks serverless.
 - **Code splitting** — 17 routes lazy-loaded with `React.lazy()` + Suspense. Only the home page is eagerly loaded.
 - **Bundle optimized** — Manual vendor chunks (react, fluent, query, charts, utils). Initial bundle: **486 KB** (down 71% from 1.69 MB).
-- **80 tests** — Unit and integration tests covering API layer, hooks, utilities, and components.
+- **168 tests** — Unit and integration tests covering API layer, hooks, utilities, and components.
 - **SPA routing on GitHub Pages** — Custom 404.html redirect for client-side routing support.
 - **Design tokens** — SCSS token system with CSS custom properties for consistent theming.
 
