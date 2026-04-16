@@ -307,24 +307,28 @@ const AddProduct = () => {
                     value={subSearch}
                     onChange={e => setSubSearch(e.target.value)}
                   />
-                  {subSearchResults.length > 0 && (
-                    <ul className="add-product__sub-search-dropdown">
-                      {subSearchResults.map(({ sub, cat }) => (
-                        <li key={sub.id}>
-                          <button
-                            className="add-product__sub-search-result"
-                            onClick={() => handleSubSearchSelect(sub, cat)}
-                          >
-                            <span className="add-product__sub-search-name">{sub.name}</span>
-                            <span className="add-product__sub-search-cat">{cat.name}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
 
-                {filteredSubcategories.length === 0 ? (
+                {subSearchTrimmed.length >= 2 ? (
+                  subSearchResults.length === 0 ? (
+                    <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
+                  ) : (
+                    <div className="add-product__chip-row">
+                      {subSearchResults.map(({ sub, cat: resCat }) => (
+                        <button
+                          key={sub.id}
+                          className={`add-product__chip ${selectedSubcategory?.id === sub.id ? 'add-product__chip--active' : ''}`}
+                          onClick={() => handleSubSearchSelect(sub, resCat)}
+                        >
+                          {sub.name}
+                          {resCat.id !== selectedCategory?.id && (
+                            <span className="add-product__chip-cat"> · {resCat.name}</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )
+                ) : filteredSubcategories.length === 0 ? (
                   <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
                 ) : (
                   <div className="add-product__chip-row">
@@ -481,24 +485,28 @@ const AddProduct = () => {
                     value={subSearch}
                     onChange={e => setSubSearch(e.target.value)}
                   />
-                  {subSearchResults.length > 0 && (
-                    <ul className="add-product__sub-search-dropdown">
-                      {subSearchResults.map(({ sub, cat }) => (
-                        <li key={sub.id}>
-                          <button
-                            className="add-product__sub-search-result"
-                            onClick={() => handleSubSearchSelect(sub, cat)}
-                          >
-                            <span className="add-product__sub-search-name">{sub.name}</span>
-                            <span className="add-product__sub-search-cat">{cat.name}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
 
-                {filteredSubcategories.length === 0 ? (
+                {subSearchTrimmed.length >= 2 ? (
+                  subSearchResults.length === 0 ? (
+                    <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
+                  ) : (
+                    <div className="add-product__chip-row">
+                      {subSearchResults.map(({ sub, cat: resCat }) => (
+                        <button
+                          key={sub.id}
+                          className={`add-product__chip ${selectedSubcategory?.id === sub.id ? 'add-product__chip--active' : ''}`}
+                          onClick={() => handleSubSearchSelect(sub, resCat)}
+                        >
+                          {sub.name}
+                          {resCat.id !== selectedCategory?.id && (
+                            <span className="add-product__chip-cat"> · {resCat.name}</span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )
+                ) : filteredSubcategories.length === 0 ? (
                   <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
                 ) : (
                   <div className="add-product__chip-row">

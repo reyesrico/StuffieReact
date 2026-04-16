@@ -210,52 +210,6 @@
       border-color: var(--color-primary-500);
     }
   }
-
-  &-dropdown {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    background: var(--background-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
-    list-style: none;
-    margin: 0;
-    padding: var(--spacing-1) 0;
-    z-index: 100;
-    max-height: 280px;
-    overflow-y: auto;
-  }
-
-  &-result {
-    width: 100%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-2);
-    padding: var(--spacing-2) var(--spacing-3);
-    text-align: left;
-
-    &:hover {
-      background: var(--background-secondary);
-    }
-  }
-
-  &-name {
-    color: var(--text-color);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-  }
-
-  &-cat {
-    color: var(--text-secondary);
-    font-size: var(--font-size-xs, 0.75rem);
-    white-space: nowrap;
-  }
 }
 
 // ── Deduplication Warning ─────────────────────────────────────────────────────
@@ -341,6 +295,13 @@
     border-color: var(--color-primary-500);
     color: #fff;
   }
+}
+
+// Category hint shown on cross-category search results
+.add-product__chip-cat {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 400;
+  opacity: 0.75;
 }
 
 // ── Product Grid ──────────────────────────────────────────────────────────────
