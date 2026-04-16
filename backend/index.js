@@ -114,7 +114,8 @@ const setRateLimit = async (db, email, data) => {
 };
 
 const clearRateLimit = async (db, email) => {
-  await db.remove(rlKey(email)).catch(() => {});
+  // Reset to zero — Codehooks KV has no delete method; setting count:0 is equivalent
+  await db.set(rlKey(email), JSON.stringify({ count: 0, resetAt: 0 })).catch(() => {});
 };
 
 app.post('/auth/login', async (req, res) => {
