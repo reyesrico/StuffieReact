@@ -10,7 +10,7 @@
  *     Set once: coho set-env --projectname stuffie-2u0v --space dev --key JWT_ACCESS_TOKEN_SECRET --value <secret> --encrypted
  */
 import { app, datastore } from 'codehooks-js';
-import { createHmac, createHash, pbkdf2Sync, randomBytes } from 'crypto';
+import { createHmac, createHash, pbkdf2Sync, randomBytes, timingSafeEqual } from 'crypto';
 
 // =============================================================================
 // JWT helpers — HS256, 1-hour access tokens, no external deps
@@ -35,7 +35,11 @@ const verifyJWT = (token) => {
   if (parts.length !== 3) return null;
   const [header, claims, sig] = parts;
   const expected = createHmac('sha256', secret).update(`${header}.${claims}`).digest('base64url');
-  if (sig !== expected) return null;
+  // timingSafeEqual prevents timing oracle attacks on the HMAC signature
+  const sigBuf      = Buffer.from(sig,      'base64url');
+  const expectedBuf = Buffer.from(expected, 'base64url');
+  if (sigBuf.length !== expectedBuf.length) return null;
+  if (!timingSafeEqual(sigBuf, expectedBuf)) return null;
   const payload = JSON.parse(Buffer.from(claims, 'base64url').toString('utf8'));
   if (!payload.exp || Math.floor(Date.now() / 1000) > payload.exp) return null;
   return payload;
