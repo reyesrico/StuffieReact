@@ -152,13 +152,31 @@ const AddProduct = () => {
         .slice(0, 8)
     : [];
 
+  // New mode: select subcategory, fetch catalog for that subcat, then run dedup against current name
+  const handleSubcategorySelectNew = (sub: Subcategory, cat: Category) => {
+    setSelectedSubcategory(sub);
+    getProductsByCategory(cat.id, sub.id).then(prods => {
+      setCatalogProducts(prods);
+      // Run dedup immediately — user may have already typed the name
+      const currentName = name.trim();
+      if (!currentName) { setDupCandidates([]); return; }
+      const words = currentName.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
+      if (words.length === 0) { setDupCandidates([]); return; }
+      const matches = prods.filter((p: Product) => {
+        const pName = (p.name ?? '').toLowerCase();
+        return words.some(w => pName.includes(w));
+      });
+      setDupCandidates(matches.slice(0, 3));
+    });
+  };
+
   // Handle subcategory search selection (auto-selects parent category)
   const handleSubSearchSelect = (sub: Subcategory, cat: Category) => {
     handleCategorySelect(cat); // also resets subSearch via handleCategorySelect
     if (mode === 'catalog') {
       handleSubcategorySelect(sub);
     } else {
-      setSelectedSubcategory(sub);
+      handleSubcategorySelectNew(sub, cat);
     }
   };
 
@@ -514,7 +532,7 @@ const AddProduct = () => {
                       <button
                         key={sub.id}
                         className={`add-product__chip ${selectedSubcategory?.id === sub.id ? 'add-product__chip--active' : ''}`}
-                        onClick={() => setSelectedSubcategory(sub)}
+                        onClick={() => selectedCategory && handleSubcategorySelectNew(sub, selectedCategory)}
                       >
                         {sub.name}
                       </button>
