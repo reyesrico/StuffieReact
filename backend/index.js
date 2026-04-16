@@ -761,11 +761,71 @@ app.patch('/subcategory_proposals/:id/reject', requireAuth, async (req, res) => 
   }
 });
 
+// =============================================================================
+// SEC-API: Require JWT for all sensitive (user-data) collections.
+// Any request whose first path segment matches a sensitive collection must
+// carry a valid X-Stuffie-Auth Bearer token — EXCEPT:
+//   POST /users          — new-user registration (no session exists yet)
+//   POST /users/next-id  — atomic id counter called during registration
+//                          (already handled as an explicit route above)
+// Public catalog (categories, subcategories, items, conf) is left open so
+// unauthenticated visitors can browse the catalog without logging in.
+// =============================================================================
+
+const SENSITIVE_COLLECTIONS = new Set([
+  'users', 'user_items', 'friendships',
+  'exchange_requests', 'loan_requests', 'purchase_requests',
+]);
+
+app.use((req, res, next) => {
+  const collection = req.path.split('/').filter(Boolean)[0];
+  if (!SENSITIVE_COLLECTIONS.has(collection)) return next();
+  // Allow POST /users for registration — the user has no token yet
+  if (collection === 'users' && req.method === 'POST') return next();
+  return requireAuth(req, res, next);
+});
+
+// =============================================================================
+// Sanitised GET /users — strip password_hash before returning.
+// Registered BEFORE crudlify so these handlers take priority for user reads.
+// Auth is guaranteed by the middleware above.
+// =============================================================================
+
+const sanitizeUser = ({ password_hash: _pw, ...safe }) => safe;
+
+app.get('/users', async (req, res) => {
+  try {
+    const db = await datastore.open();
+    const filter = req.query.q ? JSON.parse(String(req.query.q)) : {};
+    const results = [];
+    await db.getMany('users', filter).forEach(u => results.push(sanitizeUser(u)));
+    return res.json(results);
+  } catch (err) {
+    console.error('GET /users error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/users/:id', async (req, res) => {
+  try {
+    const db = await datastore.open();
+    const results = [];
+    await db.getMany('users', { _id: req.params.id }).forEach(u => results.push(sanitizeUser(u)));
+    if (results.length === 0) return res.status(404).json({ error: 'Not found' });
+    return res.json(results[0]);
+  } catch (err) {
+    console.error('GET /users/:id error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Re-enable Codehooks auto-REST API for all collections.
 // Without this line, deploying a codehooks-js function disables the built-in
 // CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.
 // NOTE: crudlify must come AFTER all custom routes — it registers a wildcard
 // /:collection/:id handler that would shadow custom paths if registered first.
+// After the SEC-API middleware above, sensitive collections now require a valid
+// JWT — the catalog (categories, subcategories, items, conf) remains open.
 app.crudlify();
 
 export default app.init();

@@ -162,10 +162,10 @@ export const updateUser = async (_id: string, data: UpdateUserInput): Promise<Us
 
 /**
  * Approve a user request (removes request flag).
+ * Uses PATCH (not PUT) so that password_hash is never overwritten.
  */
 export const approveUserRequest = async (user: User): Promise<User> => {
-  const payload = { ...user, status: 'active' as const };
-  const response = await apiClient.put<User>(userEndpoints.update(String(user._id)), payload);
+  const response = await apiClient.patch<User>(userEndpoints.update(String(user._id)), { status: 'active' });
   return response.data;
 };
 
