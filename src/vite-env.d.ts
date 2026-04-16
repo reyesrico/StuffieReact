@@ -10,8 +10,6 @@ interface ImportMetaEnv {
   readonly VITE_CLOUDINARY_API_SECRET: string;
   readonly VITE_CLOUDINARY_UPLOAD_PRESET: string;
   readonly VITE_FB_APP_ID: string;
-  readonly VITE_RESTDB_API_KEY: string;
-  readonly VITE_RESTDB_SERVER_URL: string;
   readonly VITE_CODEHOOKS_API_KEY: string;
   readonly VITE_CODEHOOKS_SERVER_URL: string;
 }

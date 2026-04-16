@@ -1,7 +1,6 @@
 /**
  * API Endpoints - Centralized URL builders
- * 
- * All endpoints target Codehooks only — RestDB is a frozen backup.
+ *
  * Collection names use Codehooks conventions (camelCase/lowercase).
  */
 

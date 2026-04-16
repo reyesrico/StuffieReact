@@ -14,16 +14,6 @@ const codehooksClient = axios.create({
   timeout: 30000,
 });
 
-// ⚠️  BACKUP — DO NOT DELETE — DO NOT REMOVE ENV VARS
-// RestDB is our permanent backup database. All writes are now Codehooks-only.
-// To do a manual sync at end of migration: run backend/scripts/sync-to-restdb.js
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _restdbClient_BACKUP = axios.create({
-  baseURL: import.meta.env.VITE_RESTDB_SERVER_URL || 'https://stuffie-98b2.restdb.io/rest/',
-  headers: { 'cache-control': 'no-cache', 'x-apikey': import.meta.env.VITE_RESTDB_API_KEY || '' },
-  timeout: 30000,
-});
-
 // ============ READ ============
 
 /**
@@ -61,7 +51,7 @@ export const getPendingUserRequests = async (): Promise<User[]> => {
 
 /**
  * Get the highest 'id' value from Codehooks (our source of truth).
- * Always queries Codehooks directly — independent of the useCodehooks toggle.
+ * Always queries Codehooks directly.
  */
 export const getLastUserId = async (): Promise<number> => {
   const response = await codehooksClient.get<Record<string, any>[]>(userEndpoints.getLastId());
@@ -138,7 +128,6 @@ export const registerUser = async (userData: RegisterUserInput): Promise<User> =
     status: 'pending' as const, // Requires admin approval
   };
 
-  // Write to Codehooks only — RestDB is now a frozen backup (see _restdbClient_BACKUP above)
   const response = await codehooksClient.post<User>(userEndpoints.create(), newUser);
 
   // Guarantee the id is present — Codehooks doesn't always echo custom fields back
@@ -172,7 +161,7 @@ export const updateUser = async (_id: string, data: UpdateUserInput): Promise<Us
 };
 
 /**
- * Approve a user request (removes request flag) — Codehooks only. RestDB is frozen backup.
+ * Approve a user request (removes request flag).
  */
 export const approveUserRequest = async (user: User): Promise<User> => {
   const payload = { ...user, status: 'active' as const };
@@ -183,7 +172,7 @@ export const approveUserRequest = async (user: User): Promise<User> => {
 // ============ DELETE ============
 
 /**
- * Delete user by _id from Codehooks only. RestDB is a frozen backup — never delete from it.
+ * Delete user by _id.
  */
 export const deleteUser = async (_id: string, _email: string): Promise<void> => {
   await apiClient.delete(userEndpoints.delete(_id));

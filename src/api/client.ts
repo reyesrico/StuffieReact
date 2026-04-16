@@ -1,8 +1,5 @@
 /**
  * API Client - Axios instance with pre-configured headers
- * 
- * Supports both RestDB and Codehooks backends via config.ts
- * All API calls should go through this client for consistent headers
  */
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import config from '../config/api';
