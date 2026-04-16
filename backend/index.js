@@ -766,6 +766,22 @@ app.patch('/subcategory_proposals/:id/reject', requireAuth, async (req, res) => 
 });
 
 // =============================================================================
+// POST /auth/refresh — proactive token renewal (keeps users logged in)
+// Requires a valid, non-expired X-Stuffie-Auth token.
+// Returns a fresh token with a new 1-hour expiry using the same claims.
+// =============================================================================
+
+app.post('/auth/refresh', requireAuth, (req, res) => {
+  const newToken = signJWT({
+    sub:    req.user.sub,
+    userId: req.user.userId,
+    role:   req.user.role,
+  });
+  const expiresAt = Math.floor(Date.now() / 1000) + 3600;
+  return res.json({ accessToken: newToken, expiresAt });
+});
+
+// =============================================================================
 // SEC-API: Require JWT for all sensitive (user-data) collections.
 // Any request whose first path segment matches a sensitive collection must
 // carry a valid X-Stuffie-Auth Bearer token — EXCEPT:

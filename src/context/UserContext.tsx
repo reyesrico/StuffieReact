@@ -56,15 +56,49 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   }, []);
 
   // Proactive session expiry check — runs every 60 s while the tab is open.
-  // Prevents a user sitting on an expired token from experiencing a jarring
-  // mid-action 401 redirect; they get cleanly logged out instead.
+  // When < 5 minutes remain, silently refreshes the JWT so the user never
+  // gets unexpectedly logged out mid-session. Falls back to logout only if
+  // the token is already expired or the refresh call fails.
   useEffect(() => {
-    const checkExpiry = () => {
+    const checkExpiry = async () => {
       const storedSession = localStorage.getItem('stuffie-session');
       if (!storedSession) return;
       try {
-        const { expiresAt } = JSON.parse(storedSession);
-        if (Math.floor(Date.now() / 1000) >= expiresAt) {
+        const { expiresAt, accessToken } = JSON.parse(storedSession);
+        const now = Math.floor(Date.now() / 1000);
+
+        // Already expired — clean logout immediately
+        if (now >= expiresAt) {
+          localStorage.removeItem('stuffie-user');
+          localStorage.removeItem('stuffie-session');
+          localStorage.removeItem('username');
+          localStorage.removeItem('stuffie-cache');
+          setUser(null);
+          return;
+        }
+
+        // Within 5 minutes of expiry — try to refresh
+        if (expiresAt - now < 5 * 60) {
+          try {
+            const serverUrl = import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/';
+            const apiKey = import.meta.env.VITE_CODEHOOKS_API_KEY || '';
+            const res = await fetch(`${serverUrl}auth/refresh`, {
+              method: 'POST',
+              headers: {
+                'x-apikey': apiKey,
+                'X-Stuffie-Auth': accessToken,
+                'Content-Type': 'application/json',
+              },
+            });
+            if (res.ok) {
+              const { accessToken: newToken, expiresAt: newExpiry } = await res.json();
+              localStorage.setItem('stuffie-session', JSON.stringify({ accessToken: newToken, expiresAt: newExpiry }));
+              return; // session extended — stay logged in
+            }
+          } catch {
+            // network error — fall through to logout below
+          }
+          // Refresh failed — logout cleanly
           localStorage.removeItem('stuffie-user');
           localStorage.removeItem('stuffie-session');
           localStorage.removeItem('username');

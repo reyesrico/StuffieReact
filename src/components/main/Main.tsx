@@ -16,6 +16,7 @@ import Settings from '../sections/Settings';
 import SpotifyPlayer from '../sections/SpotifyPlayer';
 import UserContext from '../../context/UserContext';
 import { SpotifyProvider } from '../../context/SpotifyContext';
+import { useNotificationPolling } from '../../hooks/useNotificationPolling';
 import { 
   HeaderSkeleton, 
   SidebarSkeleton, 
@@ -48,6 +49,9 @@ const Main = () => {
   const [chatVisible, setChatVisible] = React.useState<boolean>(
     localStorage.getItem(CHAT_VISIBLE_KEY) !== 'false'
   );
+
+  // Polls notification queries every 30s + fires browser notifications on new items
+  useNotificationPolling();
   const [spotifyVisible, setSpotifyVisible] = React.useState<boolean>(
     localStorage.getItem(SPOTIFY_VISIBLE_KEY) !== 'false'
   );

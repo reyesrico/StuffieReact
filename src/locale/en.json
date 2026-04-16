@@ -321,6 +321,10 @@
     "notifications.returnRequested": "Return request sent \u2014 waiting for owner confirmation.",
     "notifications.completeSuccess": "Done! Your inventory has been updated.",
     "notifications.completeFailed": "Something went wrong. Please try again.",
+    "notifications.pushTitle": "Stuffie — New request",
+    "notifications.pushBody": "You have {{ count }} new notification(s). Open Stuffie to respond.",
+    "notifications.pushTitle": "Stuffie — New request",
+    "notifications.pushBody": "You have {{ count }} new notification(s). Open Stuffie to respond.",
 
     "friendPage.productsTitle": "{{ name }}'s Stuff",
     "friendPage.noProducts": "This friend has no products yet.",

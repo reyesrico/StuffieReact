@@ -322,6 +322,8 @@
     "notifications.returnRequested": "Solicitud de devoluci\u00f3n enviada \u2014 esperando confirmaci\u00f3n del due\u00f1o.",
     "notifications.completeSuccess": "\u00a1Listo! Tu inventario ha sido actualizado.",
     "notifications.completeFailed": "Algo salió mal. Por favor intenta de nuevo.",
+    "notifications.pushTitle": "Stuffie — Nueva solicitud",
+    "notifications.pushBody": "Tienes {{ count }} notificación(es) nueva(s). Abre Stuffie para responder.",
     "friendPage.productsTitle": "Cosas de {{ name }}",
     "friendPage.noProducts": "Este amigo aún no tiene productos.",
     "friendPage.tabLocation": "Ubicación",
