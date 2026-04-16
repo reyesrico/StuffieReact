@@ -10,7 +10,7 @@ import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 import { getProductsByCategory } from '../../api/products.api';
 import UserContext from '../../context/UserContext';
-import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct } from '../../hooks/queries';
+import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct, useCreateProposal } from '../../hooks/queries';
 import { useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '../../hooks/queries/queryKeys';
 import {
@@ -100,6 +100,12 @@ const AddProduct = () => {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
 
+  // Subcategory proposal state
+  const [showProposalForm, setShowProposalForm] = useState(false);
+  const [proposalName, setProposalName] = useState('');
+  const [proposalSubmitted, setProposalSubmitted] = useState(false);
+  const createProposalMutation = useCreateProposal();
+
   // Modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultState, setResultState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -141,6 +147,9 @@ const AddProduct = () => {
     setSubSearch('');
     setDupCandidates([]);
     setAiError('');
+    setShowProposalForm(false);
+    setProposalName('');
+    setProposalSubmitted(false);
     setResultState('idle');
   };
 
@@ -599,6 +608,42 @@ const AddProduct = () => {
                         {sub.name}
                       </button>
                     ))}
+                  </div>
+                )}
+
+                {/* Suggest a new subcategory */}
+                {!showProposalForm && !proposalSubmitted && (
+                  <button className="add-product__suggest-link" onClick={() => setShowProposalForm(true)}>
+                    {t('addProduct.suggestSubcategory')}
+                  </button>
+                )}
+                {proposalSubmitted && (
+                  <p className="add-product__suggest-done">{t('addProduct.proposalSent')}</p>
+                )}
+                {showProposalForm && !proposalSubmitted && (
+                  <div className="add-product__proposal-form">
+                    <input
+                      type="text"
+                      className="add-product__proposal-input"
+                      placeholder={t('addProduct.proposalPlaceholder')}
+                      value={proposalName}
+                      onChange={e => setProposalName(e.target.value)}
+                    />
+                    <Button
+                      size="sm"
+                      text={createProposalMutation.isPending ? '…' : t('addProduct.proposalSubmit')}
+                      disabled={!proposalName.trim() || createProposalMutation.isPending}
+                      onClick={() => {
+                        if (!selectedCategory || !proposalName.trim()) return;
+                        createProposalMutation.mutate(
+                          { name: proposalName.trim(), category_id: selectedCategory.id },
+                          { onSuccess: () => { setProposalSubmitted(true); setShowProposalForm(false); } },
+                        );
+                      }}
+                    />
+                    <button className="add-product__suggest-link" onClick={() => setShowProposalForm(false)}>
+                      {t('common.cancel')}
+                    </button>
                   </div>
                 )}
               </section>

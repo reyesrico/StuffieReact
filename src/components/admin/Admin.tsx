@@ -28,6 +28,7 @@ import {
   useCategories, useSubcategories,
   useAddCategory, useUpdateCategory, useDeleteCategory,
   useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
+  useProposals, useApproveProposal, useRejectProposal,
 } from '../../hooks/queries';
 import './Admin.scss';
 
@@ -435,7 +436,7 @@ const CatalogPanel = () => {
   );
 };
 
-type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions';
+type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions' | 'proposals';
 
 // ─── Main Admin component ─────────────────────────────────────────────────────
 const Admin = () => {
@@ -447,6 +448,12 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('notifications');
 
   const totalNotifications = userRequests.length + pendingProducts.length;
+
+  const { data: proposals = [] } = useProposals('pending');
+  const approveProposalMutation = useApproveProposal();
+  const rejectProposalMutation = useRejectProposal();
+  const [pendingApproveId, setPendingApproveId] = useState<string | null>(null);
+  const [pendingRejectId, setPendingRejectId] = useState<string | null>(null);
 
   const approveUser = (user: User) => approveUserMutation.mutate(user);
 
@@ -505,6 +512,17 @@ const Admin = () => {
           onClick={() => setActiveTab('actions')}
         >
           {t('admin.actions')}
+        </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === 'proposals'}
+          className={`admin__tab${activeTab === 'proposals' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('proposals')}
+        >
+          {t('admin.proposals')}
+          {proposals.length > 0 && (
+            <span className="admin__tab-badge">{proposals.length}</span>
+          )}
         </button>
       </div>
 
@@ -590,6 +608,58 @@ const Admin = () => {
               <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
             </div>
             <OrphanRepairPanel />
+          </div>
+        )}
+
+        {/* Proposals tab */}
+        {activeTab === 'proposals' && (
+          <div className="admin__subsection">
+            {proposals.length === 0 ? (
+              <div className="admin__empty">{t('admin.proposals.empty')}</div>
+            ) : (
+              <ul className="admin__list">
+                {proposals.map((p) => (
+                  <li key={p._id} className="admin__request">
+                    <div className="admin__request-info">
+                      <span className="admin__request-name">{p.name}</span>
+                      <span className="admin__request-meta">
+                        {t('admin.category')}: {p.category_id} &nbsp;·&nbsp;
+                        {t('admin.proposals.proposedBy')}: {p.proposed_by}
+                      </span>
+                    </div>
+                    <div className="admin__request-buttons">
+                      <Button
+                        size="sm"
+                        text={t('admin.proposals.approve')}
+                        loading={pendingApproveId === p._id}
+                        disabled={!!pendingApproveId || !!pendingRejectId}
+                        onClick={() => {
+                          setPendingApproveId(p._id);
+                          approveProposalMutation.mutate(
+                            { _id: p._id },
+                            { onSettled: () => setPendingApproveId(null) },
+                          );
+                        }}
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        text={t('admin.proposals.reject')}
+                        loading={pendingRejectId === p._id}
+                        disabled={!!pendingApproveId || !!pendingRejectId}
+                        onClick={() => {
+                          setPendingRejectId(p._id);
+                          rejectProposalMutation.mutate(
+                            { _id: p._id },
+                            { onSettled: () => setPendingRejectId(null) },
+                          );
+                        }}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 

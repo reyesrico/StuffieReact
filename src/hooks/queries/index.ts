@@ -122,6 +122,11 @@ export {
   useDeletePurchase,
   useAcceptPurchase,
   useCompletePurchase,
+  // Subcategory Proposals
+  useCreateProposal,
+  useApproveProposal,
+  useRejectProposal,
+  useProposals,
 } from './mutations';
 
 // Suspense-enabled hooks (for use with React Suspense boundaries)

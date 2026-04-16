@@ -59,6 +59,12 @@ export const queryKeys = {
   feed: {
     all: (userId: number) => ['feed', userId] as const,
   },
+
+  // Subcategory Proposals (admin)
+  proposals: {
+    all: ['subcategory_proposals'] as const,
+    pending: ['subcategory_proposals', 'pending'] as const,
+  },
 };
 
 export default queryKeys;

@@ -661,6 +661,106 @@ app.delete('/admin/orphans/:id', requireAuth, async (req, res) => {
   }
 });
 
+// =============================================================================
+// Subcategory Proposals — user-submitted, admin-reviewed
+// Collection: subcategory_proposals
+// Schema: { name, category_id, proposed_by, proposed_by_id, status, admin_note }
+// =============================================================================
+
+// GET /subcategory_proposals?status=pending  — admin: list all or filter by status
+app.get('/subcategory_proposals', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+  try {
+    const db = await datastore.open();
+    const { status } = req.query ?? {};
+    const filter = status ? { status } : {};
+    const results = [];
+    await db.getMany('subcategory_proposals', filter).forEach(r => results.push(r));
+    results.sort((a, b) => (b._created ?? '').localeCompare(a._created ?? ''));
+    return res.json(results);
+  } catch (err) {
+    console.error('GET /subcategory_proposals error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /subcategory_proposals  — authenticated user submits a proposal
+app.post('/subcategory_proposals', requireAuth, async (req, res) => {
+  const { name, category_id } = req.body ?? {};
+  if (!name || typeof name !== 'string' || !name.trim()) {
+    return res.status(400).json({ error: 'name is required' });
+  }
+  if (!category_id || !Number.isInteger(Number(category_id))) {
+    return res.status(400).json({ error: 'category_id is required' });
+  }
+  try {
+    const db = await datastore.open();
+    const proposal = {
+      name: name.trim(),
+      category_id: Number(category_id),
+      proposed_by: req.user.sub,
+      proposed_by_id: req.user.userId,
+      status: 'pending',
+      admin_note: '',
+      _created: new Date().toISOString(),
+    };
+    const result = await db.insertOne('subcategory_proposals', proposal);
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error('POST /subcategory_proposals error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// PATCH /subcategory_proposals/:id/approve  — admin approves + creates the subcategory
+app.patch('/subcategory_proposals/:id/approve', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+  const { id } = req.params;
+  try {
+    const db = await datastore.open();
+    const rows = [];
+    await db.getMany('subcategory_proposals', { _id: id }).forEach(r => rows.push(r));
+    const proposal = rows[0];
+    if (!proposal) return res.status(404).json({ error: 'Proposal not found' });
+    if (proposal.status !== 'pending') return res.status(409).json({ error: 'Already reviewed' });
+
+    // Assign next available subcategory id in the category's namespace
+    const catBase = Number(proposal.category_id) * 100;
+    const existing = [];
+    await db.getMany('subcategories', { category_id: proposal.category_id }).forEach(r => existing.push(r));
+    const maxId = existing.reduce((m, s) => Math.max(m, Number(s.id) || 0), catBase);
+    const newId = maxId + 1;
+
+    await db.insertOne('subcategories', {
+      id: newId,
+      name: proposal.name,
+      category_id: proposal.category_id,
+      _created: new Date().toISOString(),
+    });
+    await db.updateOne('subcategory_proposals', { _id: id }, { $set: { status: 'approved', admin_note: req.body?.admin_note ?? '' } });
+    return res.json({ success: true, subcategory_id: newId });
+  } catch (err) {
+    console.error('PATCH /subcategory_proposals/:id/approve error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// PATCH /subcategory_proposals/:id/reject  — admin rejects with optional note
+app.patch('/subcategory_proposals/:id/reject', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+  const { id } = req.params;
+  try {
+    const db = await datastore.open();
+    await db.updateOne('subcategory_proposals', { _id: id }, {
+      $set: { status: 'rejected', admin_note: req.body?.admin_note ?? '' },
+    });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('PATCH /subcategory_proposals/:id/reject error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Re-enable Codehooks auto-REST API for all collections.
 // Without this line, deploying a codehooks-js function disables the built-in
 // CRUD endpoints (/stuffiers, /stuff, /friends, etc.) — breaking the whole app.

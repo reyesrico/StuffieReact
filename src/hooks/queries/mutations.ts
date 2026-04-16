@@ -64,6 +64,12 @@ import {
   completePurchaseRequest,
   type CreatePurchaseInput,
 } from '../../api/purchases.api';
+import {
+  createProposal,
+  approveProposal,
+  rejectProposal,
+  getProposals,
+} from '../../api/proposals.api';
 
 import type User from '../../components/types/User';
 import type Product from '../../components/types/Product';
@@ -622,5 +628,53 @@ export const useCompletePurchase = () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.products.all(user.id) });
       }
     },
+  });
+};
+
+// ============ SUBCATEGORY PROPOSAL MUTATIONS ============
+
+/** User: submit a new subcategory proposal */
+export const useCreateProposal = () => {
+  return useMutation({
+    mutationFn: ({ name, category_id }: { name: string; category_id: number }) =>
+      createProposal(name, category_id),
+  });
+};
+
+/** Admin: approve a proposal (backend also inserts the new subcategory) */
+export const useApproveProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ _id, admin_note }: { _id: string; admin_note?: string }) =>
+      approveProposal(_id, admin_note),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.proposals.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
+    },
+  });
+};
+
+/** Admin: reject a proposal */
+export const useRejectProposal = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ _id, admin_note }: { _id: string; admin_note?: string }) =>
+      rejectProposal(_id, admin_note),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.proposals.all });
+    },
+  });
+};
+
+// ============ SUBCATEGORY PROPOSAL QUERY HOOK ============
+
+import { useQuery } from '@tanstack/react-query';
+
+/** Admin: fetch all proposals, optionally filtered by status */
+export const useProposals = (status?: string) => {
+  return useQuery({
+    queryKey: status ? queryKeys.proposals.pending : queryKeys.proposals.all,
+    queryFn: () => getProposals(status),
+    staleTime: 30_000,
   });
 };
