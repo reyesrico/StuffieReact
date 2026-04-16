@@ -19,9 +19,11 @@ import {
   BuildingHome20Regular, AnimalPawPrint20Regular, Cart20Regular, HeartPulse20Regular,
   Balloon20Regular, Gift20Regular, SportSoccer20Regular, VehicleCar20Regular,
   Pill20Regular, Box20Regular, Checkmark20Regular, Search20Regular, Warning20Regular,
+  Sparkle20Regular,
 } from '@fluentui/react-icons';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import Media from '../shared/Media';
+import config from '../../config/api';
 
 import './AddProduct.scss';
 
@@ -94,6 +96,10 @@ const AddProduct = () => {
   // Deduplication warning
   const [dupCandidates, setDupCandidates] = useState<Product[]>([]);
 
+  // AI suggestion state
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+
   // Modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultState, setResultState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -134,6 +140,7 @@ const AddProduct = () => {
     setName('');
     setSubSearch('');
     setDupCandidates([]);
+    setAiError('');
     setResultState('idle');
   };
 
@@ -190,6 +197,52 @@ const AddProduct = () => {
       return words.some(w => pName.includes(w));
     });
     setDupCandidates(matches.slice(0, 3));
+  };
+
+  // AI-powered categorization — sends product name to /ai-chat, pre-fills category + subcategory
+  const suggestWithAI = async () => {
+    const trimmed = name.trim();
+    if (!trimmed || aiLoading) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const catList = (categories as Category[]).map((c: Category) => ({ id: c.id, name: c.name }));
+      const subList = (subcategories as Subcategory[]).map((s: Subcategory) => ({ id: s.id, category_id: s.category_id, name: s.name }));
+      const systemPrompt = [
+        'You are a product categorization assistant for a personal inventory app.',
+        'Given a product name, return ONLY a JSON object (no markdown, no explanation) with:',
+        '  category_id: number — the best matching category id from the provided list',
+        '  subcategory_id: number — the best matching subcategory id (must belong to the chosen category)',
+        '  suggested_name: string — a clean, title-case standardized product name',
+        '',
+        'Categories: ' + JSON.stringify(catList),
+        'Subcategories: ' + JSON.stringify(subList),
+      ].join('\n');
+      const res = await fetch(`${config.server}ai-chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-apikey': config.headers['x-apikey'] },
+        body: JSON.stringify({
+          model: 'gpt-5-nano',
+          systemPrompt,
+          messages: [{ role: 'user', content: `Categorize this product: ${trimmed}` }],
+        }),
+      });
+      if (!res.ok) throw new Error('AI request failed');
+      const data = await res.json();
+      const raw = (data.content ?? '').replace(/```[^\n]*\n?/g, '').trim();
+      const parsed = JSON.parse(raw) as { category_id: number; subcategory_id: number; suggested_name: string };
+      const cat = (categories as Category[]).find((c: Category) => c.id === parsed.category_id);
+      const sub = (subcategories as Subcategory[]).find((s: Subcategory) => s.id === parsed.subcategory_id);
+      if (cat) {
+        handleCategorySelect(cat);
+        if (sub) handleSubcategorySelectNew(sub, cat);
+      }
+      if (parsed.suggested_name) setName(parsed.suggested_name);
+    } catch {
+      setAiError(t('addProduct.aiError'));
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const canConfirmCatalog = !!(selectedProduct?.id);
@@ -432,7 +485,16 @@ const AddProduct = () => {
                   onChange={(e: any) => setName(e.target.value)}
                   onBlur={() => checkDuplicates(name, selectedSubcategory?.id)}
                 />
+                <button
+                  className={`add-product__ai-btn ${aiLoading ? 'add-product__ai-btn--loading' : ''}`}
+                  onClick={suggestWithAI}
+                  disabled={!name.trim() || aiLoading}
+                  title={t('addProduct.aiSuggest')}
+                >
+                  <Sparkle20Regular />
+                </button>
               </div>
+              {aiError && <p className="add-product__ai-error">{aiError}</p>}
 
               {/* Deduplication warning */}
               {dupCandidates.length > 0 && (

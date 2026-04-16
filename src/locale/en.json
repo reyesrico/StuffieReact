@@ -416,6 +416,8 @@
     "addProduct.searchSubcategories": "Search subcategories...",
     "addProduct.similarProducts": "Similar products already exist:",
     "addProduct.createAnyway": "No, create new anyway",
+    "addProduct.aiSuggest": "Auto-fill category with AI",
+    "addProduct.aiError": "AI suggestion failed. Please select manually.",
 
     "addCategory.categoryLabel": "Category",
     "addCategory.subcategoryLabel": "SubCategory",
