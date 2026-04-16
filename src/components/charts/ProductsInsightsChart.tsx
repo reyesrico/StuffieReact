@@ -89,41 +89,52 @@ const ProductsInsightsChart = ({ products, categories }: Props) => {
         </div>
 
         {/* Pie chart — spend by category (only when cost data exists) */}
-        {hasCostData && (
-          <div className="products-insights__card">
-            <h4 className="products-insights__card-title">{t('charts.spendByCategory')}</h4>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={data.filter(d => d.cost > 0)}
-                  dataKey="cost"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={72}
-                  innerRadius={36}
-                >
-                  {data.filter(d => d.cost > 0).map((_entry, index) => (
-                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: 'var(--background-elevated)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                  }}
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, t('charts.spend')]}
-                />
-                <Legend
-                  iconSize={8}
-                  wrapperStyle={{ fontSize: '11px', color: 'var(--text-secondary)' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        )}
+        {hasCostData && (() => {
+          const pieData = data.filter(d => d.cost > 0);
+          return (
+            <div className="products-insights__card">
+              <h4 className="products-insights__card-title">{t('charts.spendByCategory')}</h4>
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="cost"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={68}
+                    innerRadius={32}
+                  >
+                    {pieData.map((_entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: 'var(--background-elevated)',
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                    formatter={(value: number) => [`$${value.toFixed(2)}`, t('charts.spend')]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="products-insights__legend">
+                {pieData.map((entry, index) => (
+                  <div key={entry.name} className="products-insights__legend-item">
+                    <span
+                      className="products-insights__legend-dot"
+                      style={{ background: COLORS[index % COLORS.length] }}
+                    />
+                    <span className="products-insights__legend-label">{entry.name}</span>
+                    <span className="products-insights__legend-value">${entry.cost.toFixed(2)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
