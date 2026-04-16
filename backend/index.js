@@ -91,7 +91,31 @@ const verifyPassword = (password, storedHash, email) => {
 // POST /auth/login — server-side auth, returns HS256 JWT (1 hour)
 // Body: { email: string, password: string }
 // Returns: { user: SafeUser, accessToken: string, expiresAt: number }
+// Rate limiting: 5 failures within 15 min → 429. Uses Codehooks KV store.
 // =============================================================================
+
+const RL_WINDOW   = 15 * 60; // 15 minutes in seconds
+const RL_MAX_FAIL = 5;
+
+const rlKey = (email) => `rl:login:${email.toLowerCase().trim()}`;
+
+const getRateLimit = async (db, email) => {
+  try {
+    const raw = await db.get(rlKey(email));
+    if (!raw) return { count: 0, resetAt: 0 };
+    return JSON.parse(raw);
+  } catch {
+    return { count: 0, resetAt: 0 };
+  }
+};
+
+const setRateLimit = async (db, email, data) => {
+  await db.set(rlKey(email), JSON.stringify(data));
+};
+
+const clearRateLimit = async (db, email) => {
+  await db.remove(rlKey(email)).catch(() => {});
+};
 
 app.post('/auth/login', async (req, res) => {
   const { email, password } = req.body ?? {};
@@ -102,6 +126,16 @@ app.post('/auth/login', async (req, res) => {
 
   try {
     const db = await datastore.open();
+    const now = Math.floor(Date.now() / 1000);
+
+    // --- Rate limit check ---
+    const rl = await getRateLimit(db, email);
+    if (rl.count >= RL_MAX_FAIL && rl.resetAt > now) {
+      return res.status(429).json({
+        error: 'Too many failed login attempts. Please try again later.',
+        retryAfterSeconds: rl.resetAt - now,
+      });
+    }
 
     // getMany with flat MongoDB query + forEach — the documented Codehooks pattern
     const users = [];
@@ -109,10 +143,23 @@ app.post('/auth/login', async (req, res) => {
     const user = users[0];
 
     // Constant-time-safe message — don't reveal whether email exists
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) {
+      const newCount = rl.resetAt > now ? rl.count + 1 : 1;
+      const resetAt  = rl.resetAt > now ? rl.resetAt : now + RL_WINDOW;
+      await setRateLimit(db, email, { count: newCount, resetAt });
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
 
     const { valid, needsUpgrade } = verifyPassword(password, user.password_hash, email);
-    if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!valid) {
+      const newCount = rl.resetAt > now ? rl.count + 1 : 1;
+      const resetAt  = rl.resetAt > now ? rl.resetAt : now + RL_WINDOW;
+      await setRateLimit(db, email, { count: newCount, resetAt });
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Successful login — clear any failure counter
+    await clearRateLimit(db, email);
 
     // Auto-upgrade old hash to v2 — fire and forget, don't block response
     if (needsUpgrade && user._id) {
@@ -484,6 +531,104 @@ app.post('/loan_requests/:id/complete', requireAuth, async (req, res) => {
     return res.json({ success: true });
   } catch (err) {
     console.error('loan_requests/complete error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// =============================================================================
+// PATCH /users/:id — partial profile update via $set
+// Fixes the crudlify PUT bug: PUT replaces the whole document, wiping
+// password_hash when only profile fields are being updated.
+// Whitelist of mutable fields prevents injection of privileged fields.
+// =============================================================================
+
+const USER_PATCH_ALLOWED = ['first_name', 'last_name', 'picture', 'zip_code', 'lat', 'lng', 'password_hash'];
+
+app.patch('/users/:id', requireAuth, async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: 'id required' });
+
+  try {
+    const db = await datastore.open();
+
+    // Ownership check: user can only patch their own record; admin can patch any
+    if (req.user.role !== 'admin') {
+      const targets = [];
+      await db.getMany('users', { _id: id }).forEach(u => targets.push(u));
+      const target = targets[0];
+      if (!target || target.id !== req.user.userId) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+    }
+
+    const updates = {};
+    for (const key of USER_PATCH_ALLOWED) {
+      if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+        updates[key] = req.body[key];
+      }
+    }
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: 'No valid fields to update' });
+    }
+
+    await db.updateOne('users', { _id: id }, { $set: updates });
+    return res.json(updates); // echo applied fields — frontend merges onto user state
+  } catch (err) {
+    console.error('PATCH /users/:id error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// =============================================================================
+// Admin: orphan row detection + deletion
+// GET  /admin/orphans          — lists user_items rows with invalid item_id or user_id
+// DELETE /admin/orphans/:id   — deletes a single orphan user_items row
+// Both require admin JWT (role: 'admin')
+// =============================================================================
+
+app.get('/admin/orphans', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+
+  try {
+    const db = await datastore.open();
+
+    // Collect valid item IDs
+    const itemIds = new Set();
+    await db.getMany('items', {}).forEach(r => { if (r.id != null) itemIds.add(Number(r.id)); });
+
+    // Collect valid user IDs
+    const userIds = new Set();
+    await db.getMany('users', {}).forEach(r => { if (r.id != null) userIds.add(Number(r.id)); });
+
+    // Find orphaned user_items rows
+    const orphans = [];
+    await db.getMany('user_items', {}).forEach(r => {
+      const itemOk = itemIds.has(Number(r.item_id));
+      const userOk = userIds.has(Number(r.user_id));
+      if (!itemOk || !userOk) {
+        orphans.push({ ...r, _reason: !userOk ? 'unknown_user' : 'unknown_item' });
+      }
+    });
+
+    return res.json({ orphans, totalChecked: itemIds.size + userIds.size });
+  } catch (err) {
+    console.error('GET /admin/orphans error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.delete('/admin/orphans/:id', requireAuth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+
+  const { id } = req.params;
+  if (!id) return res.status(400).json({ error: 'id required' });
+
+  try {
+    const db = await datastore.open();
+    await db.deleteOne('user_items', { _id: id });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('DELETE /admin/orphans/:id error:', err.message);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });

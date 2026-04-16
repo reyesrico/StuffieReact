@@ -10,6 +10,7 @@ import {
   Delete20Regular,
   Tag20Regular,
   Folder20Regular,
+  BugRegular,
 } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
@@ -21,6 +22,7 @@ import Product from '../types/Product';
 import User from '../types/User';
 import Category from '../types/Category';
 import Subcategory from '../types/Subcategory';
+import { getOrphanRows, deleteOrphanRow, OrphanRow } from '../../api/users.api';
 import {
   useUserRequests, usePendingProducts, useApproveUser,
   useCategories, useSubcategories,
@@ -28,6 +30,125 @@ import {
   useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
 } from '../../hooks/queries';
 import './Admin.scss';
+
+// ─── Orphan repair panel ──────────────────────────────────────────────────────
+const OrphanRepairPanel = () => {
+  const { t } = useTranslation();
+  const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState(false);
+  const [orphans, setOrphans] = useState<OrphanRow[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingAll, setDeletingAll] = useState(false);
+
+  const handleScan = async () => {
+    setScanning(true);
+    setScanned(false);
+    try {
+      const result = await getOrphanRows();
+      setOrphans(Array.isArray(result?.orphans) ? result.orphans : []);
+      setScanned(true);
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      await deleteOrphanRow(id);
+      setOrphans(prev => prev.filter(o => o._id !== id));
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    setDeletingAll(true);
+    try {
+      await Promise.all(orphans.map(o => deleteOrphanRow(o._id)));
+      setOrphans([]);
+    } finally {
+      setDeletingAll(false);
+    }
+  };
+
+  return (
+    <div className="orphan-panel">
+      <div className="orphan-panel__header">
+        <BugRegular className="orphan-panel__icon" />
+        <div>
+          <div className="orphan-panel__title">{t('admin.orphans.title')}</div>
+          <div className="orphan-panel__desc">{t('admin.orphans.description')}</div>
+        </div>
+      </div>
+
+      <div className="orphan-panel__actions">
+        <Button
+          text={scanning ? t('admin.orphans.scanning') : t('admin.orphans.scan')}
+          size="sm"
+          variant="outline"
+          loading={scanning}
+          onClick={handleScan}
+        />
+        {scanned && orphans.length > 1 && (
+          <Button
+            text={t('admin.orphans.deleteAll')}
+            size="sm"
+            variant="secondary"
+            loading={deletingAll}
+            onClick={handleDeleteAll}
+          />
+        )}
+      </div>
+
+      {scanned && orphans.length === 0 && (
+        <div className="orphan-panel__empty">{t('admin.orphans.none')}</div>
+      )}
+
+      {orphans.length > 0 && (
+        <>
+          <div className="orphan-panel__count">
+            {t('admin.orphans.found', { count: orphans.length })}
+          </div>
+          <table className="orphan-panel__table">
+            <thead>
+              <tr>
+                <th>{t('admin.orphans.userId')}</th>
+                <th>{t('admin.orphans.itemId')}</th>
+                <th>{t('admin.orphans.reason')}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orphans.map(row => (
+                <tr key={row._id}>
+                  <td>{row.user_id}</td>
+                  <td>{row.item_id}</td>
+                  <td>
+                    <span className={`orphan-panel__badge orphan-panel__badge--${row._reason}`}>
+                      {row._reason === 'unknown_user'
+                        ? t('admin.orphans.reasonUnknownUser')
+                        : t('admin.orphans.reasonUnknownItem')}
+                    </span>
+                  </td>
+                  <td>
+                    <Button
+                      text={t('common.delete')}
+                      size="sm"
+                      variant="secondary"
+                      loading={deletingId === row._id}
+                      onClick={() => handleDelete(row._id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  );
+};
 
 // ─── Catalog panel: accordion category tree with full CRUD ───────────────────
 const CatalogPanel = () => {
@@ -463,9 +584,12 @@ const Admin = () => {
         {/* Actions tab */}
         {activeTab === 'actions' && (
           <div className="admin__actions">
-            <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
-            <Button text={t('admin.addCategory')} onClick={() => navigate('/category/add')} size="sm" variant="outline" />
-            <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
+            <div className="admin__actions-buttons">
+              <Button text={t('products.addProduct')} onClick={() => navigate('/product/add')} size="sm" />
+              <Button text={t('admin.addCategory')} onClick={() => navigate('/category/add')} size="sm" variant="outline" />
+              <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
+            </div>
+            <OrphanRepairPanel />
           </div>
         )}
 

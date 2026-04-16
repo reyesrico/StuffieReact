@@ -55,6 +55,31 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     setIsLoading(false);
   }, []);
 
+  // Proactive session expiry check — runs every 60 s while the tab is open.
+  // Prevents a user sitting on an expired token from experiencing a jarring
+  // mid-action 401 redirect; they get cleanly logged out instead.
+  useEffect(() => {
+    const checkExpiry = () => {
+      const storedSession = localStorage.getItem('stuffie-session');
+      if (!storedSession) return;
+      try {
+        const { expiresAt } = JSON.parse(storedSession);
+        if (Math.floor(Date.now() / 1000) >= expiresAt) {
+          localStorage.removeItem('stuffie-user');
+          localStorage.removeItem('stuffie-session');
+          localStorage.removeItem('username');
+          localStorage.removeItem('stuffie-cache');
+          setUser(null);
+        }
+      } catch {
+        // malformed session — leave it; the 401 interceptor will handle it
+      }
+    };
+
+    const interval = setInterval(checkExpiry, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
   const loginUser = (userData: User) => {
     setUser(userData);
     // Persist user to localStorage for auto-login on return

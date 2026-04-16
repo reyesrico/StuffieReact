@@ -89,6 +89,11 @@ export const loginUser = async (email: string, password: string): Promise<User |
     return user;
   } catch (err: any) {
     if (err?.response?.status === 401) return null;
+    if (err?.response?.status === 429) {
+      // Rate limited — surface the server message to the UI
+      const msg = err.response.data?.error || 'Too many login attempts. Please try again later.';
+      throw new Error(msg);
+    }
     throw err;
   }
 };
@@ -158,10 +163,13 @@ export interface UpdateUserInput {
 }
 
 /**
- * Update user by _id — writes to Codehooks only. RestDB is a frozen backup.
+ * Update user by _id — uses PATCH with $set so that fields not in the payload
+ * (notably password_hash, which is stripped from the in-memory user object by
+ * the backend) are never overwritten.  A crudlify PUT would replace the whole
+ * document and silently wipe the password hash.
  */
 export const updateUser = async (_id: string, data: UpdateUserInput): Promise<User> => {
-  const response = await apiClient.put<User>(userEndpoints.update(_id), data);
+  const response = await apiClient.patch<User>(userEndpoints.update(_id), data);
   return response.data;
 };
 
@@ -183,6 +191,33 @@ export const deleteUser = async (_id: string, _email: string): Promise<void> => 
   await apiClient.delete(userEndpoints.delete(_id));
 };
 
+// ============ ADMIN ============
+
+export interface OrphanRow {
+  _id: string;
+  user_id: number;
+  item_id: number;
+  asking_price?: number;
+  _reason: 'unknown_user' | 'unknown_item';
+}
+
+/**
+ * Scan user_items for orphaned rows (unknown user_id or item_id).
+ * Admin only — requires an admin JWT in the session.
+ */
+export const getOrphanRows = async (): Promise<{ orphans: OrphanRow[]; totalChecked: number }> => {
+  const response = await apiClient.get<{ orphans: OrphanRow[]; totalChecked: number }>('/admin/orphans');
+  return response.data;
+};
+
+/**
+ * Delete a single orphaned user_items row by its _id.
+ * Admin only.
+ */
+export const deleteOrphanRow = async (_id: string): Promise<void> => {
+  await apiClient.delete(`/admin/orphans/${_id}`);
+};
+
 // Export all functions
 export const usersApi = {
   // Read
@@ -202,6 +237,10 @@ export const usersApi = {
   
   // Delete
   delete: deleteUser,
+
+  // Admin
+  getOrphanRows,
+  deleteOrphanRow,
 };
 
 export default usersApi;

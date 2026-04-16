@@ -431,7 +431,111 @@
 
 .admin__actions {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: var(--spacing-3);
-  flex-wrap: wrap;
+
+  > .button, > button {
+    align-self: flex-start;
+  }
+
+  // top buttons row
+  &-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+}
+
+// ── Orphan repair panel ───────────────────────────────────────────────────────
+
+.orphan-panel {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--background-elevated);
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+
+  &__icon {
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-color);
+  }
+
+  &__desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+  }
+
+  &__empty {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: var(--spacing-2) 0;
+  }
+
+  &__count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-2);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    th, td {
+      padding: var(--spacing-1) var(--spacing-2);
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+
+    &--unknown_user {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    &--unknown_item {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  }
 }
