@@ -18,7 +18,7 @@ import {
   ClothesHanger20Regular, Book20Regular, MusicNote120Regular, Laptop20Regular,
   BuildingHome20Regular, AnimalPawPrint20Regular, Cart20Regular, HeartPulse20Regular,
   Balloon20Regular, Gift20Regular, SportSoccer20Regular, VehicleCar20Regular,
-  Pill20Regular, Box20Regular, Checkmark20Regular,
+  Pill20Regular, Box20Regular, Checkmark20Regular, Search20Regular, Warning20Regular,
 } from '@fluentui/react-icons';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import Media from '../shared/Media';
@@ -88,6 +88,12 @@ const AddProduct = () => {
   const [ownedProductIds, setOwnedProductIds] = useState<Set<number>>(new Set());
   const [name, setName] = useState('');
 
+  // Subcategory search state
+  const [subSearch, setSubSearch] = useState('');
+
+  // Deduplication warning
+  const [dupCandidates, setDupCandidates] = useState<Product[]>([]);
+
   // Modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultState, setResultState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -101,6 +107,7 @@ const AddProduct = () => {
     setSelectedProduct(null);
     setCatalogProducts([]);
     setOwnedProductIds(new Set());
+    setSubSearch('');
   };
 
   // When subcategory is chosen, fetch catalog products
@@ -125,12 +132,47 @@ const AddProduct = () => {
     setCatalogProducts([]);
     setOwnedProductIds(new Set());
     setName('');
+    setSubSearch('');
+    setDupCandidates([]);
     setResultState('idle');
   };
 
   const filteredSubcategories = selectedCategory
     ? subcategories.filter((s: Subcategory) => s.category_id === selectedCategory.id)
     : [];
+
+  // Cross-category subcategory search results (max 8, sorted by name)
+  const subSearchTrimmed = subSearch.trim().toLowerCase();
+  const subSearchResults: Array<{ sub: Subcategory; cat: Category }> = subSearchTrimmed.length >= 2
+    ? subcategories
+        .filter((s: Subcategory) => s.name.toLowerCase().includes(subSearchTrimmed))
+        .map((s: Subcategory) => ({ sub: s, cat: categories.find((c: Category) => c.id === s.category_id) as Category }))
+        .filter(r => r.cat)
+        .sort((a, b) => a.sub.name.localeCompare(b.sub.name))
+        .slice(0, 8)
+    : [];
+
+  // Handle subcategory search selection (auto-selects parent category)
+  const handleSubSearchSelect = (sub: Subcategory, cat: Category) => {
+    handleCategorySelect(cat); // also resets subSearch via handleCategorySelect
+    if (mode === 'catalog') {
+      handleSubcategorySelect(sub);
+    } else {
+      setSelectedSubcategory(sub);
+    }
+  };
+
+  // Deduplication: check for similar products in the loaded catalog after name+subcategory set
+  const checkDuplicates = (productName: string, subcatId: number | undefined) => {
+    if (!productName.trim() || !subcatId) { setDupCandidates([]); return; }
+    const words = productName.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
+    if (words.length === 0) { setDupCandidates([]); return; }
+    const matches = catalogProducts.filter((p: Product) => {
+      const pName = (p.name ?? '').toLowerCase();
+      return words.some(w => pName.includes(w));
+    });
+    setDupCandidates(matches.slice(0, 3));
+  };
 
   const canConfirmCatalog = !!(selectedProduct?.id);
   const canConfirmNew = !!(name.trim() && selectedCategory && selectedSubcategory);
@@ -254,6 +296,34 @@ const AddProduct = () => {
                   {t('addProduct.subcategoryLabel')}
                   <span className="add-product__step-context"> — {selectedCategory.name}</span>
                 </p>
+
+                {/* Cross-category subcategory search */}
+                <div className="add-product__sub-search">
+                  <Search20Regular className="add-product__sub-search-icon" />
+                  <input
+                    type="text"
+                    className="add-product__sub-search-input"
+                    placeholder={t('addProduct.searchSubcategories')}
+                    value={subSearch}
+                    onChange={e => setSubSearch(e.target.value)}
+                  />
+                  {subSearchResults.length > 0 && (
+                    <ul className="add-product__sub-search-dropdown">
+                      {subSearchResults.map(({ sub, cat }) => (
+                        <li key={sub.id}>
+                          <button
+                            className="add-product__sub-search-result"
+                            onClick={() => handleSubSearchSelect(sub, cat)}
+                          >
+                            <span className="add-product__sub-search-name">{sub.name}</span>
+                            <span className="add-product__sub-search-cat">{cat.name}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
                 {filteredSubcategories.length === 0 ? (
                   <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
                 ) : (
@@ -338,8 +408,38 @@ const AddProduct = () => {
                   placeholder={t('addProduct.namePlaceholder')}
                   value={name}
                   onChange={(e: any) => setName(e.target.value)}
+                  onBlur={() => checkDuplicates(name, selectedSubcategory?.id)}
                 />
               </div>
+
+              {/* Deduplication warning */}
+              {dupCandidates.length > 0 && (
+                <div className="add-product__dup-warning">
+                  <Warning20Regular className="add-product__dup-icon" />
+                  <div>
+                    <p className="add-product__dup-title">{t('addProduct.similarProducts')}</p>
+                    <div className="add-product__dup-list">
+                      {dupCandidates.map((p: Product) => (
+                        <button
+                          key={p.id}
+                          className="add-product__dup-item"
+                          onClick={() => {
+                            handleModeSwitch('catalog');
+                            // Pre-navigate into that product's subcategory in catalog mode
+                            const cat = categories.find((c: Category) => c.id === p.category_id);
+                            if (cat) handleCategorySelect(cat);
+                          }}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                    <button className="add-product__dup-dismiss" onClick={() => setDupCandidates([])}>
+                      {t('addProduct.createAnyway')}
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
 
             {/* STEP 2 — Category */}
@@ -370,6 +470,34 @@ const AddProduct = () => {
                   {t('addProduct.subcategoryLabel')}
                   <span className="add-product__step-context"> — {selectedCategory.name}</span>
                 </p>
+
+                {/* Cross-category subcategory search */}
+                <div className="add-product__sub-search">
+                  <Search20Regular className="add-product__sub-search-icon" />
+                  <input
+                    type="text"
+                    className="add-product__sub-search-input"
+                    placeholder={t('addProduct.searchSubcategories')}
+                    value={subSearch}
+                    onChange={e => setSubSearch(e.target.value)}
+                  />
+                  {subSearchResults.length > 0 && (
+                    <ul className="add-product__sub-search-dropdown">
+                      {subSearchResults.map(({ sub, cat }) => (
+                        <li key={sub.id}>
+                          <button
+                            className="add-product__sub-search-result"
+                            onClick={() => handleSubSearchSelect(sub, cat)}
+                          >
+                            <span className="add-product__sub-search-name">{sub.name}</span>
+                            <span className="add-product__sub-search-cat">{cat.name}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
                 {filteredSubcategories.length === 0 ? (
                   <p className="add-product__empty">{t('addProduct.noSubcategories')}</p>
                 ) : (

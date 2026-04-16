@@ -413,6 +413,9 @@
     "addProduct.errorTitle": "Something went wrong",
     "addProduct.retryButton": "Try Again",
     "addProduct.successTitle": "Added!",
+    "addProduct.searchSubcategories": "Search subcategories...",
+    "addProduct.similarProducts": "Similar products already exist:",
+    "addProduct.createAnyway": "No, create new anyway",
 
     "addCategory.categoryLabel": "Category",
     "addCategory.subcategoryLabel": "SubCategory",
