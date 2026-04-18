@@ -65,10 +65,6 @@ export const useFacebookAuth = ({ onSuccess, onError }: UseFacebookAuthOptions) 
     if (!isAvailable || isLoading) return;
     setIsLoading(true);
 
-    const redirectUri = getRedirectUri();
-    // eslint-disable-next-line no-console
-    console.debug('[FB] redirect_uri:', redirectUri);
-
     // Centre the popup
     const left = Math.round(window.screenX + (window.outerWidth  - POPUP_WIDTH)  / 2);
     const top  = Math.round(window.screenY + (window.outerHeight - POPUP_HEIGHT) / 2);
@@ -96,8 +92,6 @@ export const useFacebookAuth = ({ onSuccess, onError }: UseFacebookAuthOptions) 
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key !== 'fb_oauth_result' || !event.newValue) return;
-      // eslint-disable-next-line no-console
-      console.debug('[FB] storage result received:', event.newValue);
 
       let data: { type?: string; access_token?: string; error?: string };
       try { data = JSON.parse(event.newValue); } catch { data = {}; }
