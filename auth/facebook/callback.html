@@ -15,13 +15,16 @@
                         params.get('error_reason')  ||
                         params.get('error_description');
 
-      if (window.opener && !window.opener.closed) {
-        var msg = accessToken
-          ? { type: 'fb_oauth_success', access_token: accessToken }
-          : { type: 'fb_oauth_error',   error: error || 'Login cancelled' };
+      // Use localStorage instead of window.opener.postMessage.
+      // Facebook sets COOP: same-origin on their pages, which severs
+      // window.opener when the popup navigates to facebook.com.
+      // The storage event is fired in the opener window without needing
+      // a direct opener reference, bypassing COOP entirely.
+      var result = accessToken
+        ? JSON.stringify({ type: 'fb_oauth_success', access_token: accessToken, ts: Date.now() })
+        : JSON.stringify({ type: 'fb_oauth_error',   error: error || 'Login cancelled',   ts: Date.now() });
 
-        window.opener.postMessage(msg, window.location.origin);
-      }
+      try { localStorage.setItem('fb_oauth_result', result); } catch (e) {}
 
       window.close();
     })();
