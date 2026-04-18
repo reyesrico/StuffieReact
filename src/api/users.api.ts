@@ -101,14 +101,27 @@ export const loginUser = async (email: string, password: string): Promise<User |
  * the accounts are linked automatically on the backend.
  */
 export const socialLogin = async (
-  provider: 'google' | 'apple',
+  provider: 'google' | 'apple' | 'facebook',
   token: string,
   firstName?: string,
   lastName?: string,
+  email?: string,
+  avatar?: string,
 ): Promise<User> => {
-  const body: Record<string, string> = provider === 'google'
-    ? { access_token: token }
-    : { id_token: token, ...(firstName ? { first_name: firstName } : {}), ...(lastName ? { last_name: lastName } : {}) };
+  let body: Record<string, string>;
+  if (provider === 'google') {
+    body = { access_token: token };
+  } else if (provider === 'apple') {
+    body = { id_token: token, ...(firstName ? { first_name: firstName } : {}), ...(lastName ? { last_name: lastName } : {}) };
+  } else {
+    body = {
+      access_token: token,
+      ...(firstName ? { first_name: firstName } : {}),
+      ...(lastName  ? { last_name:  lastName  } : {}),
+      ...(email     ? { email                 } : {}),
+      ...(avatar    ? { avatar                } : {}),
+    };
+  }
 
   const response = await codehooksClient.post<{
     user: User;

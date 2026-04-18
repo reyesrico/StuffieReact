@@ -93,6 +93,9 @@
     "social.appleLabel": "Sign in with Apple",
     "social.googleError": "Google sign in failed. Please try again.",
     "social.appleError": "Apple sign in failed. Please try again.",
+    "social.facebookText": "Continue with Facebook",
+    "social.facebookLabel": "Sign in with Facebook",
+    "social.facebookError": "Facebook sign in failed. Please try again.",
 
     "completeProfile.title": "One last step",
     "completeProfile.subtitle": "Tell us your name so friends can find you.",

@@ -244,3 +244,49 @@ app.post('/auth/apple', async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// ---------------------------------------------------------------------------
+// POST /auth/facebook
+//
+// Verifies a Facebook user access token via the Graph API, then finds or
+// creates a local user account.
+// ---------------------------------------------------------------------------
+app.post('/auth/facebook', async (req, res) => {
+  const { access_token, first_name, last_name, email: emailFromClient, avatar: avatarFromClient } = req.body ?? {};
+  if (!access_token || typeof access_token !== 'string') {
+    return res.status(400).json({ error: 'access_token required' });
+  }
+
+  try {
+    // Verify via Facebook Graph API and fetch profile
+    const graphUrl = `https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture.type(large)&access_token=${encodeURIComponent(access_token)}`;
+    const graphRes = await fetch(graphUrl);
+    if (!graphRes.ok) {
+      return res.status(401).json({ error: 'Invalid or expired Facebook token' });
+    }
+
+    const profile = await graphRes.json();
+
+    if (!profile.id) {
+      return res.status(401).json({ error: 'Could not verify Facebook identity' });
+    }
+
+    // Profile picture URL — Graph API returns nested structure
+    const oauth_avatar = profile.picture?.data?.url || avatarFromClient || null;
+
+    const db   = await datastore.open();
+    const user = await findOrCreateOAuthUser(db, {
+      email:          profile.email || emailFromClient || null,
+      first_name:     profile.first_name || first_name || '',
+      last_name:      profile.last_name  || last_name  || '',
+      oauth_provider: 'facebook',
+      oauth_id:       profile.id,
+      oauth_avatar,
+    });
+
+    return res.json({ user: strip(user), ...issueTokens(user) });
+  } catch (err) {
+    console.error('auth/facebook error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});

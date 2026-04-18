@@ -141,6 +141,23 @@
   }
 }
 
+.social-btn--facebook {
+  background: #1877F2;
+  color: #fff;
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-xs);
+
+  &:not(:disabled):hover {
+    background: #166fe5;
+    box-shadow: var(--shadow-md);
+  }
+
+  &:not(:disabled):focus-visible {
+    outline: 2px solid #1877F2;
+    outline-offset: 2px;
+  }
+}
+
 // Dark theme overrides — Google button needs slightly brighter bg in dark
 [data-theme="dark"] {
   .social-btn--google {

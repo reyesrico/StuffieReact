@@ -93,6 +93,9 @@
     "social.appleLabel": "Iniciar sesión con Apple",
     "social.googleError": "Error al iniciar sesión con Google. Inténtalo de nuevo.",
     "social.appleError": "Error al iniciar sesión con Apple. Inténtalo de nuevo.",
+    "social.facebookText": "Continuar con Facebook",
+    "social.facebookLabel": "Iniciar sesión con Facebook",
+    "social.facebookError": "Error al iniciar sesión con Facebook. Inténtalo de nuevo.",
 
     "completeProfile.title": "Un último paso",
     "completeProfile.subtitle": "Cuéntanos tu nombre para que tus amigos puedan encontrarte.",

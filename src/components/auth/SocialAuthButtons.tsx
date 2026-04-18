@@ -1,11 +1,12 @@
 /**
- * SocialAuthButtons — Google and Apple sign-in buttons
+ * SocialAuthButtons — Google, Apple, and Facebook sign-in buttons
  *
  * Each button only renders when its env var is set:
  *   VITE_GOOGLE_CLIENT_ID  — shows Google button
  *   VITE_APPLE_CLIENT_ID   — shows Apple button
+ *   VITE_FB_APP_ID         — shows Facebook button
  *
- * The entire component returns null if neither is configured.
+ * The entire component returns null if none are configured.
  * Used on both LoginPage and RegisterPage.
  */
 import React, { useContext } from 'react';
@@ -13,6 +14,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useTranslation } from 'react-i18next';
 
 import { useAppleAuth } from '../../hooks/useAppleAuth';
+import { useFacebookAuth } from '../../hooks/useFacebookAuth';
 import { socialLogin } from '../../api/users.api';
 import UserContext from '../../context/UserContext';
 import type User from '../types/User';
@@ -21,6 +23,7 @@ import './SocialAuthButtons.scss';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 const APPLE_CLIENT_ID  = import.meta.env.VITE_APPLE_CLIENT_ID  || '';
+const FB_APP_ID        = import.meta.env.VITE_FB_APP_ID        || '';
 
 // ── Brand SVG Icons ───────────────────────────────────────────────────────────
 
@@ -38,6 +41,15 @@ const AppleIcon = () => (
     <path
       d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.32 2.99-2.53 4.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
       fill="currentColor"
+    />
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg className="social-btn__icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path
+      d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.532-4.697 1.313 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"
+      fill="#1877F2"
     />
   </svg>
 );
@@ -105,6 +117,7 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
   const { t } = useTranslation();
   const { loginUser } = useContext(UserContext);
   const [appleLoading, setAppleLoading] = React.useState(false);
+  const [fbLoading, setFbLoading] = React.useState(false);
 
   const { signIn: appleSignIn } = useAppleAuth({
     onSuccess: async ({ idToken, firstName, lastName }) => {
@@ -122,8 +135,24 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
     onError: (msg) => onError?.(msg || t('social.appleError')),
   });
 
-  // Return null if neither provider is configured
-  if (!GOOGLE_CLIENT_ID && !APPLE_CLIENT_ID) return null;
+  const { signIn: facebookSignIn, isAvailable: fbAvailable } = useFacebookAuth({
+    onSuccess: async ({ accessToken, email, firstName, lastName, avatar }) => {
+      setFbLoading(true);
+      try {
+        const user = await socialLogin('facebook', accessToken, firstName ?? undefined, lastName ?? undefined, email ?? undefined, avatar ?? undefined);
+        loginUser(user);
+        onSuccess(user);
+      } catch (err: any) {
+        onError?.(err?.response?.data?.error || t('social.facebookError'));
+      } finally {
+        setFbLoading(false);
+      }
+    },
+    onError: (msg) => onError?.(msg || t('social.facebookError')),
+  });
+
+  // Return null if no providers are configured
+  if (!GOOGLE_CLIENT_ID && !APPLE_CLIENT_ID && !FB_APP_ID) return null;
 
   return (
     <div className="social-auth">
@@ -152,6 +181,20 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
           >
             {appleLoading ? <span className="social-btn__spinner" /> : <AppleIcon />}
             <span className="social-btn__text">{t('social.appleText')}</span>
+          </button>
+        )}
+
+        {/* Facebook — only shown when VITE_FB_APP_ID is set and SDK loaded */}
+        {FB_APP_ID && fbAvailable && (
+          <button
+            type="button"
+            className="social-btn social-btn--facebook"
+            onClick={facebookSignIn}
+            disabled={disabled || fbLoading}
+            aria-label={t('social.facebookLabel')}
+          >
+            {fbLoading ? <span className="social-btn__spinner" /> : <FacebookIcon />}
+            <span className="social-btn__text">{t('social.facebookText')}</span>
           </button>
         )}
       </div>
