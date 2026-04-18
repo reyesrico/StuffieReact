@@ -31,7 +31,12 @@ const mockFetch = vi.fn();
 const now = () => Math.floor(Date.now() / 1000);
 
 const storeSession = (expiresAt: number, token = 'test-tok') => {
-  localStorage.setItem('stuffie-session', JSON.stringify({ accessToken: token, expiresAt }));
+  localStorage.setItem('stuffie-session', JSON.stringify({
+    accessToken: token,
+    expiresAt,
+    refreshToken: 'refresh-tok',
+    refreshExpiresAt: expiresAt + 6 * 24 * 3600, // refresh valid for 7 days from now
+  }));
   localStorage.setItem('stuffie-user', JSON.stringify({ id: 1, email: 'a@stuffie.net' }));
 };
 
@@ -63,7 +68,15 @@ describe('UserContext JWT refresh', () => {
   });
 
   it('clears session from localStorage when token is already expired on mount', async () => {
-    storeSession(now() - 60); // expired 1 min ago
+    // Store a session where the REFRESH token is also expired
+    const pastExpiry = now() - 60;
+    localStorage.setItem('stuffie-session', JSON.stringify({
+      accessToken: 'old-tok',
+      expiresAt:        pastExpiry,
+      refreshToken:     'old-refresh',
+      refreshExpiresAt: pastExpiry, // refresh also expired
+    }));
+    localStorage.setItem('stuffie-user', JSON.stringify({ id: 1, email: 'a@stuffie.net' }));
 
     renderHook(() => useContext(UserContextObj), { wrapper: hookWrapper });
     // Flush React 18 effects (mount useEffect runs here)
@@ -84,11 +97,16 @@ describe('UserContext JWT refresh', () => {
   });
 
   it('calls POST /auth/refresh when fewer than 5 minutes remain', async () => {
-    storeSession(now() + 200); // ~3 min left
+    storeSession(now() + 200); // ~3 min left on access token; refresh token valid for 7 days
 
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ accessToken: 'new-tok', expiresAt: now() + 3600 }),
+      json: async () => ({
+        accessToken: 'new-tok',
+        expiresAt: now() + 3600,
+        refreshToken: 'new-refresh-tok',
+        refreshExpiresAt: now() + 7 * 24 * 3600,
+      }),
     });
 
     renderHook(() => useContext(UserContextObj), { wrapper: hookWrapper });
@@ -104,10 +122,16 @@ describe('UserContext JWT refresh', () => {
   it('stores the new token in localStorage after a successful refresh', async () => {
     storeSession(now() + 200);
     const newExpiry = now() + 3600;
+    const newRefreshExpiry = now() + 7 * 24 * 3600;
 
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ accessToken: 'refreshed-tok', expiresAt: newExpiry }),
+      json: async () => ({
+        accessToken: 'refreshed-tok',
+        expiresAt: newExpiry,
+        refreshToken: 'new-refresh-tok',
+        refreshExpiresAt: newRefreshExpiry,
+      }),
     });
 
     renderHook(() => useContext(UserContextObj), { wrapper: hookWrapper });
@@ -117,6 +141,8 @@ describe('UserContext JWT refresh', () => {
     const session = sessionInStorage();
     expect(session?.accessToken).toBe('refreshed-tok');
     expect(session?.expiresAt).toBe(newExpiry);
+    expect(session?.refreshToken).toBe('new-refresh-tok');
+    expect(session?.refreshExpiresAt).toBe(newRefreshExpiry);
   });
 
   it('logs the user out when refresh fetch throws a network error', async () => {

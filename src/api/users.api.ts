@@ -69,13 +69,13 @@ export const getLastUserId = async (): Promise<number> => {
  */
 export const loginUser = async (email: string, password: string): Promise<User | null> => {
   try {
-    const response = await codehooksClient.post<{ user: User; accessToken: string; expiresAt: number }>(
+    const response = await codehooksClient.post<{ user: User; accessToken: string; expiresAt: number; refreshToken: string; refreshExpiresAt: number }>(
       '/auth/login',
       { email, password },
     );
-    const { user, accessToken, expiresAt } = response.data;
-    // Store JWT session — UserContext will read expiresAt on next mount to auto-expire
-    localStorage.setItem('stuffie-session', JSON.stringify({ accessToken, expiresAt }));
+    const { user, accessToken, expiresAt, refreshToken, refreshExpiresAt } = response.data;
+    // Store JWT session — includes refresh token for seamless 7-day sessions
+    localStorage.setItem('stuffie-session', JSON.stringify({ accessToken, expiresAt, refreshToken, refreshExpiresAt }));
     return user;
   } catch (err: any) {
     if (err?.response?.status === 401) return null;
