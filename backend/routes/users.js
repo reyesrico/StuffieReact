@@ -16,6 +16,7 @@ import { requireAuth } from '../lib/jwt.js';
 const SENSITIVE_COLLECTIONS = new Set([
   'users', 'user_items', 'friendships',
   'exchange_requests', 'loan_requests', 'purchase_requests',
+  'push_subscriptions', // never expose subscriptions via raw crudlify
 ]);
 
 app.use((req, res, next) => {

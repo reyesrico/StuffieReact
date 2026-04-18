@@ -14,6 +14,7 @@
 //   routes/products.js     GET  /userproducts/:id, POST next-id counters
 //   routes/transactions.js loan, purchase, exchange accept + complete flows
 //   routes/admin.js        orphan detection, subcategory proposals (admin only)
+//   routes/push.js         POST /push-subscribe, DELETE /push-subscribe
 //   routes/users.js        SEC-API middleware, GET /users, PATCH /users/:id
 //                          Must be last before crudlify (registers middleware)
 import { app } from 'codehooks-js';
@@ -21,7 +22,8 @@ import { app } from 'codehooks-js';
 import './routes/auth.js';
 import './routes/ai.js';
 import './routes/products.js';
-import './routes/transactions.js';
+import './routes/transactions.js'; // also handles POST /exchange_requests, /loan_requests, /purchase_requests, /friendships with push
+import './routes/push.js';
 import './routes/admin.js';
 import './routes/users.js'; // SEC-API middleware registered here — must come after explicit routes
 

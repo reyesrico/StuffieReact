@@ -1,13 +1,113 @@
 /**
- * Transaction routes — accept / complete flows for all three request types.
+ * Transaction routes — create + accept / complete flows for all three request types.
  *
- *   POST /loan_requests/:id/accept       — approve loan, mark item on_loan
- *   POST /loan_requests/:id/complete     — confirm return, clear on_loan flags
- *   POST /purchase_requests/:id/complete — transfer item ownership
- *   POST /exchange_requests/:id/complete — swap item ownership between users
+ *   POST /exchange_requests               — create + push-notify item owner
+ *   POST /loan_requests                   — create + push-notify item owner
+ *   POST /purchase_requests               — create + push-notify seller
+ *   POST /friendships                     — create + push-notify target user
+ *   POST /loan_requests/:id/accept        — approve loan, mark item on_loan
+ *   POST /loan_requests/:id/complete      — confirm return, clear on_loan flags
+ *   POST /purchase_requests/:id/complete  — transfer item ownership
+ *   POST /exchange_requests/:id/complete  — swap item ownership between users
  */
 import { app, datastore } from 'codehooks-js';
 import { requireAuth } from '../lib/jwt.js';
+import { sendPushToUser } from '../lib/push.js';
+
+// ---------------------------------------------------------------------------
+// POST /exchange_requests — create request + notify item owner
+// Overrides crudlify generic POST so we can fire a push notification.
+// req.user is already set by the SEC-API middleware in users.js.
+// ---------------------------------------------------------------------------
+app.post('/exchange_requests', async (req, res) => {
+  const data = req.body ?? {};
+  if (!data.id_stuffier || !data.id_stuff || !data.id_friend || !data.id_friend_stuff) {
+    return res.status(400).json({ error: 'id_stuffier, id_stuff, id_friend, id_friend_stuff are required' });
+  }
+  try {
+    const db     = await datastore.open();
+    const record = await db.insertOne('exchange_requests', { ...data, status: data.status || 'pending' });
+    // Notify the item owner (id_friend) — their item is being requested
+    sendPushToUser(db, data.id_friend, {
+      title: 'New trade request on Stuffie',
+      body:  'Someone wants to trade one of your items.',
+    }).catch(() => {});
+    return res.json(record);
+  } catch (err) {
+    console.error('POST /exchange_requests error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /loan_requests — create request + notify item owner
+// ---------------------------------------------------------------------------
+app.post('/loan_requests', async (req, res) => {
+  const data = req.body ?? {};
+  if (!data.id_stuffier || !data.id_stuff || !data.id_friend) {
+    return res.status(400).json({ error: 'id_stuffier, id_stuff, id_friend are required' });
+  }
+  try {
+    const db     = await datastore.open();
+    const record = await db.insertOne('loan_requests', { ...data, status: data.status || 'pending' });
+    // Notify the item owner (id_friend) — they're being asked to lend
+    sendPushToUser(db, data.id_friend, {
+      title: 'New borrow request on Stuffie',
+      body:  'Someone wants to borrow one of your items.',
+    }).catch(() => {});
+    return res.json(record);
+  } catch (err) {
+    console.error('POST /loan_requests error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /purchase_requests — create request + notify seller
+// ---------------------------------------------------------------------------
+app.post('/purchase_requests', async (req, res) => {
+  const data = req.body ?? {};
+  if (!data.id_stuffier || !data.id_stuff || !data.id_friend) {
+    return res.status(400).json({ error: 'id_stuffier, id_stuff, id_friend are required' });
+  }
+  try {
+    const db     = await datastore.open();
+    const record = await db.insertOne('purchase_requests', { ...data, status: data.status || 'pending' });
+    // Notify the seller (id_stuffier) — someone wants to buy their item
+    sendPushToUser(db, data.id_stuffier, {
+      title: 'New buy request on Stuffie',
+      body:  'Someone wants to buy one of your items.',
+    }).catch(() => {});
+    return res.json(record);
+  } catch (err) {
+    console.error('POST /purchase_requests error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /friendships — create friendship record + notify target
+// Pending records: user_id = target, friend_id = sender, status = 'pending'
+// Accepted reverse records (status = 'accepted') are silent — no notification.
+// ---------------------------------------------------------------------------
+app.post('/friendships', async (req, res) => {
+  const data = req.body ?? {};
+  try {
+    const db     = await datastore.open();
+    const record = await db.insertOne('friendships', { ...data });
+    if (data.status === 'pending' && data.user_id) {
+      // Notify the target user (user_id) — they received a friend request
+      sendPushToUser(db, data.user_id, {
+        title: 'New friend request on Stuffie',
+        body:  'Someone wants to connect with you.',
+      }).catch(() => {});
+    }
+    return res.json(record);
+  } catch (err) {
+    console.error('POST /friendships error:', err.message);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Helper — fetch one row from a collection by _id

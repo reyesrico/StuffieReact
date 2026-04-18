@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import User from '../components/types/User';
 import { queryClient } from './QueryProvider';
+import { registerAndSubscribe, unsubscribeFromPush } from '../lib/webPush';
 
 interface UserContextType {
   user: any;
@@ -114,6 +115,14 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Subscribe to Web Push when the user logs in (user.id becomes non-null).
+  // registerAndSubscribe is idempotent — safe to call on every mount/re-login.
+  useEffect(() => {
+    if (user?.id) {
+      registerAndSubscribe().catch(() => {});
+    }
+  }, [user?.id]);
+
   const loginUser = (userData: User) => {
     setUser(userData);
     // Persist user to localStorage for auto-login on return
@@ -122,6 +131,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   };
 
   const logoutUser = () => {
+    unsubscribeFromPush().catch(() => {}); // fire-and-forget before clearing session
     setUser(null);
     // Clear persisted user and JWT session
     localStorage.removeItem('stuffie-user');
