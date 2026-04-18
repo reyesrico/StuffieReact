@@ -21,6 +21,7 @@ const Spotify = lazy(() => import('../apps/Spotify'));
 const Stuffier = lazy(() => import('../content/Stuffier'));
 const SubcategoryPage = lazy(() => import('../content/SubcategoryPage'));
 const Tickets = lazy(() => import('../apps/Tickets'));
+const SmartAdd = lazy(() => import('../apps/SmartAdd'));
 const Notifications = lazy(() => import('../content/Notifications'));
 
 const MainRoutes = () => {
@@ -46,6 +47,7 @@ const MainRoutes = () => {
       <Route path="buy" element={<Buy />} />
       <Route path="spotify" element={<Spotify />} />
       <Route path="tickets" element={<Tickets />} />
+      <Route path="smart-add" element={<SmartAdd />} />
       <Route path="notifications" element={<Notifications />} />
     </Routes>
     </Suspense>

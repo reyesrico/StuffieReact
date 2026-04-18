@@ -1,5 +1,35 @@
 @use '../../styles/base/main' as *;
 
+// ── Mobile bar wrapper ────────────────────────────────────────────────────────
+
+.spotify-bar {
+  display: flex;
+  flex-direction: column;
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-1) var(--spacing-3);
+    background-color: var(--background-color);
+    border-top: 1px solid var(--border-color);
+  }
+
+  &__browse-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #1DB954;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 // ── Sidebar widget ────────────────────────────────────────────────────────────
 
 .spotify-player {

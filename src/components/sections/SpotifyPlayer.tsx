@@ -49,16 +49,25 @@ const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
   if (variant === 'bar') {
     if (!selectedTrack) return null;
     return (
-      <iframe
-        key={selectedTrack.id}
-        title="Spotify Player"
-        src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
-        width="100%"
-        height="80"
-        frameBorder="0"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        style={{ display: 'block', border: 'none', ...darkEmbedStyle }}
-      />
+      <div className="spotify-bar">
+        <div className="spotify-bar__nav">
+          <SpotifyLogo size={14} />
+          <Link to="/spotify" className="spotify-bar__browse-link">
+            Browse
+            <ExternalIcon />
+          </Link>
+        </div>
+        <iframe
+          key={selectedTrack.id}
+          title="Spotify Player"
+          src={`https://open.spotify.com/embed/track/${selectedTrack.id}?utm_source=generator&theme=0`}
+          width="100%"
+          height="80"
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          style={{ display: 'block', border: 'none', ...darkEmbedStyle }}
+        />
+      </div>
     );
   }
 

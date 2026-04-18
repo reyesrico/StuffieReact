@@ -16,6 +16,7 @@ $layout-gap: 16px; // var(--spacing-4) = 1rem = 16px
   width: 100%;
   max-width: 1200px;
   min-width: min(100%, 1200px);
+  min-height: 100vh;
   margin: 0 auto;
   padding: var(--spacing-4);
   box-sizing: border-box;
@@ -35,6 +36,7 @@ $layout-gap: 16px; // var(--spacing-4) = 1rem = 16px
   width: 100%;
   min-width: 100%;
   min-height: calc(100vh - 180px);
+  flex: 1;
 }
 
 .stuffie__left {

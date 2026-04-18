@@ -11,6 +11,7 @@ const Apps = (_props: any) => {
     <div className="apps">
       <div className="apps__title">{t('apps.title')}</div>
       <div className="apps__item"><Link to='/tickets'>{t('apps.tickets')}</Link></div>
+      <div className="apps__item"><Link to='/smart-add'>{t('apps.smartAdd')}</Link></div>
     </div>
   );
 }

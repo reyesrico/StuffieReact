@@ -95,3 +95,61 @@ app.post('/ai-chat', async (req, res) => {
     total_tokens: data.usage?.total_tokens ?? 0,
   });
 });
+
+// ---------------------------------------------------------------------------
+// POST /ai-vision — GPT-4.1 vision: identify product from image
+// ---------------------------------------------------------------------------
+app.post('/ai-vision', async (req, res) => {
+  const { imageBase64 } = req.body ?? {};
+  if (!imageBase64 || typeof imageBase64 !== 'string') {
+    return res.status(400).json({ error: 'imageBase64 is required' });
+  }
+
+  const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: openaiHeaders(),
+    body: JSON.stringify({
+      model: 'gpt-4.1',
+      max_tokens: 200,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image_url',
+              image_url: {
+                url: `data:image/jpeg;base64,${imageBase64}`,
+                detail: 'low',
+              },
+            },
+            {
+              type: 'text',
+              text: 'Identify the main consumer product shown in this image. Reply ONLY with valid JSON: {"name":"<brand and model>","description":"<one sentence>"}. If no clear product is visible, return {"name":"","description":""}.',
+            },
+          ],
+        },
+      ],
+    }),
+  });
+
+  if (!openaiRes.ok) {
+    return res.status(openaiRes.status).json({ error: `Vision request failed (${openaiRes.status})` });
+  }
+
+  const data = await openaiRes.json();
+  const raw = data.choices?.[0]?.message?.content ?? '';
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) {
+    return res.json({ name: '', description: '', total_tokens: data.usage?.total_tokens ?? 0 });
+  }
+  try {
+    const parsed = JSON.parse(match[0]);
+    return res.json({
+      name:         parsed.name ?? '',
+      description:  parsed.description ?? '',
+      total_tokens: data.usage?.total_tokens ?? 0,
+    });
+  } catch {
+    return res.json({ name: '', description: '', total_tokens: 0 });
+  }
+});
