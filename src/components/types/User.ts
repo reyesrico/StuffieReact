@@ -15,7 +15,7 @@ export default interface User {
   lat?: number;
   lng?: number;
   // Social / OAuth fields
-  oauth_provider?: 'google' | 'apple';
+  oauth_provider?: 'google' | 'apple' | 'facebook';
   oauth_id?: string;
   oauth_avatar?: string | null;
 }

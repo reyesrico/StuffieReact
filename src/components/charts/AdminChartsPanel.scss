@@ -5,22 +5,33 @@
   flex-direction: column;
   gap: var(--spacing-4);
 
+  // ── Stat strip ────────────────────────────────────────────────────────────
   &__stats {
     display: flex;
-    gap: var(--spacing-4);
+    gap: var(--spacing-3);
     flex-wrap: wrap;
   }
 
   &__stat {
     flex: 1;
-    min-width: 100px;
+    min-width: 90px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-2);
     background-color: var(--background-secondary);
     border-radius: var(--radius-md);
     text-align: center;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+
+    &--alert {
+      border-color: var(--color-warning);
+
+      .admin-charts__stat-value {
+        color: var(--color-warning);
+      }
+    }
   }
 
   &__stat-value {
@@ -40,6 +51,7 @@
     text-align: center;
   }
 
+  // ── Charts grid ───────────────────────────────────────────────────────────
   &__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -65,11 +77,107 @@
     margin: 0 0 var(--spacing-3);
   }
 
-  &__future-note {
+  // ── Auth badge (G / F /  / E) ────────────────────────────────────────────
+  &__auth-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0;
+  }
+
+  // ── User table ────────────────────────────────────────────────────────────
+  &__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+
+    th {
+      text-align: left;
+      padding: var(--spacing-2) var(--spacing-3);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: var(--spacing-2) var(--spacing-3);
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-color);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--background-tertiary);
+    }
+  }
+
+  &__row--pending td {
+    background-color: color-mix(in srgb, var(--color-warning) 6%, transparent);
+  }
+
+  &__name {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  &__email {
+    color: var(--text-secondary);
     font-size: var(--font-size-xs);
+  }
+
+  &__check {
+    color: var(--color-success);
+    font-size: var(--font-size-xs);
+  }
+
+  &__cross {
     color: var(--text-tertiary);
-    text-align: center;
-    margin: 0;
-    padding: var(--spacing-2) 0;
+    font-size: var(--font-size-xs);
+  }
+
+  &__pending-badge {
+    display: inline-block;
+    margin-left: var(--spacing-2);
+    padding: 1px 6px;
+    background: var(--color-warning);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+
+  &__role-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    background: var(--background-tertiary);
+    color: var(--text-secondary);
+
+    &--admin {
+      background: color-mix(in srgb, var(--color-primary-500) 15%, transparent);
+      color: var(--color-primary-500);
+    }
   }
 }
