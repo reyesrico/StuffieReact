@@ -9,6 +9,12 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 3000,
     open: true,
+    // Allow Google OAuth popup to communicate back to the opener.
+    // Vite's default COOP header (same-origin) blocks window.closed calls
+    // from cross-origin popups, breaking the implicit OAuth flow.
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+    },
   },
   define: {
     'global': 'globalThis',

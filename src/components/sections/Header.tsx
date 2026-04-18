@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { Icon } from '@fluentui/react';
 
@@ -28,8 +27,7 @@ import './Header.scss';
 
 const Header = () => {
   const { theme } = useContext(ThemeContext);
-  const { user, logoutUser } = React.useContext(UserContext);
-  const queryClient = useQueryClient();
+  const { user } = React.useContext(UserContext);
   const location = useLocation();
 
   const isActive = (path: string) => {
@@ -72,24 +70,24 @@ const Header = () => {
   }, [location.pathname]);
 
   const exchangeClass = exchangeRequests.length > 0 ? "stuffie-header__section-exchange" : "";
-  const requests = exchangeRequests.length + loanRequests.length + purchaseRequests.length + friendsRequests.length + sentFriendsRequests.length;
+  // Only count active/actionable items — same filters as useNotifications totalRequests
+  const requests =
+    exchangeRequests.filter((r: any) => ['pending', 'accepted'].includes(r.status)).length +
+    loanRequests.filter((r: any) => ['pending', 'active', 'return_requested'].includes(r.status)).length +
+    purchaseRequests.filter((r: any) => ['pending', 'accepted'].includes(r.status)).length +
+    friendsRequests.length +
+    sentFriendsRequests.length;
 
   const handleLogout = (event: any) => {
     event.preventDefault();
-    
-    // Clear React Query cache
-    queryClient.clear();
-    
-    // Clear ALL localStorage — wipe every key to ensure no user data survives
+
+    // Clear storage only — skip React state mutations (queryClient.clear, logoutUser)
+    // because the hard redirect below reloads the page and wipes all in-memory state.
+    // Mutating React state first causes a visible flash of empty/loading UI before navigation.
     localStorage.clear();
     sessionStorage.clear();
-    
-    // Update UserContext
-    logoutUser();
-    
-    // Hard browser redirect to /login — bypasses React Router entirely.
-    // This resets all React state, history stack, and React Query cache,
-    // preventing any previous user's page or data from leaking to the next login.
+
+    // Hard browser redirect — full page reload resets React, React Query, UserContext.
     window.location.href = (import.meta.env.BASE_URL || '/') + 'login';
   }
 

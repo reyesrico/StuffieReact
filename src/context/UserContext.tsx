@@ -32,11 +32,23 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   // - If the refresh token has expired → full logout (user must log in again)
   // - If only the access token has expired but refresh is valid → keep user logged in;
   //   the 60s interval will call /auth/refresh on the next tick
+  // - If no refreshToken at all (pre-Week-32 session) → force logout immediately
   useEffect(() => {
     try {
       const storedSession = localStorage.getItem('stuffie-session');
       if (storedSession) {
-        const { refreshExpiresAt } = JSON.parse(storedSession);
+        const { refreshExpiresAt, refreshToken } = JSON.parse(storedSession);
+
+        // Legacy sessions without a refresh token are invalid — force re-login
+        if (!refreshToken) {
+          localStorage.removeItem('stuffie-user');
+          localStorage.removeItem('stuffie-session');
+          localStorage.removeItem('username');
+          localStorage.removeItem('stuffie-cache');
+          setIsLoading(false);
+          return;
+        }
+
         // If we have a refreshExpiresAt, honour it; legacy sessions without it use expiresAt
         const expiry = refreshExpiresAt ?? JSON.parse(storedSession).expiresAt;
         if (expiry && Math.floor(Date.now() / 1000) >= expiry) {

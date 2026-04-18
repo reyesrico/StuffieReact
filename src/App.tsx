@@ -42,10 +42,16 @@ const App = () => {
 				<QueryProvider>
 					<UserProvider>
 						<ThemeProvider>
-							{/* GoogleOAuthProvider is a no-op when VITE_GOOGLE_CLIENT_ID is not set */}
-							<GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+							{/* Only wrap with GoogleOAuthProvider when VITE_GOOGLE_CLIENT_ID is set.
+							    GoogleSignInButton is only rendered when the key exists, so
+							    useGoogleLogin() is always inside a valid provider. */}
+							{GOOGLE_CLIENT_ID ? (
+								<GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+									<AppContent />
+								</GoogleOAuthProvider>
+							) : (
 								<AppContent />
-							</GoogleOAuthProvider>
+							)}
 						</ThemeProvider>
 					</UserProvider>
 				</QueryProvider>

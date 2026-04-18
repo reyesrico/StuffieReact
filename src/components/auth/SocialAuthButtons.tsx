@@ -1,16 +1,12 @@
 /**
  * SocialAuthButtons — Google and Apple sign-in buttons
  *
- * Used on both LoginPage and RegisterPage. Each button handles its own
- * OAuth flow and calls onSuccess(user) on completion.
+ * Each button only renders when its env var is set:
+ *   VITE_GOOGLE_CLIENT_ID  — shows Google button
+ *   VITE_APPLE_CLIENT_ID   — shows Apple button
  *
- * Design follows the official brand guidelines:
- *   Google — white background, subtle border, multicolor G logo
- *   Apple  — filled black background (dark mode aware), white Apple logo
- *
- * Buttons only render when their env var is configured:
- *   VITE_GOOGLE_CLIENT_ID — shows Google button
- *   VITE_APPLE_CLIENT_ID  — shows Apple button
+ * The entire component returns null if neither is configured.
+ * Used on both LoginPage and RegisterPage.
  */
 import React, { useContext } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -22,6 +18,9 @@ import UserContext from '../../context/UserContext';
 import type User from '../types/User';
 
 import './SocialAuthButtons.scss';
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+const APPLE_CLIENT_ID  = import.meta.env.VITE_APPLE_CLIENT_ID  || '';
 
 // ── Brand SVG Icons ───────────────────────────────────────────────────────────
 
@@ -43,29 +42,32 @@ const AppleIcon = () => (
   </svg>
 );
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// ── Interfaces ────────────────────────────────────────────────────────────────
 
 interface SocialAuthButtonsProps {
-  /** Called with the authenticated user after successful OAuth */
   onSuccess: (user: User) => void;
-  /** Called with an error message string on failure */
   onError?: (message: string) => void;
-  /** Show a loading state on the buttons (e.g. while the parent is processing) */
   disabled?: boolean;
 }
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-const APPLE_CLIENT_ID  = import.meta.env.VITE_APPLE_CLIENT_ID  || '';
+interface GoogleSignInButtonProps {
+  onSuccess: (user: User) => void;
+  onError?: (msg: string) => void;
+  disabled?: boolean;
+}
 
-const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthButtonsProps) => {
+// ── Google sub-component ──────────────────────────────────────────────────────
+// Must be its own component so useGoogleLogin() is always called at the top
+// level — never conditionally. Only rendered when GOOGLE_CLIENT_ID is set
+// and GoogleOAuthProvider is in the tree (see App.tsx).
+
+const GoogleSignInButton = ({ onSuccess, onError, disabled }: GoogleSignInButtonProps) => {
   const { t } = useTranslation();
   const { loginUser } = useContext(UserContext);
-  const [googleLoading, setGoogleLoading] = React.useState(false);
-  const [appleLoading,  setAppleLoading]  = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  // ── Google ──
-  const handleGoogleSuccess = async (access_token: string) => {
-    setGoogleLoading(true);
+  const handleSuccess = async (access_token: string) => {
+    setLoading(true);
     try {
       const user = await socialLogin('google', access_token);
       loginUser(user);
@@ -73,18 +75,38 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
     } catch (err: any) {
       onError?.(err?.response?.data?.error || t('social.googleError'));
     } finally {
-      setGoogleLoading(false);
+      setLoading(false);
     }
   };
 
   const googleLogin = useGoogleLogin({
-    onSuccess: (res) => handleGoogleSuccess(res.access_token),
+    onSuccess: (res) => handleSuccess(res.access_token),
     onError:   ()    => onError?.(t('social.googleError')),
     flow:      'implicit',
   });
 
-  // ── Apple ──
-  const { signIn: appleSignIn, isAvailable: appleAvailable } = useAppleAuth({
+  return (
+    <button
+      type="button"
+      className="social-btn social-btn--google"
+      onClick={() => googleLogin()}
+      disabled={disabled || loading}
+      aria-label={t('social.googleLabel')}
+    >
+      {loading ? <span className="social-btn__spinner" /> : <GoogleIcon />}
+      <span className="social-btn__text">{t('social.googleText')}</span>
+    </button>
+  );
+};
+
+// ── Main component ────────────────────────────────────────────────────────────
+
+const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthButtonsProps) => {
+  const { t } = useTranslation();
+  const { loginUser } = useContext(UserContext);
+  const [appleLoading, setAppleLoading] = React.useState(false);
+
+  const { signIn: appleSignIn } = useAppleAuth({
     onSuccess: async ({ idToken, firstName, lastName }) => {
       setAppleLoading(true);
       try {
@@ -100,7 +122,7 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
     onError: (msg) => onError?.(msg || t('social.appleError')),
   });
 
-  // Don't render anything if no providers are configured
+  // Return null if neither provider is configured
   if (!GOOGLE_CLIENT_ID && !APPLE_CLIENT_ID) return null;
 
   return (
@@ -110,36 +132,25 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
       </div>
 
       <div className="social-auth__buttons">
-        {/* Google */}
+        {/* Google — only shown when VITE_GOOGLE_CLIENT_ID is set */}
         {GOOGLE_CLIENT_ID && (
-          <button
-            type="button"
-            className="social-btn social-btn--google"
-            onClick={() => googleLogin()}
-            disabled={disabled || googleLoading || appleLoading}
-            aria-label={t('social.googleLabel')}
-          >
-            {googleLoading
-              ? <span className="social-btn__spinner" />
-              : <GoogleIcon />
-            }
-            <span className="social-btn__text">{t('social.googleText')}</span>
-          </button>
+          <GoogleSignInButton
+            onSuccess={onSuccess}
+            onError={onError}
+            disabled={disabled || appleLoading}
+          />
         )}
 
-        {/* Apple */}
-        {APPLE_CLIENT_ID && appleAvailable && (
+        {/* Apple — only shown when VITE_APPLE_CLIENT_ID is set */}
+        {APPLE_CLIENT_ID && (
           <button
             type="button"
             className="social-btn social-btn--apple"
             onClick={appleSignIn}
-            disabled={disabled || googleLoading || appleLoading}
+            disabled={disabled || appleLoading}
             aria-label={t('social.appleLabel')}
           >
-            {appleLoading
-              ? <span className="social-btn__spinner" />
-              : <AppleIcon />
-            }
+            {appleLoading ? <span className="social-btn__spinner" /> : <AppleIcon />}
             <span className="social-btn__text">{t('social.appleText')}</span>
           </button>
         )}
