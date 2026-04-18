@@ -136,10 +136,10 @@ const SocialAuthButtons = ({ onSuccess, onError, disabled = false }: SocialAuthB
   });
 
   const { signIn: facebookSignIn, isAvailable: fbAvailable } = useFacebookAuth({
-    onSuccess: async ({ accessToken, email, firstName, lastName, avatar }) => {
+    onSuccess: async ({ accessToken }) => {
       setFbLoading(true);
       try {
-        const user = await socialLogin('facebook', accessToken, firstName ?? undefined, lastName ?? undefined, email ?? undefined, avatar ?? undefined);
+        const user = await socialLogin('facebook', accessToken);
         loginUser(user);
         onSuccess(user);
       } catch (err: any) {

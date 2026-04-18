@@ -56,14 +56,16 @@ const findOrCreateOAuthUser = async (db, { email, first_name, last_name, oauth_p
     await db.getMany('users', { email }).forEach(u => byEmail.push(u));
     if (byEmail[0]) {
       const existing = byEmail[0];
-      db.updateOne('users', { _id: existing._id }, {
-        $set: {
-          oauth_provider,
-          oauth_id,
-          oauth_avatar: oauth_avatar || existing.oauth_avatar || null,
-        },
-      }).catch(() => {});
-      return { ...existing, oauth_provider, oauth_id };
+      const updates = {
+        oauth_provider,
+        oauth_id,
+        oauth_avatar: oauth_avatar || existing.oauth_avatar || null,
+        // Backfill name if the existing account somehow has empty fields
+        ...((!existing.first_name && first_name) ? { first_name } : {}),
+        ...((!existing.last_name  && last_name)  ? { last_name  } : {}),
+      };
+      db.updateOne('users', { _id: existing._id }, { $set: updates }).catch(() => {});
+      return { ...existing, ...updates };
     }
   }
 
@@ -252,7 +254,7 @@ app.post('/auth/apple', async (req, res) => {
 // creates a local user account.
 // ---------------------------------------------------------------------------
 app.post('/auth/facebook', async (req, res) => {
-  const { access_token, first_name, last_name, email: emailFromClient, avatar: avatarFromClient } = req.body ?? {};
+  const { access_token } = req.body ?? {};
   if (!access_token || typeof access_token !== 'string') {
     return res.status(400).json({ error: 'access_token required' });
   }
@@ -261,24 +263,32 @@ app.post('/auth/facebook', async (req, res) => {
     // Verify via Facebook Graph API and fetch profile
     const graphUrl = `https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture.type(large)&access_token=${encodeURIComponent(access_token)}`;
     const graphRes = await fetch(graphUrl);
+
     if (!graphRes.ok) {
       return res.status(401).json({ error: 'Invalid or expired Facebook token' });
     }
 
     const profile = await graphRes.json();
 
-    if (!profile.id) {
+    // Graph API returns { error: {...} } with HTTP 200 for token errors
+    if (profile.error || !profile.id) {
+      console.error('auth/facebook graph error:', profile.error?.message);
       return res.status(401).json({ error: 'Could not verify Facebook identity' });
     }
 
+    // Derive first/last name — fall back to splitting the full name
+    const nameParts = (profile.name || '').trim().split(/\s+/);
+    const first_name = profile.first_name || nameParts[0] || '';
+    const last_name  = profile.last_name  || (nameParts.length > 1 ? nameParts.slice(1).join(' ') : '');
+
     // Profile picture URL — Graph API returns nested structure
-    const oauth_avatar = profile.picture?.data?.url || avatarFromClient || null;
+    const oauth_avatar = profile.picture?.data?.url || null;
 
     const db   = await datastore.open();
     const user = await findOrCreateOAuthUser(db, {
-      email:          profile.email || emailFromClient || null,
-      first_name:     profile.first_name || first_name || '',
-      last_name:      profile.last_name  || last_name  || '',
+      email:          profile.email || null,
+      first_name,
+      last_name,
       oauth_provider: 'facebook',
       oauth_id:       profile.id,
       oauth_avatar,

@@ -83,6 +83,8 @@ export function LoginPage() {
   };
 
   const handleSocialSuccess = (userData: User) => {
+    // eslint-disable-next-line no-console
+    console.debug('[Social] login user:', { first_name: userData.first_name, last_name: userData.last_name, email: userData.email });
     // If name is missing (common with Apple), send to profile completion
     if (!userData.first_name || !userData.last_name) {
       navigate('/complete-profile', { replace: true });

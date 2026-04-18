@@ -1,23 +1,46 @@
 /**
  * useFacebookAuth
  *
- * Lazily loads the Facebook JS SDK from CDN and wraps FB.login() in a
- * promise-based hook. Only active when VITE_FB_APP_ID is set.
+ * Uses Facebook's OAuth dialog (NOT the JS SDK) via a popup window.
+ * The JS SDK blocks calls from http:// pages; the OAuth dialog approach
+ * works on both http://localhost (dev) and https:// (prod).
+ *
+ * Flow:
+ *   1. Open popup → https://www.facebook.com/v19.0/dialog/oauth
+ *   2. Facebook redirects popup to /auth/facebook/callback.html
+ *   3. Callback page reads access_token from hash, postMessages it back
+ *   4. This hook resolves and calls onSuccess({ accessToken })
+ *   5. Caller sends accessToken to backend which fetches profile via Graph API
  *
  * Returns:
- *   signIn      — triggers the FB.login popup
- *   isLoading   — true while the SDK is loading
- *   isAvailable — true once the SDK is ready
+ *   signIn      — opens the OAuth popup
+ *   isLoading   — true while the popup flow is in progress
+ *   isAvailable — true when VITE_FB_APP_ID is configured
  */
+import { useState, useRef, useEffect } from 'react';
 
 const FB_APP_ID = import.meta.env.VITE_FB_APP_ID || '';
 
-interface FacebookAuthResult {
+// Vite's BASE_URL is '/' in dev and '/StuffieReact/' in production.
+const getRedirectUri = () =>
+  `${window.location.origin}${import.meta.env.BASE_URL}auth/facebook/callback.html`;
+
+const buildAuthUrl = () => {
+  const params = new URLSearchParams({
+    client_id:     FB_APP_ID,
+    redirect_uri:  getRedirectUri(),
+    scope:         'email,public_profile',
+    response_type: 'token',
+  });
+  return `https://www.facebook.com/v19.0/dialog/oauth?${params.toString()}`;
+};
+
+// Popup dimensions
+const POPUP_WIDTH  = 520;
+const POPUP_HEIGHT = 600;
+
+export interface FacebookAuthResult {
   accessToken: string;
-  email: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  avatar: string | null;
 }
 
 interface UseFacebookAuthOptions {
@@ -25,101 +48,73 @@ interface UseFacebookAuthOptions {
   onError: (message: string) => void;
 }
 
-// Singleton load promise — only inject the script once
-let _sdkPromise: Promise<void> | null = null;
-
-const loadFacebookSDK = (): Promise<void> => {
-  if (_sdkPromise) return _sdkPromise;
-
-  _sdkPromise = new Promise<void>((resolve, reject) => {
-    if ((window as any).FB) {
-      resolve();
-      return;
-    }
-
-    // Facebook SDK async loader
-    const script = document.createElement('script');
-    script.src = 'https://connect.facebook.net/en_US/sdk.js';
-    script.async = true;
-    script.defer = true;
-    script.crossOrigin = 'anonymous';
-
-    script.onload = () => {
-      (window as any).FB.init({
-        appId:   FB_APP_ID,
-        cookie:  true,
-        xfbml:   false,
-        version: 'v19.0',
-      });
-      resolve();
-    };
-
-    script.onerror = () => {
-      _sdkPromise = null; // allow retry
-      reject(new Error('Failed to load Facebook SDK'));
-    };
-
-    document.head.appendChild(script);
-  });
-
-  return _sdkPromise;
-};
-
-import { useState, useEffect, useRef } from 'react';
-
 export const useFacebookAuth = ({ onSuccess, onError }: UseFacebookAuthOptions) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(false);
   const onSuccessRef = useRef(onSuccess);
   const onErrorRef   = useRef(onError);
   onSuccessRef.current = onSuccess;
   onErrorRef.current   = onError;
 
-  useEffect(() => {
-    if (!FB_APP_ID) return;
-    loadFacebookSDK()
-      .then(() => setIsAvailable(true))
-      .catch(() => {}); // silent — button just won't show
-  }, []);
+  const isAvailable = Boolean(FB_APP_ID);
 
-  const signIn = async () => {
-    if (!isAvailable) return;
+  // Clean up message listener on unmount
+  const cleanupRef = useRef<(() => void) | null>(null);
+  useEffect(() => () => { cleanupRef.current?.(); }, []);
+
+  const signIn = () => {
+    if (!isAvailable || isLoading) return;
     setIsLoading(true);
 
-    try {
-      await loadFacebookSDK(); // ensure ready
+    // Centre the popup
+    const left = Math.round(window.screenX + (window.outerWidth  - POPUP_WIDTH)  / 2);
+    const top  = Math.round(window.screenY + (window.outerHeight - POPUP_HEIGHT) / 2);
 
-      const FB = (window as any).FB;
+    const popup = window.open(
+      buildAuthUrl(),
+      'fb_oauth',
+      `width=${POPUP_WIDTH},height=${POPUP_HEIGHT},left=${left},top=${top},toolbar=no,menubar=no`,
+    );
 
-      // Step 1: login popup
-      const loginResponse = await new Promise<any>((resolve) => {
-        FB.login((res: any) => resolve(res), { scope: 'email,public_profile' });
-      });
-
-      if (loginResponse.status !== 'connected') {
-        // User cancelled or denied
-        return;
-      }
-
-      const accessToken = loginResponse.authResponse.accessToken;
-
-      // Step 2: fetch profile info via Graph API
-      const meResponse = await new Promise<any>((resolve) => {
-        FB.api('/me', { fields: 'email,first_name,last_name,picture.type(large)' }, (data: any) => resolve(data));
-      });
-
-      onSuccessRef.current({
-        accessToken,
-        email:     meResponse.email     ?? null,
-        firstName: meResponse.first_name  ?? null,
-        lastName:  meResponse.last_name   ?? null,
-        avatar:    meResponse.picture?.data?.url ?? null,
-      });
-    } catch (err: any) {
-      onErrorRef.current(err?.message || 'Facebook sign in failed.');
-    } finally {
+    if (!popup) {
+      onErrorRef.current('Popup blocked. Please allow popups for this site.');
       setIsLoading(false);
+      return;
     }
+
+    // Poll to detect if the user closes the popup without completing login
+    const pollTimer = setInterval(() => {
+      if (popup.closed) {
+        cleanup();
+        setIsLoading(false);
+        // Don't call onError — user dismissed intentionally
+      }
+    }, 500);
+
+    const handleMessage = (event: MessageEvent) => {
+      // Only accept messages from same origin
+      if (event.origin !== window.location.origin) return;
+
+      const data = event.data as { type?: string; access_token?: string; error?: string };
+      if (data?.type === 'fb_oauth_success' && data.access_token) {
+        cleanup();
+        setIsLoading(false);
+        onSuccessRef.current({ accessToken: data.access_token });
+      } else if (data?.type === 'fb_oauth_error') {
+        cleanup();
+        setIsLoading(false);
+        onErrorRef.current(data.error || 'Facebook sign in failed. Please try again.');
+      }
+    };
+
+    const cleanup = () => {
+      clearInterval(pollTimer);
+      window.removeEventListener('message', handleMessage);
+      cleanupRef.current = null;
+      if (!popup.closed) popup.close();
+    };
+
+    cleanupRef.current = cleanup;
+    window.addEventListener('message', handleMessage);
   };
 
   return { signIn, isLoading, isAvailable };
