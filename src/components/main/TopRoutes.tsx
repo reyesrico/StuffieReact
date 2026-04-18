@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import Main from './Main';
-import { RequireAuth, LoginPage, RegisterPage } from '../auth';
+import { RequireAuth, LoginPage, RegisterPage, CompleteProfilePage } from '../auth';
 import { MainSkeleton } from '../skeletons';
 import ThemeContext from '../../context/ThemeContext';
 
@@ -20,6 +20,8 @@ const TopRoutes = () => {
       {/* Public routes */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      {/* Post-OAuth profile completion — accessible without full profile */}
+      <Route path="/complete-profile" element={<CompleteProfilePage />} />
       
       {/* Protected routes - wrapped in RequireAuth */}
       <Route 

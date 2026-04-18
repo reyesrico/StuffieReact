@@ -86,6 +86,23 @@
     "register.changePhoto": "Cambiar foto",
     "register.photoLabel": "Foto de perfil",
 
+    "social.divider": "o continuar con",
+    "social.googleText": "Continuar con Google",
+    "social.googleLabel": "Iniciar sesión con Google",
+    "social.appleText": "Continuar con Apple",
+    "social.appleLabel": "Iniciar sesión con Apple",
+    "social.googleError": "Error al iniciar sesión con Google. Inténtalo de nuevo.",
+    "social.appleError": "Error al iniciar sesión con Apple. Inténtalo de nuevo.",
+
+    "completeProfile.title": "Un último paso",
+    "completeProfile.subtitle": "Cuéntanos tu nombre para que tus amigos puedan encontrarte.",
+    "completeProfile.saveButton": "Guardar y continuar",
+    "completeProfile.saving": "Guardando...",
+    "completeProfile.done": "¡Perfil completo! Entrando…",
+    "completeProfile.fillRequired": "Por favor ingresa tu nombre y apellido.",
+    "completeProfile.saveError": "No se pudo guardar tu perfil. Inténtalo de nuevo.",
+    "completeProfile.skipForNow": "Omitir por ahora",
+
     "products.exchangeRequests": "Solicitudes de Intercambio",
     "products.loanRequests": "Solicitudes de Préstamo",
     "products.productLabel": "Producto: ",

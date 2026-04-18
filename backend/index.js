@@ -20,6 +20,7 @@
 import { app } from 'codehooks-js';
 
 import './routes/auth.js';
+import './routes/oauth.js'; // Google + Apple SSO — before crudlify
 import './routes/ai.js';
 import './routes/products.js';
 import './routes/transactions.js'; // also handles POST /exchange_requests, /loan_requests, /purchase_requests, /friendships with push

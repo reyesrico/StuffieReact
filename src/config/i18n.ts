@@ -13,7 +13,7 @@ i18n
       es,
     },
     fallbackLng: 'en',
-    debug: process.env.NODE_ENV !== 'production',
+    debug: import.meta.env.DEV,
     ns: ['translations'],
     defaultNS: 'translations',
     keySeparator: false,

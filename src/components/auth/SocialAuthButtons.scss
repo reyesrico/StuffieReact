@@ -1,0 +1,154 @@
+// Social Auth Buttons — Google and Apple sign-in
+
+.social-auth {
+  width: 100%;
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin: var(--spacing-6) 0 var(--spacing-4);
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+  }
+
+  &__divider-text {
+    font-size: var(--font-size-xs);
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    width: 100%;
+  }
+}
+
+// ─── Shared button base ────────────────────────────────────────────────────────
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  width: 100%;
+  height: 44px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+  border: none;
+  position: relative;
+  letter-spacing: 0.01em;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    flex: 1;
+    text-align: center;
+    // Compensate for icon width so text appears visually centered
+    padding-right: 20px;
+  }
+
+  // ─── Spinner ──────────────────────────────────────────────────────────────
+
+  &__spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: social-spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes social-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Google ────────────────────────────────────────────────────────────────────
+
+.social-btn--google {
+  background: var(--background-elevated);
+  color: var(--text-color);
+  border: 1.5px solid var(--border-hover);
+  box-shadow: var(--shadow-xs);
+
+  &:not(:disabled):hover {
+    background: var(--background-secondary);
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &:not(:disabled):focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+  }
+}
+
+// ─── Apple ────────────────────────────────────────────────────────────────────
+
+.social-btn--apple {
+  background: var(--text-color);   // black in light, near-white in dark
+  color: var(--background-color);  // white in light, dark in dark
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-xs);
+
+  .social-btn__icon {
+    color: var(--background-color);
+  }
+
+  &:not(:disabled):hover {
+    box-shadow: var(--shadow-md);
+    filter: brightness(1.08);
+  }
+
+  &:not(:disabled):focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+  }
+}
+
+// Dark theme overrides — Google button needs slightly brighter bg in dark
+[data-theme="dark"] {
+  .social-btn--google {
+    background: var(--background-secondary);
+    border-color: var(--border-color);
+
+    &:not(:disabled):hover {
+      background: var(--background-tertiary);
+    }
+  }
+}

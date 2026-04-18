@@ -7,10 +7,12 @@ import Button from '../shared/Button';
 import TextField from '../shared/TextField';
 import Loading from '../shared/Loading';
 import WarningMessage from '../shared/WarningMessage';
+import SocialAuthButtons from './SocialAuthButtons';
 import ThemeContext from '../../context/ThemeContext';
 import { WarningMessageType } from '../shared/types';
 import { registerUser } from '../../api/users.api';
 import config from '../../config/api';
+import type User from '../types/User';
 
 import './RegisterPage.scss';
 
@@ -242,6 +244,17 @@ export function RegisterPage() {
               {t('register.loginLink')}
             </Link>
           </div>
+
+          <SocialAuthButtons
+            onSuccess={(userData: User) => {
+              if (!userData.first_name || !userData.last_name) {
+                navigate('/complete-profile', { replace: true });
+              } else {
+                navigate('/', { replace: true });
+              }
+            }}
+            onError={(msg) => setMessage(msg)}
+          />
         </div>
       )}
     </div>

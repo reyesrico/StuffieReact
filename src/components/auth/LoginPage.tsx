@@ -6,10 +6,12 @@ import Button from '../shared/Button';
 import TextField from '../shared/TextField';
 import Loading from '../shared/Loading';
 import WarningMessage from '../shared/WarningMessage';
+import SocialAuthButtons from './SocialAuthButtons';
 import UserContext from '../../context/UserContext';
 import ThemeContext from '../../context/ThemeContext';
 import { WarningMessageType } from '../shared/types';
 import { useLogin } from '../../hooks/queries';
+import type User from '../types/User';
 
 import './LoginPage.scss';
 
@@ -80,6 +82,15 @@ export function LoginPage() {
     }
   };
 
+  const handleSocialSuccess = (userData: User) => {
+    // If name is missing (common with Apple), send to profile completion
+    if (!userData.first_name || !userData.last_name) {
+      navigate('/complete-profile', { replace: true });
+    } else {
+      navigate('/', { replace: true });
+    }
+  };
+
   const getMessageType = (msg: string): WarningMessageType => {
     if (msg.toLowerCase().includes('error')) return WarningMessageType.ERROR;
     return WarningMessageType.WARNING;
@@ -141,6 +152,12 @@ export function LoginPage() {
               {t('login.registerLink')}
             </Link>
           </div>
+
+          <SocialAuthButtons
+            onSuccess={handleSocialSuccess}
+            onError={(msg) => setMessage(msg)}
+            disabled={loginMutation.isPending || isLoading}
+          />
         </div>
       )}
     </div>

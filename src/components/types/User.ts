@@ -14,4 +14,8 @@ export default interface User {
   zip_code?: string;
   lat?: number;
   lng?: number;
+  // Social / OAuth fields
+  oauth_provider?: 'google' | 'apple';
+  oauth_id?: string;
+  oauth_avatar?: string | null;
 }

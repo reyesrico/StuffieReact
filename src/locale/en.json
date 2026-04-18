@@ -86,6 +86,23 @@
     "register.changePhoto": "Change photo",
     "register.photoLabel": "Profile photo",
 
+    "social.divider": "or continue with",
+    "social.googleText": "Continue with Google",
+    "social.googleLabel": "Sign in with Google",
+    "social.appleText": "Continue with Apple",
+    "social.appleLabel": "Sign in with Apple",
+    "social.googleError": "Google sign in failed. Please try again.",
+    "social.appleError": "Apple sign in failed. Please try again.",
+
+    "completeProfile.title": "One last step",
+    "completeProfile.subtitle": "Tell us your name so friends can find you.",
+    "completeProfile.saveButton": "Save and continue",
+    "completeProfile.saving": "Saving...",
+    "completeProfile.done": "Profile complete! Taking you in…",
+    "completeProfile.fillRequired": "Please enter your first and last name.",
+    "completeProfile.saveError": "Couldn't save your profile. Please try again.",
+    "completeProfile.skipForNow": "Skip for now",
+
     "products.exchangeRequests": "Exchange Requests",
     "products.loanRequests": "Loan Requests",
     "products.productLabel": "Product: ",

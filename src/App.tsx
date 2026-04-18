@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { I18nextProvider } from 'react-i18next';
 import { FluentProvider, webLightTheme, webDarkTheme } from '@fluentui/react-components';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 import i18n from './config/i18n';
 import TopRoutes from './components/main/TopRoutes';
@@ -15,6 +16,8 @@ import './App.scss';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
 
 initializeIcons();
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 // Inner component that can use ThemeContext
 const AppContent = () => {
@@ -39,7 +42,10 @@ const App = () => {
 				<QueryProvider>
 					<UserProvider>
 						<ThemeProvider>
-							<AppContent />
+							{/* GoogleOAuthProvider is a no-op when VITE_GOOGLE_CLIENT_ID is not set */}
+							<GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+								<AppContent />
+							</GoogleOAuthProvider>
 						</ThemeProvider>
 					</UserProvider>
 				</QueryProvider>

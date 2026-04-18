@@ -88,6 +88,41 @@ export const loginUser = async (email: string, password: string): Promise<User |
   }
 };
 
+/**
+ * Social login / registration — Google or Apple.
+ *
+ * Google: pass { provider: 'google', token: access_token }
+ * Apple:  pass { provider: 'apple',  token: id_token, firstName?, lastName? }
+ *         (Apple only sends name on the FIRST authorization)
+ *
+ * Backend verifies the token, upserts the user, and returns our own JWT pair.
+ * OAuth users have no password in our system; they log in exclusively via
+ * their chosen provider. If the same email already exists with a password,
+ * the accounts are linked automatically on the backend.
+ */
+export const socialLogin = async (
+  provider: 'google' | 'apple',
+  token: string,
+  firstName?: string,
+  lastName?: string,
+): Promise<User> => {
+  const body: Record<string, string> = provider === 'google'
+    ? { access_token: token }
+    : { id_token: token, ...(firstName ? { first_name: firstName } : {}), ...(lastName ? { last_name: lastName } : {}) };
+
+  const response = await codehooksClient.post<{
+    user: User;
+    accessToken: string;
+    expiresAt: number;
+    refreshToken: string;
+    refreshExpiresAt: number;
+  }>(`/auth/${provider}`, body);
+
+  const { user, accessToken, expiresAt, refreshToken, refreshExpiresAt } = response.data;
+  localStorage.setItem('stuffie-session', JSON.stringify({ accessToken, expiresAt, refreshToken, refreshExpiresAt }));
+  return user;
+};
+
 export interface RegisterUserInput {
   email: string;
   password: string;
