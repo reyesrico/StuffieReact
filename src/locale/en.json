@@ -282,6 +282,9 @@
     "chat.welcome": "Hi {{ name }}! I'm your Stuffie assistant. Ask me about your products, how to navigate the app, or anything else!",
     "chat.limitReached": "Daily limit reached. Come back tomorrow!",
     "chat.charsRemaining": "{{ chars }} / {{ limit }} chars remaining today",
+    "chat.stuckMessage": "You seem to be having trouble. Would you like to email our support team? They'll reply to your registered email shortly.",
+    "chat.stuckEmail": "Email Support",
+    "chat.clearChat": "Clear Chat",
 
     "header.products": "Products",
     "header.prodsShort": "Prods",

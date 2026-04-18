@@ -2,7 +2,7 @@ import React, { useContext, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import UserContext from '../../context/UserContext';
-import { useProducts, useCategories } from '../../hooks/queries';
+import { useProducts, useCategories, useFriendsWithProducts } from '../../hooks/queries';
 import { useChatGpt, CHAT_MODELS, DEFAULT_MODEL_ID } from '../../hooks/useChatGpt';
 import { Bot20Regular, Send20Regular, Dismiss20Regular, Chat20Regular } from '@fluentui/react-icons';
 
@@ -53,17 +53,33 @@ const renderMessage = (content: string): React.ReactNode => {
   return <>{nodes}</>;
 };
 
-// Build a readable product summary to inject as AI context
+// Build a readable product summary (current user) — includes price for sell/trade context
 const buildProductsContext = (products: Record<number, any[]>, categories: any[]): string => {
   const lines: string[] = [];
   categories.forEach(cat => {
     const catProducts = products[cat.id] || [];
     catProducts.forEach((p: any) => {
-      const desc = p.description ? `: ${p.description}` : '';
-      lines.push(`- ${p.name}${desc} [Category: ${cat.name}]`);
+      const price = p.cost > 0 ? ` [$${p.cost}]` : '';
+      lines.push(`- ${p.name}${price} [Category: ${cat.name}]`);
     });
   });
   return lines.length > 0 ? lines.join('\n') : 'No products added yet.';
+};
+
+// Build a readable summary of all friends' products for the AI
+const buildFriendsContext = (friendsWithProducts: any[]): string => {
+  if (!friendsWithProducts?.length) return 'No friends yet.';
+  const lines: string[] = [];
+  friendsWithProducts.forEach(friend => {
+    if (!friend.products?.length) return;
+    const name = `${friend.first_name || ''} ${friend.last_name || ''}`.trim();
+    lines.push(`${name}:`);
+    friend.products.forEach((p: any) => {
+      const price = p.cost > 0 ? `$${p.cost}` : 'not for sale';
+      lines.push(`  - ${p.name} [${price}]`);
+    });
+  });
+  return lines.length > 0 ? lines.join('\n') : 'Friends have no products yet.';
 };
 
 const SNAP_MARGIN = 16; // px from screen edge
@@ -74,6 +90,7 @@ const FloatingChat = () => {
   const { t } = useTranslation();
   const { data: products = {} } = useProducts();
   const { data: categories = [] } = useCategories();
+  const { data: friendsWithProducts = [] } = useFriendsWithProducts();
 
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -86,19 +103,28 @@ const FloatingChat = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragXY, setDragXY] = useState({ x: 0, y: 0 });
   const dragMoved = useRef(false);
+  const dragReady = useRef(false); // becomes true after hold-delay (200ms)
   const dragStart = useRef({ x: 0, y: 0 });
+  const dragHoldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suppressNextClick = useRef(false);
 
   const handleTriggerPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (isOpen) return;
     dragMoved.current = false;
+    dragReady.current = false;
     dragStart.current = { x: e.clientX, y: e.clientY };
     e.currentTarget.setPointerCapture(e.pointerId);
+    // Only unlock drag after the user has held the button for 200ms
+    dragHoldTimer.current = setTimeout(() => {
+      dragReady.current = true;
+    }, 200);
   };
 
   const handleTriggerPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (isOpen || !dragReady.current) return;
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
-    if (!dragMoved.current && Math.sqrt(dx * dx + dy * dy) > 8) {
+    if (!dragMoved.current && Math.sqrt(dx * dx + dy * dy) > 12) {
       dragMoved.current = true;
       setIsDragging(true);
     }
@@ -108,6 +134,12 @@ const FloatingChat = () => {
   };
 
   const handleTriggerPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (dragHoldTimer.current) {
+      clearTimeout(dragHoldTimer.current);
+      dragHoldTimer.current = null;
+    }
+    dragReady.current = false;
+    if (isOpen) return;
     if (dragMoved.current) {
       suppressNextClick.current = true;
       const newSide: 'left' | 'right' = e.clientX < window.innerWidth / 2 ? 'left' : 'right';
@@ -141,6 +173,11 @@ const FloatingChat = () => {
     [products, categories]
   );
 
+  const friendsContext = React.useMemo(
+    () => buildFriendsContext(friendsWithProducts as any[]),
+    [friendsWithProducts]
+  );
+
   const userName = `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User';
 
   const {
@@ -151,10 +188,15 @@ const FloatingChat = () => {
     isLimitReached,
     dailyLimit,
     totalUsers,
+    clearConversation,
+    isStuck,
+    supportEmailUrl,
   } = useChatGpt({
     userId: user?.id,
     userName,
+    userEmail: user?.email,
     productsContext,
+    friendsContext,
     modelId: selectedModelId,
   });
 
@@ -164,6 +206,13 @@ const FloatingChat = () => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [conversation, isOpen]);
+
+  // Clean up hold timer on unmount
+  useEffect(() => {
+    return () => {
+      if (dragHoldTimer.current) clearTimeout(dragHoldTimer.current);
+    };
+  }, []);
 
   const handleSubmit = () => {
     if (!inputValue.trim() || isLoading || isLimitReached) return;
@@ -228,6 +277,31 @@ const FloatingChat = () => {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* Stuck banner — shown when user asks the same question 3+ times */}
+          {isStuck && (
+            <div className="floating-chat__stuck-banner">
+              <p className="floating-chat__stuck-text">
+                {t('chat.stuckMessage')}
+              </p>
+              <div className="floating-chat__stuck-actions">
+                <a
+                  href={supportEmailUrl}
+                  className="floating-chat__stuck-email"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('chat.stuckEmail')}
+                </a>
+                <button
+                  className="floating-chat__stuck-clear"
+                  onClick={clearConversation}
+                >
+                  {t('chat.clearChat')}
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Footer */}
           <div className="floating-chat__footer">
             <div className={`floating-chat__limit${isLimitReached ? ' floating-chat__limit--exceeded' : ''}`}>
@@ -261,7 +335,7 @@ const FloatingChat = () => {
 
       {/* Trigger bubble */}
       <button
-        className={`floating-chat__trigger${isOpen ? ' floating-chat__trigger--open' : ''}`}
+        className={`floating-chat__trigger${isOpen ? ' floating-chat__trigger--open' : ''}${isDragging ? ' floating-chat__trigger--dragging' : ''}`}
         onClick={handleTriggerClick}
         onPointerDown={handleTriggerPointerDown}
         onPointerMove={handleTriggerPointerMove}
