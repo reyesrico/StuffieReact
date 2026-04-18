@@ -65,6 +65,10 @@ export const useFacebookAuth = ({ onSuccess, onError }: UseFacebookAuthOptions) 
     if (!isAvailable || isLoading) return;
     setIsLoading(true);
 
+    const redirectUri = getRedirectUri();
+    // eslint-disable-next-line no-console
+    console.debug('[FB] redirect_uri:', redirectUri);
+
     // Centre the popup
     const left = Math.round(window.screenX + (window.outerWidth  - POPUP_WIDTH)  / 2);
     const top  = Math.round(window.screenY + (window.outerHeight - POPUP_HEIGHT) / 2);
@@ -90,31 +94,36 @@ export const useFacebookAuth = ({ onSuccess, onError }: UseFacebookAuthOptions) 
       }
     }, 500);
 
-    const handleMessage = (event: MessageEvent) => {
-      // Only accept messages from same origin
-      if (event.origin !== window.location.origin) return;
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== 'fb_oauth_result' || !event.newValue) return;
+      // eslint-disable-next-line no-console
+      console.debug('[FB] storage result received:', event.newValue);
 
-      const data = event.data as { type?: string; access_token?: string; error?: string };
-      if (data?.type === 'fb_oauth_success' && data.access_token) {
-        cleanup();
-        setIsLoading(false);
+      let data: { type?: string; access_token?: string; error?: string };
+      try { data = JSON.parse(event.newValue); } catch { data = {}; }
+
+      cleanup();
+      localStorage.removeItem('fb_oauth_result');
+      setIsLoading(false);
+
+      if (data.type === 'fb_oauth_success' && data.access_token) {
         onSuccessRef.current({ accessToken: data.access_token });
-      } else if (data?.type === 'fb_oauth_error') {
-        cleanup();
-        setIsLoading(false);
+      } else {
         onErrorRef.current(data.error || 'Facebook sign in failed. Please try again.');
       }
     };
 
     const cleanup = () => {
       clearInterval(pollTimer);
-      window.removeEventListener('message', handleMessage);
+      window.removeEventListener('storage', handleStorage);
       cleanupRef.current = null;
       if (!popup.closed) popup.close();
     };
 
     cleanupRef.current = cleanup;
-    window.addEventListener('message', handleMessage);
+    // Clean up any stale result from a previous interrupted attempt
+    localStorage.removeItem('fb_oauth_result');
+    window.addEventListener('storage', handleStorage);
   };
 
   return { signIn, isLoading, isAvailable };
