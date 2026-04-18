@@ -5,5 +5,7 @@ export default interface FeedPost {
   friend_firstName: string,
   friend_lastName: string,
   product: Product,
-  date: string
+  date: string,
+  /** Feed rank score (0–100) — populated by rankFeed algorithm */
+  score?: number,
 }

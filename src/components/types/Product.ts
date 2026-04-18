@@ -5,5 +5,7 @@ export default interface Product {
   subcategory_id?: number,
   image_key?: string,
   created_at?: string,
+  /** Codehooks auto-timestamp (ISO string) — used for feed recency scoring */
+  _created?: string,
   cost?: number
 }
