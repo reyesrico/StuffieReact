@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Logging in…</title>
+</head>
+<body>
+  <script>
+    (function () {
+      var hash   = window.location.hash.slice(1);   // strip leading '#'
+      var params = new URLSearchParams(hash);
+
+      var accessToken = params.get('access_token');
+      var error       = params.get('error')        ||
+                        params.get('error_reason')  ||
+                        params.get('error_description');
+
+      if (window.opener && !window.opener.closed) {
+        var msg = accessToken
+          ? { type: 'fb_oauth_success', access_token: accessToken }
+          : { type: 'fb_oauth_error',   error: error || 'Login cancelled' };
+
+        window.opener.postMessage(msg, window.location.origin);
+      }
+
+      window.close();
+    })();
+  </script>
+</body>
+</html>
