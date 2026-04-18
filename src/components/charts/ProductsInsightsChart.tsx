@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-  PieChart, Pie, Cell, Legend,
+  PieChart, Pie, Cell,
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import type Category from '../types/Category';
@@ -81,6 +81,7 @@ const ProductsInsightsChart = ({ products, categories }: Props) => {
               />
               <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                 {data.map((_entry, index) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Bar>
@@ -106,6 +107,7 @@ const ProductsInsightsChart = ({ products, categories }: Props) => {
                     innerRadius={32}
                   >
                     {pieData.map((_entry, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

@@ -69,6 +69,7 @@ const AdminChartsPanel = () => {
                 innerRadius={36}
               >
                 {usersPieData.map((_entry, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Cell key={i} fill={COLORS_PIE[i % COLORS_PIE.length]} />
                 ))}
               </Pie>
@@ -117,6 +118,7 @@ const AdminChartsPanel = () => {
               />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {actionableData.map((_entry, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Cell key={i} fill={COLORS_ACTIONS[i % COLORS_ACTIONS.length]} />
                 ))}
               </Bar>

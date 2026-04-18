@@ -37,8 +37,8 @@ const Loading = ({
     return (
       <div className={`stuffie-loading stuffie-loading--skeleton ${className}`}>
         {Array.from({ length: lines }).map((_, i) => (
-          <div
-            key={i}
+          // eslint-disable-next-line react/no-array-index-key
+          <div key={i}
             className="stuffie-loading__skeleton-line"
             style={{
               width: typeof width === 'number' ? `${width}px` : width || '100%',

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
@@ -24,7 +24,6 @@ import './LoginPage.scss';
  */
 export function LoginPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { loginUser } = useContext(UserContext);
   const { theme } = useContext(ThemeContext);
   const loginMutation = useLogin();
@@ -35,7 +34,7 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const from = location.state?.from?.pathname || '/'; // unused — login always navigates to feed
+
 
   const handleLogin = async () => {
     if (!email || !password) {

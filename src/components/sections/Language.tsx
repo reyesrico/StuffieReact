@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { LocalLanguage20Regular } from "@fluentui/react-icons";
 import { options } from "../../config/options";

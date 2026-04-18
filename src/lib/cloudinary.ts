@@ -1,5 +1,4 @@
 import config from '../config/api';
-import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
 export const defaultImageUrl =

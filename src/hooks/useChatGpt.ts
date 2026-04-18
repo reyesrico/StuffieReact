@@ -105,6 +105,7 @@ export const useChatGpt = ({
         }
       })
       .catch(() => setTotalUsers(1));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Re-sync storage when userId or modelId changes (not on initial mount)

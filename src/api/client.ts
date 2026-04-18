@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
       // malformed session — ignore, let the request proceed unauthenticated
     }
     if (import.meta.env.DEV) {
-      console.debug(`[API] ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
+      console.warn(`[API] ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
     }
     return requestConfig;
   },

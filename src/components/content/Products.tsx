@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 
@@ -194,8 +193,8 @@ const Products = () => {
       )}
       {!isProductsEmpty(products) && (
         <div>
-          {categories.map((category: Category, index: number) => {
-            if (!products[category.id] || !products[category.id].length) return <div key={`${category.id}_${index}`} />;
+          {categories.map((category: Category) => {
+            if (!products[category.id] || !products[category.id].length) return <div key={`empty-${category.id}`} />;
 
             return (
               <div key={category.id}>

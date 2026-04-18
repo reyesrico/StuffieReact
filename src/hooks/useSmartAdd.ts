@@ -3,12 +3,11 @@
  * 3 input methods: barcode scan, photo (GPT Vision, 1/day), voice (SpeechRecognition).
  * All 3 feed into a shared confirmation form → useAddProduct.
  */
-import { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { createWorker } from 'tesseract.js';
 import { useCategories } from './queries/useCategories';
 import { useSubcategories } from './queries/useSubcategories';
 import { useAddProduct } from './queries/mutations';
-import UserContext from '../context/UserContext';
 import config from '../config/api';
 import {
   createSampleBarcodeCanvas,
@@ -173,7 +172,6 @@ Reply with ONLY valid JSON in the format: {"category_id": <number>, "subcategory
 // ─── Hook ────────────────────────────────────────────────────────────────────
 
 export function useSmartAdd() {
-  const { user } = useContext(UserContext);
 
   const { data: categories = [] } = useCategories();
   const { data: subcategories = [] } = useSubcategories();

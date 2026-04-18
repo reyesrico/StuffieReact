@@ -36,7 +36,6 @@ interface SpotifyPlayerProps {
 const SpotifyPlayer = ({ variant = 'sidebar' }: SpotifyPlayerProps) => {
   const { selectedTrack, isLoading, error } = useSpotify();
   const { theme } = useTheme();
-  const [embedOpen, setEmbedOpen] = React.useState(false);
 
   // Applied inline so it takes effect before the stylesheet loads,
   // which propagates into the iframe's browsing context per CSS Color Adjust spec

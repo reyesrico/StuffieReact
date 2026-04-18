@@ -73,7 +73,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
       const storedSession = localStorage.getItem('stuffie-session');
       if (!storedSession) return;
       try {
-        const { expiresAt, accessToken, refreshToken, refreshExpiresAt } = JSON.parse(storedSession);
+        const { expiresAt, refreshToken, refreshExpiresAt } = JSON.parse(storedSession);
         const now = Math.floor(Date.now() / 1000);
 
         // Refresh token expired (or missing for legacy sessions) — must log in again

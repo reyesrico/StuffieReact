@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import UserContext from '../../context/UserContext';
 import { useProducts, useCategories, useFriendsWithProducts } from '../../hooks/queries';
-import { useChatGpt, CHAT_MODELS, DEFAULT_MODEL_ID } from '../../hooks/useChatGpt';
+import { useChatGpt, DEFAULT_MODEL_ID } from '../../hooks/useChatGpt';
 import { Bot20Regular, Send20Regular, Dismiss20Regular, Chat20Regular } from '@fluentui/react-icons';
 
 import './FloatingChat.scss';
@@ -28,7 +28,10 @@ const renderMessage = (content: string): React.ReactNode => {
     if (bulletBuffer.length === 0) return;
     nodes.push(
       <ul key={`ul-${nodes.length}`}>
-        {bulletBuffer.map((l, i) => <li key={i}>{l.slice(2)}</li>)}
+        {bulletBuffer.map((l, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <li key={`bullet-${i}`}>{l.slice(2)}</li>
+        ))}
       </ul>
     );
     bulletBuffer = [];
@@ -41,10 +44,12 @@ const renderMessage = (content: string): React.ReactNode => {
       flushBullets();
       if (isPath(line)) {
         nodes.push(
+          // eslint-disable-next-line react/no-array-index-key
           <span key={idx} className="floating-chat__path">{line.slice(2)}</span>
         );
       } else {
-        nodes.push(<p key={idx}>{line}</p>);
+        nodes.push(// eslint-disable-next-line react/no-array-index-key
+        <p key={idx}>{line}</p>);
       }
     }
   });
@@ -94,7 +99,7 @@ const FloatingChat = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [selectedModelId, setSelectedModelId] = useState(DEFAULT_MODEL_ID);
+  const [selectedModelId] = useState(DEFAULT_MODEL_ID);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // ── Snap-to-edge drag state ─────────────────────────────────────────────────
@@ -257,8 +262,8 @@ const FloatingChat = () => {
               </div>
             )}
             {conversation.map((msg, idx) => (
-              <div
-                key={idx}
+              // eslint-disable-next-line react/no-array-index-key
+              <div key={`${msg.role}-${idx}`}
                 className={`floating-chat__bubble floating-chat__bubble--${msg.role}${
                   isLoading && msg.role === 'assistant' && idx === conversation.length - 1
                     ? ' floating-chat__bubble--streaming'

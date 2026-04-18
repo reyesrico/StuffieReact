@@ -1,15 +1,13 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Button from '../shared/Button';
-import UserContext from '../../context/UserContext';
 import TextField from '../shared/TextField';
 
 import './Chat.scss';
 import { useChatGpt } from '../../hooks/useChatGpt';
 
 const Chat = () => {
-  const { user } = useContext(UserContext);
   const { conversation, sendMessage, isLoading } = useChatGpt();
   const { t } = useTranslation();
   const messageEl = useRef(null);
@@ -25,15 +23,6 @@ const Chat = () => {
   //     });
   //   }
   // }, [messages]);
-
-  const getChatBubble = (userName: string, message: any) => {
-    const chatMessage = 'chat__message';
-    if (userName === 'Stuffie') {
-      return chatMessage + '-stuffie';
-    }
-
-    return chatMessage + (user.id === message.id ? '-user' : '-other');
-  }
 
   const onSubmit = () => {
     sendMessage(newMessage);

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { find, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,6 @@ import TextField from '../shared/TextField';
 import WarningMessage from '../shared/WarningMessage';
 import { WarningMessageType } from '../shared/types';
 import { getProductFromProducts } from '../helpers/StuffHelper';
-import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useUpdateProductCost } from '../../hooks/queries';
 import { getProduct } from '../../api/products.api';
 
@@ -24,11 +23,11 @@ const PencilIcon = () => (
 );
 
 const Product = (props: any) => {
-  const { hideOfferButton, product, showCost } = props;
+  const { product } = props;
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+
   const { t } = useTranslation();
 
   // friendId in location state means we arrived from a friend's profile
@@ -86,7 +85,7 @@ const Product = (props: any) => {
       const subcat = find(subcategories, s => s.id === productRendered.subcategory_id);
       setSubcategory(subcat);
     }
-  }, [categories, subcategories, productRendered, products, product, id]);
+  }, [categories, subcategories, productRendered, products, product, id, productFromState]);
 
   const startEditing = () => {
     setCost(productRendered?.cost ?? 0);
@@ -208,7 +207,8 @@ const Product = (props: any) => {
           <div className="product__copies-title">{t('products.copiesTitle', { count: copiesInfo.total })}</div>
           <div className="product__copies-list">
             {copiesInfo.statuses.map((status, i) => (
-              <span key={i} className={`product__copies-badge product__copies-badge--${status === t('products.available') ? 'available' : 'active'}`}>
+              // eslint-disable-next-line react/no-array-index-key
+              <span key={`copy-${i}`} className={`product__copies-badge product__copies-badge--${status === t('products.available') ? 'available' : 'active'}`}>
                 #{i + 1} {status}
               </span>
             ))}

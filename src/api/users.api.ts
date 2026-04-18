@@ -118,7 +118,8 @@ export const registerUser = async (userData: RegisterUserInput): Promise<User> =
   ]);
 
   // Destructure to exclude plain-text password from what gets stored
-  const { password: _plaintext, ...userDataWithoutPassword } = userData;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: _pw2, ...userDataWithoutPassword } = userData;
 
   const newUser = {
     ...userDataWithoutPassword,

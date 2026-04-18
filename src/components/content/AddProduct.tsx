@@ -74,7 +74,7 @@ const AddProduct = () => {
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: queryKeys.subcategories.all });
     queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
-  }, []);
+  }, [queryClient]);
 
   const { data: categories = [] } = useCategories();
   const { data: subcategories = [] } = useSubcategories();

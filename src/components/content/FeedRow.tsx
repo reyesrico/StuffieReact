@@ -8,7 +8,7 @@ import { FeedRowProps } from './types';
 import { useSubcategories } from '../../hooks/queries';
 
 import './FeedRow.scss';
-import Subcategory from '../types/Subcategory';
+
 import { existImage, userImageUrl } from '../../lib/cloudinary';
 
 const FeedRow = (props: FeedRowProps) => {
