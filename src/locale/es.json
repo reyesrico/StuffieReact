@@ -197,6 +197,7 @@
     "friends.accepted": "{{ name }} fue aceptado!",
     "friends.suggestionsTitle": "Personas que quizás conozcas",
     "friends.mutualCount": "{{count}} amigo(s) en común",
+    "friends.mutualCountZero": "Nuevo en Stuffie",
     "friends.requestSentShort": "Enviado",
 
     "product.loading": "Cargando producto...",

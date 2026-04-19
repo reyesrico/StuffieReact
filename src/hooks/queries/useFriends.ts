@@ -8,6 +8,7 @@ import { useContext } from 'react';
 import { queryKeys } from './queryKeys';
 import { getFriends, getFriendRequests, getSentFriendRequests } from '../../api/friends.api';
 import { getProductsForUsers, getProductsByIds } from '../../api/products.api';
+import { getUsers } from '../../api/users.api';
 import { getFriendProducts, mapStuff } from '../../components/helpers/StuffHelper';
 import UserContext from '../../context/UserContext';
 import type User from '../../components/types/User';
@@ -128,9 +129,11 @@ export const useInvalidateFriends = () => {
 export default useFriends;
 
 /**
- * Friend suggestions — people you might know via mutual friends.
- * Fires up to 8 parallel queries (one per friend) to load friends-of-friends,
- * then computes candidates not already in the user's friend list.
+ * Friend suggestions — people you might know.
+ * Strategy:
+ *   1. Friends-of-friends (mutual connections) — ranked by mutual count.
+ *   2. Fallback: any registered user not already a friend, up to 5.
+ * Excludes: current user, existing friends, pending sent requests.
  */
 export const useFriendSuggestions = () => {
   const { user } = useContext(UserContext);
@@ -139,7 +142,8 @@ export const useFriendSuggestions = () => {
   const myFriendIds = new Set((myFriends as User[]).map((f: User) => f.id));
   const friendsToQuery = (myFriends as User[]).slice(0, 8);
 
-  const results = useQueries({
+  // Parallel friends-of-friends queries
+  const fofResults = useQueries({
     queries: friendsToQuery.map((friend: User) => ({
       queryKey: ['friendsOf', friend.id],
       queryFn: () => getFriends(friend.id!),
@@ -148,8 +152,17 @@ export const useFriendSuggestions = () => {
     })),
   });
 
+  // All-users fallback
+  const { data: allUsers = [] } = useQuery<User[]>({
+    queryKey: ['allUsers'],
+    queryFn: getUsers,
+    enabled: !!user?.id,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Build friends-of-friends ranked map
   const suggestionsMap = new Map<number, { user: User; mutualCount: number }>();
-  results.forEach((result) => {
+  fofResults.forEach((result) => {
     if (!result.data) return;
     (result.data as User[]).forEach((candidate: User) => {
       if (!candidate.id) return;
@@ -164,9 +177,26 @@ export const useFriendSuggestions = () => {
     });
   });
 
-  const suggestions = Array.from(suggestionsMap.values())
+  let suggestions = Array.from(suggestionsMap.values())
     .sort((a, b) => b.mutualCount - a.mutualCount)
     .slice(0, 5);
 
-  return { suggestions, isLoading: results.some(r => r.isLoading) };
+  // Fallback: fill up to 5 from all registered users if friend-of-friend pool is sparse
+  if (suggestions.length < 5) {
+    const existingIds = new Set([...suggestionsMap.keys()]);
+    const fallback = (allUsers as User[])
+      .filter((u: User) => {
+        if (!u.id) return false;
+        if (u.id === user?.id) return false;
+        if (myFriendIds.has(u.id)) return false;
+        if (existingIds.has(u.id)) return false;
+        return true;
+      })
+      .slice(0, 5 - suggestions.length)
+      .map((u: User) => ({ user: u, mutualCount: 0 }));
+    suggestions = [...suggestions, ...fallback];
+  }
+
+  const isLoading = fofResults.some(r => r.isLoading);
+  return { suggestions, isLoading };
 };

@@ -151,7 +151,9 @@ const SuggestionRow = ({ user, mutualCount }: SuggestionRowProps) => {
       }
       <div className="friends__suggestion-info">
         <span className="friends__suggestion-name">{user.first_name} {user.last_name}</span>
-        <span className="friends__suggestion-mutual">{t('friends.mutualCount', { count: mutualCount })}</span>
+        <span className="friends__suggestion-mutual">
+          {mutualCount > 0 ? t('friends.mutualCount', { count: mutualCount }) : t('friends.mutualCountZero')}
+        </span>
       </div>
       <Button
         text={sent ? t('friends.requestSentShort') : t('friends.requestButton')}
