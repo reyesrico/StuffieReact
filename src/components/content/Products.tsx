@@ -25,6 +25,8 @@ import type User from '../types/User';
 
 import './Products.scss';
 
+type SortBy = 'nameAsc' | 'nameDesc' | 'priceAsc' | 'priceDesc';
+
 const DownloadIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -49,6 +51,10 @@ const Products = () => {
   const [successMsg, setSuccessMsg] = useState<string | null>(() =>
     (location.state as any)?.added ?? null
   );
+  const [filterText, setFilterText] = useState('');
+  const [filterCategoryId, setFilterCategoryId] = useState<number | null>(null);
+  const [filterForSale, setFilterForSale] = useState(false);
+  const [sortBy, setSortBy] = useState<SortBy>('nameAsc');
 
   useEffect(() => {
     if (successMsg) {
@@ -135,6 +141,45 @@ const Products = () => {
 
   usePullToRefresh(refreshProductsQuery);
 
+  // ── Filter + sort computation ────────────────────────────────────────────────
+  const filteredCategoryGroups: Array<{ category: Category; groups: ProductType[][] }> = categories
+    .filter((cat: Category) => {
+      if (!products[cat.id]?.length) return false;
+      if (filterCategoryId !== null && cat.id !== filterCategoryId) return false;
+      return true;
+    })
+    .map((cat: Category) => {
+      const allInCategory: ProductType[] = products[cat.id as number];
+      const byName = new Map<string, ProductType[]>();
+      allInCategory.forEach((p: ProductType) => {
+        const key = (p.name ?? '').toLowerCase();
+        if (!byName.has(key)) byName.set(key, []);
+        byName.get(key)!.push(p);
+      });
+      const lowerFilter = filterText.trim().toLowerCase();
+      const groups = Array.from(byName.values())
+        .filter(copies => {
+          if (lowerFilter && !copies[0].name?.toLowerCase().includes(lowerFilter)) return false;
+          if (filterForSale && !copies.some((p: ProductType) => (p.cost ?? 0) > 0)) return false;
+          return true;
+        })
+        .sort((a, b) => {
+          const aName = (a[0].name ?? '').toLowerCase();
+          const bName = (b[0].name ?? '').toLowerCase();
+          const aCost = Math.max(...a.map((p: ProductType) => p.cost ?? 0));
+          const bCost = Math.max(...b.map((p: ProductType) => p.cost ?? 0));
+          if (sortBy === 'nameAsc') return aName.localeCompare(bName);
+          if (sortBy === 'nameDesc') return bName.localeCompare(aName);
+          if (sortBy === 'priceAsc') return aCost - bCost;
+          if (sortBy === 'priceDesc') return bCost - aCost;
+          return 0;
+        });
+      return { category: cat, groups };
+    })
+    .filter(({ groups }) => groups.length > 0);
+  const filteredCount = filteredCategoryGroups.reduce((s, { groups }) => s + groups.length, 0);
+  const hasFilter = filterText.trim() !== '' || filterCategoryId !== null || filterForSale;
+
   const generateReport = () => {
     downloadCSV(products, categories, `${user?.first_name || 'user'}_inventory`);
   };
@@ -192,27 +237,82 @@ const Products = () => {
         </div>
       )}
       {!isProductsEmpty(products) && (
+        <div className="products__filter-bar">
+          <div className="products__filter-row">
+            <input
+              className="products__filter-text"
+              type="text"
+              placeholder={t('products.filterPlaceholder')}
+              value={filterText}
+              onChange={e => setFilterText(e.target.value)}
+            />
+            <button
+              className={`products__filter-sale-btn${filterForSale ? ' products__filter-sale-btn--active' : ''}`}
+              onClick={() => setFilterForSale(v => !v)}
+              type="button"
+            >
+              {t('products.filterForSale')}
+            </button>
+            <select
+              className="products__filter-sort"
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as SortBy)}
+            >
+              <option value="nameAsc">{t('products.sortNameAsc')}</option>
+              <option value="nameDesc">{t('products.sortNameDesc')}</option>
+              <option value="priceAsc">{t('products.sortPriceAsc')}</option>
+              <option value="priceDesc">{t('products.sortPriceDesc')}</option>
+            </select>
+          </div>
+          <div className="products__filter-cats">
+            <button
+              className={`products__filter-cat${filterCategoryId === null ? ' products__filter-cat--active' : ''}`}
+              onClick={() => setFilterCategoryId(null)}
+              type="button"
+            >
+              {t('products.filterAll')}
+            </button>
+            {categories.filter((cat: Category) => products[cat.id]?.length).map((cat: Category) => (
+              <button
+                key={cat.id}
+                className={`products__filter-cat${filterCategoryId === cat.id ? ' products__filter-cat--active' : ''}`}
+                onClick={() => setFilterCategoryId(filterCategoryId === cat.id ? null : cat.id)}
+                type="button"
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+          {hasFilter && (
+            <div className="products__filter-summary">
+              {t('products.filterResults', { count: filteredCount })}
+              <button
+                className="products__filter-clear"
+                onClick={() => { setFilterText(''); setFilterCategoryId(null); setFilterForSale(false); }}
+                type="button"
+              >
+                {t('products.filterClear')}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+      {!isProductsEmpty(products) && (
         <div>
-          {categories.map((category: Category) => {
-            if (!products[category.id] || !products[category.id].length) return <div key={`empty-${category.id}`} />;
-
-            return (
-              <div key={category.id}>
-                <h4 className="products__subheader">{category.name}</h4>
-                <div className="products__grid">
-                  {(() => {
-                    const allInCategory: ProductType[] = products[category.id as number];
-
-                    // Group by name — each add creates a new catalog entry, so
-                    // duplicates share the same name+category, not the same id.
-                    const byName = new Map<string, ProductType[]>();
-                    allInCategory.forEach((p: ProductType) => {
-                      const key = (p.name ?? '').toLowerCase();
-                      if (!byName.has(key)) byName.set(key, []);
-                      byName.get(key)!.push(p);
-                    });
-
-                    return Array.from(byName.values()).map((copies: ProductType[]) => {
+          {hasFilter && filteredCategoryGroups.length === 0 && (
+            <div className="products__filter-empty">
+              <EmptyState
+                icon={<Box20Regular />}
+                title={t('products.filterNoResults')}
+                description={t('products.filterNoResultsDesc')}
+              />
+            </div>
+          )}
+          {filteredCategoryGroups.map(({ category, groups }) => (
+            <div key={category.id}>
+              <h4 className="products__subheader">{category.name}</h4>
+              <div className="products__grid">
+                {groups.map((copies: ProductType[]) => {
                     const totalCopies = copies.length;
 
                     // Pick the copy with the most relevant active status to display
@@ -310,12 +410,10 @@ const Products = () => {
                         }}
                       />
                     );
-                  });
-                  })()}
-                </div>
+                })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
 
