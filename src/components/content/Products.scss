@@ -18,6 +18,18 @@
 
 .products__add-product {
   @include page-actions;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .products__title {
+    flex-wrap: wrap;
+  }
+
+  .products__add-product {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 .products__subheader {
