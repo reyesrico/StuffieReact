@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { find, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { Share20Regular } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
@@ -92,6 +93,27 @@ const Product = (props: any) => {
     setEditingCost(true);
   };
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}${import.meta.env.BASE_URL}product/${productRendered?.id}`;
+    const shareData = {
+      title: productRendered?.name ?? 'Stuffie',
+      text: t('product.shareText', { name: productRendered?.name }),
+      url: shareUrl,
+    };
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try { await navigator.share(shareData); } catch { /* user cancelled */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setMessage(t('product.linkCopied'));
+      setType(WarningMessageType.SUCCESSFUL);
+    } catch {
+      setMessage(t('product.shareFailed'));
+      setType(WarningMessageType.ERROR);
+    }
+  };
+
   const updateCost = (clear: boolean = false) => {
     const updatedCost = clear ? 0 : Number(cost);
     updateProductCostMutation.mutate(
@@ -154,10 +176,20 @@ const Product = (props: any) => {
 
   const actionState = { product: productRendered, friend: friendId };
 
+  const rawDate = productRendered.created_at ?? productRendered._created;
+  const addedDate = rawDate
+    ? new Date(rawDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+    : null;
+
   return (
     <div className="product">
       <WarningMessage message={message} type={type} />
-      <h3>{ productRendered.name }</h3>
+      <div className="product__header">
+        <h3>{ productRendered.name }</h3>
+        <button type="button" className="product__share-btn" onClick={handleShare} aria-label={t('product.share')}>
+          <Share20Regular />
+        </button>
+      </div>
       <hr />
       <div className="product__media">
         <Media
@@ -170,8 +202,27 @@ const Product = (props: any) => {
           width="100" />
       </div>
       <hr />
-      <div>{t('product.categoryLabel')}{ category && category.name }</div>
-      <div>{t('product.subcategoryLabel')}{ subcategory && subcategory.name }</div>
+
+      <div className="product__info-card">
+        {category && (
+          <div className="product__info-row">
+            <span className="product__info-label">{t('product.categoryLabel')}</span>
+            <span className="product__info-value">{category.name}</span>
+          </div>
+        )}
+        {subcategory && (
+          <div className="product__info-row">
+            <span className="product__info-label">{t('product.subcategoryLabel')}</span>
+            <span className="product__info-value">{subcategory.name}</span>
+          </div>
+        )}
+        {addedDate && (
+          <div className="product__info-row">
+            <span className="product__info-label">{t('product.addedLabel')}</span>
+            <span className="product__info-value">{addedDate}</span>
+          </div>
+        )}
+      </div>
       {loanInfo?.borrowedFrom && (
         <div className="product__borrowed-info">
           {t('products.borrowedFrom', { name: loanInfo.borrowedFrom })}
