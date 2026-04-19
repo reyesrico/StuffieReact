@@ -187,6 +187,10 @@ const Exchange = () => {
           <p className="exchange__empty">{t('exchange.noProducts')}</p>
         )}
 
+        {allProducts.length > 0 && filtered.length === 0 && (
+          <p className="exchange__empty">{t('exchange.noFilterResults')}</p>
+        )}
+
         {sameCategory.length > 0 && (
           <>
             <p className="exchange__section-label">{t('exchange.sameCategoryLabel')}</p>
@@ -258,6 +262,35 @@ const Exchange = () => {
             </>
           }
         >
+          <div className="exchange__confirm-preview">
+            <div className="exchange__confirm-preview-side">
+              <Media
+                fileName={selectedProduct?.id}
+                category={selectedProduct?.category_id}
+                subcategory={selectedProduct?.subcategory_id}
+                imageKey={selectedProduct?.image_key}
+                format="jpg"
+                height="64"
+                width="64"
+                isProduct="true"
+              />
+              <span className="exchange__confirm-preview-name">{selectedProduct?.name}</span>
+            </div>
+            <span className="exchange__confirm-preview-arrow"><ArrowSwap20Regular /></span>
+            <div className="exchange__confirm-preview-side">
+              <Media
+                fileName={targetProduct.id}
+                category={targetProduct.category_id}
+                subcategory={targetProduct.subcategory_id}
+                imageKey={targetProduct.image_key}
+                format="jpg"
+                height="64"
+                width="64"
+                isProduct="true"
+              />
+              <span className="exchange__confirm-preview-name">{targetProduct.name}</span>
+            </div>
+          </div>
           <p>{t('exchange.confirmBody', { mine: selectedProduct?.name, theirs: targetProduct.name })}</p>
         </Modal>
       )}

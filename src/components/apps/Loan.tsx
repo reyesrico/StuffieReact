@@ -99,6 +99,7 @@ const Loan = () => {
           variant="primary"
           text={t('loan.requestButton')}
           onClick={() => setShowConfirm(true)}
+          disabled={createLoanMutation.isPending}
           fullWidth
         />
       </div>
@@ -125,6 +126,19 @@ const Loan = () => {
             </>
           }
         >
+          <div className="loan__confirm-preview">
+            <Media
+              fileName={targetProduct.id}
+              category={targetProduct.category_id}
+              subcategory={targetProduct.subcategory_id}
+              imageKey={targetProduct.image_key}
+              format="jpg"
+              height="72"
+              width="72"
+              isProduct="true"
+            />
+            <span className="loan__confirm-preview-name">{targetProduct.name}</span>
+          </div>
           <p>{t('loan.confirmBody', { name: friend?.first_name ?? '…', item: targetProduct.name })}</p>
         </Modal>
       )}

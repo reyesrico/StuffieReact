@@ -211,6 +211,7 @@
     "exchange.successTitle": "¡Intercambio solicitado!",
     "exchange.errorTitle": "Error al solicitar",
     "exchange.noProducts": "No hay productos para intercambiar en la misma categoría",
+    "exchange.noFilterResults": "Ningún artículo coincide con tu búsqueda",
     "exchange.myProduct": "Mi Producto",
     "exchange.friendProduct": "Producto de {{ name }}",
     "exchange.requestButton": "Solicitar Intercambio",

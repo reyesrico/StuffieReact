@@ -201,6 +201,7 @@
     "product.save": "Save",
 
     "exchange.noProducts": "You have no products to offer",
+    "exchange.noFilterResults": "No items match your filter",
     "exchange.myProduct": "My Product",
     "exchange.friendProduct": "{{ name }}'s product",
     "exchange.requestButton": "Request Exchange",

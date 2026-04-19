@@ -265,3 +265,42 @@
   flex-shrink: 0;
 }
 
+// ── Confirm modal preview ─────────────────────────────────────────────────────
+
+.exchange__confirm-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4) 0 var(--spacing-3);
+}
+
+.exchange__confirm-preview-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex: 1;
+
+  img, > div {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+}
+
+.exchange__confirm-preview-name {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exchange__confirm-preview-arrow {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
