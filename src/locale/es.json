@@ -530,6 +530,13 @@
     "addProduct.addPhoto": "Agregar una foto",
     "addProduct.changePhoto": "Cambiar foto",
     "addProduct.photoHint": "Ayuda a la comunidad a identificar este artículo con una foto clara.",
+    "addProduct.imageSearch.tabSearch": "Buscar en Internet",
+    "addProduct.imageSearch.tabUpload": "Subir Tu Foto",
+    "addProduct.imageSearch.placeholder": "ej. Nike Air Max, iPhone 15...",
+    "addProduct.imageSearch.search": "Buscar",
+    "addProduct.imageSearch.noResults": "No se encontraron imágenes. Intenta con otro término.",
+    "addProduct.imageSearch.error": "La búsqueda de imágenes falló. Inténtalo de nuevo o sube una foto manualmente.",
+    "addProduct.imageSearch.clearSelection": "Quitar selección",
 
     "addCategory.categoryLabel": "Categoría",
     "addCategory.subcategoryLabel": "Subcategoría",

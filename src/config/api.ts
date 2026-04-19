@@ -22,7 +22,12 @@ const config = {
     'x-apikey': import.meta.env.VITE_CODEHOOKS_API_KEY || '',
     'Content-Type': 'application/json'
   },
-  server: import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/'
+  server: import.meta.env.VITE_CODEHOOKS_SERVER_URL || 'https://stuffie-2u0v.api.codehooks.io/dev/',
+  imageSearch: {
+    googleApiKey: import.meta.env.VITE_GOOGLE_SEARCH_API_KEY || '',
+    googleCx:     import.meta.env.VITE_GOOGLE_SEARCH_CX || '',
+    unsplashKey:  import.meta.env.VITE_UNSPLASH_ACCESS_KEY || '',
+  },
 };
 
 export default config;

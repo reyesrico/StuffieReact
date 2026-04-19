@@ -533,6 +533,13 @@
     "addProduct.addPhoto": "Add a photo",
     "addProduct.changePhoto": "Change photo",
     "addProduct.photoHint": "Help the community identify this item with a clear photo.",
+    "addProduct.imageSearch.tabSearch": "Search Online",
+    "addProduct.imageSearch.tabUpload": "Upload Your Own",
+    "addProduct.imageSearch.placeholder": "e.g. Nike Air Max, iPhone 15...",
+    "addProduct.imageSearch.search": "Search",
+    "addProduct.imageSearch.noResults": "No images found. Try a different search term.",
+    "addProduct.imageSearch.error": "Image search failed. Try again or upload manually.",
+    "addProduct.imageSearch.clearSelection": "Clear selection",
 
     "addCategory.categoryLabel": "Category",
     "addCategory.subcategoryLabel": "SubCategory",

@@ -10,6 +10,7 @@ import Product from '../types/Product';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
 import { getProductsByCategory, updateProduct } from '../../api/products.api';
+import { searchImages, type ImageResult } from '../../api/external/imageSearch';
 import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct, useCreateProposal } from '../../hooks/queries';
 import { useQueryClient } from '@tanstack/react-query';
@@ -112,6 +113,14 @@ const AddProduct = () => {
   const [photoPreview, setPhotoPreview] = useState<string | undefined>();
   const photoInputRef = useRef<HTMLInputElement>(null);
 
+  // Image search state (new mode)
+  const [photoSource, setPhotoSource] = useState<'search' | 'upload'>('search');
+  const [imageQuery, setImageQuery] = useState('');
+  const [imageResults, setImageResults] = useState<ImageResult[]>([]);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageSearchError, setImageSearchError] = useState('');
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | undefined>();
+
   // Modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultState, setResultState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -159,6 +168,11 @@ const AddProduct = () => {
     setResultState('idle');
     setPhotoFile(null);
     setPhotoPreview(undefined);
+    setPhotoSource('search');
+    setImageQuery('');
+    setImageResults([]);
+    setImageSearchError('');
+    setSelectedImageUrl(undefined);
   };
 
   const filteredSubcategories = selectedCategory
@@ -272,12 +286,36 @@ const AddProduct = () => {
     } else {
       setPhotoPreview(undefined);
     }
+    // Clear search selection when manually uploading
+    setSelectedImageUrl(undefined);
+  };
+
+  const handleImageSearch = async () => {
+    const q = (imageQuery.trim() || `${name.trim()} ${selectedSubcategory?.name ?? ''}`).trim();
+    if (!q) return;
+    setImageLoading(true);
+    setImageSearchError('');
+    setImageResults([]);
+    try {
+      const results = await searchImages(q);
+      setImageResults(results);
+      if (!results.length) setImageSearchError(t('addProduct.imageSearch.noResults'));
+    } catch {
+      setImageSearchError(t('addProduct.imageSearch.error'));
+    } finally {
+      setImageLoading(false);
+    }
   };
 
   const uploadProductPhoto = async (productId: number, categoryId: number, subcategoryId: number): Promise<string | undefined> => {
-    if (!photoFile) return undefined;
+    if (!photoFile && !selectedImageUrl) return undefined;
     const formData = new FormData();
-    formData.append('file', photoFile);
+    if (photoFile) {
+      formData.append('file', photoFile);
+    } else {
+      // Cloudinary accepts a URL string as the 'file' param — fetches it server-side
+      formData.append('file', selectedImageUrl!);
+    }
     formData.append('folder', `products/${categoryId}/${subcategoryId}`);
     formData.append('public_id', String(productId));
     formData.append('upload_preset', config.cloudinary.uploadPreset);
@@ -315,7 +353,7 @@ const AddProduct = () => {
         { name: name.trim(), category_id: catId, subcategory_id: subcatId },
         {
           onSuccess: async (newProduct: Product) => {
-            if (photoFile && newProduct.id) {
+            if ((photoFile || selectedImageUrl) && newProduct.id) {
               try {
                 const imageKey = await uploadProductPhoto(newProduct.id, catId, subcatId);
                 if (imageKey && newProduct._id) {
@@ -704,43 +742,118 @@ const AddProduct = () => {
                   {t('addProduct.photoLabel')}
                   <span className="add-product__step-optional"> — {t('addProduct.photoOptional')}</span>
                 </p>
-                <div className="add-product__photo-upload">
-                  {photoPreview ? (
-                    <div className="add-product__photo-preview">
-                      <img src={photoPreview} alt="preview" />
+
+                {/* Source toggle */}
+                <div className="add-product__photo-tabs">
+                  <button
+                    className={`add-product__photo-tab ${photoSource === 'search' ? 'add-product__photo-tab--active' : ''}`}
+                    onClick={() => setPhotoSource('search')}
+                  >
+                    {t('addProduct.imageSearch.tabSearch')}
+                  </button>
+                  <button
+                    className={`add-product__photo-tab ${photoSource === 'upload' ? 'add-product__photo-tab--active' : ''}`}
+                    onClick={() => setPhotoSource('upload')}
+                  >
+                    {t('addProduct.imageSearch.tabUpload')}
+                  </button>
+                </div>
+
+                {/* ── Search mode ── */}
+                {photoSource === 'search' && (
+                  <div className="add-product__image-search">
+                    <div className="add-product__image-search-bar">
+                      <input
+                        type="text"
+                        className="add-product__image-search-input"
+                        value={imageQuery}
+                        placeholder={`${name.trim()} ${selectedSubcategory?.name ?? ''}`.trim()}
+                        onChange={e => setImageQuery(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && handleImageSearch()}
+                      />
                       <button
-                        className="add-product__photo-remove"
-                        onClick={() => { setPhotoFile(null); setPhotoPreview(undefined); }}
-                        aria-label="Remove photo"
+                        className={`add-product__image-search-btn ${imageLoading ? 'add-product__ai-btn--loading' : ''}`}
+                        onClick={handleImageSearch}
+                        disabled={imageLoading}
+                        aria-label={t('addProduct.imageSearch.search')}
                       >
-                        ×
+                        <Search20Regular />
                       </button>
                     </div>
-                  ) : (
-                    <button
-                      className="add-product__photo-btn"
-                      onClick={() => photoInputRef.current?.click()}
-                    >
-                      <ImageAdd20Regular />
-                      <span>{t('addProduct.addPhoto')}</span>
-                    </button>
-                  )}
-                  {photoPreview && (
-                    <button
-                      className="add-product__photo-change"
-                      onClick={() => photoInputRef.current?.click()}
-                    >
-                      {t('addProduct.changePhoto')}
-                    </button>
-                  )}
-                  <input
-                    ref={photoInputRef}
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handlePhotoChange}
-                  />
-                </div>
+                    {imageSearchError && <p className="add-product__ai-error">{imageSearchError}</p>}
+                    {imageResults.length > 0 && (
+                      <div className="add-product__image-results">
+                        {imageResults.map((img, i) => (
+                          <button
+                            key={i}
+                            className={`add-product__image-result ${selectedImageUrl === img.url ? 'add-product__image-result--selected' : ''}`}
+                            onClick={() => {
+                              setSelectedImageUrl(img.url);
+                              setPhotoFile(null);
+                              setPhotoPreview(undefined);
+                            }}
+                            title={img.title}
+                          >
+                            <img src={img.thumb} alt={img.title} />
+                            {selectedImageUrl === img.url && (
+                              <span className="add-product__image-result-check"><Checkmark20Regular /></span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {selectedImageUrl && (
+                      <button
+                        className="add-product__photo-change"
+                        onClick={() => setSelectedImageUrl(undefined)}
+                      >
+                        {t('addProduct.imageSearch.clearSelection')}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Manual upload mode ── */}
+                {photoSource === 'upload' && (
+                  <div className="add-product__photo-upload">
+                    {photoPreview ? (
+                      <div className="add-product__photo-preview">
+                        <img src={photoPreview} alt="preview" />
+                        <button
+                          className="add-product__photo-remove"
+                          onClick={() => { setPhotoFile(null); setPhotoPreview(undefined); }}
+                          aria-label="Remove photo"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="add-product__photo-btn"
+                        onClick={() => photoInputRef.current?.click()}
+                      >
+                        <ImageAdd20Regular />
+                        <span>{t('addProduct.addPhoto')}</span>
+                      </button>
+                    )}
+                    {photoPreview && (
+                      <button
+                        className="add-product__photo-change"
+                        onClick={() => photoInputRef.current?.click()}
+                      >
+                        {t('addProduct.changePhoto')}
+                      </button>
+                    )}
+                    <input
+                      ref={photoInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handlePhotoChange}
+                    />
+                  </div>
+                )}
+
                 <p className="add-product__photo-hint">{t('addProduct.photoHint')}</p>
               </section>
             )}
@@ -789,10 +902,10 @@ const AddProduct = () => {
           )}
           {mode === 'new' && (
             <>
-              {photoPreview && (
+              {(photoPreview || selectedImageUrl) && (
                 <div className="add-product__modal-body">
                   <div className="add-product__modal-thumb">
-                    <img src={photoPreview} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+                    <img src={photoPreview || selectedImageUrl} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
                   </div>
                 </div>
               )}
