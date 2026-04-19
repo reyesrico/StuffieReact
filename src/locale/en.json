@@ -525,6 +525,11 @@
     "addProduct.proposalPlaceholder": "e.g. Acoustic Guitars",
     "addProduct.proposalSubmit": "Submit suggestion",
     "addProduct.proposalSent": "✓ Suggestion sent! An admin will review it.",
+    "addProduct.photoLabel": "Photo",
+    "addProduct.photoOptional": "optional",
+    "addProduct.addPhoto": "Add a photo",
+    "addProduct.changePhoto": "Change photo",
+    "addProduct.photoHint": "Help the community identify this item with a clear photo.",
 
     "addCategory.categoryLabel": "Category",
     "addCategory.subcategoryLabel": "SubCategory",

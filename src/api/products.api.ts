@@ -95,6 +95,7 @@ export interface UpdateProductInput {
   category?: number;
   subcategory?: number;
   file_name?: string;
+  image_key?: string;
 }
 
 /**

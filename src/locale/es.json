@@ -522,6 +522,11 @@
     "addProduct.proposalPlaceholder": "ej. Guitarras Acústicas",
     "addProduct.proposalSubmit": "Enviar sugerencia",
     "addProduct.proposalSent": "✓ ¡Sugerencia enviada! Un administrador la revisará.",
+    "addProduct.photoLabel": "Foto",
+    "addProduct.photoOptional": "opcional",
+    "addProduct.addPhoto": "Agregar una foto",
+    "addProduct.changePhoto": "Cambiar foto",
+    "addProduct.photoHint": "Ayuda a la comunidad a identificar este artículo con una foto clara.",
 
     "addCategory.categoryLabel": "Categoría",
     "addCategory.subcategoryLabel": "Subcategoría",

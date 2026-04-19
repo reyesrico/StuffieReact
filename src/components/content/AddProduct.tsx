@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 import Button from '../shared/Button';
 import Category from '../types/Category';
@@ -8,7 +9,7 @@ import Modal from '../shared/Modal';
 import Product from '../types/Product';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
-import { getProductsByCategory } from '../../api/products.api';
+import { getProductsByCategory, updateProduct } from '../../api/products.api';
 import UserContext from '../../context/UserContext';
 import { useCategories, useSubcategories, useProducts, useAddProduct, useAddExistingProduct, useCreateProposal } from '../../hooks/queries';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,7 +20,7 @@ import {
   BuildingHome20Regular, AnimalPawPrint20Regular, Cart20Regular, HeartPulse20Regular,
   Balloon20Regular, Gift20Regular, SportSoccer20Regular, VehicleCar20Regular,
   Pill20Regular, Box20Regular, Checkmark20Regular, Search20Regular, Warning20Regular,
-  Sparkle20Regular,
+  Sparkle20Regular, ImageAdd20Regular,
 } from '@fluentui/react-icons';
 import { getProductFromProducts } from '../helpers/StuffHelper';
 import Media from '../shared/Media';
@@ -106,6 +107,11 @@ const AddProduct = () => {
   const [proposalSubmitted, setProposalSubmitted] = useState(false);
   const createProposalMutation = useCreateProposal();
 
+  // Photo upload state (new mode)
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | undefined>();
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
   // Modal state
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [resultState, setResultState] = useState<'idle' | 'success' | 'error'>('idle');
@@ -151,6 +157,8 @@ const AddProduct = () => {
     setProposalName('');
     setProposalSubmitted(false);
     setResultState('idle');
+    setPhotoFile(null);
+    setPhotoPreview(undefined);
   };
 
   const filteredSubcategories = selectedCategory
@@ -254,6 +262,33 @@ const AddProduct = () => {
     }
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] ?? null;
+    setPhotoFile(selected);
+    if (selected) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
+      reader.readAsDataURL(selected);
+    } else {
+      setPhotoPreview(undefined);
+    }
+  };
+
+  const uploadProductPhoto = async (productId: number, categoryId: number, subcategoryId: number): Promise<string | undefined> => {
+    if (!photoFile) return undefined;
+    const formData = new FormData();
+    formData.append('file', photoFile);
+    formData.append('folder', `products/${categoryId}/${subcategoryId}`);
+    formData.append('public_id', String(productId));
+    formData.append('upload_preset', config.cloudinary.uploadPreset);
+    const res = await axios.post(
+      `https://api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/image/upload`,
+      formData,
+      { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+    );
+    return res.data?.public_id as string | undefined;
+  };
+
   const canConfirmCatalog = !!(selectedProduct?.id);
   const canConfirmNew = !!(name.trim() && selectedCategory && selectedSubcategory);
 
@@ -274,10 +309,22 @@ const AddProduct = () => {
         },
       });
     } else if (mode === 'new' && selectedCategory && selectedSubcategory) {
+      const catId = selectedCategory.id;
+      const subcatId = selectedSubcategory.id;
       addProductMutation.mutate(
-        { name: name.trim(), category_id: selectedCategory.id, subcategory_id: selectedSubcategory.id },
+        { name: name.trim(), category_id: catId, subcategory_id: subcatId },
         {
-          onSuccess: (newProduct: Product) => {
+          onSuccess: async (newProduct: Product) => {
+            if (photoFile && newProduct.id) {
+              try {
+                const imageKey = await uploadProductPhoto(newProduct.id, catId, subcatId);
+                if (imageKey && (newProduct as any)._id) {
+                  await updateProduct((newProduct as any)._id, { image_key: imageKey });
+                }
+              } catch {
+                // Photo upload failed — product created without image
+              }
+            }
             setIsPending(false);
             setConfirmOpen(false);
             setResultName(newProduct.name ?? name.trim());
@@ -648,6 +695,55 @@ const AddProduct = () => {
                 )}
               </section>
             )}
+
+            {/* STEP 4 — Photo (Optional) */}
+            {selectedSubcategory && (
+              <section className="add-product__step">
+                <p className="add-product__step-label">
+                  <span className="add-product__step-num">4</span>
+                  {t('addProduct.photoLabel')}
+                  <span className="add-product__step-optional"> — {t('addProduct.photoOptional')}</span>
+                </p>
+                <div className="add-product__photo-upload">
+                  {photoPreview ? (
+                    <div className="add-product__photo-preview">
+                      <img src={photoPreview} alt="preview" />
+                      <button
+                        className="add-product__photo-remove"
+                        onClick={() => { setPhotoFile(null); setPhotoPreview(undefined); }}
+                        aria-label="Remove photo"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="add-product__photo-btn"
+                      onClick={() => photoInputRef.current?.click()}
+                    >
+                      <ImageAdd20Regular />
+                      <span>{t('addProduct.addPhoto')}</span>
+                    </button>
+                  )}
+                  {photoPreview && (
+                    <button
+                      className="add-product__photo-change"
+                      onClick={() => photoInputRef.current?.click()}
+                    >
+                      {t('addProduct.changePhoto')}
+                    </button>
+                  )}
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handlePhotoChange}
+                  />
+                </div>
+                <p className="add-product__photo-hint">{t('addProduct.photoHint')}</p>
+              </section>
+            )}
           </>
         )}
 
@@ -693,6 +789,13 @@ const AddProduct = () => {
           )}
           {mode === 'new' && (
             <>
+              {photoPreview && (
+                <div className="add-product__modal-body">
+                  <div className="add-product__modal-thumb">
+                    <img src={photoPreview} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+                  </div>
+                </div>
+              )}
               <p className="add-product__modal-name">{name.trim()}</p>
               <p className="add-product__modal-meta">
                 {selectedCategory?.name} › {selectedSubcategory?.name}
