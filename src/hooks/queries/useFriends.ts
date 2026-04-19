@@ -3,7 +3,7 @@
  * 
  * Replaces Redux: fetchFriends, fetchFriendsHook, fetchFriendsHookWithFriends, fetchFriendsProducts
  */
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useQueries } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { queryKeys } from './queryKeys';
 import { getFriends, getFriendRequests, getSentFriendRequests } from '../../api/friends.api';
@@ -126,3 +126,47 @@ export const useInvalidateFriends = () => {
 };
 
 export default useFriends;
+
+/**
+ * Friend suggestions — people you might know via mutual friends.
+ * Fires up to 8 parallel queries (one per friend) to load friends-of-friends,
+ * then computes candidates not already in the user's friend list.
+ */
+export const useFriendSuggestions = () => {
+  const { user } = useContext(UserContext);
+  const { data: myFriends = [] } = useFriends();
+
+  const myFriendIds = new Set((myFriends as User[]).map((f: User) => f.id));
+  const friendsToQuery = (myFriends as User[]).slice(0, 8);
+
+  const results = useQueries({
+    queries: friendsToQuery.map((friend: User) => ({
+      queryKey: ['friendsOf', friend.id],
+      queryFn: () => getFriends(friend.id!),
+      enabled: !!friend.id && !!user?.id,
+      staleTime: 1000 * 60 * 10,
+    })),
+  });
+
+  const suggestionsMap = new Map<number, { user: User; mutualCount: number }>();
+  results.forEach((result) => {
+    if (!result.data) return;
+    (result.data as User[]).forEach((candidate: User) => {
+      if (!candidate.id) return;
+      if (candidate.id === user?.id) return;
+      if (myFriendIds.has(candidate.id)) return;
+      const existing = suggestionsMap.get(candidate.id);
+      if (existing) {
+        existing.mutualCount++;
+      } else {
+        suggestionsMap.set(candidate.id, { user: candidate, mutualCount: 1 });
+      }
+    });
+  });
+
+  const suggestions = Array.from(suggestionsMap.values())
+    .sort((a, b) => b.mutualCount - a.mutualCount)
+    .slice(0, 5);
+
+  return { suggestions, isLoading: results.some(r => r.isLoading) };
+};

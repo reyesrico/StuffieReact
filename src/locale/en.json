@@ -195,6 +195,9 @@
     "friends.notAdded": "was not added",
     "friends.rejected": "{{ name }} was rejected.",
     "friends.accepted": "{{ name }} was accepted!",
+    "friends.suggestionsTitle": "People you might know",
+    "friends.mutualCount": "{{count}} mutual friend(s)",
+    "friends.requestSentShort": "Sent",
 
     "product.loading": "Loading product...",
     "product.categoryLabel": "Category",
@@ -419,7 +422,9 @@
     "friendPage.noProducts": "This friend has no products yet.",
     "friendPage.tabLocation": "Location",
     "friendPage.tabProducts": "Products",
+    "friendPage.tabActivity": "Activity",
     "friendPage.locationZip": "Zip code:",
+    "friendPage.itemCount": "{{count}} items",
 
     "breadcrumb.profile": "My Profile",
 

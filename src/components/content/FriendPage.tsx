@@ -16,7 +16,19 @@ import type Product from '../types/Product';
 
 import './FriendPage.scss';
 
-type Tab = 'location' | 'products';
+type Tab = 'location' | 'products' | 'activity';
+
+const relativeTime = (dateStr: string | undefined): string => {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
+};
 
 const FriendPage = () => {
   const { id } = useParams();
@@ -37,6 +49,16 @@ const FriendPage = () => {
   const friend = (friends as User[]).find(f => f.id === friendId);
   const friendName = `${friend?.first_name ?? ''} ${friend?.last_name ?? ''}`.trim();
   const products: Product[] = Object.values(productsMap).flat();
+  const productCount = products.length;
+
+  // Activity: products sorted newest-first
+  const recentProducts = [...products]
+    .sort((a, b) => {
+      const aDate = a.created_at ?? (a as any)._created ?? '';
+      const bDate = b.created_at ?? (b as any)._created ?? '';
+      return bDate.localeCompare(aDate);
+    })
+    .slice(0, 10);
 
   const lat = Number(friend?.lat);
   const lng = Number(friend?.lng);
@@ -82,6 +104,13 @@ const FriendPage = () => {
             <span className="friend-page__email">{friend?.email}</span>
           </div>
         </div>
+        <div className="friend-page__header-meta">
+          {productCount > 0 && (
+            <span className="friend-page__count-badge">
+              {t('friendPage.itemCount', { count: productCount })}
+            </span>
+          )}
+        </div>
         {friend && (
           <Button
             text={t('friends.removeConfirm')}
@@ -107,6 +136,14 @@ const FriendPage = () => {
         >
           {t('friendPage.tabProducts')}
         </button>
+        {products.length > 0 && (
+          <button
+            className={`friend-page__tab${activeTab === 'activity' ? ' friend-page__tab--active' : ''}`}
+            onClick={() => setActiveTab('activity')}
+          >
+            {t('friendPage.tabActivity')}
+          </button>
+        )}
       </div>
 
       {activeTab === 'location' && hasLocation && (
@@ -143,6 +180,48 @@ const FriendPage = () => {
                   }}
                 />
               ))}
+            </div>
+          )}
+        </div>
+      )}
+      {activeTab === 'activity' && (
+        <div className="friend-page__section">
+          {loadingProducts && <Loading size="md" message={t('common.loading')} />}
+          {!loadingProducts && recentProducts.length === 0 && (
+            <div className="friend-page__empty">{t('friendPage.noProducts')}</div>
+          )}
+          {!loadingProducts && recentProducts.length > 0 && (
+            <div className="friend-page__activity">
+              {recentProducts.map((product: Product) => {
+                const dateStr = product.created_at ?? (product as any)._created;
+                return (
+                  <div
+                    key={product.id}
+                    className="friend-page__activity-item"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate(`/product/${product.id}`, {
+                      state: { friendId, product, breadcrumb: [
+                        { label: t('Friends'), path: '/friends' },
+                        { label: friendName, path: `/friends/${friendId}` },
+                        { label: product.name ?? '', path: `/product/${product.id}` },
+                      ]}
+                    })}
+                    onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && navigate(`/product/${product.id}`, {
+                      state: { friendId, product }
+                    })}
+                  >
+                    <div className="friend-page__activity-dot" />
+                    <div className="friend-page__activity-info">
+                      <span className="friend-page__activity-name">{product.name}</span>
+                      {dateStr && (
+                        <span className="friend-page__activity-time">{relativeTime(dateStr)}</span>
+                      )}
+                    </div>
+                    <span className="friend-page__activity-chevron">›</span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

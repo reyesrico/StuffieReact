@@ -9,7 +9,7 @@ import TextField from '../shared/TextField';
 import EmptyState from '../shared/EmptyState';
 import User from '../types/User';
 import UserContext from '../../context/UserContext';
-import { useFriends, useInvalidateFriends, useSendFriendRequest, useCancelFriendRequest } from '../../hooks/queries';
+import { useFriends, useInvalidateFriends, useSendFriendRequest, useCancelFriendRequest, useFriendSuggestions } from '../../hooks/queries';
 import { useSentFriendRequests } from '../../hooks/queries/useFriends';
 import { getUsersByIds } from '../../api/users.api';
 import type Friendship from '../types/Friendship';
@@ -122,6 +122,49 @@ const AddFriendForm = ({ onSent }: { onSent?: () => void }) => {
   );
 };
 
+// ── Suggestion row ───────────────────────────────────────────────────────────
+
+type SuggestionRowProps = { user: User; mutualCount: number; };
+
+const SuggestionRow = ({ user, mutualCount }: SuggestionRowProps) => {
+  const { t } = useTranslation();
+  const sendRequest = useSendFriendRequest();
+  const [sent, setSent] = useState(false);
+  const [picture, setPicture] = React.useState<string>();
+
+  React.useEffect(() => {
+    existImage(user.id, 'stuffiers/')
+      .then(() => setPicture(userImageUrl(user.id!)))
+      .catch(() => {});
+  }, [user.id]);
+
+  const handleSend = () => {
+    if (!user.email || sendRequest.isPending || sent) return;
+    sendRequest.mutate(user.email, { onSuccess: () => setSent(true) });
+  };
+
+  return (
+    <div className="friends__suggestion-item">
+      {picture
+        ? <img src={picture} className="friends__suggestion-photo" alt="" />
+        : <div className="friends__suggestion-avatar">{`${user.first_name?.[0] ?? ''}${user.last_name?.[0] ?? ''}`.toUpperCase()}</div>
+      }
+      <div className="friends__suggestion-info">
+        <span className="friends__suggestion-name">{user.first_name} {user.last_name}</span>
+        <span className="friends__suggestion-mutual">{t('friends.mutualCount', { count: mutualCount })}</span>
+      </div>
+      <Button
+        text={sent ? t('friends.requestSentShort') : t('friends.requestButton')}
+        size="sm"
+        variant={sent ? 'secondary' : 'outline'}
+        onClick={handleSend}
+        loading={sendRequest.isPending}
+        disabled={sent}
+      />
+    </div>
+  );
+};
+
 // ── Main component ───────────────────────────────────────────────────────────
 
 const Friends = () => {
@@ -136,6 +179,7 @@ const Friends = () => {
   const [confirmRemove, setConfirmRemove] = useState<User | null>(null);
   const [removing, setRemoving] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState<Friendship | null>(null);
+  const { suggestions } = useFriendSuggestions();
 
   // Resolve user_id numbers in sent requests to User objects for display
   const sentTargetIds = sentRequests.map((r: Friendship) => ({ id: r.user_id }));
@@ -234,6 +278,21 @@ const Friends = () => {
               onRemove={() => setConfirmRemove(friend)}
             />
           ))}
+        </div>
+      )}
+
+      {suggestions.length > 0 && (
+        <div className="friends__suggestions">
+          <h3 className="friends__suggestions-title">{t('friends.suggestionsTitle')}</h3>
+          <div className="friends__suggestions-list">
+            {suggestions.map(({ user: suggestion, mutualCount }) => (
+              <SuggestionRow
+                key={suggestion.id}
+                user={suggestion}
+                mutualCount={mutualCount}
+              />
+            ))}
+          </div>
         </div>
       )}
 

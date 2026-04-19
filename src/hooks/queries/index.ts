@@ -41,6 +41,7 @@ export {
   useSentFriendRequests,
   useGetFriendsData,
   useInvalidateFriends,
+  useFriendSuggestions,
 } from './useFriends';
 
 // Exchanges

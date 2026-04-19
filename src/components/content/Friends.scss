@@ -341,3 +341,84 @@
     outline-offset: 2px;
   }
 }
+
+// =============================================================================
+// Friend Suggestions ("People you might know")
+// =============================================================================
+
+.friends__suggestions {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid var(--border-color);
+}
+
+.friends__suggestions-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--spacing-4);
+}
+
+.friends__suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.friends__suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.friends__suggestion-photo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-primary-100);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.friends__suggestion-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-100);
+  border: 2px solid var(--color-primary-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-primary-700);
+}
+
+.friends__suggestion-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.friends__suggestion-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friends__suggestion-mutual {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}

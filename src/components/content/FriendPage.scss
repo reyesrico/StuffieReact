@@ -105,3 +105,108 @@
   color: var(--text-secondary);
   font-size: var(--font-size-base);
 }
+
+// ── Header meta (count badge + remove button row) ─────────────────────────────
+
+.friend-page__header-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex-shrink: 0;
+}
+
+.friend-page__count-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--spacing-3);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  background-color: var(--color-primary-100);
+  border-radius: var(--radius-full);
+
+  [data-theme="dark"] & {
+    background-color: rgba(33, 150, 243, 0.18);
+    color: #90CAF9;
+  }
+}
+
+// ── Activity timeline ─────────────────────────────────────────────────────────
+
+.friend-page__activity {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding-left: var(--spacing-4);
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background-color: var(--border-color);
+    border-radius: 1px;
+  }
+}
+
+.friend-page__activity-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  position: relative;
+
+  &:hover {
+    background-color: var(--background-secondary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+.friend-page__activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-400);
+  border: 2px solid var(--background-color);
+  flex-shrink: 0;
+  margin-left: -19px;
+}
+
+.friend-page__activity-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.friend-page__activity-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-page__activity-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.friend-page__activity-chevron {
+  color: var(--text-secondary);
+  font-size: var(--font-size-xl);
+  font-weight: 300;
+  flex-shrink: 0;
+}
