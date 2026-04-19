@@ -318,8 +318,8 @@ const AddProduct = () => {
             if (photoFile && newProduct.id) {
               try {
                 const imageKey = await uploadProductPhoto(newProduct.id, catId, subcatId);
-                if (imageKey && (newProduct as any)._id) {
-                  await updateProduct((newProduct as any)._id, { image_key: imageKey });
+                if (imageKey && newProduct._id) {
+                  await updateProduct(newProduct._id, { pending_image_key: imageKey });
                 }
               } catch {
                 // Photo upload failed — product created without image

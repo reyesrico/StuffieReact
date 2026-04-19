@@ -97,6 +97,8 @@ export {
   useAddProduct,
   useAddExistingProduct,
   useUpdateProductCost,
+  useApproveProductImage,
+  useRejectProductImage,
   // Auth
   useLogin,
   useRegister,

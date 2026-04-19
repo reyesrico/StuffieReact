@@ -213,6 +213,29 @@
   }
 }
 
+// ── Image approval card ───────────────────────────────────────────────────────
+.admin__image-approval {
+  border-left-color: var(--color-primary-500);
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+
+  &__thumb {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--background-primary);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+}
+
 .admin__request-info {
   display: flex;
   flex-direction: column;

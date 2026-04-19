@@ -27,6 +27,7 @@ import {
   createProduct, 
   addProductToUser,
   updateProductCost,
+  updateProduct,
   type CreateProductInput,
 } from '../../api/products.api';
 import {
@@ -236,6 +237,34 @@ export const useUpdateProductCost = () => {
           queryKey: queryKeys.products.all(user.id) 
         });
       }
+    },
+  });
+};
+
+/**
+ * Approve a user-submitted product image: promotes pending_image_key → image_key
+ */
+export const useApproveProductImage = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ _id, pending_image_key }: { _id: string; pending_image_key: string }) =>
+      updateProduct(_id, { image_key: pending_image_key, pending_image_key: '' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.pending() });
+    },
+  });
+};
+
+/**
+ * Reject a user-submitted product image: clears pending_image_key
+ */
+export const useRejectProductImage = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (_id: string) =>
+      updateProduct(_id, { pending_image_key: '' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.products.pending() });
     },
   });
 };

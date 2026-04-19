@@ -96,6 +96,7 @@ export interface UpdateProductInput {
   subcategory?: number;
   file_name?: string;
   image_key?: string;
+  pending_image_key?: string;
 }
 
 /**

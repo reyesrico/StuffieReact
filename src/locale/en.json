@@ -416,6 +416,9 @@
 
     "admin.userRequests": "User Requests",
     "admin.pendingProducts": "Products Missing Images",
+    "admin.pendingImageApprovals": "Pending Image Approvals",
+    "admin.approveImage": "Approve",
+    "admin.rejectImage": "Reject",
     "admin.productLabel": "Product: ",
     "admin.productDetails": "Id: {{ id }} / Category: {{ category }} / Subcategory: {{ subcategory }}",
     "admin.addCategory": "Add Category",

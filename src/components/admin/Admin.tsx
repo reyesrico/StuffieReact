@@ -23,12 +23,14 @@ import User from '../types/User';
 import Category from '../types/Category';
 import Subcategory from '../types/Subcategory';
 import { getOrphanRows, deleteOrphanRow, OrphanRow } from '../../api/users.api';
+import config from '../../config/api';
 import {
   useUserRequests, usePendingProducts, useApproveUser,
   useCategories, useSubcategories,
   useAddCategory, useUpdateCategory, useDeleteCategory,
   useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
   useProposals, useApproveProposal, useRejectProposal,
+  useApproveProductImage, useRejectProductImage,
 } from '../../hooks/queries';
 import './Admin.scss';
 
@@ -445,15 +447,22 @@ const Admin = () => {
   const { data: userRequests = [] } = useUserRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   const approveUserMutation = useApproveUser();
+  const approveImageMutation = useApproveProductImage();
+  const rejectImageMutation = useRejectProductImage();
   const [activeTab, setActiveTab] = useState<AdminTab>('notifications');
 
-  const totalNotifications = userRequests.length + pendingProducts.length;
+  const productsWithPendingImage = pendingProducts.filter((p: Product) => !!p.pending_image_key);
+  const productsNeedingImage = pendingProducts.filter((p: Product) => !p.pending_image_key);
+
+  const totalNotifications = userRequests.length + productsNeedingImage.length + productsWithPendingImage.length;
 
   const { data: proposals = [] } = useProposals('pending');
   const approveProposalMutation = useApproveProposal();
   const rejectProposalMutation = useRejectProposal();
   const [pendingApproveId, setPendingApproveId] = useState<string | null>(null);
   const [pendingRejectId, setPendingRejectId] = useState<string | null>(null);
+  const [pendingApproveImageId, setPendingApproveImageId] = useState<string | null>(null);
+  const [pendingRejectImageId, setPendingRejectImageId] = useState<string | null>(null);
 
   const approveUser = (user: User) => approveUserMutation.mutate(user);
 
@@ -471,7 +480,11 @@ const Admin = () => {
           <div className="admin__stat-label">{t('admin.userRequests')}</div>
         </div>
         <div className="admin__stat-card">
-          <div className="admin__stat-value">{pendingProducts.length}</div>
+          <div className="admin__stat-value">{productsWithPendingImage.length}</div>
+          <div className="admin__stat-label">{t('admin.pendingImageApprovals')}</div>
+        </div>
+        <div className="admin__stat-card">
+          <div className="admin__stat-value">{productsNeedingImage.length}</div>
           <div className="admin__stat-label">{t('admin.pendingProducts')}</div>
         </div>
       </div>
@@ -559,14 +572,74 @@ const Admin = () => {
               </div>
             )}
 
-            {pendingProducts.length > 0 && (
+            {/* Pending image approvals */}
+            {productsWithPendingImage.length > 0 && (
+              <div className="admin__subsection">
+                <h4 className="admin__subsection-title">
+                  {t('admin.pendingImageApprovals')}
+                  <span className="admin__badge admin__badge--sm">{productsWithPendingImage.length}</span>
+                </h4>
+                <ul className="admin__list">
+                  {productsWithPendingImage.map((product: Product) => (
+                    <li key={product._id} className="admin__request admin__image-approval">
+                      <div className="admin__image-approval__thumb">
+                        <img
+                          src={`${config.cloudinary.urlSingle}/w_72,h_72,c_fill/${product.pending_image_key}`}
+                          alt={product.name}
+                        />
+                      </div>
+                      <div className="admin__request-info">
+                        <span className="admin__request-name">{product.name}</span>
+                        <span className="admin__request-meta">
+                          ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
+                        </span>
+                      </div>
+                      <div className="admin__request-buttons">
+                        <Button
+                          size="sm"
+                          text={pendingApproveImageId === product._id ? '…' : t('admin.approveImage')}
+                          loading={pendingApproveImageId === product._id}
+                          disabled={!!pendingApproveImageId || !!pendingRejectImageId}
+                          onClick={() => {
+                            if (!product._id || !product.pending_image_key) return;
+                            setPendingApproveImageId(product._id);
+                            approveImageMutation.mutate(
+                              { _id: product._id, pending_image_key: product.pending_image_key },
+                              { onSettled: () => setPendingApproveImageId(null) },
+                            );
+                          }}
+                        />
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          text={pendingRejectImageId === product._id ? '…' : t('admin.rejectImage')}
+                          loading={pendingRejectImageId === product._id}
+                          disabled={!!pendingApproveImageId || !!pendingRejectImageId}
+                          onClick={() => {
+                            if (!product._id) return;
+                            setPendingRejectImageId(product._id);
+                            rejectImageMutation.mutate(
+                              product._id,
+                              { onSettled: () => setPendingRejectImageId(null) },
+                            );
+                          }}
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Products missing images (no user upload) */}
+            {productsNeedingImage.length > 0 && (
               <div className="admin__subsection">
                 <h4 className="admin__subsection-title">
                   {t('admin.pendingProducts')}
-                  <span className="admin__badge admin__badge--sm">{pendingProducts.length}</span>
+                  <span className="admin__badge admin__badge--sm">{productsNeedingImage.length}</span>
                 </h4>
                 <ul className="admin__list">
-                  {pendingProducts.map((product: Product) => {
+                  {productsNeedingImage.map((product: Product) => {
                     const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`;
                     return (
                       <li key={product.id}>

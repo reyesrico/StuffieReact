@@ -413,6 +413,9 @@
 
     "admin.userRequests": "Solicitudes de Usuarios",
     "admin.pendingProducts": "Productos sin Imágen",
+    "admin.pendingImageApprovals": "Imágenes Pendientes de Aprobación",
+    "admin.approveImage": "Aprobar",
+    "admin.rejectImage": "Rechazar",
     "admin.productLabel": "Producto: ",
     "admin.productDetails": "Id: {{ id }} / Categoría: {{ category }} / Subcategoría: {{ subcategory }}",
     "admin.addCategory": "Agregar Categoría",
