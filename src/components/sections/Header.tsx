@@ -28,6 +28,13 @@ import './Header.scss';
 const Header = () => {
   const { theme } = useContext(ThemeContext);
   const { user } = React.useContext(UserContext);
+  const [isDesktop, setIsDesktop] = React.useState(() => window.innerWidth >= 1024);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const location = useLocation();
 
   const isActive = (path: string) => {
@@ -155,10 +162,10 @@ const Header = () => {
             <Link to='/friends'>{t('Friends')}</Link>
           </div>
           <div className={`stuffie-header__section-item ${isActive('/products') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/products'>{window.outerWidth >= 1024 ? t('header.products') : t('header.prodsShort')}</Link>
+            <Link to='/products'>{isDesktop ? t('header.products') : t('header.prodsShort')}</Link>
           </div>
           <div className={`stuffie-header__section-item ${exchangeClass} ${isActive('/notifications') ? 'stuffie-header__section-item--active' : ''}`}>
-            <Link to='/notifications'>{window.outerWidth >= 1024 ? t('header.notifications') : t('header.notifsShort')}</Link>
+            <Link to='/notifications'>{isDesktop ? t('header.notifications') : t('header.notifsShort')}</Link>
             {requests > 0 && (
               <div className="stuffie-header__warning">
                 <span className="stuffie-header__warning-text">{requests}</span>
@@ -175,7 +182,7 @@ const Header = () => {
           )}
           <div className="stuffie-header__section-item">
             <button className="stuffie-header__button" onClick={handleLogout}>
-              {window.outerWidth >= 1024 ? t('Logout') : (
+              {isDesktop ? t('Logout') : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label={t('Logout')}>
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                   <polyline points="16 17 21 12 16 7" />
