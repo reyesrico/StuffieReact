@@ -1,12 +1,11 @@
 import React from 'react';
-import { map } from 'lodash';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import FeedPost from '../types/FeedPost';
 import FeedRow from './FeedRow';
 import Loading from '../shared/Loading';
 import { useFeed, useFriends } from '../../hooks/queries';
+import type { ScoredFeedItem } from '../../lib/feedAlgorithm';
 import './Content.scss';
 
 const Content = () => {
@@ -16,7 +15,7 @@ const Content = () => {
 
   if (feedLoading || friendsLoading) return (
     <div className="content__loading">
-      <Loading size="xl" message={t("Loading-Feed")} />
+      <Loading size="xl" message={t('Loading-Feed')} />
     </div>
   );
 
@@ -28,7 +27,8 @@ const Content = () => {
       <Link to="/friends" className="content__empty-link">{t('feed.noFriendsAction')}</Link>
     </div>
   );
-  if (!feed || !feed.length) return (
+
+  if (!feed.length) return (
     <div className="content__empty">
       <span className="content__empty-icon">&#128218;</span>
       <p className="content__empty-title">{t('feed.emptyTitle')}</p>
@@ -38,13 +38,14 @@ const Content = () => {
 
   return (
     <div className="content">
-      <div className="content__info">
-        <div className="content__rows">
-          {map(feed, (feedPost: FeedPost, index: number) => (<FeedRow key={index} feedPost={feedPost} />))}
-        </div>
+      <div className="content__grid">
+        {(feed as ScoredFeedItem[]).map((feedPost, index) => (
+          <FeedRow key={`${feedPost.friend_id}-${feedPost.product.id ?? index}`} feedPost={feedPost} />
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default Content;
+

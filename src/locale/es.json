@@ -153,7 +153,12 @@
     "feedRow.askFor": "Pedir:",
     "feedRow.borrow": "Préstamo",
     "feedRow.trade": "Intercambio",
-    "feedRow.buy": "Comprar",
+    "feedRow.buy": "Comprar ${{price}}",
+    "feedRow.newBadge": "Nuevo",
+    "feedRow.justNow": "Ahora",
+    "feedRow.timeAgo": "Hace {{count}}d",
+    "feedRow.free": "Gratis",
+    "feedRow.viewProduct": "Ver",
 
     "friends.title": "Amigos",
     "friends.noFriendsTitle": "Aún no tienes amigos",

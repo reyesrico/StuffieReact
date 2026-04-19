@@ -153,7 +153,12 @@
     "feedRow.askFor": "Ask for:",
     "feedRow.borrow": "Borrow",
     "feedRow.trade": "Trade",
-    "feedRow.buy": "Buy",
+    "feedRow.buy": "Buy ${{price}}",
+    "feedRow.newBadge": "New",
+    "feedRow.justNow": "Just now",
+    "feedRow.timeAgo": "{{count}}d ago",
+    "feedRow.free": "Free",
+    "feedRow.viewProduct": "View",
 
     "friends.title": "Friends",
     "friends.noFriendsTitle": "No friends yet",

@@ -237,7 +237,7 @@ const Product = (props: any) => {
               <Button
                 variant="primary"
                 size="sm"
-                text={t('feedRow.buy')}
+                text={t('feedRow.buy', { price: productRendered.cost })}
                 onClick={() => navigate('/buy', { state: actionState })}
               />
             )}

@@ -43,7 +43,8 @@ export interface CategoryPageProps {
   location: any
 }
 
+import type { ScoredFeedItem } from '../../lib/feedAlgorithm';
+
 export type FeedRowProps = {
-  key?: number,
-  feedPost: FeedPost
+  feedPost: FeedPost | ScoredFeedItem
 }
