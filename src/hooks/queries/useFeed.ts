@@ -12,19 +12,16 @@
  *
  * See .github/copilot/FEED-ALGORITHM.md for full documentation.
  */
-import { useMemo, useContext } from 'react';
+import { useMemo } from 'react';
 import { rankFeed } from '../../lib/feedAlgorithm';
 import { useFriendsWithProducts } from './useFriends';
 import { useProducts } from './useProducts';
 import type ProductsMap from '../../components/types/ProductsMap';
-import UserContext from '../../context/UserContext';
-
 /**
  * Returns a ranked, diverse feed of friends' products.
  * Uses the Stuffie Feed Ranking Algorithm for scoring and diversity.
  */
 export const useFeed = () => {
-  const { user } = useContext(UserContext);
   const { data: friendsWithProducts, isLoading, error } = useFriendsWithProducts();
 
   // User's own products (ProductsMap keyed by category_id) — used for affinity scoring

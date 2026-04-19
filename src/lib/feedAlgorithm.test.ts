@@ -256,9 +256,9 @@ describe('applyDiversityPass', () => {
   it(`caps items from the same friend at MAX_PER_FRIEND (${FEED_LIMITS.MAX_PER_FRIEND})`, () => {
     const items = makeItems(FEED_LIMITS.MAX_PER_FRIEND + 3, 1, 1);
     // Use different categories to avoid category cap
-    const diverseItems = items.map((item, i) => ({
+    const diverseItems = items.map((item, idx) => ({
       ...item,
-      product: { ...item.product, category_id: i + 1 },
+      product: { ...item.product, category_id: idx + 1 },
     }));
     const result = applyDiversityPass(diverseItems);
     const fromFriend1 = result.filter(r => r.friend_id === 1);
@@ -304,9 +304,9 @@ describe('applyDiversityPass', () => {
     // Only 2 friends, each with 5 products in the same category
     // Category cap = 2, so only 2 go into primary; overflow fills the rest
     const items: ScoredFeedItem[] = [
-      ...makeItems(5, 1, 1).map((item, i) => ({ ...item, product: { ...item.product, category_id: 1 } })),
-      ...makeItems(5, 2, 1).map((item, i) => ({ ...item, product: { ...item.product, category_id: 1 } })),
-    ].map((item, i) => ({ ...item, score: 100 - i }));
+      ...makeItems(5, 1, 1).map(item => ({ ...item, product: { ...item.product, category_id: 1 } })),
+      ...makeItems(5, 2, 1).map(item => ({ ...item, product: { ...item.product, category_id: 1 } })),
+    ].map((item, idx) => ({ ...item, score: 100 - idx }));
 
     const result = applyDiversityPass(items);
     // Should not be empty — overflow fills remaining slots
