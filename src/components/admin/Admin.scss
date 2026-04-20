@@ -562,3 +562,53 @@
     }
   }
 }
+
+// ── Filter input (pending products + users search) ────────────────────────────
+
+.admin__filter-input {
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--background-primary);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-3);
+  outline: none;
+  transition: border-color var(--transition-fast);
+
+  &:focus {
+    border-color: var(--color-primary-500);
+  }
+
+  &::placeholder {
+    color: var(--text-tertiary, var(--text-secondary));
+  }
+}
+
+// ── Users tab ─────────────────────────────────────────────────────────────────
+
+.admin__users {
+  .admin__list {
+    margin-top: 0;
+  }
+}
+
+.admin__users-search-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+
+  .admin__filter-input {
+    margin-bottom: 0;
+    flex: 1;
+  }
+}
+
+.admin__users-count {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}

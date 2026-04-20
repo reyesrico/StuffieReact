@@ -478,6 +478,13 @@
     "admin.orphans.reasonUnknownItem": "Artículo desconocido",
     "admin.category": "Categoría",
     "admin.subcategory": "Subcategoría",
+    "admin.approveAllImages": "Aprobar Todo",
+    "admin.filterProducts": "Filtrar productos…",
+    "admin.users": "Usuarios",
+    "admin.usersSearch": "Buscar por nombre o correo…",
+    "admin.usersTotal": "usuarios",
+    "admin.deleteUserTitle": "Eliminar Usuario",
+    "admin.deleteUserBody": "¿Eliminar permanentemente a {{name}} ({{email}})? Esta acción no se puede deshacer.",
 
     "charts.itemsByCategory": "Objetos por categoría",
     "charts.spendByCategory": "Gasto por categoría",

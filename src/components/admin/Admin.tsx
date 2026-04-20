@@ -22,10 +22,10 @@ import Product from '../types/Product';
 import User from '../types/User';
 import Category from '../types/Category';
 import Subcategory from '../types/Subcategory';
-import { getOrphanRows, deleteOrphanRow, OrphanRow } from '../../api/users.api';
+import { getOrphanRows, deleteOrphanRow, deleteUser, OrphanRow } from '../../api/users.api';
 import config from '../../config/api';
 import {
-  useUserRequests, usePendingProducts, useApproveUser,
+  useUserRequests, usePendingProducts, useApproveUser, useAllUsers,
   useCategories, useSubcategories,
   useAddCategory, useUpdateCategory, useDeleteCategory,
   useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
@@ -438,7 +438,7 @@ const CatalogPanel = () => {
   );
 };
 
-type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions' | 'proposals';
+type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions' | 'proposals' | 'users';
 
 // ─── Main Admin component ─────────────────────────────────────────────────────
 const Admin = () => {
@@ -446,15 +446,57 @@ const Admin = () => {
   const { t } = useTranslation();
   const { data: userRequests = [] } = useUserRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
+  const { data: allUsers = [], isLoading: usersLoading } = useAllUsers();
   const approveUserMutation = useApproveUser();
   const approveImageMutation = useApproveProductImage();
   const rejectImageMutation = useRejectProductImage();
   const [activeTab, setActiveTab] = useState<AdminTab>('notifications');
 
+  // Bulk image approve
+  const [bulkApproving, setBulkApproving] = useState(false);
+
+  // Pending products filter
+  const [pendingFilter, setPendingFilter] = useState('');
+
+  // Users tab search
+  const [userSearch, setUserSearch] = useState('');
+  const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
+  const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
+
   const productsWithPendingImage = pendingProducts.filter((p: Product) => !!p.pending_image_key);
   const productsNeedingImage = pendingProducts.filter((p: Product) => !p.pending_image_key);
 
   const totalNotifications = userRequests.length + productsNeedingImage.length + productsWithPendingImage.length;
+
+  // Bulk approve all pending images
+  const handleBulkApprove = async () => {
+    setBulkApproving(true);
+    try {
+      await Promise.all(
+        productsWithPendingImage
+          .filter((p: Product) => p._id && p.pending_image_key)
+          .map((p: Product) =>
+            approveImageMutation.mutateAsync({ _id: p._id!, pending_image_key: p.pending_image_key! })
+          )
+      );
+    } finally {
+      setBulkApproving(false);
+    }
+  };
+
+  // Pending products (no image) filter
+  const lowerPendingFilter = pendingFilter.trim().toLowerCase();
+  const filteredPendingProducts = lowerPendingFilter
+    ? productsNeedingImage.filter((p: Product) => p.name?.toLowerCase().includes(lowerPendingFilter))
+    : productsNeedingImage;
+
+  // Users tab
+  const lowerUserSearch = userSearch.trim().toLowerCase();
+  const filteredUsers = lowerUserSearch
+    ? (allUsers as User[]).filter((u: User) =>
+        `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(lowerUserSearch)
+      )
+    : (allUsers as User[]);
 
   const { data: proposals = [] } = useProposals('pending');
   const approveProposalMutation = useApproveProposal();
@@ -537,6 +579,17 @@ const Admin = () => {
             <span className="admin__tab-badge">{proposals.length}</span>
           )}
         </button>
+        <button
+          role="tab"
+          aria-selected={activeTab === 'users'}
+          className={`admin__tab${activeTab === 'users' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('users')}
+        >
+          {t('admin.users')}
+          {allUsers.length > 0 && (
+            <span className="admin__tab-badge">{allUsers.length}</span>
+          )}
+        </button>
       </div>
 
       {/* ── Tab panels ── */}
@@ -578,6 +631,15 @@ const Admin = () => {
                 <h4 className="admin__subsection-title">
                   {t('admin.pendingImageApprovals')}
                   <span className="admin__badge admin__badge--sm">{productsWithPendingImage.length}</span>
+                  {productsWithPendingImage.length > 1 && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      text={t('admin.approveAllImages')}
+                      loading={bulkApproving}
+                      onClick={handleBulkApprove}
+                    />
+                  )}
                 </h4>
                 <ul className="admin__list">
                   {productsWithPendingImage.map((product: Product) => (
@@ -638,8 +700,15 @@ const Admin = () => {
                   {t('admin.pendingProducts')}
                   <span className="admin__badge admin__badge--sm">{productsNeedingImage.length}</span>
                 </h4>
+                <input
+                  className="admin__filter-input"
+                  type="text"
+                  placeholder={t('admin.filterProducts')}
+                  value={pendingFilter}
+                  onChange={e => setPendingFilter(e.target.value)}
+                />
                 <ul className="admin__list">
-                  {productsNeedingImage.map((product: Product) => {
+                  {filteredPendingProducts.map((product: Product) => {
                     const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`;
                     return (
                       <li key={product.id}>
@@ -736,7 +805,85 @@ const Admin = () => {
           </div>
         )}
 
+        {/* Users tab */}
+        {activeTab === 'users' && (
+          <div className="admin__users">
+            <div className="admin__users-search-row">
+              <input
+                className="admin__filter-input"
+                type="text"
+                placeholder={t('admin.usersSearch')}
+                value={userSearch}
+                onChange={e => setUserSearch(e.target.value)}
+              />
+              <span className="admin__users-count">{filteredUsers.length} {t('admin.usersTotal')}</span>
+            </div>
+            {usersLoading ? (
+              <Loading />
+            ) : (
+              <ul className="admin__list">
+                {filteredUsers.map((u: User) => (
+                  <li key={u._id ?? u.id} className="admin__request">
+                    <div className="admin__request-info">
+                      <span className="admin__request-name">{u.first_name} {u.last_name}</span>
+                      <span className="admin__request-meta">
+                        {u.email} &nbsp;·&nbsp; ID: {u.id}
+                        {u.zip_code && ` · ${u.zip_code}`}
+                      </span>
+                    </div>
+                    <div className="admin__request-buttons">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        text={t('common.delete')}
+                        onClick={() => setConfirmDeleteUser(u)}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
       </section>
+
+      {/* Delete user confirm modal */}
+      {confirmDeleteUser && (
+        <Modal
+          title={t('admin.deleteUserTitle')}
+          onClose={() => !deletingUserId && setConfirmDeleteUser(null)}
+          disableBackdropClose={!!deletingUserId}
+          actions={
+            <>
+              <Button
+                text={t('common.delete')}
+                variant="secondary"
+                loading={!!deletingUserId}
+                onClick={async () => {
+                  if (!confirmDeleteUser._id || !confirmDeleteUser.email) return;
+                  setDeletingUserId(confirmDeleteUser._id);
+                  try {
+                    await deleteUser(String(confirmDeleteUser._id), confirmDeleteUser.email);
+                    setConfirmDeleteUser(null);
+                  } finally {
+                    setDeletingUserId(null);
+                  }
+                }}
+              />
+              <Button
+                text={t('common.cancel')}
+                variant="outline"
+                onClick={() => setConfirmDeleteUser(null)}
+                disabled={!!deletingUserId}
+              />
+            </>
+          }
+        >
+          <p>{t('admin.deleteUserBody', { name: `${confirmDeleteUser.first_name} ${confirmDeleteUser.last_name}`, email: confirmDeleteUser.email })}</p>
+        </Modal>
+      )}
+
     </div>
   );
 };

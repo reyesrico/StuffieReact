@@ -481,6 +481,13 @@
     "admin.orphans.reasonUnknownItem": "Unknown item",
     "admin.category": "Category",
     "admin.subcategory": "Subcategory",
+    "admin.approveAllImages": "Approve All",
+    "admin.filterProducts": "Filter products…",
+    "admin.users": "Users",
+    "admin.usersSearch": "Search by name or email…",
+    "admin.usersTotal": "users",
+    "admin.deleteUserTitle": "Delete User",
+    "admin.deleteUserBody": "Permanently delete {{name}} ({{email}})? This cannot be undone.",
 
     "charts.itemsByCategory": "Items by Category",
     "charts.spendByCategory": "Spend by Category",
