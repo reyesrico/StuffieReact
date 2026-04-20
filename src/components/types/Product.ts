@@ -9,5 +9,7 @@ export default interface Product {
   created_at?: string,
   /** Codehooks auto-timestamp (ISO string) — used for feed recency scoring */
   _created?: string,
-  cost?: number
+  cost?: number,
+  ss_id?: string,
+  on_loan?: boolean
 }
