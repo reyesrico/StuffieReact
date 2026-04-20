@@ -519,6 +519,7 @@ const Admin = () => {
   const [suggestStates, setSuggestStates] = useState<Record<string, SuggestState>>({});
   const [suggestResults, setSuggestResults] = useState<Record<string, ImageResult[]>>({});
   const [suggestError, setSuggestError] = useState<Record<string, string>>({});
+  const [pendingPickImage, setPendingPickImage] = useState<{ product: Product; img: ImageResult } | null>(null);
 
   const handleSuggestImage = async (product: Product) => {
     if (!product._id) return;
@@ -536,6 +537,7 @@ const Admin = () => {
 
   const handlePickImage = async (product: Product, imageUrl: string) => {
     if (!product._id || !product.id || !product.category_id || !product.subcategory_id) return;
+    setPendingPickImage(null);
     setSuggestStates(s => ({ ...s, [product._id!]: 'uploading' }));
     try {
       const formData = new FormData();
@@ -848,7 +850,7 @@ const Admin = () => {
                                 key={img.url}
                                 className="admin__suggest-thumb"
                                 title={img.title}
-                                onClick={() => handlePickImage(product, img.url)}
+                                onClick={() => setPendingPickImage({ product, img })}
                                 disabled={suggestStates[pid] === 'uploading'}
                               >
                                 <img src={img.thumb} alt={img.title} />
@@ -878,6 +880,35 @@ const Admin = () => {
 
         {/* Charts tab */}
         {activeTab === 'charts' && <AdminChartsPanel />}
+
+        {/* Image pick confirmation modal */}
+        {pendingPickImage && (
+          <Modal
+            title={t('admin.suggestConfirmTitle')}
+            onClose={() => setPendingPickImage(null)}
+            actions={<>
+              <Button
+                text={t('admin.suggestConfirmApply')}
+                onClick={() => handlePickImage(pendingPickImage.product, pendingPickImage.img.url)}
+              />
+              <Button
+                text={t('common.cancel')}
+                variant="outline"
+                onClick={() => setPendingPickImage(null)}
+              />
+            </>}
+          >
+            <div className="admin__suggest-confirm">
+              <img
+                src={pendingPickImage.img.thumb}
+                alt={pendingPickImage.img.title}
+                className="admin__suggest-confirm-img"
+              />
+              <p className="admin__suggest-confirm-name">{pendingPickImage.product.name}</p>
+              <p className="admin__suggest-confirm-hint">{t('admin.suggestConfirmHint')}</p>
+            </div>
+          </Modal>
+        )}
 
         {/* Actions tab */}
         {activeTab === 'actions' && (
