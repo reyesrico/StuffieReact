@@ -18,6 +18,7 @@ import ExchangeTab from './notifications/ExchangeTab';
 import LoanTab from './notifications/LoanTab';
 import BuyTab from './notifications/BuyTab';
 import FriendsTab from './notifications/FriendsTab';
+import Tabs from '../shared/Tabs';
 
 import './Notifications.scss';
 
@@ -316,31 +317,24 @@ const Notifications = () => {
       )}
 
       {visibleTotal > 0 && (
-        <div className="notifications__tabs">
-          {tabsWithData.map(tab => {
-            const count =
-              tab === 'exchange' ? activeExchanges.length :
-              tab === 'loan' ? activeLoans.length :
-              tab === 'buy' ? activePurchases.length :
-              friendRequests.length + sentFriendRequests.length;
-            const label =
+        <Tabs
+          className="notifications__tabs"
+          tabs={tabsWithData.map(tab => ({
+            key: tab,
+            label:
               tab === 'exchange' ? t('notifications.tabExchange') :
               tab === 'loan' ? t('notifications.tabLoan') :
               tab === 'buy' ? t('notifications.tabBuy') :
-              t('notifications.tabFriends');
-            return (
-              <button
-                key={tab}
-                type="button"
-                className={`notifications__tab${effectiveTab === tab ? ' notifications__tab--active' : ''}`}
-                onClick={() => setActiveTab(tab)}
-              >
-                {label}
-                <span className="notifications__tab-badge">{count}</span>
-              </button>
-            );
-          })}
-        </div>
+              t('notifications.tabFriends'),
+            badge:
+              tab === 'exchange' ? activeExchanges.length :
+              tab === 'loan' ? activeLoans.length :
+              tab === 'buy' ? activePurchases.length :
+              friendRequests.length + sentFriendRequests.length,
+          }))}
+          activeTab={effectiveTab}
+          onChange={(key) => setActiveTab(key as NotifTab)}
+        />
       )}
 
       {effectiveTab === 'exchange' && (

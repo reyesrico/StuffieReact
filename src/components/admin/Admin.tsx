@@ -18,6 +18,7 @@ import {
 } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
+import Tabs from '../shared/Tabs';
 import Loading from '../shared/Loading';
 import Modal from '../shared/Modal';
 import AdminChartsPanel from '../charts/AdminChartsPanel';
@@ -894,65 +895,19 @@ const Admin = () => {
       </div>
 
       {/* ── Tab bar ── */}
-      <div className="admin__tabs" role="tablist">
-        <button
-          role="tab"
-          aria-selected={activeTab === 'products'}
-          className={`admin__tab${activeTab === 'products' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('products')}
-        >
-          {t('admin.products')}
-          {totalNotifications > 0 && (
-            <span className="admin__tab-badge">{totalNotifications}</span>
-          )}
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'catalog'}
-          className={`admin__tab${activeTab === 'catalog' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('catalog')}
-        >
-          {t('admin.catalog')}
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'charts'}
-          className={`admin__tab${activeTab === 'charts' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('charts')}
-        >
-          {t('admin.charts')}
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'actions'}
-          className={`admin__tab${activeTab === 'actions' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('actions')}
-        >
-          {t('admin.actions')}
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'proposals'}
-          className={`admin__tab${activeTab === 'proposals' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('proposals')}
-        >
-          {t('admin.proposals')}
-          {proposals.length > 0 && (
-            <span className="admin__tab-badge">{proposals.length}</span>
-          )}
-        </button>
-        <button
-          role="tab"
-          aria-selected={activeTab === 'users'}
-          className={`admin__tab${activeTab === 'users' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          {t('admin.users')}
-          {pendingUsers.length > 0 && (
-            <span className="admin__tab-badge">{pendingUsers.length}</span>
-          )}
-        </button>
-      </div>
+      <Tabs
+        className="admin__tabs"
+        tabs={[
+          { key: 'products', label: t('admin.products'), badge: totalNotifications > 0 ? totalNotifications : undefined },
+          { key: 'catalog', label: t('admin.catalog') },
+          { key: 'charts', label: t('admin.charts') },
+          { key: 'actions', label: t('admin.actions') },
+          { key: 'proposals', label: t('admin.proposals'), badge: proposals.length > 0 ? proposals.length : undefined },
+          { key: 'users', label: t('admin.users'), badge: pendingUsers.length > 0 ? pendingUsers.length : undefined },
+        ]}
+        activeTab={activeTab}
+        onChange={(key) => setActiveTab(key as AdminTab)}
+      />
 
       {/* ── Tab panels ── */}
       <section className="admin__section">

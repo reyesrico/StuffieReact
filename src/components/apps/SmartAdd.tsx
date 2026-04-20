@@ -11,6 +11,7 @@ import {
 import DropDown from '../shared/DropDown';
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
+import Tabs from '../shared/Tabs';
 import type Category from '../types/Category';
 import type Subcategory from '../types/Subcategory';
 import { useSmartAdd, type SmartTab } from '../../hooks/useSmartAdd';
@@ -350,21 +351,12 @@ const SmartAdd: React.FC = () => {
       </div>
 
       {(step === 'input' || step === 'error') && (
-        <div className="smart-add__tabs" role="tablist">
-          {tabs.map(({ key, label, icon }) => (
-            <button
-              key={key}
-              role="tab"
-              aria-selected={tab === key}
-              className={`smart-add__tab${tab === key ? ' smart-add__tab--active' : ''}`}
-              onClick={() => handleTabChange(key)}
-              type="button"
-            >
-              {icon}
-              <span>{label}</span>
-            </button>
-          ))}
-        </div>
+        <Tabs
+          className="smart-add__tabs"
+          tabs={tabs.map(({ key, label, icon }) => ({ key, label, icon }))}
+          activeTab={tab}
+          onChange={(key) => handleTabChange(key as SmartTab)}
+        />
       )}
 
       <div className="smart-add__body">

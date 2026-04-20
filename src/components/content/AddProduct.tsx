@@ -9,6 +9,7 @@ import Modal from '../shared/Modal';
 import Product from '../types/Product';
 import Subcategory from '../types/Subcategory';
 import TextField from '../shared/TextField';
+import Tabs from '../shared/Tabs';
 import { getProductsByCategory, updateProduct } from '../../api/products.api';
 import { searchImages, type ImageResult } from '../../api/external/imageSearch';
 import UserContext from '../../context/UserContext';
@@ -413,20 +414,15 @@ const AddProduct = () => {
       )}
 
       {/* Mode tabs */}
-      <div className="add-product__tabs">
-        <button
-          className={`add-product__tab ${mode === 'catalog' ? 'add-product__tab--active' : ''}`}
-          onClick={() => handleModeSwitch('catalog')}
-        >
-          {t('addProduct.tabCatalog')}
-        </button>
-        <button
-          className={`add-product__tab ${mode === 'new' ? 'add-product__tab--active' : ''}`}
-          onClick={() => handleModeSwitch('new')}
-        >
-          {t('addProduct.tabNew')}
-        </button>
-      </div>
+      <Tabs
+        className="add-product__tabs"
+        tabs={[
+          { key: 'catalog', label: t('addProduct.tabCatalog') },
+          { key: 'new', label: t('addProduct.tabNew') },
+        ]}
+        activeTab={mode}
+        onChange={(key) => handleModeSwitch(key as 'catalog' | 'new')}
+      />
 
       <div className="add-product__body">
 
@@ -744,20 +740,15 @@ const AddProduct = () => {
                 </p>
 
                 {/* Source toggle */}
-                <div className="add-product__photo-tabs">
-                  <button
-                    className={`add-product__photo-tab ${photoSource === 'search' ? 'add-product__photo-tab--active' : ''}`}
-                    onClick={() => setPhotoSource('search')}
-                  >
-                    {t('addProduct.imageSearch.tabSearch')}
-                  </button>
-                  <button
-                    className={`add-product__photo-tab ${photoSource === 'upload' ? 'add-product__photo-tab--active' : ''}`}
-                    onClick={() => setPhotoSource('upload')}
-                  >
-                    {t('addProduct.imageSearch.tabUpload')}
-                  </button>
-                </div>
+                <Tabs
+                  className="add-product__photo-tabs"
+                  tabs={[
+                    { key: 'search', label: t('addProduct.imageSearch.tabSearch') },
+                    { key: 'upload', label: t('addProduct.imageSearch.tabUpload') },
+                  ]}
+                  activeTab={photoSource}
+                  onChange={(key) => setPhotoSource(key as 'search' | 'upload')}
+                />
 
                 {/* ── Search mode ── */}
                 {photoSource === 'search' && (

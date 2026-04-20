@@ -7,6 +7,7 @@ import Button from '../shared/Button';
 import Modal from '../shared/Modal';
 import ProductCard from './ProductCard';
 import MapView from '../shared/MapView';
+import Tabs from '../shared/Tabs';
 import { useFriends, useUserProducts, useCategories, useInvalidateFriends } from '../../hooks/queries';
 import { existImage, userImageUrl } from '../../lib/cloudinary';
 import { removeFriend } from '../../api/friends.api';
@@ -125,30 +126,16 @@ const FriendPage = () => {
         )}
       </div>
 
-      <div className="friend-page__tabs">
-        {hasLocation && (
-          <button
-            className={`friend-page__tab${activeTab === 'location' ? ' friend-page__tab--active' : ''}`}
-            onClick={() => setActiveTab('location')}
-          >
-            {t('friendPage.tabLocation')}
-          </button>
-        )}
-        <button
-          className={`friend-page__tab${activeTab === 'products' ? ' friend-page__tab--active' : ''}`}
-          onClick={() => setActiveTab('products')}
-        >
-          {t('friendPage.tabProducts')}
-        </button>
-        {products.length > 0 && (
-          <button
-            className={`friend-page__tab${activeTab === 'activity' ? ' friend-page__tab--active' : ''}`}
-            onClick={() => setActiveTab('activity')}
-          >
-            {t('friendPage.tabActivity')}
-          </button>
-        )}
-      </div>
+      <Tabs
+        className="friend-page__tabs"
+        tabs={[
+          ...(hasLocation ? [{ key: 'location', label: t('friendPage.tabLocation') }] : []),
+          { key: 'products', label: t('friendPage.tabProducts') },
+          ...(products.length > 0 ? [{ key: 'activity', label: t('friendPage.tabActivity') }] : []),
+        ]}
+        activeTab={activeTab}
+        onChange={(key) => setActiveTab(key as Tab)}
+      />
 
       {activeTab === 'location' && hasLocation && (
         <div className="friend-page__section">
