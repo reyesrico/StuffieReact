@@ -396,13 +396,14 @@ const Products = () => {
                             copiesInfo: {
                               total: totalCopies,
                               statuses: copies.map((p: ProductType) => {
-                                if (p.on_loan) return t('products.loaned');
+                                const lo = activeLoanedOutLoans.find((r: LoanRequest) => r.id_stuff === p.id);
+                                if (lo) return t('products.loaned');
                                 const oe = acceptedOwnerExchanges.find((r: ExchangeRequest) => r.id_stuff === p.id);
                                 const re = acceptedRequesterExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === p.id);
                                 if (oe || re) return t('products.beingTraded');
                                 const cp = completedPurchases.find((r: PurchaseRequest) => r.id_stuff === p.id);
                                 if (cp) return t('products.bought');
-                                return t('products.available');
+                                return t('products.owned');
                               }),
                             },
                           } : {}),

@@ -157,6 +157,7 @@
     "products.purchaseAcceptFailed": "Failed to accept purchase request",
     "products.costLabel": "Cost: ",
     "products.available": "Available",
+    "products.owned": "Owned",
     "products.copiesTitle": "Your copies ({{count}})",
 
     "feedRow.added": "added",

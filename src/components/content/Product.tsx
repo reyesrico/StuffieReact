@@ -259,7 +259,7 @@ const Product = (props: any) => {
           <div className="product__copies-list">
             {copiesInfo.statuses.map((status, i) => (
               // eslint-disable-next-line react/no-array-index-key
-              <span key={`copy-${i}`} className={`product__copies-badge product__copies-badge--${status === t('products.available') ? 'available' : 'active'}`}>
+              <span key={`copy-${i}`} className={`product__copies-badge product__copies-badge--${status === t('products.owned') || status === t('products.bought') ? 'available' : 'active'}`}>
                 #{i + 1} {status}
               </span>
             ))}

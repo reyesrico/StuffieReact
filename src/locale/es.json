@@ -155,6 +155,7 @@
     "products.purchaseDeleteFailed": "Error al eliminar solicitud de compra",
     "products.purchaseAccepted": "Solicitud de compra aceptada",
     "products.available": "Disponible",
+    "products.owned": "Mío",
     "products.copiesTitle": "Tus copias ({{count}})",
     "products.purchaseAcceptFailed": "Error al aceptar solicitud de compra",
     "products.costLabel": "Costo: ",
