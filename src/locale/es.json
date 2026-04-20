@@ -501,6 +501,8 @@
     "admin.duplicates.deleteAll": "Eliminar Todos los Duplicados ({{count}})",
     "admin.duplicates.image": "Imagen",
     "admin.duplicates.keep": "Conservar",
+    "admin.duplicates.owned": "Con dueños",
+    "admin.duplicates.ownedWarning": "Este producto tiene registros en user_items — no se puede eliminar de forma segura",
     "admin.users": "Usuarios",
     "admin.usersSearch": "Buscar por nombre o correo…",
     "admin.usersTotal": "usuarios",

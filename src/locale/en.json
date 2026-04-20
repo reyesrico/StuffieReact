@@ -504,6 +504,8 @@
     "admin.duplicates.deleteAll": "Delete All Duplicates ({{count}})",
     "admin.duplicates.image": "Image",
     "admin.duplicates.keep": "Keep",
+    "admin.duplicates.owned": "Has Owners",
+    "admin.duplicates.ownedWarning": "This product has user_items rows — cannot delete safely",
     "admin.users": "Users",
     "admin.usersSearch": "Search by name or email…",
     "admin.usersTotal": "users",

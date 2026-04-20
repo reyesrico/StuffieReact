@@ -163,7 +163,8 @@ const OrphanRepairPanel = () => {
 interface DuplicateGroup {
   name: string;
   products: Product[];
-  keepId: string | undefined; // _id of the product to keep (has image, or first)
+  keepId: string | undefined;   // _id to keep
+  ownedIds: Set<number>;        // item.id values that have user_items rows
 }
 
 const DuplicateProductsPanel = () => {
@@ -175,7 +176,7 @@ const DuplicateProductsPanel = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingAll, setDeletingAll] = useState(false);
 
-  const buildGroups = (products: Product[]): DuplicateGroup[] => {
+  const buildGroups = (products: Product[], ownedItemIds: Set<number>): DuplicateGroup[] => {
     const map = new Map<string, Product[]>();
     for (const p of products) {
       const key = (p.name ?? '').trim().toLowerCase();
@@ -186,10 +187,12 @@ const DuplicateProductsPanel = () => {
     const result: DuplicateGroup[] = [];
     for (const [, group] of map) {
       if (group.length < 2) continue;
-      // Keep the one with an image; if none, keep the one with the lowest numeric id
+      const ownedIds = new Set(group.filter(p => ownedItemIds.has(p.id ?? -1)).map(p => p.id!));
+      // Priority: 1) has owners, 2) has image, 3) lowest id
+      const withOwners = group.find(p => ownedIds.has(p.id ?? -1));
       const withImage = group.find(p => !!p.image_key);
-      const keepId = withImage?._id ?? group.reduce((a, b) => ((a.id ?? 0) < (b.id ?? 0) ? a : b))._id;
-      result.push({ name: group[0].name ?? '', products: group, keepId });
+      const keepId = (withOwners ?? withImage ?? group.reduce((a, b) => ((a.id ?? 0) < (b.id ?? 0) ? a : b)))._id;
+      result.push({ name: group[0].name ?? '', products: group, keepId, ownedIds });
     }
     return result.sort((a, b) => a.name.localeCompare(b.name));
   };
@@ -198,9 +201,17 @@ const DuplicateProductsPanel = () => {
     setScanning(true);
     setScanned(false);
     try {
-      const { getProducts } = await import('../../api/products.api');
-      const all = await getProducts();
-      setGroups(buildGroups(all));
+      const { getProducts, getUserProducts } = await import('../../api/products.api');
+      const [all, userItems] = await Promise.all([
+        getProducts(),
+        // Fetch all user_items to know which catalog ids have owners
+        // We fetch for a synthetic "all" by using a direct API call
+        fetch(`${(await import('../../config/api')).default.server}user_items?q={}`, {
+          headers: { 'x-apikey': (await import('../../config/api')).default.headers['x-apikey'] },
+        }).then(r => r.json()).catch(() => []),
+      ]);
+      const ownedItemIds = new Set<number>((userItems as Array<{item_id: number}>).map(u => u.item_id));
+      setGroups(buildGroups(all, ownedItemIds));
       setScanned(true);
     } finally {
       setScanning(false);
@@ -302,6 +313,7 @@ const DuplicateProductsPanel = () => {
                 <tbody>
                   {group.products.map(p => {
                     const isKeep = p._id === group.keepId;
+                    const isOwned = group.ownedIds.has(p.id ?? -1);
                     return (
                       <tr key={p._id} className={isKeep ? 'admin__dup-row--keep' : ''}>
                         <td>{p.id}</td>
@@ -313,9 +325,14 @@ const DuplicateProductsPanel = () => {
                             : <span className="admin__dup-badge admin__dup-badge--no">–</span>}
                         </td>
                         <td>
+                          {isOwned && !isKeep && (
+                            <span className="admin__dup-badge admin__dup-badge--owned" title={t('admin.duplicates.ownedWarning')}>
+                              {t('admin.duplicates.owned')}
+                            </span>
+                          )}
                           {isKeep
                             ? <span className="admin__dup-badge admin__dup-badge--keep">{t('admin.duplicates.keep')}</span>
-                            : (
+                            : !isOwned && (
                               <Button
                                 text={t('common.delete')}
                                 size="sm"
