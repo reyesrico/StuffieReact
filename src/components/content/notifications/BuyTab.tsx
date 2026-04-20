@@ -12,21 +12,24 @@ interface BuyTabProps {
   requestedProducts: ProductType[];
   pendingPurchaseId: string | null;
   userId: number | undefined;
+  dismissedIds: Set<string>;
   onAccept: (_id: string) => void;
   onComplete: (_id: string) => void;
   onDelete: (_id: string) => void;
+  onDismiss: (_id: string) => void;
 }
 
-const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId, userId, onAccept, onComplete, onDelete }: BuyTabProps) => {
+const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId, userId, dismissedIds, onAccept, onComplete, onDelete, onDismiss }: BuyTabProps) => {
   const { t } = useTranslation();
-  const incoming = activePurchases.filter((r) => r.id_stuffier === userId);
-  const outgoing = activePurchases.filter((r) => r.id_friend === userId);
+  const visible = activePurchases.filter(r => !dismissedIds.has(r._id));
+  const incoming = visible.filter((r) => r.id_stuffier === userId);
+  const outgoing = visible.filter((r) => r.id_friend === userId);
   const incomingPending = incoming.filter((r) => r.status === 'pending');
   const incomingAccepted = incoming.filter((r) => r.status === 'accepted');
   const outgoingPending = outgoing.filter((r) => r.status === 'pending');
   const outgoingAccepted = outgoing.filter((r) => r.status === 'accepted');
 
-  if (!activePurchases.length) return null;
+  if (!activePurchases.length || !visible.length) return null;
 
   return (
     <div className="notifications__section">
@@ -53,6 +56,7 @@ const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -82,6 +86,7 @@ const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -109,6 +114,7 @@ const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -136,6 +142,7 @@ const BuyTab = ({ activePurchases, friends, requestedProducts, pendingPurchaseId
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingPurchaseId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}

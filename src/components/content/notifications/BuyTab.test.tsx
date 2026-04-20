@@ -31,9 +31,11 @@ const defaultProps = {
   requestedProducts: [product],
   pendingPurchaseId: null as string | null,
   userId: USER_ID,
+  dismissedIds: new Set<string>(),
   onAccept: vi.fn(),
   onComplete: vi.fn(),
   onDelete: vi.fn(),
+  onDismiss: vi.fn(),
 };
 
 describe('BuyTab', () => {

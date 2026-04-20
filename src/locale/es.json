@@ -414,6 +414,7 @@
     "notifications.returnItem": "Devolver Art\u00edculo",
     "notifications.approveLoan": "Aprobar Pr\u00e9stamo",
     "notifications.decline": "Rechazar",
+    "notifications.dismiss": "Descartar",
     "notifications.cancelRequest": "Cancelar",
     "notifications.returnRequested": "Solicitud de devoluci\u00f3n enviada \u2014 esperando confirmaci\u00f3n del due\u00f1o.",
     "notifications.completeSuccess": "\u00a1Listo! Tu inventario ha sido actualizado.",

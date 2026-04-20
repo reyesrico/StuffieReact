@@ -12,21 +12,24 @@ interface ExchangeTabProps {
   requestedProducts: ProductType[];
   pendingExchangeId: string | null;
   userId: number | undefined;
+  dismissedIds: Set<string>;
   onAccept: (_id: string) => void;
   onComplete: (_id: string) => void;
   onDelete: (_id: string) => void;
+  onDismiss: (_id: string) => void;
 }
 
-const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExchangeId, userId, onAccept, onComplete, onDelete }: ExchangeTabProps) => {
+const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExchangeId, userId, dismissedIds, onAccept, onComplete, onDelete, onDismiss }: ExchangeTabProps) => {
   const { t } = useTranslation();
-  const incoming = activeExchanges.filter((r) => r.id_stuffier === userId);
-  const outgoing = activeExchanges.filter((r) => r.id_friend === userId);
+  const visible = activeExchanges.filter(r => !dismissedIds.has(r._id));
+  const incoming = visible.filter((r) => r.id_stuffier === userId);
+  const outgoing = visible.filter((r) => r.id_friend === userId);
   const incomingPending = incoming.filter((r) => r.status === 'pending');
   const incomingAccepted = incoming.filter((r) => r.status === 'accepted');
   const outgoingPending = outgoing.filter((r) => r.status === 'pending');
   const outgoingAccepted = outgoing.filter((r) => r.status === 'accepted');
 
-  if (!activeExchanges.length) return null;
+  if (!activeExchanges.length || !visible.length) return null;
 
   return (
     <div className="notifications__section">
@@ -54,6 +57,7 @@ const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExcha
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -84,6 +88,7 @@ const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExcha
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -112,6 +117,7 @@ const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExcha
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -143,6 +149,7 @@ const ExchangeTab = ({ activeExchanges, friends, requestedProducts, pendingExcha
                       <Button onClick={() => onDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingExchangeId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}

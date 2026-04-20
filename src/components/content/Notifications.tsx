@@ -63,6 +63,27 @@ const Notifications = () => {
   const [pendingLoanId, setPendingLoanId] = useState<string | null>(null);
   const [pendingPurchaseId, setPendingPurchaseId] = useState<string | null>(null);
   const [confirmCancelTarget, setConfirmCancelTarget] = useState<User | null>(null);
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+
+  const dismissKey = user?.id ? `stuffie_dismissed_notifs_${user.id}` : null;
+
+  useEffect(() => {
+    if (!dismissKey) return;
+    try {
+      const stored = localStorage.getItem(dismissKey);
+      if (stored) setDismissedIds(new Set(JSON.parse(stored)));
+    } catch { /* ignore */ }
+  }, [dismissKey]);
+
+  const handleDismiss = (_id: string) => {
+    if (!dismissKey) return;
+    setDismissedIds(prev => {
+      const next = new Set(prev);
+      next.add(_id);
+      try { localStorage.setItem(dismissKey, JSON.stringify(Array.from(next))); } catch { /* ignore */ }
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!message) return;
@@ -258,9 +279,18 @@ const Notifications = () => {
     });
   };
 
-  const activeExchanges = exchangeRequests.filter((r: ExchangeRequest) => ['pending', 'accepted'].includes(r.status));
-  const activeLoans = loanRequests.filter((r: LoanRequest) => ['pending', 'active', 'return_requested'].includes(r.status));
-  const activePurchases = purchaseRequests.filter((r: PurchaseRequest) => ['pending', 'accepted'].includes(r.status));
+  const activeExchanges = exchangeRequests
+    .filter((r: ExchangeRequest) => ['pending', 'accepted'].includes(r.status))
+    .filter((r: ExchangeRequest) => !dismissedIds.has(r._id));
+  const activeLoans = loanRequests
+    .filter((r: LoanRequest) => ['pending', 'active', 'return_requested'].includes(r.status))
+    .filter((r: LoanRequest) => !dismissedIds.has(r._id));
+  const activePurchases = purchaseRequests
+    .filter((r: PurchaseRequest) => ['pending', 'accepted'].includes(r.status))
+    .filter((r: PurchaseRequest) => !dismissedIds.has(r._id));
+
+  const visibleTotal = activeExchanges.length + activeLoans.length + activePurchases.length
+    + friendRequests.length + sentFriendRequests.length;
 
   const tabsWithData: NotifTab[] = [
     ...((friendRequests.length || sentFriendRequests.length) ? ['friends' as NotifTab] : []),
@@ -281,11 +311,11 @@ const Notifications = () => {
         <h2 className="notifications__title">{t('notifications.title')}</h2>
       </div>
 
-      {totalRequests === 0 && (
+      {visibleTotal === 0 && (
         <div className="notifications__empty">{t('notifications.empty')}</div>
       )}
 
-      {totalRequests > 0 && (
+      {visibleTotal > 0 && (
         <div className="notifications__tabs">
           {tabsWithData.map(tab => {
             const count =
@@ -323,6 +353,8 @@ const Notifications = () => {
           onAccept={executeAcceptExchange}
           onComplete={executeCompleteExchange}
           onDelete={executeDeleteExchange}
+          dismissedIds={dismissedIds}
+          onDismiss={handleDismiss}
         />
       )}
 
@@ -337,6 +369,8 @@ const Notifications = () => {
           onComplete={executeCompleteLoan}
           onRequestReturn={executeRequestReturnLoan}
           onDirectDelete={(_id) => deleteLoanMutation.mutate(_id)}
+          dismissedIds={dismissedIds}
+          onDismiss={handleDismiss}
         />
       )}
 
@@ -350,6 +384,8 @@ const Notifications = () => {
           onAccept={executeAcceptPurchase}
           onComplete={executeCompletePurchase}
           onDelete={executeDeletePurchase}
+          dismissedIds={dismissedIds}
+          onDismiss={handleDismiss}
         />
       )}
 

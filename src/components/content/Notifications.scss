@@ -166,6 +166,31 @@
   // wrapper kept for layout; sizing comes from Button component
 }
 
+.notifications__dismiss-btn {
+  align-self: flex-start;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+  opacity: 0.4;
+  margin-top: 2px;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.85;
+    color: var(--text-color);
+  }
+
+  @media (max-width: 600px) {
+    align-self: flex-end;
+  }
+}
+
 // =============================================================================
 // Friends Tab — subsection labels, avatars, sent/incoming variants
 // =============================================================================

@@ -12,25 +12,28 @@ interface LoanTabProps {
   requestedProducts: ProductType[];
   pendingLoanId: string | null;
   userId: number | undefined;
+  dismissedIds: Set<string>;
   onAccept: (_id: string) => void;
   onComplete: (_id: string) => void;
   onRequestReturn: (_id: string) => void;
   onDirectDelete: (_id: string) => void;
+  onDismiss: (_id: string) => void;
 }
 
-const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userId, onAccept, onComplete, onRequestReturn, onDirectDelete }: LoanTabProps) => {
+const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userId, dismissedIds, onAccept, onComplete, onRequestReturn, onDirectDelete, onDismiss }: LoanTabProps) => {
   const { t } = useTranslation();
   // id_stuffier = owner (receives the borrow request = incoming)
   // id_friend = borrower (sent the request = outgoing)
-  const incoming = activeLoans.filter((r) => r.id_stuffier === userId);
-  const outgoing = activeLoans.filter((r) => r.id_friend === userId);
+  const visible = activeLoans.filter(r => !dismissedIds.has(r._id));
+  const incoming = visible.filter((r) => r.id_stuffier === userId);
+  const outgoing = visible.filter((r) => r.id_friend === userId);
   const incomingPending = incoming.filter((r) => r.status === 'pending');
   const incomingActive = incoming.filter((r) => ['active', 'return_requested'].includes(r.status));
   const outgoingPending = outgoing.filter((r) => r.status === 'pending');
   const outgoingActive = outgoing.filter((r) => r.status === 'active');
   const outgoingReturnRequested = outgoing.filter((r) => r.status === 'return_requested');
 
-  if (!activeLoans.length) return null;
+  if (!activeLoans.length || !visible.length) return null;
 
   return (
     <div className="notifications__section">
@@ -56,6 +59,7 @@ const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userI
                       <Button onClick={() => onDirectDelete(request._id)} text={t('notifications.decline')} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -88,6 +92,7 @@ const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userI
                       </div>
                     </div>
                   )}
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -114,6 +119,7 @@ const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userI
                       <Button onClick={() => onDirectDelete(request._id)} text={t('notifications.cancelRequest')} size="sm" variant="secondary" loading={pendingLoanId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -140,6 +146,7 @@ const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userI
                       <Button onClick={() => onRequestReturn(request._id)} text={t('notifications.returnItem')} size="sm" variant="outline" loading={pendingLoanId === request._id} />
                     </div>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}
@@ -161,6 +168,7 @@ const LoanTab = ({ activeLoans, friends, requestedProducts, pendingLoanId, userI
                     <div className="notifications__request-text">{t('notifications.borrowedFrom')}{owner ? `${owner.first_name} ${owner.last_name}` : t('products.unknown')}</div>
                     <span className="notifications__status-badge">{t('notifications.waitingOwnerConfirm')}</span>
                   </div>
+                  <button className="notifications__dismiss-btn" onClick={() => onDismiss(request._id)} aria-label={t('notifications.dismiss')}>×</button>
                 </li>
               );
             })}

@@ -416,6 +416,7 @@
     "notifications.returnItem": "Return Item",
     "notifications.approveLoan": "Approve Loan",
     "notifications.decline": "Decline",
+    "notifications.dismiss": "Dismiss",
     "notifications.cancelRequest": "Cancel",
     "notifications.returnRequested": "Return request sent \u2014 waiting for owner confirmation.",
     "notifications.completeSuccess": "Done! Your inventory has been updated.",

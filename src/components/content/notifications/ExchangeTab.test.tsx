@@ -38,9 +38,11 @@ const defaultProps = {
   requestedProducts: [myProduct, theirProduct],
   pendingExchangeId: null as string | null,
   userId: USER_ID,
+  dismissedIds: new Set<string>(),
   onAccept: vi.fn(),
   onComplete: vi.fn(),
   onDelete: vi.fn(),
+  onDismiss: vi.fn(),
 };
 
 describe('ExchangeTab', () => {
@@ -130,11 +132,10 @@ describe('ExchangeTab', () => {
       expect(screen.getByText(/Waiting for response/)).toBeInTheDocument();
     });
 
-    it('renders only a Cancel button', () => {
+    it('renders a Cancel button and a Dismiss button', () => {
       wrap(<ExchangeTab {...defaultProps} activeExchanges={[outgoingPending]} />);
-      const buttons = screen.getAllByRole('button');
-      expect(buttons).toHaveLength(1);
-      expect(buttons[0]).toHaveTextContent('Cancel');
+      expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Dismiss' })).toBeInTheDocument();
     });
   });
 

@@ -30,10 +30,12 @@ const defaultProps = {
   requestedProducts: [product],
   pendingLoanId: null as string | null,
   userId: USER_ID,
+  dismissedIds: new Set<string>(),
   onAccept: vi.fn(),
   onComplete: vi.fn(),
   onRequestReturn: vi.fn(),
   onDirectDelete: vi.fn(),
+  onDismiss: vi.fn(),
 };
 
 describe('LoanTab', () => {
@@ -88,10 +90,10 @@ describe('LoanTab', () => {
       expect(screen.getByText(/Bob Jones/)).toBeInTheDocument();
     });
 
-    it('shows waiting badge (no button) when status is active', () => {
+    it('shows waiting badge (no action button) when status is active', () => {
       wrap(<LoanTab {...defaultProps} activeLoans={[makeLoan({ _id: 'ln-2', status: 'active' })]} />);
       expect(screen.getByText(/Waiting for borrower/)).toBeInTheDocument();
-      expect(screen.queryByRole('button')).toBeNull();
+      expect(screen.queryByRole('button', { name: /Confirm|Return Item|Approve|Decline|Cancel/i })).toBeNull();
     });
 
     it('shows Confirm Returned button when status is return_requested', () => {
@@ -176,7 +178,7 @@ describe('LoanTab', () => {
     it('shows waiting badge with no action buttons', () => {
       wrap(<LoanTab {...defaultProps} activeLoans={[outgoingReturnReq]} />);
       expect(screen.getByText(/Waiting/)).toBeInTheDocument();
-      expect(screen.queryByRole('button')).toBeNull();
+      expect(screen.queryByRole('button', { name: /Confirm|Return Item|Approve|Decline|Cancel/i })).toBeNull();
     });
   });
 });
