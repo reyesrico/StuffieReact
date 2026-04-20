@@ -56,6 +56,7 @@ export const useUserProducts = (userId: number, categories: Category[]) => {
     },
     enabled: !!(userId && categories?.length),
     staleTime: 1000 * 60 * 5, // 5 min — same as own products
+    refetchOnMount: true,     // refresh when navigating to a friend's profile
   });
 };
 

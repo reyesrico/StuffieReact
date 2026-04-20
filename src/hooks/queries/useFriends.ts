@@ -63,6 +63,7 @@ export const useFriendsWithProducts = () => {
     },
     enabled: !!(user?.email && friends && friends.length > 0),
     staleTime: 1000 * 60 * 5, // 5 min — social data, friend products change occasionally
+    refetchOnMount: true,     // refresh on Feed/Exchange mount so new friend products appear
   });
 };
 

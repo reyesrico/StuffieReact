@@ -717,5 +717,6 @@ export const useProposals = (status?: string) => {
     queryKey: status ? queryKeys.proposals.pending : queryKeys.proposals.all,
     queryFn: () => getProposals(status),
     staleTime: 30_000,
+    refetchOnMount: true,     // admin tab should always see latest proposals
   });
 };
