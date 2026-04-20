@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,6 +12,7 @@ import {
   Tag20Regular,
   Folder20Regular,
   BugRegular,
+  ImageSearch20Regular,
 } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
@@ -22,6 +24,8 @@ import User from '../types/User';
 import Category from '../types/Category';
 import Subcategory from '../types/Subcategory';
 import { getOrphanRows, deleteOrphanRow, deleteUser, OrphanRow } from '../../api/users.api';
+import { updateProduct } from '../../api/products.api';
+import { searchImages, ImageResult } from '../../api/external/imageSearch';
 import config from '../../config/api';
 import {
   useUserRequests, usePendingProducts, useApproveUser, useAllUsers,
@@ -510,6 +514,54 @@ const Admin = () => {
   // Pending products filter
   const [pendingFilter, setPendingFilter] = useState('');
 
+  // Image suggestion state per product (_id → state)
+  type SuggestState = 'idle' | 'loading' | 'results' | 'uploading';
+  const [suggestStates, setSuggestStates] = useState<Record<string, SuggestState>>({});
+  const [suggestResults, setSuggestResults] = useState<Record<string, ImageResult[]>>({});
+  const [suggestError, setSuggestError] = useState<Record<string, string>>({});
+
+  const handleSuggestImage = async (product: Product) => {
+    if (!product._id) return;
+    setSuggestStates(s => ({ ...s, [product._id!]: 'loading' }));
+    setSuggestError(e => ({ ...e, [product._id!]: '' }));
+    try {
+      const results = await searchImages(product.name ?? '');
+      setSuggestResults(r => ({ ...r, [product._id!]: results }));
+      setSuggestStates(s => ({ ...s, [product._id!]: 'results' }));
+    } catch {
+      setSuggestError(e => ({ ...e, [product._id!]: t('admin.suggestImageError') }));
+      setSuggestStates(s => ({ ...s, [product._id!]: 'idle' }));
+    }
+  };
+
+  const handlePickImage = async (product: Product, imageUrl: string) => {
+    if (!product._id || !product.id || !product.category_id || !product.subcategory_id) return;
+    setSuggestStates(s => ({ ...s, [product._id!]: 'uploading' }));
+    try {
+      const formData = new FormData();
+      formData.append('file', imageUrl);
+      formData.append('folder', `products/${product.category_id}/${product.subcategory_id}`);
+      formData.append('public_id', String(product.id));
+      formData.append('upload_preset', config.cloudinary.uploadPreset);
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/image/upload`,
+        formData,
+        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+      );
+      const imageKey: string = res.data?.public_id;
+      if (imageKey) {
+        // Admin directly approves: set image_key, clear pending
+        await updateProduct(product._id, { image_key: imageKey, pending_image_key: '' });
+        approveImageMutation.mutate({ _id: product._id, pending_image_key: imageKey });
+      }
+      setSuggestStates(s => ({ ...s, [product._id!]: 'idle' }));
+      setSuggestResults(r => ({ ...r, [product._id!]: [] }));
+    } catch {
+      setSuggestError(e => ({ ...e, [product._id!]: t('admin.suggestUploadError') }));
+      setSuggestStates(s => ({ ...s, [product._id!]: 'results' }));
+    }
+  };
+
   // Users tab search
   const [userSearch, setUserSearch] = useState('');
   const [deletingUserId, setDeletingUserId] = useState<number | null>(null);
@@ -765,23 +817,53 @@ const Admin = () => {
                 />
                 <ul className="admin__list">
                   {filteredPendingProducts.map((product: Product) => {
-                    const cloudinaryUrl = `https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`;
+                    const pid = product._id ?? String(product.id);
+                    const state = suggestStates[pid] ?? 'idle';
+                    const results = suggestResults[pid] ?? [];
+                    const errMsg = suggestError[pid] ?? '';
                     return (
-                      <li key={product.id}>
-                        <a
-                          href={cloudinaryUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="admin__request admin__request--product admin__request--clickable"
-                        >
+                      <li key={product.id} className="admin__product-suggest-item">
+                        <div className="admin__request admin__request--product">
                           <div className="admin__request-info">
                             <span className="admin__request-name">{product.name}</span>
                             <span className="admin__request-meta">
-                              ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
+                              {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
                             </span>
                           </div>
-                          <span className="admin__request-arrow"><ArrowUpRight20Regular /></span>
-                        </a>
+                          <Button
+                            text={state === 'loading' ? '' : t('admin.suggestImage')}
+                            icon={<ImageSearch20Regular />}
+                            size="sm"
+                            variant="outline"
+                            loading={state === 'loading'}
+                            disabled={state === 'loading' || state === 'uploading'}
+                            onClick={() => handleSuggestImage(product)}
+                          />
+                        </div>
+                        {errMsg && <p className="admin__suggest-error">{errMsg}</p>}
+                        {state === 'results' && results.length > 0 && (
+                          <div className="admin__suggest-grid">
+                            {results.map((img) => (
+                              <button
+                                key={img.url}
+                                className="admin__suggest-thumb"
+                                title={img.title}
+                                onClick={() => handlePickImage(product, img.url)}
+                                disabled={suggestStates[pid] === 'uploading'}
+                              >
+                                <img src={img.thumb} alt={img.title} />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        {state === 'uploading' && (
+                          <div className="admin__suggest-uploading">
+                            <Loading size="sm" /> {t('admin.suggestUploading')}
+                          </div>
+                        )}
+                        {state === 'results' && results.length === 0 && (
+                          <p className="admin__suggest-error">{t('admin.suggestNoResults')}</p>
+                        )}
                       </li>
                     );
                   })}

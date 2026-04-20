@@ -44,11 +44,11 @@ async function handleShareLogic(
     share: env.canShare
       ? async () => { if (env.shareThrows) throw new Error('cancelled'); }
       : undefined,
-    canShare: env.canShare ? () => true : undefined,
+    canShare: env.canShare ? (_data?: unknown) => true : undefined,
     clipboard: {
       writeText: env.clipboardWriteThrows
-        ? async () => { throw new Error('denied'); }
-        : async () => undefined,
+        ? async (_text?: string) => { throw new Error('denied'); }
+        : async (_text?: string) => undefined,
     },
   };
 

@@ -7,7 +7,7 @@
  *   - Loan: button disabled state based on mutation isPending flag
  */
 import { describe, it, expect } from 'vitest';
-import type Product from '../components/types/Product';
+import type Product from '../../components/types/Product';
 
 // ─── Exchange filter helpers (pure extraction from Exchange.tsx) ──────────────
 

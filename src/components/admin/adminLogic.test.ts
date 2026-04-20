@@ -11,10 +11,10 @@
  *             bulk approve eligibility (button only shown for 2+ items)
  */
 import { describe, it, expect } from 'vitest';
-import type User from '../components/types/User';
-import type Product from '../components/types/Product';
-import type Category from '../components/types/Category';
-import type Subcategory from '../components/types/Subcategory';
+import type User from '../../components/types/User';
+import type Product from '../../components/types/Product';
+import type Category from '../../components/types/Category';
+import type Subcategory from '../../components/types/Subcategory';
 
 // ─── Helpers extracted from Admin.tsx / CatalogPanel ─────────────────────────
 
