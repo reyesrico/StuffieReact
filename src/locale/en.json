@@ -441,6 +441,13 @@
 
     "main.errorBoundaryTitle": "Something went wrong:",
 
+    "notFound.title": "Page not found",
+    "notFound.desc": "The page you're looking for doesn't exist or has been moved.",
+    "notFound.goHome": "Go to Home",
+
+    "errorPage.title": "Something went wrong",
+    "errorPage.desc": "An unexpected error occurred. Try going back or refreshing the page.",
+
     "admin.userRequests": "User Requests",
     "admin.pendingProducts": "Products Missing Images",
     "admin.pendingImageApprovals": "Pending Image Approvals",

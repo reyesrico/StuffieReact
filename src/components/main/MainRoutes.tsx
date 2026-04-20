@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Loading from '../shared/Loading';
+import NotFoundPage from '../shared/NotFoundPage';
 
 // Eagerly loaded (home page)
 import Content from '../content/Content';
@@ -49,6 +50,7 @@ const MainRoutes = () => {
       <Route path="tickets" element={<Tickets />} />
       <Route path="smart-add" element={<SmartAdd />} />
       <Route path="notifications" element={<Notifications />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
     </Suspense>
   );

@@ -438,6 +438,13 @@
 
     "main.errorBoundaryTitle": "Algo salió mal:",
 
+    "notFound.title": "Página no encontrada",
+    "notFound.desc": "La página que buscas no existe o fue movida.",
+    "notFound.goHome": "Ir al inicio",
+
+    "errorPage.title": "Algo salió mal",
+    "errorPage.desc": "Ocurrió un error inesperado. Intenta regresar o recargar la página.",
+
     "admin.userRequests": "Solicitudes de Usuarios",
     "admin.pendingProducts": "Productos sin Imágen",
     "admin.pendingImageApprovals": "Imágenes Pendientes de Aprobación",

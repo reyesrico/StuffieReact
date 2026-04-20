@@ -1,0 +1,48 @@
+// =============================================================================
+// ErrorPages — NotFoundPage + ErrorPage
+// =============================================================================
+
+@use '../../styles/base/main' as *;
+
+.error-page {
+  @include page-root;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  gap: var(--spacing-4);
+}
+
+.error-page__code {
+  font-size: 80px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-primary-500);
+  opacity: 0.8;
+
+  &--error {
+    font-size: 72px;
+    color: var(--color-error, #ef4444);
+  }
+}
+
+.error-page__title {
+  @include page-title;
+  margin: 0;
+}
+
+.error-page__desc {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  max-width: 360px;
+  margin: 0;
+}
+
+.error-page__actions {
+  display: flex;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}

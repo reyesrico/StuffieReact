@@ -36,9 +36,10 @@ const MapView = ({ lat, lng, height = '280px' }: MapViewProps) => {
 
   useEffect(() => {
     let map: any;
+    let unmounted = false;
 
     loadAtlasScript((atlas) => {
-      if (!containerRef.current) return;
+      if (unmounted || !containerRef.current) return;
 
       map = new atlas.Map(containerRef.current, {
         center: [lng, lat],
@@ -51,6 +52,7 @@ const MapView = ({ lat, lng, height = '280px' }: MapViewProps) => {
       });
 
       map.events.add('ready', () => {
+        if (unmounted) return;
         const datasource = new atlas.source.DataSource();
         map.sources.add(datasource);
 
@@ -65,6 +67,7 @@ const MapView = ({ lat, lng, height = '280px' }: MapViewProps) => {
     });
 
     return () => {
+      unmounted = true;
       try { map?.dispose(); } catch { /* ignore */ }
     };
   }, [lat, lng]);
