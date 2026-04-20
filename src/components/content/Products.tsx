@@ -22,10 +22,9 @@ import type LoanRequest from '../types/LoanRequest';
 import type ExchangeRequest from '../types/ExchangeRequest';
 import type PurchaseRequest from '../types/PurchaseRequest';
 import type User from '../types/User';
+import { applyFiltersAndSort, type SortBy } from './productsFilter';
 
 import './Products.scss';
-
-type SortBy = 'nameAsc' | 'nameDesc' | 'priceAsc' | 'priceDesc';
 
 const DownloadIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -142,41 +141,9 @@ const Products = () => {
   usePullToRefresh(refreshProductsQuery);
 
   // ── Filter + sort computation ────────────────────────────────────────────────
-  const filteredCategoryGroups: Array<{ category: Category; groups: ProductType[][] }> = categories
-    .filter((cat: Category) => {
-      if (!products[cat.id]?.length) return false;
-      if (filterCategoryId !== null && cat.id !== filterCategoryId) return false;
-      return true;
-    })
-    .map((cat: Category) => {
-      const allInCategory: ProductType[] = products[cat.id as number];
-      const byName = new Map<string, ProductType[]>();
-      allInCategory.forEach((p: ProductType) => {
-        const key = (p.name ?? '').toLowerCase();
-        if (!byName.has(key)) byName.set(key, []);
-        byName.get(key)!.push(p);
-      });
-      const lowerFilter = filterText.trim().toLowerCase();
-      const groups = Array.from(byName.values())
-        .filter(copies => {
-          if (lowerFilter && !copies[0].name?.toLowerCase().includes(lowerFilter)) return false;
-          if (filterForSale && !copies.some((p: ProductType) => (p.cost ?? 0) > 0)) return false;
-          return true;
-        })
-        .sort((a, b) => {
-          const aName = (a[0].name ?? '').toLowerCase();
-          const bName = (b[0].name ?? '').toLowerCase();
-          const aCost = Math.max(...a.map((p: ProductType) => p.cost ?? 0));
-          const bCost = Math.max(...b.map((p: ProductType) => p.cost ?? 0));
-          if (sortBy === 'nameAsc') return aName.localeCompare(bName);
-          if (sortBy === 'nameDesc') return bName.localeCompare(aName);
-          if (sortBy === 'priceAsc') return aCost - bCost;
-          if (sortBy === 'priceDesc') return bCost - aCost;
-          return 0;
-        });
-      return { category: cat, groups };
-    })
-    .filter(({ groups }) => groups.length > 0);
+  const filteredCategoryGroups = applyFiltersAndSort(
+    products, categories, filterText, filterCategoryId, filterForSale, sortBy,
+  );
   const filteredCount = filteredCategoryGroups.reduce((s, { groups }) => s + groups.length, 0);
   const hasFilter = filterText.trim() !== '' || filterCategoryId !== null || filterForSale;
 
