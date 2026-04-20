@@ -156,6 +156,183 @@ const OrphanRepairPanel = () => {
   );
 };
 
+// ─── Duplicate products panel ────────────────────────────────────────────────
+
+interface DuplicateGroup {
+  name: string;
+  products: Product[];
+  keepId: string | undefined; // _id of the product to keep (has image, or first)
+}
+
+const DuplicateProductsPanel = () => {
+  const { t } = useTranslation();
+  const [scanning, setScanning] = useState(false);
+  const [scanned, setScanned] = useState(false);
+  const [groups, setGroups] = useState<DuplicateGroup[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingAll, setDeletingAll] = useState(false);
+
+  const buildGroups = (products: Product[]): DuplicateGroup[] => {
+    const map = new Map<string, Product[]>();
+    for (const p of products) {
+      const key = (p.name ?? '').trim().toLowerCase();
+      if (!key) continue;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(p);
+    }
+    const result: DuplicateGroup[] = [];
+    for (const [, group] of map) {
+      if (group.length < 2) continue;
+      // Keep the one with an image; if none, keep the one with the lowest numeric id
+      const withImage = group.find(p => !!p.image_key);
+      const keepId = withImage?._id ?? group.reduce((a, b) => ((a.id ?? 0) < (b.id ?? 0) ? a : b))._id;
+      result.push({ name: group[0].name ?? '', products: group, keepId });
+    }
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  };
+
+  const handleScan = async () => {
+    setScanning(true);
+    setScanned(false);
+    try {
+      const { getProducts } = await import('../../api/products.api');
+      const all = await getProducts();
+      setGroups(buildGroups(all));
+      setScanned(true);
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const handleDelete = async (_id: string, groupName: string) => {
+    setDeletingId(_id);
+    try {
+      const { deleteProduct } = await import('../../api/products.api');
+      await deleteProduct(_id);
+      setGroups(prev => {
+        const next = prev
+          .map(g =>
+            g.name.toLowerCase() === groupName.toLowerCase()
+              ? { ...g, products: g.products.filter(p => p._id !== _id) }
+              : g
+          )
+          .filter(g => g.products.length > 1);
+        return next;
+      });
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleDeleteAllDuplicates = async () => {
+    setDeletingAll(true);
+    try {
+      const { deleteProduct } = await import('../../api/products.api');
+      const toDelete: string[] = [];
+      for (const g of groups) {
+        for (const p of g.products) {
+          if (p._id && p._id !== g.keepId) toDelete.push(p._id);
+        }
+      }
+      await Promise.all(toDelete.map(id => deleteProduct(id)));
+      setGroups([]);
+    } finally {
+      setDeletingAll(false);
+    }
+  };
+
+  const totalDuplicates = groups.reduce((acc, g) => acc + g.products.length - 1, 0);
+
+  return (
+    <div className="orphan-panel">
+      <div className="orphan-panel__header">
+        <BugRegular className="orphan-panel__icon" />
+        <div>
+          <div className="orphan-panel__title">{t('admin.duplicates.title')}</div>
+          <div className="orphan-panel__desc">{t('admin.duplicates.description')}</div>
+        </div>
+      </div>
+
+      <div className="orphan-panel__actions">
+        <Button
+          text={scanning ? t('admin.orphans.scanning') : t('admin.duplicates.scan')}
+          size="sm"
+          variant="outline"
+          loading={scanning}
+          onClick={handleScan}
+        />
+        {scanned && totalDuplicates > 0 && (
+          <Button
+            text={t('admin.duplicates.deleteAll', { count: totalDuplicates })}
+            size="sm"
+            variant="secondary"
+            loading={deletingAll}
+            onClick={handleDeleteAllDuplicates}
+          />
+        )}
+      </div>
+
+      {scanned && groups.length === 0 && (
+        <div className="orphan-panel__empty">{t('admin.duplicates.none')}</div>
+      )}
+
+      {groups.length > 0 && (
+        <>
+          <div className="orphan-panel__count">
+            {t('admin.duplicates.found', { groups: groups.length, count: totalDuplicates })}
+          </div>
+          {groups.map(group => (
+            <div key={group.name} className="admin__dup-group">
+              <div className="admin__dup-group-name">{group.name}</div>
+              <table className="orphan-panel__table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>{t('admin.category')}</th>
+                    <th>{t('admin.subcategory')}</th>
+                    <th>{t('admin.duplicates.image')}</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {group.products.map(p => {
+                    const isKeep = p._id === group.keepId;
+                    return (
+                      <tr key={p._id} className={isKeep ? 'admin__dup-row--keep' : ''}>
+                        <td>{p.id}</td>
+                        <td>{p.category_id}</td>
+                        <td>{p.subcategory_id}</td>
+                        <td>
+                          {p.image_key
+                            ? <span className="admin__dup-badge admin__dup-badge--yes">✓</span>
+                            : <span className="admin__dup-badge admin__dup-badge--no">–</span>}
+                        </td>
+                        <td>
+                          {isKeep
+                            ? <span className="admin__dup-badge admin__dup-badge--keep">{t('admin.duplicates.keep')}</span>
+                            : (
+                              <Button
+                                text={t('common.delete')}
+                                size="sm"
+                                variant="secondary"
+                                loading={deletingId === p._id}
+                                onClick={() => handleDelete(p._id!, group.name)}
+                              />
+                            )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+};
+
 // ─── Catalog panel ───────────────────────────────────────────────────────────
 const CatalogPanel = () => {
   const { t } = useTranslation();
@@ -832,15 +1009,26 @@ const Admin = () => {
                               {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
                             </span>
                           </div>
-                          <Button
-                            text={state === 'loading' ? '' : t('admin.suggestImage')}
-                            icon={<ImageSearch20Regular />}
-                            size="sm"
-                            variant="outline"
-                            loading={state === 'loading'}
-                            disabled={state === 'loading' || state === 'uploading'}
-                            onClick={() => handleSuggestImage(product)}
-                          />
+                          <div className="admin__suggest-row-actions">
+                            <Button
+                              text={state === 'loading' ? '' : t('admin.suggestImage')}
+                              icon={<ImageSearch20Regular />}
+                              size="sm"
+                              variant="outline"
+                              loading={state === 'loading'}
+                              disabled={state === 'loading' || state === 'uploading'}
+                              onClick={() => handleSuggestImage(product)}
+                            />
+                            <a
+                              href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="admin__suggest-cloudinary-link"
+                              title={t('admin.openCloudinary')}
+                            >
+                              <ArrowUpRight20Regular />
+                            </a>
+                          </div>
                         </div>
                         {errMsg && <p className="admin__suggest-error">{errMsg}</p>}
                         {state === 'results' && results.length > 0 && (
@@ -919,6 +1107,7 @@ const Admin = () => {
               <Button text={t('admin.addSubcategory')} onClick={() => navigate('/subcategory/add')} size="sm" variant="outline" />
             </div>
             <OrphanRepairPanel />
+            <DuplicateProductsPanel />
           </div>
         )}
 

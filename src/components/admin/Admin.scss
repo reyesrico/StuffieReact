@@ -799,3 +799,59 @@
   text-align: center;
   margin: 0;
 }
+
+// ── Product suggest row — action cluster ──────────────────────────────────────
+
+.admin__suggest-row-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
+}
+
+.admin__suggest-cloudinary-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: color var(--transition-fast), background var(--transition-fast);
+
+  &:hover {
+    color: var(--color-primary-500);
+    background: var(--background-elevated);
+  }
+}
+
+// ── Duplicate products panel ──────────────────────────────────────────────────
+
+.admin__dup-group {
+  margin-bottom: var(--spacing-4);
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.admin__dup-group-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  padding: var(--spacing-2) 0 var(--spacing-1);
+}
+
+.admin__dup-row--keep {
+  background: color-mix(in srgb, var(--color-success, #16a34a) 8%, transparent);
+}
+
+.admin__dup-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+
+  &--yes { background: #dcfce7; color: #15803d; }
+  &--no  { background: #f3f4f6; color: var(--text-secondary); }
+  &--keep { background: #dbeafe; color: #1d4ed8; }
+}
