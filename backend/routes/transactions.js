@@ -140,15 +140,10 @@ const decrementOrDelete = async (db, row) => {
 };
 
 // ---------------------------------------------------------------------------
-// Helper — increment qty or insert a new user_items row
+// Helper — always insert a new user_items row (each copy is individually tracked)
 // ---------------------------------------------------------------------------
 const incrementOrInsert = async (db, userId, itemId, askingPrice) => {
-  const existing = await findUserItem(db, userId, itemId);
-  if (existing) {
-    await db.updateOne('user_items', { _id: existing._id }, { $set: { quantity: (existing.quantity ?? 1) + 1 } });
-  } else {
-    await db.insertOne('user_items', { user_id: userId, item_id: itemId, asking_price: askingPrice, quantity: 1 });
-  }
+  await db.insertOne('user_items', { user_id: userId, item_id: itemId, asking_price: askingPrice ?? null, quantity: 1 });
 };
 
 // ---------------------------------------------------------------------------
