@@ -489,7 +489,7 @@
     "admin.subcategory": "Subcategoría",
     "admin.approveAllImages": "Aprobar Todo",
     "admin.filterProducts": "Filtrar productos…",
-    "admin.suggestImage": "Sugerir Imagen",    "admin.uploadImage": "Subir imagen",    "admin.suggestUploading": "Subiendo a Cloudinary…",
+    "admin.suggestImage": "Sugerir Imagen",    "admin.uploadImage": "Subir imagen",    "admin.suggest": "Sugerir",    "admin.upload": "Subir",    "admin.suggestUploading": "Subiendo a Cloudinary…",
     "admin.suggestNoResults": "No se encontraron imágenes para este producto.",
     "admin.suggestImageError": "No se pudieron obtener sugerencias. Intenta de nuevo.",
     "admin.suggestUploadError": "Error al subir. Intenta con otra imagen.",

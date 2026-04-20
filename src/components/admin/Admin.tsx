@@ -1078,6 +1078,15 @@ const Admin = () => {
                     return (
                       <li key={product.id} className="admin__product-suggest-item">
                         <div className="admin__request admin__request--product">
+                          <a
+                            href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="admin__suggest-cloudinary-link admin__suggest-cloudinary-link--corner"
+                            title={t('admin.openCloudinary')}
+                          >
+                            <ArrowUpRight20Regular />
+                          </a>
                           <div className="admin__request-info">
                             <span className="admin__request-name">{product.name}</span>
                             <span className="admin__request-meta">
@@ -1087,7 +1096,7 @@ const Admin = () => {
                           </div>
                           <div className="admin__suggest-row-actions">
                             <Button
-                              text={state === 'loading' ? '' : t('admin.suggestImage')}
+                              text={state === 'loading' ? '' : t('admin.suggest')}
                               icon={<ImageSearch20Regular />}
                               size="sm"
                               variant="outline"
@@ -1096,7 +1105,7 @@ const Admin = () => {
                               onClick={() => handleSuggestImage(product)}
                             />
                             <Button
-                              text={state === 'uploading' ? '' : t('admin.uploadImage')}
+                              text={state === 'uploading' ? '' : t('admin.upload')}
                               icon={<ArrowUpload20Regular />}
                               size="sm"
                               variant="outline"
@@ -1115,15 +1124,6 @@ const Admin = () => {
                                 e.target.value = '';
                               }}
                             />
-                            <a
-                              href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="admin__suggest-cloudinary-link"
-                              title={t('admin.openCloudinary')}
-                            >
-                              <ArrowUpRight20Regular />
-                            </a>
                           </div>
                         </div>
                         {errMsg && <p className="admin__suggest-error">{errMsg}</p>}
