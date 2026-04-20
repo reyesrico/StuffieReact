@@ -15,7 +15,6 @@ import {
 
 import Button from '../shared/Button';
 import Loading from '../shared/Loading';
-import TextField from '../shared/TextField';
 import Modal from '../shared/Modal';
 import AdminChartsPanel from '../charts/AdminChartsPanel';
 import Product from '../types/Product';
@@ -153,7 +152,7 @@ const OrphanRepairPanel = () => {
   );
 };
 
-// ─── Catalog panel: accordion category tree with full CRUD ───────────────────
+// ─── Catalog panel ───────────────────────────────────────────────────────────
 const CatalogPanel = () => {
   const { t } = useTranslation();
   const { data: categories = [], isLoading: catsLoading } = useCategories();
@@ -166,27 +165,21 @@ const CatalogPanel = () => {
   const updateSubcategory = useUpdateSubcategory();
   const deleteSubcategory = useDeleteSubcategory();
 
-  // expanded category rows
+  const [catSearch, setCatSearch] = useState('');
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
-
-  // ── Add category form ───────────────────────────────
-  const [newCatName, setNewCatName] = useState('');
   const [showAddCat, setShowAddCat] = useState(false);
-
-  // ── Add subcategory form (per category) ─────────────
+  const [newCatName, setNewCatName] = useState('');
   const [addingSubFor, setAddingSubFor] = useState<number | null>(null);
   const [newSubName, setNewSubName] = useState('');
 
-  // ── Edit modal ───────────────────────────────────────
   type EditTarget = { kind: 'category'; item: Category } | { kind: 'subcategory'; item: Subcategory };
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
   const [editName, setEditName] = useState('');
 
-  // ── Delete modal ─────────────────────────────────────
   type DeleteTarget = { kind: 'category'; item: Category } | { kind: 'subcategory'; item: Subcategory };
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget | null>(null);
 
-  // helpers
+  // ── Helpers ───────────────────────────────────────────────────────────────
   const toggleExpand = (id: number) => setExpanded(prev => {
     const next = new Set(prev);
     if (next.has(id)) { next.delete(id); } else { next.add(id); }
@@ -196,7 +189,6 @@ const CatalogPanel = () => {
   const subsForCat = (catId: number) =>
     (subcategories as Subcategory[]).filter(s => s.category_id === catId);
 
-  // next suggested ID = max existing + 1
   const nextCatId = () => {
     const ids = (categories as Category[]).map(c => c.id);
     return ids.length ? Math.max(...ids) + 1 : 1;
@@ -210,9 +202,34 @@ const CatalogPanel = () => {
     return Math.max(...existing) + 1;
   };
 
-  // ── Handlers ────────────────────────────────────────
+  // ── Duplicate detection ───────────────────────────────────────────────────
+  const isDuplicateCat = newCatName.trim() !== '' &&
+    (categories as Category[]).some(c => c.name.toLowerCase() === newCatName.trim().toLowerCase());
+
+  const isDuplicateSub = newSubName.trim() !== '' && addingSubFor !== null &&
+    subsForCat(addingSubFor).some(s => s.name.toLowerCase() === newSubName.trim().toLowerCase());
+
+  const isDuplicateEdit = !!editTarget && editName.trim() !== '' && (() => {
+    if (editTarget.kind === 'category') {
+      return (categories as Category[]).some(
+        c => c._id !== editTarget.item._id && c.name.toLowerCase() === editName.trim().toLowerCase()
+      );
+    }
+    const sub = editTarget.item as Subcategory;
+    return subsForCat(sub.category_id!).some(
+      s => s._id !== sub._id && s.name.toLowerCase() === editName.trim().toLowerCase()
+    );
+  })();
+
+  const filteredCats = catSearch.trim()
+    ? (categories as Category[]).filter(c =>
+        c.name.toLowerCase().includes(catSearch.trim().toLowerCase())
+      )
+    : (categories as Category[]);
+
+  // ── Handlers ─────────────────────────────────────────────────────────────
   const handleAddCategory = () => {
-    if (!newCatName.trim()) return;
+    if (!newCatName.trim() || isDuplicateCat) return;
     addCategory.mutate(
       { id: nextCatId(), name: newCatName.trim() },
       { onSuccess: () => { setNewCatName(''); setShowAddCat(false); } }
@@ -220,7 +237,7 @@ const CatalogPanel = () => {
   };
 
   const handleAddSubcategory = (catId: number) => {
-    if (!newSubName.trim()) return;
+    if (!newSubName.trim() || isDuplicateSub) return;
     addSubcategory.mutate(
       { id: nextSubId(catId), name: newSubName.trim(), category_id: catId },
       { onSuccess: () => { setNewSubName(''); setAddingSubFor(null); } }
@@ -233,7 +250,7 @@ const CatalogPanel = () => {
   };
 
   const confirmEdit = () => {
-    if (!editTarget || !editName.trim() || !editTarget.item._id) return;
+    if (!editTarget || !editName.trim() || !editTarget.item._id || isDuplicateEdit) return;
     if (editTarget.kind === 'category') {
       updateCategory.mutate(
         { _id: editTarget.item._id, data: { name: editName.trim() } },
@@ -261,25 +278,43 @@ const CatalogPanel = () => {
   return (
     <div className="catalog-panel">
 
+      {/* ── Top bar ── */}
+      <div className="catalog-panel__topbar">
+        <input
+          className="catalog-panel__search"
+          type="text"
+          placeholder={t('admin.catalog.searchPlaceholder')}
+          value={catSearch}
+          onChange={e => setCatSearch(e.target.value)}
+        />
+        <Button
+          text={t('admin.catalog.addCategory')}
+          icon={<Add20Regular />}
+          size="sm"
+          onClick={() => { setShowAddCat(true); setNewCatName(''); }}
+        />
+      </div>
+
       {/* ── Category tree ── */}
       <div className="catalog-panel__tree">
-        {(categories as Category[]).map(cat => (
+        {filteredCats.length === 0 && (
+          <div className="catalog-panel__empty-msg">{t('admin.catalog.noResults')}</div>
+        )}
+        {filteredCats.map(cat => (
           <div key={cat.id} className="catalog-panel__cat-row">
 
-            {/* Category header row */}
-            <div className="catalog-panel__cat-header">
+            <div className="catalog-panel__cat-header" onClick={() => toggleExpand(cat.id)}>
               <button
                 className="catalog-panel__expand-btn"
-                onClick={() => toggleExpand(cat.id)}
                 aria-label={expanded.has(cat.id) ? t('common.collapse') : t('common.expand')}
+                onClick={e => { e.stopPropagation(); toggleExpand(cat.id); }}
               >
                 {expanded.has(cat.id) ? <ChevronDown20Regular /> : <ChevronRight20Regular />}
               </button>
               <Folder20Regular className="catalog-panel__cat-icon" />
               <span className="catalog-panel__cat-name">{cat.name}</span>
-              <span className="catalog-panel__cat-id">#{cat.id}</span>
-              <span className="catalog-panel__cat-count">{subsForCat(cat.id).length} {t('admin.catalog.subcategories')}</span>
-              <div className="catalog-panel__row-actions">
+              <span className="catalog-panel__cat-count-badge">{subsForCat(cat.id).length}</span>
+              <div className="catalog-panel__row-actions" onClick={e => e.stopPropagation()}>
                 <button
                   className="catalog-panel__action-btn"
                   onClick={() => openEdit({ kind: 'category', item: cat })}
@@ -293,14 +328,15 @@ const CatalogPanel = () => {
               </div>
             </div>
 
-            {/* Subcategory rows (expanded) */}
             {expanded.has(cat.id) && (
               <div className="catalog-panel__subs">
+                {subsForCat(cat.id).length === 0 && addingSubFor !== cat.id && (
+                  <div className="catalog-panel__subs-empty">{t('admin.catalog.noSubcategories')}</div>
+                )}
                 {subsForCat(cat.id).map(sub => (
                   <div key={sub.id} className="catalog-panel__sub-row">
                     <Tag20Regular className="catalog-panel__sub-icon" />
                     <span className="catalog-panel__sub-name">{sub.name}</span>
-                    <span className="catalog-panel__sub-id">#{sub.id}</span>
                     <div className="catalog-panel__row-actions">
                       <button
                         className="catalog-panel__action-btn"
@@ -316,30 +352,39 @@ const CatalogPanel = () => {
                   </div>
                 ))}
 
-                {/* Add subcategory inline */}
                 {addingSubFor === cat.id ? (
                   <div className="catalog-panel__add-sub-form">
-                    <TextField
-                      name="newSubName"
-                      placeholder={t('admin.catalog.subNamePlaceholder')}
-                      value={newSubName}
-                      onChange={e => setNewSubName(e.target.value)}
-                      size="sm"
-                    />
-                    <span className="catalog-panel__suggested-id">→ #{nextSubId(cat.id)}</span>
-                    <Button
-                      text={t('common.add')}
-                      size="sm"
-                      loading={addSubcategory.isPending}
-                      disabled={!newSubName.trim()}
-                      onClick={() => handleAddSubcategory(cat.id)}
-                    />
-                    <Button
-                      text={t('common.cancel')}
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => { setAddingSubFor(null); setNewSubName(''); }}
-                    />
+                    <div className="catalog-panel__name-input-wrap">
+                      <input
+                        className={`catalog-panel__name-input${isDuplicateSub ? ' catalog-panel__name-input--error' : ''}`}
+                        autoFocus
+                        placeholder={t('admin.catalog.subNamePlaceholder')}
+                        value={newSubName}
+                        onChange={e => setNewSubName(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') handleAddSubcategory(cat.id);
+                          if (e.key === 'Escape') { setAddingSubFor(null); setNewSubName(''); }
+                        }}
+                      />
+                      {isDuplicateSub && (
+                        <span className="catalog-panel__duplicate-warning">{t('admin.catalog.duplicateWarning')}</span>
+                      )}
+                    </div>
+                    <div className="catalog-panel__add-sub-actions">
+                      <Button
+                        text={t('common.add')}
+                        size="sm"
+                        loading={addSubcategory.isPending}
+                        disabled={!newSubName.trim() || isDuplicateSub}
+                        onClick={() => handleAddSubcategory(cat.id)}
+                      />
+                      <Button
+                        text={t('common.cancel')}
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => { setAddingSubFor(null); setNewSubName(''); }}
+                      />
+                    </div>
                   </div>
                 ) : (
                   <button
@@ -355,39 +400,39 @@ const CatalogPanel = () => {
         ))}
       </div>
 
-      {/* ── Add category ── */}
-      {showAddCat ? (
-        <div className="catalog-panel__add-cat-form">
-          <TextField
-            name="newCatName"
-            placeholder={t('admin.catalog.catNamePlaceholder')}
-            value={newCatName}
-            onChange={e => setNewCatName(e.target.value)}
-            size="sm"
-          />
-          <span className="catalog-panel__suggested-id">→ #{nextCatId()}</span>
-          <Button
-            text={t('common.add')}
-            size="sm"
-            loading={addCategory.isPending}
-            disabled={!newCatName.trim()}
-            onClick={handleAddCategory}
-          />
-          <Button
-            text={t('common.cancel')}
-            size="sm"
-            variant="ghost"
-            onClick={() => { setShowAddCat(false); setNewCatName(''); }}
-          />
-        </div>
-      ) : (
-        <Button
-          text={t('admin.catalog.addCategory')}
-          icon={<Add20Regular />}
-          size="sm"
-          variant="outline"
-          onClick={() => setShowAddCat(true)}
-        />
+      {/* ── Add category modal ── */}
+      {showAddCat && (
+        <Modal
+          title={t('admin.catalog.addCategory')}
+          onClose={() => { setShowAddCat(false); setNewCatName(''); }}
+          actions={<>
+            <Button
+              text={t('common.add')}
+              loading={addCategory.isPending}
+              disabled={!newCatName.trim() || isDuplicateCat}
+              onClick={handleAddCategory}
+            />
+            <Button
+              text={t('common.cancel')}
+              variant="outline"
+              onClick={() => { setShowAddCat(false); setNewCatName(''); }}
+            />
+          </>}
+        >
+          <div className="catalog-panel__modal-field">
+            <input
+              className={`catalog-panel__name-input${isDuplicateCat ? ' catalog-panel__name-input--error' : ''}`}
+              autoFocus
+              placeholder={t('admin.catalog.catNamePlaceholder')}
+              value={newCatName}
+              onChange={e => setNewCatName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleAddCategory(); }}
+            />
+            {isDuplicateCat && (
+              <span className="catalog-panel__duplicate-warning">{t('admin.catalog.duplicateWarning')}</span>
+            )}
+          </div>
+        </Modal>
       )}
 
       {/* ── Edit modal ── */}
@@ -399,18 +444,25 @@ const CatalogPanel = () => {
             <Button
               text={t('common.save')}
               loading={updateCategory.isPending || updateSubcategory.isPending}
-              disabled={!editName.trim()}
+              disabled={!editName.trim() || isDuplicateEdit}
               onClick={confirmEdit}
             />
             <Button text={t('common.cancel')} variant="outline" onClick={() => setEditTarget(null)} />
           </>}
         >
-          <TextField
-            name="editName"
-            value={editName}
-            onChange={e => setEditName(e.target.value)}
-            label={t('admin.catalog.namePlaceholder')}
-          />
+          <div className="catalog-panel__modal-field">
+            <input
+              className={`catalog-panel__name-input${isDuplicateEdit ? ' catalog-panel__name-input--error' : ''}`}
+              autoFocus
+              placeholder={t('admin.catalog.namePlaceholder')}
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') confirmEdit(); }}
+            />
+            {isDuplicateEdit && (
+              <span className="catalog-panel__duplicate-warning">{t('admin.catalog.duplicateWarning')}</span>
+            )}
+          </div>
         </Modal>
       )}
 
@@ -491,12 +543,16 @@ const Admin = () => {
     : productsNeedingImage;
 
   // Users tab
+  const pendingUsers = (allUsers as User[]).filter((u: User) => u.status === 'pending');
   const lowerUserSearch = userSearch.trim().toLowerCase();
-  const filteredUsers = lowerUserSearch
+  const sortByPendingFirst = (a: User, b: User) =>
+    (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1);
+  const filteredUsers = (lowerUserSearch
     ? (allUsers as User[]).filter((u: User) =>
         `${u.first_name} ${u.last_name} ${u.email}`.toLowerCase().includes(lowerUserSearch)
       )
-    : (allUsers as User[]);
+    : (allUsers as User[])
+  ).slice().sort(sortByPendingFirst);
 
   const { data: proposals = [] } = useProposals('pending');
   const approveProposalMutation = useApproveProposal();
@@ -586,8 +642,8 @@ const Admin = () => {
           onClick={() => setActiveTab('users')}
         >
           {t('admin.users')}
-          {allUsers.length > 0 && (
-            <span className="admin__tab-badge">{allUsers.length}</span>
+          {pendingUsers.length > 0 && (
+            <span className="admin__tab-badge">{pendingUsers.length}</span>
           )}
         </button>
       </div>
@@ -823,9 +879,12 @@ const Admin = () => {
             ) : (
               <ul className="admin__list">
                 {filteredUsers.map((u: User) => (
-                  <li key={u._id ?? u.id} className="admin__request">
+                  <li key={u._id ?? u.id} className={`admin__request${u.status === 'pending' ? ' admin__request--pending' : ''}`}>
                     <div className="admin__request-info">
-                      <span className="admin__request-name">{u.first_name} {u.last_name}</span>
+                      <span className="admin__request-name">
+                        {u.first_name} {u.last_name}
+                        {u.status === 'pending' && <span className="admin__request-pending-badge">{t('admin.statusPending')}</span>}
+                      </span>
                       <span className="admin__request-meta">
                         {u.email} &nbsp;·&nbsp; ID: {u.id}
                         {u.zip_code && ` · ${u.zip_code}`}

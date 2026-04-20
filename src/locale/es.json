@@ -446,6 +446,10 @@
     "admin.notifications": "Notificaciones",
     "admin.noNotifications": "Sin notificaciones pendientes.",
     "admin.catalog": "Catálogo",
+    "admin.catalog.searchPlaceholder": "Buscar categorías…",
+    "admin.catalog.noResults": "No hay categorías que coincidan.",
+    "admin.catalog.noSubcategories": "Aún no hay subcategorías.",
+    "admin.catalog.duplicateWarning": "Este nombre ya existe.",
     "admin.catalog.subcategories": "subcategorías",
     "admin.catalog.addCategory": "Agregar Categoría",
     "admin.catalog.addSubcategory": "+ Agregar Subcategoría",
@@ -483,6 +487,7 @@
     "admin.users": "Usuarios",
     "admin.usersSearch": "Buscar por nombre o correo…",
     "admin.usersTotal": "usuarios",
+    "admin.statusPending": "Pendiente",
     "admin.deleteUserTitle": "Eliminar Usuario",
     "admin.deleteUserBody": "¿Eliminar permanentemente a {{name}} ({{email}})? Esta acción no se puede deshacer.",
 
