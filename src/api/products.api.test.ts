@@ -23,6 +23,7 @@ vi.mock('./client', () => ({
     get: vi.fn(),
     post: vi.fn(),
     put: vi.fn(),
+    patch: vi.fn(),
     delete: vi.fn(),
   },
 }));
@@ -145,14 +146,33 @@ describe('Products API', () => {
   });
 
   describe('updateProduct', () => {
-    it('should update existing product', async () => {
-      const updates = { name: 'Updated Name' };
-      const updatedProduct = { id: 1, name: 'Updated Name', category: 1 };
-      
-      vi.mocked(apiClient.put).mockResolvedValueOnce({ data: updatedProduct });
-      
+    it('should use PATCH (not PUT) so existing catalog fields are never wiped', async () => {
+      // CRITICAL: updateProduct must PATCH, not PUT.
+      // A PUT with only { image_key } would wipe id, name, category_id, etc.
+      const updates = { image_key: 'products/4/401/95', pending_image_key: '' };
+      const fullProduct = { id: 95, name: 'Xbox One S', category_id: 4, subcategory_id: 401, ...updates };
+
+      vi.mocked(apiClient.patch).mockResolvedValueOnce({ data: fullProduct });
+
       const result = await updateProduct('abc123', updates);
-      
+
+      expect(apiClient.patch).toHaveBeenCalledTimes(1);
+      expect(apiClient.put).not.toHaveBeenCalled(); // PUT would destroy the document
+      expect(result.name).toBe('Xbox One S');         // name must survive
+      expect(result.id).toBe(95);                     // id must survive
+      expect(result.category_id).toBe(4);             // category must survive
+    });
+
+    it('should pass only the supplied fields to PATCH', async () => {
+      const updates = { name: 'Updated Name' };
+      const updatedProduct = { id: 1, name: 'Updated Name', category_id: 1 };
+
+      vi.mocked(apiClient.patch).mockResolvedValueOnce({ data: updatedProduct });
+
+      const result = await updateProduct('abc123', updates);
+
+      const patchCall = vi.mocked(apiClient.patch).mock.calls[0];
+      expect(patchCall[1]).toEqual({ name: 'Updated Name' }); // only supplied fields
       expect(result).toEqual(updatedProduct);
     });
   });
