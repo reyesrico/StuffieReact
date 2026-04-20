@@ -1,0 +1,2 @@
+import{j as a}from"./vendor-fluent-ClYxdChM.js";const c=({tabs:l,activeTab:o,onChange:r,className:i})=>a.jsx("div",{className:`tabs${i?` ${i}`:""}`,role:"tablist",children:l.map(({key:s,label:b,badge:t,icon:e})=>a.jsxs("button",{type:"button",role:"tab","aria-selected":o===s,className:`tabs__tab${o===s?" tabs__tab--active":""}`,onClick:()=>r(s),children:[e,b,t!==void 0&&t>0&&a.jsx("span",{className:"tabs__badge",children:t})]},s))});export{c as T};
+//# sourceMappingURL=Tabs-Dea2IepZ.js.map
