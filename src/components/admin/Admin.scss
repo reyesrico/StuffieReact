@@ -275,6 +275,15 @@
   color: var(--text-secondary);
 }
 
+.admin__request-id {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary, var(--text-secondary));
+  background: var(--surface-raised, rgba(0,0,0,0.06));
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
 .admin__request-buttons {
   display: flex;
   gap: var(--spacing-2);

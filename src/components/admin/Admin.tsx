@@ -14,6 +14,7 @@ import {
   Folder20Regular,
   BugRegular,
   ImageSearch20Regular,
+  ArrowUpload20Regular,
 } from '@fluentui/react-icons';
 
 import Button from '../shared/Button';
@@ -693,7 +694,7 @@ const CatalogPanel = () => {
   );
 };
 
-type AdminTab = 'notifications' | 'catalog' | 'charts' | 'actions' | 'proposals' | 'users';
+type AdminTab = 'products' | 'catalog' | 'charts' | 'actions' | 'proposals' | 'users';
 
 // ─── Main Admin component ─────────────────────────────────────────────────────
 const Admin = () => {
@@ -718,7 +719,7 @@ const Admin = () => {
   const approveUserMutation = useApproveUser();
   const approveImageMutation = useApproveProductImage();
   const rejectImageMutation = useRejectProductImage();
-  const [activeTab, setActiveTab] = useState<AdminTab>('notifications');
+  const [activeTab, setActiveTab] = useState<AdminTab>('products');
 
   // Bulk image approve
   const [bulkApproving, setBulkApproving] = useState(false);
@@ -773,6 +774,33 @@ const Admin = () => {
     } catch {
       setSuggestError(e => ({ ...e, [product._id!]: t('admin.suggestUploadError') }));
       setSuggestStates(s => ({ ...s, [product._id!]: 'results' }));
+    }
+  };
+
+  const handleDirectUpload = async (product: Product, file: File) => {
+    if (!product._id || !product.id || !product.category_id || !product.subcategory_id) return;
+    setSuggestStates(s => ({ ...s, [product._id!]: 'uploading' }));
+    setSuggestError(e => ({ ...e, [product._id!]: '' }));
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', `products/${product.category_id}/${product.subcategory_id}`);
+      formData.append('public_id', String(product.id));
+      formData.append('upload_preset', config.cloudinary.uploadPreset);
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${config.cloudinary.cloudName}/image/upload`,
+        formData,
+        { headers: { 'X-Requested-With': 'XMLHttpRequest' } }
+      );
+      const imageKey: string = res.data?.public_id;
+      if (imageKey) {
+        await updateProduct(product._id, { image_key: imageKey, pending_image_key: '' });
+        approveImageMutation.mutate({ _id: product._id, pending_image_key: imageKey });
+      }
+      setSuggestStates(s => ({ ...s, [product._id!]: 'idle' }));
+    } catch {
+      setSuggestError(e => ({ ...e, [product._id!]: t('admin.suggestUploadError') }));
+      setSuggestStates(s => ({ ...s, [product._id!]: 'idle' }));
     }
   };
 
@@ -869,11 +897,11 @@ const Admin = () => {
       <div className="admin__tabs" role="tablist">
         <button
           role="tab"
-          aria-selected={activeTab === 'notifications'}
-          className={`admin__tab${activeTab === 'notifications' ? ' admin__tab--active' : ''}`}
-          onClick={() => setActiveTab('notifications')}
+          aria-selected={activeTab === 'products'}
+          className={`admin__tab${activeTab === 'products' ? ' admin__tab--active' : ''}`}
+          onClick={() => setActiveTab('products')}
         >
-          {t('admin.notifications')}
+          {t('admin.products')}
           {totalNotifications > 0 && (
             <span className="admin__tab-badge">{totalNotifications}</span>
           )}
@@ -929,8 +957,8 @@ const Admin = () => {
       {/* ── Tab panels ── */}
       <section className="admin__section">
 
-        {/* Notifications tab */}
-        {activeTab === 'notifications' && (
+        {/* Products tab */}
+        {activeTab === 'products' && (
           <>
             {totalNotifications === 0 && (
               <div className="admin__empty">{t('admin.noNotifications')}</div>
@@ -1053,7 +1081,8 @@ const Admin = () => {
                           <div className="admin__request-info">
                             <span className="admin__request-name">{product.name}</span>
                             <span className="admin__request-meta">
-                              {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
+                              <span className="admin__request-id">ID: {product.id}</span>
+                              &nbsp;·&nbsp; {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
                             </span>
                           </div>
                           <div className="admin__suggest-row-actions">
@@ -1065,6 +1094,26 @@ const Admin = () => {
                               loading={state === 'loading'}
                               disabled={state === 'loading' || state === 'uploading'}
                               onClick={() => handleSuggestImage(product)}
+                            />
+                            <Button
+                              text={state === 'uploading' ? '' : t('admin.uploadImage')}
+                              icon={<ArrowUpload20Regular />}
+                              size="sm"
+                              variant="outline"
+                              loading={state === 'uploading'}
+                              disabled={state === 'loading' || state === 'uploading'}
+                              onClick={() => document.getElementById(`upload-${product.id}`)?.click()}
+                            />
+                            <input
+                              id={`upload-${product.id}`}
+                              type="file"
+                              accept="image/*"
+                              style={{ display: 'none' }}
+                              onChange={e => {
+                                const file = e.target.files?.[0];
+                                if (file) handleDirectUpload(product, file);
+                                e.target.value = '';
+                              }}
                             />
                             <a
                               href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
