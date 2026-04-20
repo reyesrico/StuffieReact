@@ -1,0 +1,2 @@
+const n=async a=>{const t=`https://api.unsplash.com/search/photos?query=${encodeURIComponent(a)}&per_page=6&orientation=squarish&client_id=vcAELVyu36BqDYw9YprkAMPPIKGTftocvSvvN-AdTbk`,r=await fetch(t);if(!r.ok)throw new Error("unsplash_error");return((await r.json()).results??[]).map(s=>({thumb:s.urls.small,url:s.urls.regular,title:s.alt_description??a}))};export{n as s};
+//# sourceMappingURL=imageSearch-Cikefdrx.js.map

@@ -1,0 +1,2 @@
+import{j as a}from"./vendor-fluent-ClYxdChM.js";const m=({onClose:l,title:o,actions:i,children:s,disableBackdropClose:d})=>{const e=()=>{!d&&l&&l()};return a.jsx("div",{className:"modal-overlay",onClick:e,role:"dialog","aria-modal":"true",children:a.jsxs("div",{className:"modal",onClick:r=>r.stopPropagation(),children:[a.jsx("h4",{className:"modal__title",children:o}),s&&a.jsx("div",{className:"modal__body",children:s}),a.jsx("div",{className:"modal__actions",children:i})]})})};export{m as M};
+//# sourceMappingURL=Modal-qTu-QEP5.js.map
