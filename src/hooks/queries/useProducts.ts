@@ -66,7 +66,8 @@ export const usePendingProducts = () => {
   return useQuery({
     queryKey: queryKeys.products.pending(),
     queryFn: getPendingProducts,
-    staleTime: 1000 * 60 * 5, // 5 min — admin data
+    staleTime: 0,           // always stale — admin needs live data
+    refetchOnMount: true,   // bypass localStorage cache on every mount
   });
 };
 

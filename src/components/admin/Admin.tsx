@@ -685,6 +685,19 @@ const Admin = () => {
   const { data: userRequests = [] } = useUserRequests();
   const { data: pendingProducts = [] } = usePendingProducts();
   const { data: allUsers = [], isLoading: usersLoading } = useAllUsers();
+  const { data: categories = [] } = useCategories();
+  const { data: subcategories = [] } = useSubcategories();
+
+  const catName = (id?: number) => {
+    if (!id) return String(id ?? '');
+    const found = (categories as Category[]).find(c => c.id === id);
+    return found ? `${found.name} (${id})` : String(id);
+  };
+  const subName = (id?: number) => {
+    if (!id) return String(id ?? '');
+    const found = (subcategories as Subcategory[]).find(s => s.id === id);
+    return found ? `${found.name} (${id})` : String(id);
+  };
   const approveUserMutation = useApproveUser();
   const approveImageMutation = useApproveProductImage();
   const rejectImageMutation = useRejectProductImage();
@@ -752,7 +765,19 @@ const Admin = () => {
   const [confirmDeleteUser, setConfirmDeleteUser] = useState<User | null>(null);
 
   const productsWithPendingImage = pendingProducts.filter((p: Product) => !!p.pending_image_key);
-  const productsNeedingImage = pendingProducts.filter((p: Product) => !p.pending_image_key);
+
+  // Deduplicate by name (safety net for DB-level duplicates) — keep lowest numeric id
+  const _seenProductNames = new Set<string>();
+  const productsNeedingImage = (pendingProducts as Product[])
+    .filter((p) => !p.pending_image_key)
+    .slice()
+    .sort((a, b) => (a.id ?? 0) - (b.id ?? 0))
+    .filter((p) => {
+      const key = (p.name ?? '').trim().toLowerCase();
+      if (!key || _seenProductNames.has(key)) return false;
+      _seenProductNames.add(key);
+      return true;
+    });
 
   const totalNotifications = userRequests.length + productsNeedingImage.length + productsWithPendingImage.length;
 
@@ -945,7 +970,7 @@ const Admin = () => {
                       <div className="admin__request-info">
                         <span className="admin__request-name">{product.name}</span>
                         <span className="admin__request-meta">
-                          ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
+                          ID: {product.id} &nbsp;·&nbsp; {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
                         </span>
                       </div>
                       <div className="admin__request-buttons">
@@ -1011,7 +1036,7 @@ const Admin = () => {
                           <div className="admin__request-info">
                             <span className="admin__request-name">{product.name}</span>
                             <span className="admin__request-meta">
-                              {t('admin.category')}: {product.category_id} &nbsp;·&nbsp; {t('admin.subcategory')}: {product.subcategory_id}
+                              {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
                             </span>
                           </div>
                           <div className="admin__suggest-row-actions">
@@ -1128,7 +1153,7 @@ const Admin = () => {
                     <div className="admin__request-info">
                       <span className="admin__request-name">{p.name}</span>
                       <span className="admin__request-meta">
-                        {t('admin.category')}: {p.category_id} &nbsp;·&nbsp;
+                        {t('admin.category')}: {catName(p.category_id)} &nbsp;·&nbsp;
                         {t('admin.proposals.proposedBy')}: {p.proposed_by}
                       </span>
                     </div>
