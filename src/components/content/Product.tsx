@@ -37,7 +37,7 @@ const Product = (props: any) => {
   const loanInfo: { borrowedFrom?: string; loanedTo?: string } | undefined = (location.state as any)?.loanInfo;
   const exchangeInfo: { tradingWith?: string; tradedWith?: string } | undefined = (location.state as any)?.exchangeInfo;
   const purchaseInfo: { boughtFrom?: string; cost?: number } | undefined = (location.state as any)?.purchaseInfo;
-  const copiesInfo: { total: number; statuses: string[] } | undefined = (location.state as any)?.copiesInfo;
+  const copiesInfo: { total: number; loanedCount?: number; tradingCount?: number } | undefined = (location.state as any)?.copiesInfo;
   const isFriendProduct = !!friendId;
   
   // React Query hooks
@@ -257,12 +257,21 @@ const Product = (props: any) => {
         <div className="product__copies">
           <div className="product__copies-title">{t('products.copiesTitle', { count: copiesInfo.total })}</div>
           <div className="product__copies-list">
-            {copiesInfo.statuses.map((status, i) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <span key={`copy-${i}`} className={`product__copies-badge product__copies-badge--${status === t('products.owned') || status === t('products.bought') ? 'available' : 'active'}`}>
-                #{i + 1} {status}
+            {(copiesInfo.loanedCount ?? 0) > 0 && (
+              <span className="product__copies-badge product__copies-badge--active">
+                {t('products.loanedCount', { count: copiesInfo.loanedCount })}
               </span>
-            ))}
+            )}
+            {(copiesInfo.tradingCount ?? 0) > 0 && (
+              <span className="product__copies-badge product__copies-badge--active">
+                {t('products.tradingCount', { count: copiesInfo.tradingCount })}
+              </span>
+            )}
+            {(copiesInfo.total - (copiesInfo.loanedCount ?? 0) - (copiesInfo.tradingCount ?? 0)) > 0 && (
+              <span className="product__copies-badge product__copies-badge--available">
+                {t('products.ownedCount', { count: copiesInfo.total - (copiesInfo.loanedCount ?? 0) - (copiesInfo.tradingCount ?? 0) })}
+              </span>
+            )}
           </div>
         </div>
       )}

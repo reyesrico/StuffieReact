@@ -28,6 +28,7 @@ import {
   addProductToUser,
   updateProductCost,
   updateProduct,
+  getProducts as getAllProducts,
   type CreateProductInput,
 } from '../../api/products.api';
 import {
@@ -161,10 +162,21 @@ export const useAddProduct = () => {
   
   return useMutation({
     mutationFn: async (productData: CreateProductInput) => {
-      // 1. Create the product
-      const product = await createProduct(productData);
-      
-      // 2. Associate with user
+      // Check if catalog already has an entry with the same name (case-insensitive)
+      // If yes, reuse it — no duplicate catalog entries
+      const allItems = await getAllProducts();
+      const existing = allItems.find(
+        (p: Product) => p.name?.toLowerCase() === productData.name.toLowerCase()
+      );
+
+      let product: Product;
+      if (existing?.id) {
+        product = existing;
+      } else {
+        product = await createProduct(productData);
+      }
+
+      // Associate with user (addProductToUser handles quantity increment if already owned)
       if (user?.id && product.id) {
         await addProductToUser({
           user_id: user.id,
@@ -172,7 +184,7 @@ export const useAddProduct = () => {
           asking_price: productData.cost,
         });
       }
-      
+
       return product;
     },
     onSuccess: () => {

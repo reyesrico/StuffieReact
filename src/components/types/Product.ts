@@ -11,5 +11,5 @@ export default interface Product {
   _created?: string,
   cost?: number,
   ss_id?: string,
-  on_loan?: boolean
+  quantity?: number
 }

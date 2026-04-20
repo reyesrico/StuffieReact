@@ -72,7 +72,7 @@ app.get('/userproducts/:stuffierId', requireAuth, async (req, res) => {
       .map(ss => {
         const product = stuffMap[ss.item_id];
         if (!product) return null;
-        return { ...product, cost: ss.asking_price ?? null, ss_id: ss._id, on_loan: ss.on_loan ?? false };
+        return { ...product, cost: ss.asking_price ?? null, ss_id: ss._id, quantity: ss.quantity ?? 1 };
       })
       .filter(Boolean);
 

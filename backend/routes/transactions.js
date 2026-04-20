@@ -140,10 +140,15 @@ const decrementOrDelete = async (db, row) => {
 };
 
 // ---------------------------------------------------------------------------
-// Helper — always insert a new user_items row (each copy is individually tracked)
+// Helper — increment quantity on existing row or insert new row (quantity model)
 // ---------------------------------------------------------------------------
 const incrementOrInsert = async (db, userId, itemId, askingPrice) => {
-  await db.insertOne('user_items', { user_id: userId, item_id: itemId, asking_price: askingPrice ?? null, quantity: 1 });
+  const existing = await findUserItem(db, userId, itemId);
+  if (existing) {
+    await db.updateOne('user_items', { _id: existing._id }, { $set: { quantity: (existing.quantity ?? 1) + 1 } });
+  } else {
+    await db.insertOne('user_items', { user_id: userId, item_id: itemId, asking_price: askingPrice ?? null, quantity: 1 });
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -157,13 +162,6 @@ app.post('/loan_requests/:id/accept', requireAuth, async (req, res) => {
     const db      = await datastore.open();
     const loanReq = await findOne(db, 'loan_requests', requestId);
     if (!loanReq) return res.status(404).json({ error: 'Loan request not found' });
-
-    const item = await findUserItem(db, loanReq.id_stuffier, loanReq.id_stuff);
-    if (item?._id) {
-      await db.updateOne('user_items', { _id: item._id }, {
-        $set: { on_loan: true, loaned_to: loanReq.id_friend, loan_request_id: loanReq._id },
-      });
-    }
 
     await db.updateOne('loan_requests', { _id: requestId }, { $set: { status: 'active' } });
     return res.json({ success: true });
@@ -186,13 +184,6 @@ app.post('/loan_requests/:id/complete', requireAuth, async (req, res) => {
     if (!loanReq) return res.status(404).json({ error: 'Loan request not found' });
     if (!['active', 'return_requested'].includes(loanReq.status)) {
       return res.status(409).json({ error: 'Loan must be active or return_requested to complete' });
-    }
-
-    const ownerRow = await findUserItem(db, loanReq.id_stuffier, loanReq.id_stuff);
-    if (ownerRow?._id) {
-      await db.updateOne('user_items', { _id: ownerRow._id }, {
-        $set: { on_loan: false, loaned_to: null, loan_request_id: null },
-      });
     }
 
     await db.updateOne('loan_requests', { _id: requestId }, {

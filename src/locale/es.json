@@ -157,6 +157,9 @@
     "products.available": "Disponible",
     "products.owned": "Mío",
     "products.copiesTitle": "Tus copias ({{count}})",
+    "products.loanedCount": "{{count}} prestado",
+    "products.tradingCount": "{{count}} en intercambio",
+    "products.ownedCount": "{{count}} en tu poder",
     "products.purchaseAcceptFailed": "Error al aceptar solicitud de compra",
     "products.costLabel": "Costo: ",
 

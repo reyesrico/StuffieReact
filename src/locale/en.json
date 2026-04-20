@@ -159,6 +159,9 @@
     "products.available": "Available",
     "products.owned": "Owned",
     "products.copiesTitle": "Your copies ({{count}})",
+    "products.loanedCount": "{{count}} loaned out",
+    "products.tradingCount": "{{count}} in trade",
+    "products.ownedCount": "{{count}} owned",
 
     "feedRow.added": "added",
     "feedRow.in": "in",

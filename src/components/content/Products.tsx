@@ -313,34 +313,26 @@ const Products = () => {
               <h4 className="products__subheader">{category.name}</h4>
               <div className="products__grid">
                 {groups.map((copies: ProductType[]) => {
-                    const totalCopies = copies.length;
+                    // Total copies = sum of quantity fields (quantity model)
+                    const totalCopies = copies.reduce((sum: number, p: ProductType) => sum + (p.quantity ?? 1), 0);
+                    const itemIds = copies.map((p: ProductType) => p.id);
 
-                    // Pick the copy with the most relevant active status to display
-                    // Priority: loaned > being traded > completed exchange > bought > plain
-                    const findProduct = (predicate: (p: ProductType) => boolean) =>
-                      copies.find(predicate);
+                    const product = copies[0];
 
                     const loanOut = activeLoanedOutLoans.find((r: LoanRequest) =>
-                      copies.some((p: ProductType) => p.id === r.id_stuff)
+                      itemIds.includes(r.id_stuff)
                     );
-                    const product = loanOut
-                      ? (findProduct((p: ProductType) => p.id === loanOut.id_stuff) ?? copies[0])
-                      : copies[0];
 
                     const borrower = loanOut ? loanedOutBorrowers.find((u: User) => u.id === loanOut.id_friend) : undefined;
                     const borrowerName = borrower ? `${borrower.first_name} ${borrower.last_name}` : undefined;
 
-                    // Accepted: reyesrico owns Zelda (id_stuff) in trade
-                    const ownerExchange = !loanOut ? acceptedOwnerExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_stuff)) : undefined;
-                    // Accepted: chiquitonet offering Mario Kart (id_friend_stuff) in trade
-                    const requesterExchange = !loanOut && !ownerExchange ? acceptedRequesterExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_friend_stuff)) : undefined;
-                    // Completed: chiquitonet received Zelda (id_stuff) from owner
+                    const ownerExchange = !loanOut ? acceptedOwnerExchanges.find((r: ExchangeRequest) => itemIds.includes(r.id_stuff)) : undefined;
+                    const requesterExchange = !loanOut && !ownerExchange ? acceptedRequesterExchanges.find((r: ExchangeRequest) => itemIds.includes(r.id_friend_stuff)) : undefined;
                     const completedReceived = !loanOut && !ownerExchange && !requesterExchange
-                      ? completedRequesterExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_stuff))
+                      ? completedRequesterExchanges.find((r: ExchangeRequest) => itemIds.includes(r.id_stuff))
                       : undefined;
-                    // Completed: reyesrico received Mario Kart (id_friend_stuff) from requester
                     const completedGiven = !loanOut && !ownerExchange && !requesterExchange && !completedReceived
-                      ? completedOwnerExchanges.find((r: ExchangeRequest) => copies.some((p: ProductType) => p.id === r.id_friend_stuff))
+                      ? completedOwnerExchanges.find((r: ExchangeRequest) => itemIds.includes(r.id_friend_stuff))
                       : undefined;
 
                     const activeExchange = ownerExchange ?? requesterExchange;
@@ -357,7 +349,7 @@ const Products = () => {
                     const exchangeCounterpartName = exchangeCounterpart ? `${exchangeCounterpart.first_name} ${exchangeCounterpart.last_name}` : undefined;
 
                     const boughtPurchase = !loanOut && !activeExchange && !completedExchange
-                      ? completedPurchases.find((r: PurchaseRequest) => copies.some((p: ProductType) => p.id === r.id_stuff))
+                      ? completedPurchases.find((r: PurchaseRequest) => itemIds.includes(r.id_stuff))
                       : undefined;
                     const purchaseSeller = boughtPurchase
                       ? purchaseSellers.find((u: User) => u.id === boughtPurchase.id_stuffier)
@@ -395,16 +387,11 @@ const Products = () => {
                           ...(totalCopies > 1 ? {
                             copiesInfo: {
                               total: totalCopies,
-                              statuses: copies.map((p: ProductType) => {
-                                const lo = activeLoanedOutLoans.find((r: LoanRequest) => r.id_stuff === p.id);
-                                if (lo) return t('products.loaned');
-                                const oe = acceptedOwnerExchanges.find((r: ExchangeRequest) => r.id_stuff === p.id);
-                                const re = acceptedRequesterExchanges.find((r: ExchangeRequest) => r.id_friend_stuff === p.id);
-                                if (oe || re) return t('products.beingTraded');
-                                const cp = completedPurchases.find((r: PurchaseRequest) => r.id_stuff === p.id);
-                                if (cp) return t('products.bought');
-                                return t('products.owned');
-                              }),
+                              loanedCount: activeLoanedOutLoans.filter((r: LoanRequest) => itemIds.includes(r.id_stuff)).length,
+                              tradingCount: [
+                                ...acceptedOwnerExchanges.filter((r: ExchangeRequest) => itemIds.includes(r.id_stuff)),
+                                ...acceptedRequesterExchanges.filter((r: ExchangeRequest) => itemIds.includes(r.id_friend_stuff)),
+                              ].length,
                             },
                           } : {}),
                         }}
