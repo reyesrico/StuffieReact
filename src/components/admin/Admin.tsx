@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowUpRight20Regular,
@@ -34,6 +35,7 @@ import {
   useAddSubcategory, useUpdateSubcategory, useDeleteSubcategory,
   useProposals, useApproveProposal, useRejectProposal,
   useApproveProductImage, useRejectProductImage,
+  queryKeys,
 } from '../../hooks/queries';
 import './Admin.scss';
 
@@ -166,6 +168,7 @@ interface DuplicateGroup {
 
 const DuplicateProductsPanel = () => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [scanning, setScanning] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [groups, setGroups] = useState<DuplicateGroup[]>([]);
@@ -209,6 +212,7 @@ const DuplicateProductsPanel = () => {
     try {
       const { deleteProduct } = await import('../../api/products.api');
       await deleteProduct(_id);
+      void queryClient.invalidateQueries({ queryKey: queryKeys.products.pending() });
       setGroups(prev => {
         const next = prev
           .map(g =>
@@ -235,6 +239,7 @@ const DuplicateProductsPanel = () => {
         }
       }
       await Promise.all(toDelete.map(id => deleteProduct(id)));
+      void queryClient.invalidateQueries({ queryKey: queryKeys.products.pending() });
       setGroups([]);
     } finally {
       setDeletingAll(false);
