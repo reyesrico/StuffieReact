@@ -711,16 +711,10 @@
 
   .admin__request--product {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-3);
-    padding: var(--spacing-2) var(--spacing-3);
-    padding-top: var(--spacing-4);
-    margin: 0;
-    border: none;
-    border-radius: 0;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3);
     background: var(--background-elevated);
-    position: relative;
   }
 }
 
@@ -813,11 +807,18 @@
 
 // ── Product suggest row — action cluster ──────────────────────────────────────
 
+.admin__product-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
 .admin__suggest-row-actions {
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--spacing-1);
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2);
   flex-shrink: 0;
 }
 
@@ -825,21 +826,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-sm);
+  flex-shrink: 0;
   color: var(--text-secondary);
   transition: color var(--transition-fast);
 
   svg { width: 14px; height: 14px; }
 
   &:hover { color: var(--color-primary-500); }
-
-  &--corner {
-    position: absolute;
-    top: var(--spacing-1);
-    right: var(--spacing-2);
-  }
 }
 
 // ── Duplicate products panel ──────────────────────────────────────────────────

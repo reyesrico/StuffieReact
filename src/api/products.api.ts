@@ -100,10 +100,10 @@ export interface UpdateProductInput {
 }
 
 /**
- * Update a product by _id
+ * Update a product by _id (partial update — only supplied fields are changed)
  */
 export const updateProduct = async (_id: string, data: UpdateProductInput): Promise<Product> => {
-  const response = await apiClient.put<Product>(productEndpoints.update(_id), data);
+  const response = await apiClient.patch<Product>(productEndpoints.update(_id), data);
   return response.data;
 };
 

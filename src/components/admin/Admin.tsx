@@ -1077,23 +1077,26 @@ const Admin = () => {
                     const errMsg = suggestError[pid] ?? '';
                     return (
                       <li key={product.id} className="admin__product-suggest-item">
-                        <div className="admin__request admin__request--product">
-                          <a
-                            href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="admin__suggest-cloudinary-link admin__suggest-cloudinary-link--corner"
-                            title={t('admin.openCloudinary')}
-                          >
-                            <ArrowUpRight20Regular />
-                          </a>
-                          <div className="admin__request-info">
+                        <div className="admin__request--product">
+                          {/* Row 1: name + cloudinary link */}
+                          <div className="admin__product-header">
                             <span className="admin__request-name">{product.name}</span>
-                            <span className="admin__request-meta">
-                              <span className="admin__request-id">ID: {product.id}</span>
-                              &nbsp;·&nbsp; {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
-                            </span>
+                            <a
+                              href={`https://cloudinary.com/console/media_library/search?q=products/${product.category_id}/${product.subcategory_id}/${product.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="admin__suggest-cloudinary-link"
+                              title={t('admin.openCloudinary')}
+                            >
+                              <ArrowUpRight20Regular />
+                            </a>
                           </div>
+                          {/* Row 2: meta */}
+                          <span className="admin__request-meta">
+                            <span className="admin__request-id">ID: {product.id}</span>
+                            &nbsp;·&nbsp; {t('admin.category')}: {catName(product.category_id)} &nbsp;·&nbsp; {t('admin.subcategory')}: {subName(product.subcategory_id)}
+                          </span>
+                          {/* Row 3: action buttons */}
                           <div className="admin__suggest-row-actions">
                             <Button
                               text={state === 'loading' ? '' : t('admin.suggest')}
