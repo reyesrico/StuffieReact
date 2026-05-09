@@ -11,7 +11,7 @@
     "@tanstack/query-sync-storage-persister": "^5.95.2",
     "@tanstack/react-query": "^5.71.10",
     "@tanstack/react-query-persist-client": "^5.95.2",
-    "axios": "^1.15.0",
+    "axios": "^1.15.2",
     "cloudinary-react": "^1.8.1",
     "crypto-js": "^4.2.0",
     "i18next": "^23.12.2",
