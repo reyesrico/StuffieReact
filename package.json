@@ -68,6 +68,18 @@
     "vitest": "^4.1.1"
   },
   "overrides": {
-    "@babel/core": "^7.29.6"
+    "@babel/core": "^7.29.6",
+    "@eslint/config-array": {
+      "brace-expansion": "^5.0.7"
+    },
+    "@eslint/eslintrc": {
+      "brace-expansion": "^5.0.7"
+    },
+    "eslint-plugin-react": {
+      "brace-expansion": "^5.0.7"
+    },
+    "eslint": {
+      "brace-expansion": "^5.0.7"
+    }
   }
 }
