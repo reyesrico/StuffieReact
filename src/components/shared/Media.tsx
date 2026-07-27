@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Video, Transformation, CloudinaryContext } from 'cloudinary-react';
+import { AdvancedImage, AdvancedVideo } from '@cloudinary/react';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { scale } from '@cloudinary/url-gen/actions/resize';
+import { format as deliveryFormat } from '@cloudinary/url-gen/actions/delivery';
+import { auto } from '@cloudinary/url-gen/qualifiers/format';
 
 import config from '../../config/api';
 import { existImage } from '../../lib/cloudinary';
 import './Media.scss';
+
+const cld = new Cloudinary({ cloud: { cloudName: config.cloudinary.cloudName } });
 
 // Maps current subcategory_id values to the Cloudinary folder names used at upload time.
 // The old folder scheme was {cat_id}{seq}000; new subcategory IDs are cat_id*100+seq.
@@ -70,22 +76,35 @@ const Media = (props: any) => {
 
 
   const renderVideo = () => {
-    const { fileName, format } = props;
-    return (<Video publicId={fileName} format={format} />);
+    const { fileName } = props;
+    const video = cld.video(fileName);
+    return (<AdvancedVideo cldVid={video} />);
   }
 
   const isVideo = props.format === 'mp4';
+
+  const renderImage = () => {
+    const image = cld.image(publicId);
+    if (width) {
+      image.resize(scale().width(width));
+    }
+    if (f) {
+      image.format(f);
+    } else {
+      image.delivery(deliveryFormat(auto()));
+    }
+    return (<AdvancedImage cldImg={image} />);
+  }
+
   return (
-    <CloudinaryContext cloudName={config.cloudinary.cloudName}>
+    <>
       {isVideo && renderVideo()}
       {!isVideo && (
         <div className="media__image">
-        <Image publicId={publicId} format={f}>
-          <Transformation width={width} fetchFormat="auto" crop="scale" />
-        </Image>
-      </div>
+          {renderImage()}
+        </div>
       )}
-    </CloudinaryContext>
+    </>
   );
 }
 

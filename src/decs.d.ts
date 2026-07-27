@@ -1,1 +1,1 @@
-declare module "cloudinary-react";
+// Ambient module declarations for packages without bundled types.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import { I18nextProvider } from 'react-i18next';
 import { FluentProvider, webLightTheme, webDarkTheme } from '@fluentui/react-components';
 import { GoogleOAuthProvider } from '@react-oauth/google';

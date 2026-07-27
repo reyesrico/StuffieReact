@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig(function (_a) {
@@ -20,29 +20,29 @@ export default defineConfig(function (_a) {
         define: {
             'global': 'globalThis',
         },
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    api: 'modern-compiler',
-                },
-            },
-        },
         build: {
             outDir: 'dist',
             sourcemap: true,
             rollupOptions: {
                 output: {
-                    manualChunks: {
-                        // Core React libraries
-                        'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+                    manualChunks: function (id) {
+                        if (!id.includes('node_modules'))
+                            return;
                         // UI framework
-                        'vendor-fluent': ['@fluentui/react-components'],
+                        if (id.includes('@fluentui/react-components'))
+                            return 'vendor-fluent';
                         // Data fetching
-                        'vendor-query': ['@tanstack/react-query', '@tanstack/react-query-persist-client'],
+                        if (id.includes('@tanstack/react-query'))
+                            return 'vendor-query';
                         // Charting
-                        'vendor-charts': ['recharts'],
+                        if (id.includes('recharts'))
+                            return 'vendor-charts';
                         // Utilities
-                        'vendor-utils': ['axios', 'lodash', 'moment'],
+                        if (/node_modules\/(axios|lodash|moment)\//.test(id))
+                            return 'vendor-utils';
+                        // Core React libraries
+                        if (/node_modules\/(react|react-dom|react-router)\//.test(id))
+                            return 'vendor-react';
                     },
                 },
             },

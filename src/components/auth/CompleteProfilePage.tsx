@@ -9,7 +9,7 @@
  * Submitting updates the user record via PATCH /users/:_id, then redirects to /.
  */
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { PersonRegular, CheckmarkCircleRegular } from '@fluentui/react-icons';
 

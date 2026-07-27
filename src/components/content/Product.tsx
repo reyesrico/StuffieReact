@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router';
 import { find, isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { Share20Regular } from '@fluentui/react-icons';
