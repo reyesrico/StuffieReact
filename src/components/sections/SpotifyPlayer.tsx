@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useSpotify } from '../../context/SpotifyContext';
 import { useTheme } from '../../context/ThemeContext';
 import Loading from '../shared/Loading';

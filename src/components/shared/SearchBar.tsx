@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Icon } from '@fluentui/react';
 
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import Loading from '../shared/Loading';
 import TextField from '../shared/TextField';

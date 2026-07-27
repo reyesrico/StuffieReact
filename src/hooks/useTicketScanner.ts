@@ -19,7 +19,7 @@ export interface TicketScannerState {
   ocrStatus: string;
   ocrProgress: number;
   ocrError: string | null;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 
   // Catalog data
   categories: Category[];

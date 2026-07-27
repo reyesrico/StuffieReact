@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
   QrCode20Regular,
@@ -21,7 +21,7 @@ import './SmartAdd.scss';
 // ─── Drop Zone ────────────────────────────────────────────────────────────────
 
 interface DropZoneProps {
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   accept: string;
   onFile: (file: File) => void;
   label: string;
