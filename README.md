@@ -70,7 +70,7 @@ TODAY                    NEAR FUTURE                    LONG TERM
 | Technology | Version | Purpose |
 |------------|---------|---------|
 | **Node.js** | ≥ 22 (.nvmrc → 22.22.2) | Runtime |
-| **Vite** | 6.x | Build tool & dev server |
+| **Vite** | 8.3.4+ | Build tool & dev server |
 | **React** | 18.3.1 | UI framework |
 | **TypeScript** | 5.9.3 | Type safety |
 | **React Query** | 5.71.10 | Data fetching & caching with localStorage persistence |
@@ -121,6 +121,10 @@ npm run dev      # http://localhost:3000
 | `npm run lint` | Lint with ESLint (flat config) |
 | `npm run lint:fix` | Auto-fix lint issues |
 | `npm run typecheck` | TypeScript type checking (no emit) |
+
+The deployment dependency `gh-pages` is pinned to 6.1.1 to avoid the vulnerable
+`braces` dependency chain in newer releases. Keep this pin until a release
+without that vulnerable chain is available.
 
 ### Environment Variables
 
