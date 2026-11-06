@@ -74,16 +74,16 @@
       "minimatch": "^11.0.1"
     },
     "@eslint/config-array": {
-      "brace-expansion": "^5.0.7"
+      "brace-expansion": "^1.1.21"
     },
     "@eslint/eslintrc": {
-      "brace-expansion": "^5.0.7"
+      "brace-expansion": "^1.1.21"
     },
     "eslint-plugin-react": {
-      "brace-expansion": "^5.0.7"
+      "brace-expansion": "^1.1.21"
     },
     "eslint": {
-      "brace-expansion": "^5.0.7"
+      "brace-expansion": "^1.1.21"
     }
   }
 }
